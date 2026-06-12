@@ -1,0 +1,25 @@
+---
+title: Tree
+description: A keyboard-navigable tree view.
+sidebar:
+  order: 8
+---
+
+import Demo from '../../../components/Demo.astro';
+
+<Demo src="app/components.html#tree" title="Tree & validation" height={520} />
+
+## Markup
+
+`.tree` + `[data-tree]` with nested `.tree-item` > `.tree-row` (and a
+`.tree-children` list for branches). Full keyboard navigation:
+
+| Key | Action |
+| --- | --- |
+| `↑` / `↓` | move between visible rows |
+| `→` | expand (or move into children) |
+| `←` | collapse (or move to parent) |
+| `Enter` | activate the row |
+
+Use `aria-expanded` on each branch `.tree-item`; leaf rows use `.tw.leaf` for
+alignment.

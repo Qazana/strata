@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qazana Strata — Error pages</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../../kits/app.css" rel="stylesheet">
+</head>
+<body>
+<div class="bg-layer"><div class="glow one"></div><div class="glow two"></div><div class="grid-overlay"></div></div>
+
+<div class="kit">
+  <header class="top">
+    <a class="logo" href="components.html">
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--primary)"/><circle cx="14.5" cy="15" r="7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-opacity=".95"/><path d="M19 19.5 L24 24.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
+      <span class="word">Qazan<span class="brand-8">a</span></span>
+    </a>
+    <nav><a href="components.html">Overview</a><a href="admin.html">Admin</a><a href="errors.html">Errors</a><a href="../site/landing.html">Site</a><button class="btn-icon" data-theme-toggle="dark-knight,desert-dunes" aria-label="Switch theme"><i class="fa-solid fa-sun"></i></button></nav>
+  </header>
+
+  <div class="kit-head"><div><h1 class="title">Error pages</h1>
+    <p>Branded, dark, on the animated background — never a raw stack trace. Copy stays human and reveals no internals.</p></div></div>
+
+  <!-- featured 404 -->
+  <div class="errpage">
+    <div>
+      <div class="ekick">Error 404</div>
+      <div class="code">404</div>
+      <h2>Page not found</h2>
+      <p>We couldn't find that page. It may have moved, or the link's not quite right.</p>
+      <div class="acts"><a class="btn btn-primary" href="components.html"><i class="fa-solid fa-house"></i> Go home</a><a class="btn btn-ghost" href="#"><i class="fa-solid fa-magnifying-glass"></i> Search</a></div>
+    </div>
+  </div>
+
+  <div class="sec"><div class="sub">Other states</div>
+    <div class="err-grid">
+      <div class="errcard"><div class="code coral">500</div><h3>Something went wrong</h3><p>Our server hit a snag. We've been notified — try again in a moment.</p><div class="acts" style="justify-content:center"><a class="btn btn-primary btn-sm" href="#"><i class="fa-solid fa-rotate-right"></i> Retry</a><a class="btn btn-ghost btn-sm" href="components.html">Home</a></div></div>
+      <div class="errcard"><div class="code amber">403</div><h3>Members only</h3><p>You don't have access to this. Sign in with the right account to continue.</p><div class="acts" style="justify-content:center"><a class="btn btn-primary btn-sm" href="#">Sign in</a><a class="btn btn-ghost btn-sm" href="components.html">Home</a></div></div>
+      <div class="errcard"><div class="code amber">429</div><h3>Slow down</h3><p>That's a lot of requests. Give it a few seconds and try again.</p><div class="acts" style="justify-content:center"><a class="btn btn-ghost btn-sm" href="components.html">Home</a></div></div>
+      <div class="errcard"><div class="code coral">503</div><h3>Back in a moment</h3><p>We're doing quick maintenance. We'll be back online shortly.</p><div class="acts" style="justify-content:center"><a class="btn btn-ghost btn-sm" href="#"><i class="fa-solid fa-rotate-right"></i> Refresh</a></div></div>
+    </div>
+  </div>
+
+  <div class="foot">Qazana Strata · error pages</div>
+</div>
+</body>
+</html>

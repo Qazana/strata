@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qazana Strata — Typography</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../../kits/app.css" rel="stylesheet">
+<link href="../../kits/content.css" rel="stylesheet"><!-- .prose lives in the content kit -->
+<style>
+  /* specimen-only layout (demo page scaffolding; the system itself is in the kit) */
+  .spec-row{display:grid;grid-template-columns:128px 70px 1fr;gap:18px;align-items:baseline;
+    padding:10px 0;border-bottom:1px solid var(--line);overflow-x:clip}
+  .spec-row code{font-size:var(--text-xs);color:var(--primary-bright)}
+  .spec-row .px{font-size:var(--text-xs);color:var(--muted);font-family:var(--mono)}
+  .spec-row .smp{min-width:0;overflow-wrap:anywhere}
+  .wt-row{display:flex;justify-content:space-between;gap:18px;align-items:baseline;padding:7px 0;border-bottom:1px solid var(--line)}
+  .wt-row .lbl{font-size:var(--text-xs);color:var(--muted);font-family:var(--mono)}
+  .lead-grid{display:grid;gap:16px}
+  .lead-grid > div{padding:12px 0;border-bottom:1px solid var(--line)}
+  .lead-grid .lbl{font-size:var(--text-xs);color:var(--muted);font-family:var(--mono);margin-bottom:4px;display:block}
+  .measure-stack > *{margin-bottom:16px}
+  .face-cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+  .face-card{border:1px solid var(--line);border-radius:var(--radius);padding:18px;background:var(--surface)}
+  .face-card .glyphs{font-size:var(--text-3xl);margin:6px 0 10px}
+  .face-card .role{font-size:var(--text-xs);color:var(--muted);font-family:var(--mono)}
+  .num-cols{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+  .num-cols .h{font-size:var(--text-xs);color:var(--muted);font-family:var(--mono);margin-bottom:6px}
+  .num-cols ul{list-style:none}
+  .num-cols li{padding:3px 0;font-size:var(--text-lg)}
+</style>
+</head>
+<body>
+<div class="bg-layer"><div class="glow one"></div><div class="glow two"></div><div class="grid-overlay"></div></div>
+
+<div class="kit">
+  <header class="top">
+    <a class="logo" href="typography.html">
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--primary)"/><circle cx="14.5" cy="15" r="7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-opacity=".95"/><path d="M19 19.5 L24 24.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
+      <span class="word">Qazan<span class="brand-8">a</span></span>
+    </a>
+    <nav><a href="../app/components.html">Components</a><a href="../site/landing.html">Site</a><button class="btn-icon" data-density-toggle aria-label="Toggle density"><i class="fa-solid fa-compress"></i></button><button class="btn-icon" data-theme-toggle="dark-knight,desert-dunes" aria-label="Switch theme"><i class="fa-solid fa-sun"></i></button></nav>
+  </header>
+
+  <div class="kit-head">
+    <div><h1 class="title">Typography</h1>
+      <p>The type system: three faces with strict roles, a band-aware scale (static UI, fluid display), and tokens for weight, leading, tracking and measure. Everything below references <code>var(--…)</code> — retune the tokens, not the components.</p></div>
+  </div>
+
+  <!-- ROLES -->
+  <section class="sec">
+    <h2>Faces &amp; roles</h2>
+    <p class="by">Three faces, each with one job. The signature face is for brand and large headings <em>only</em>.</p>
+    <div class="face-cards">
+      <div class="face-card">
+        <div class="role">--display · Syne</div>
+        <div class="glyphs" style="font-family:var(--display);font-weight:800">Ag 24</div>
+        <div>Hero headings &amp; wordmark only. Never body.</div>
+      </div>
+      <div class="face-card">
+        <div class="role">--body · DM Sans (variable)</div>
+        <div class="glyphs" style="font-family:var(--body);font-weight:700">Ag 24</div>
+        <div>All UI, headings, and reading text. 100–1000 weight.</div>
+      </div>
+      <div class="face-card">
+        <div class="role">--mono · JetBrains Mono</div>
+        <div class="glyphs" style="font-family:var(--mono)">Ag 0O</div>
+        <div>Data, code, tabular figures. Slashed zero.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- SCALE -->
+  <section class="sec">
+    <h2>The scale</h2>
+    <div class="sub">Static UI band — pixel-snapped, predictable</div>
+    <div>
+      <div class="spec-row"><code>--text-2xs</code><span class="px">11px</span><span class="smp" style="font-size:var(--text-2xs)">The quick brown fox jumps over the lazy dog</span></div>
+      <div class="spec-row"><code>--text-xs</code><span class="px">12px</span><span class="smp" style="font-size:var(--text-xs)">The quick brown fox jumps over the lazy dog</span></div>
+      <div class="spec-row"><code>--text-sm</code><span class="px">13px</span><span class="smp" style="font-size:var(--text-sm)">The quick brown fox jumps over the lazy dog</span></div>
+      <div class="spec-row"><code>--text-md</code><span class="px">14px</span><span class="smp" style="font-size:var(--text-md)">The quick brown fox jumps over the lazy dog</span></div>
+      <div class="spec-row"><code>--text-base</code><span class="px">16px</span><span class="smp" style="font-size:var(--text-base)">The quick brown fox jumps over the lazy dog</span></div>
+      <div class="spec-row"><code>--text-lg</code><span class="px">18px</span><span class="smp" style="font-size:var(--text-lg)">The quick brown fox jumps over</span></div>
+      <div class="spec-row"><code>--text-xl</code><span class="px">20px</span><span class="smp" style="font-size:var(--text-xl)">The quick brown fox</span></div>
+      <div class="spec-row"><code>--text-2xl</code><span class="px">24px</span><span class="smp" style="font-size:var(--text-2xl)">The quick brown fox</span></div>
+    </div>
+    <div class="sub">Fluid display band — <span style="font-family:var(--body)">clamp(), scales with viewport</span></div>
+    <div>
+      <div class="spec-row"><code>--text-3xl</code><span class="px">28–36</span><span class="smp" style="font-size:var(--text-3xl);font-weight:700;line-height:var(--leading-tight)">Quick brown fox</span></div>
+      <div class="spec-row"><code>--text-4xl</code><span class="px">36–48</span><span class="smp" style="font-size:var(--text-4xl);font-weight:800;line-height:var(--leading-tight);letter-spacing:var(--tracking-tight)">Brown fox</span></div>
+      <div class="spec-row"><code>--text-5xl</code><span class="px">44–60</span><span class="smp" style="font-size:var(--text-5xl);font-weight:800;line-height:var(--leading-tight);letter-spacing:var(--tracking-tight)">Foxes</span></div>
+      <div class="spec-row"><code>--text-6xl</code><span class="px">52–72</span><span class="smp" style="font-family:var(--display);font-size:var(--text-6xl);font-weight:800;line-height:var(--leading-tight);letter-spacing:var(--tracking-tighter)">Ag</span></div>
+    </div>
+  </section>
+
+  <!-- WEIGHTS -->
+  <section class="sec">
+    <h2>Weight ramp</h2>
+    <p class="by">Real weights from the variable file — no faux-bold. Use extremes for contrast.</p>
+    <div>
+      <div class="wt-row"><span style="font-size:var(--text-2xl);font-weight:var(--weight-regular)">Regular — clarity at reading sizes</span><span class="lbl">--weight-regular · 400</span></div>
+      <div class="wt-row"><span style="font-size:var(--text-2xl);font-weight:var(--weight-medium)">Medium — quiet emphasis</span><span class="lbl">--weight-medium · 500</span></div>
+      <div class="wt-row"><span style="font-size:var(--text-2xl);font-weight:var(--weight-semibold)">Semibold — UI labels</span><span class="lbl">--weight-semibold · 600</span></div>
+      <div class="wt-row"><span style="font-size:var(--text-2xl);font-weight:var(--weight-bold)">Bold — headings</span><span class="lbl">--weight-bold · 700</span></div>
+      <div class="wt-row"><span style="font-size:var(--text-2xl);font-weight:var(--weight-black)">Black — display impact</span><span class="lbl">--weight-black · 800</span></div>
+    </div>
+  </section>
+
+  <!-- HEADING ROLES -->
+  <section class="sec">
+    <h2>Heading roles</h2>
+    <p class="by">Utility classes that bind size + weight + leading + tracking together — one source per role.</p>
+    <div class="measure-stack" style="max-width:var(--measure-wide)">
+      <div class="t-display">Display</div>
+      <div class="t-h1">Heading one</div>
+      <div class="t-h2">Heading two</div>
+      <div class="t-h3">Heading three</div>
+      <div class="t-h4">Heading four</div>
+      <p class="t-lead">Lead paragraph — sets up an article with a slightly larger, lighter voice before the body copy begins.</p>
+      <p class="t-caption">Caption — metadata, footnotes, and supporting microcopy.</p>
+    </div>
+  </section>
+
+  <!-- LEADING -->
+  <section class="sec">
+    <h2>Leading</h2>
+    <p class="by">Line-height tightens as size grows. Stored unitless so it scales with the user's text settings.</p>
+    <div class="lead-grid" style="max-width:var(--measure)">
+      <div><span class="lbl">--leading-tight · 1.1</span><div style="line-height:var(--leading-tight)">Tight leading suits large display headings, where generous line-height would leave the lines feeling disconnected and loose.</div></div>
+      <div><span class="lbl">--leading-normal · 1.5</span><div style="line-height:var(--leading-normal)">Normal leading is the default for UI and body text — comfortable to scan without wasting vertical space.</div></div>
+      <div><span class="lbl">--leading-relaxed · 1.7</span><div style="line-height:var(--leading-relaxed)">Relaxed leading is for long-form prose, where the extra breathing room makes sustained reading easier on the eye.</div></div>
+    </div>
+  </section>
+
+  <!-- TRACKING -->
+  <section class="sec">
+    <h2>Tracking</h2>
+    <p class="by">A crossover: slightly positive on small text, negative on display.</p>
+    <div>
+      <div class="wt-row"><span class="eyebrow" style="margin:0">Eyebrow / overline</span><span class="lbl">--tracking-caps · .12em</span></div>
+      <div class="wt-row"><span style="font-size:var(--text-xs);letter-spacing:var(--tracking-xs)">Small caption text, opened up a touch</span><span class="lbl">--tracking-xs · +.005em</span></div>
+      <div class="wt-row"><span style="font-size:var(--text-2xl);letter-spacing:var(--tracking-normal)">Body &amp; UI sit at zero</span><span class="lbl">--tracking-normal · 0</span></div>
+      <div class="wt-row"><span style="font-size:var(--text-4xl);font-weight:800;letter-spacing:var(--tracking-tighter);line-height:1.1">Display tightens</span><span class="lbl">--tracking-tighter · −.02em</span></div>
+    </div>
+  </section>
+
+  <!-- MEASURE -->
+  <section class="sec">
+    <h2>Measure</h2>
+    <p class="by">Cap line length for readability — never run prose edge to edge.</p>
+    <div class="measure-stack">
+      <div><span class="lbl" style="font-size:var(--text-xs);color:var(--muted);font-family:var(--mono)">--measure-narrow · 48ch</span><p style="max-width:var(--measure-narrow)">A narrow measure suits captions, cards, and tight UI columns where lines are short by nature.</p></div>
+      <div><span class="lbl" style="font-size:var(--text-xs);color:var(--muted);font-family:var(--mono)">--measure · 65ch</span><p style="max-width:var(--measure)">The default measure targets roughly 65 characters per line — the long-studied sweet spot where the eye tracks comfortably from the end of one line to the start of the next without losing its place.</p></div>
+      <div><span class="lbl" style="font-size:var(--text-xs);color:var(--muted);font-family:var(--mono)">--measure-wide · 75ch</span><p style="max-width:var(--measure-wide)">A wide measure is the upper bound for documentation columns; beyond about 75 characters, return sweeps get tiring and reading slows.</p></div>
+    </div>
+  </section>
+
+  <!-- NUMERICS -->
+  <section class="sec">
+    <h2>Numerics</h2>
+    <p class="by">Tabular figures align in columns; the mono face uses a slashed zero. Data tables get this automatically.</p>
+    <div class="num-cols">
+      <div>
+        <div class="h">proportional (default)</div>
+        <ul class="nums-proportional" style="font-family:var(--mono)"><li>1,204.50</li><li>998,031.07</li><li>42.00</li></ul>
+      </div>
+      <div>
+        <div class="h">.nums-tabular + .zero-slashed</div>
+        <ul class="nums-tabular zero-slashed" style="font-family:var(--mono)"><li>1,204.50</li><li>998,031.07</li><li>42.00</li></ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROSE -->
+  <section class="sec">
+    <h2>Prose</h2>
+    <p class="by">Long-form content via <code>.prose</code> — em-based rhythm, capped at <code>--measure</code>.</p>
+    <article class="prose">
+      <p class="lead">The <code>.prose</code> scope styles raw article markup — headings, lists, quotes, code and tables — so a CMS or Markdown body reads well with no per-element classes.</p>
+      <h2>A section heading</h2>
+      <p>Body copy sits at a comfortable reading size with relaxed leading. Inline <code>code</code> uses the mono face, and <strong>strong</strong> and <em>emphasis</em> carry their usual weight.</p>
+      <blockquote>A blockquote draws a brand-coloured rule and shifts to a quieter, larger voice.</blockquote>
+      <h3>A subsection</h3>
+      <ul><li>Lists use a primary-tinted marker.</li><li>Spacing scales with the prose font size.</li></ul>
+      <pre><code>const x = someFunction(withManyArguments, thatDoNotWrap, reallyTrulyLong);</code></pre>
+    </article>
+  </section>
+
+  <div class="foot">Qazana Strata · typography</div>
+</div>
+<script src="../../js/qazana.js" defer></script>
+</body>
+</html>

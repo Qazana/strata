@@ -1,0 +1,32 @@
+---
+title: Buttons
+description: Button variants, sizes, states and groups.
+sidebar:
+  order: 1
+---
+
+import Demo from '../../../components/Demo.astro';
+
+<Demo src="app/components.html#buttons" title="Buttons" height={420} />
+
+## Variants
+
+`.btn` plus one variant class:
+
+| Class | Use |
+| --- | --- |
+| `.btn-primary` | primary action (filled brand) |
+| `.btn-secondary` | secondary filled |
+| `.btn-outline` | bordered, transparent fill |
+| `.btn-ghost` | transparent, no border until hover |
+| `.btn-danger` | destructive action |
+| `.btn-link` | looks like a link |
+
+## Sizes, states, groups
+
+- `.btn-sm` · `.btn-icon` (icon-only)
+- States: `.is-loading` (with `<span class="spin sm">`), `.is-success`, `.is-disabled`
+- Groups: `.btn-group` (joined) · `.segmented` (single-select) · `.toggle-group` (multi, JS toggles `.on`)
+
+All padding/size flows through the density tokens, so buttons shrink in
+[compact mode](/strata/foundations/density/).

@@ -1,0 +1,28 @@
+---
+title: Overlays
+description: Modal, drawer, popover, popconfirm, tooltip and menus — one dismissable-layer core.
+sidebar:
+  order: 3
+---
+
+import Demo from '../../../components/Demo.astro';
+
+All dismissable layers share one behaviour primitive: Escape, outside-click,
+scroll-lock and focus-trap are inherited, not re-implemented per component.
+
+<Demo src="app/components.html#overlays" title="Overlays" height={560} />
+
+## API
+
+| Component | Markup |
+| --- | --- |
+| Modal | `.modal-scrim` > `.modal-dialog` (`.ok/.danger/.warn/.info`); `data-modal-open="#id"` / `data-modal-close` |
+| Drawer | `.drawer-scrim` > `.drawer` (`.left`/`.right`); same `data-modal-*` API |
+| Popover | `.popover-wrap` > `[data-popover]` + `.popover`; `data-popover-close` |
+| Popconfirm | `.popconfirm` inside a popover (inline confirm/cancel) |
+| Tooltip | `[data-tip="…"]` + `[data-tip-pos="top\|bottom\|left\|right"]` |
+| Menu | `.menu` + `.menu-item` (+`.danger`, `.menu-sep`, `.menu-label`) |
+| Context menu | `.menu.ctx` + `data-ctx="#id"` (right-click) |
+| Hover card | `.hc-trigger` > `.hovercard` |
+
+Footer helpers: `.mf`, both-ends `.mf.split`. Focus returns to the trigger on close.

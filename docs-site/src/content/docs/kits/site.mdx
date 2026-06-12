@@ -1,0 +1,31 @@
+---
+title: Site kit
+description: Marketing and landing-page building blocks — 10 landing variants.
+sidebar:
+  order: 2
+---
+
+import Demo from '../../../components/Demo.astro';
+
+The **Site kit** (`@qazana/strata/site`) covers marketing surfaces:
+heroes, feature grids, pricing, testimonials, CTAs and footers — the blocks that
+make up a landing page. It composes with the Content kit for blog/article pages.
+
+## Landing variants
+
+Ten ready-made landing layouts share the same tokens, so a product homepage and
+its app finally feel like the same brand:
+
+<Demo src="site/startup.html" title="Site — startup landing" height={620} />
+
+<Demo src="site/product.html" title="Site — product landing" height={620} />
+
+<Demo src="site/coming-soon.html" title="Site — coming soon" height={520} />
+
+The full set: `startup`, `product`, `agency`, `app`, `landing`, `minimal`,
+`event`, `newsletter`, `coming-soon`, `waitlist`. Open any from the demo header.
+
+:::tip
+The display face (`--display`, Syne) is reserved for heroes and brand moments —
+not body copy. See [Tokens](/strata/foundations/tokens/).
+:::

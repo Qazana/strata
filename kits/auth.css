@@ -1,0 +1,171 @@
+@import "./base.css";
+
+@layer qazana {
+
+/* ============================================================================
+   Qazana Strata — AUTH KIT (sign in / sign up / reset).
+   Standalone: built on the shared tokens, themed by both schemes. Self-contained
+   (own inputs/buttons) so a login page is lean — needs only this file + the
+   foundation. Scoped under `.auth`.
+   ============================================================================ */
+
+.auth{font-family:var(--body);background:var(--bg);color:var(--text);min-height:100vh;
+  display:grid;grid-template-columns:1.05fr 1fr;-webkit-font-smoothing:var(--font-smooth);letter-spacing:var(--tracking-normal)}
+.auth *{box-sizing:border-box}
+
+/* ---- brand panel (left) ---- */
+.auth .auth-brand{position:relative;overflow:hidden;padding:48px;display:flex;flex-direction:column;
+  background:var(--surface);border-inline-end:1px solid var(--line)}
+.auth .auth-brand::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(70% 50% at 20% 12%, rgb(var(--primary-rgb) / .20), transparent 65%),
+    radial-gradient(60% 50% at 90% 100%, rgb(var(--accent-rgb) / .14), transparent 60%)}
+.auth .auth-brand > *{position:relative;z-index:1}
+.auth .brand{display:flex;align-items:center;gap:11px;text-decoration:none;color:var(--text);
+  font-family:var(--display);font-weight:800;font-size:var(--text-xl);letter-spacing:var(--tracking-tighter)}
+.auth .brand svg{width:32px;height:32px;border-radius:var(--radius-sm)}
+.auth .brand .mk{color:var(--primary-bright)}
+.auth .auth-pitch{margin-top:auto;max-width:34ch}
+.auth .auth-pitch h2{font-family:var(--display);font-weight:800;letter-spacing:-.025em;line-height:1.1;
+  font-size:clamp(1.6rem,2.6vw,2.3rem);margin-bottom:14px}
+.auth .auth-pitch p{color:var(--text-2);font-size:var(--text-base)}
+.auth .auth-quote{margin-top:28px;padding-top:22px;border-top:1px solid var(--line);color:var(--text-2);font-size:var(--text-md)}
+.auth .auth-quote b{color:var(--text);display:block;margin-top:6px;font-size:var(--text-md)}
+@media (max-width:860px){.auth{grid-template-columns:1fr}.auth .auth-brand{display:none}}
+
+/* ---- form side (right) ---- */
+.auth .auth-main{display:flex;align-items:center;justify-content:center;padding:40px 24px;min-width:0}
+.auth .auth-card{width:100%;max-width:392px}
+.auth .auth-card .brand{display:none;margin-bottom:28px}
+@media (max-width:860px){.auth .auth-card .brand{display:inline-flex}}
+.auth h1{font-family:var(--body);font-weight:700;letter-spacing:var(--tracking-tighter);font-size:1.8rem;margin-bottom:6px}
+.auth .sub{color:var(--text-2);margin-bottom:26px}
+.auth .sub a{color:var(--primary-bright);text-decoration:none;font-weight:600}
+
+/* fields */
+.auth .field{margin-bottom:16px}
+.auth label{display:block;font-size:var(--text-md);font-weight:600;margin-bottom:7px}
+.auth .row-between{display:flex;justify-content:space-between;align-items:baseline}
+.auth .row-between a{font-size:var(--text-sm);color:var(--primary-bright);text-decoration:none}
+.auth input[type=email],.auth input[type=password],.auth input[type=text]{
+  width:100%;background:var(--surface);color:var(--text);font-family:var(--body);font-size:var(--text-base);
+  border:1px solid var(--line-strong);border-radius:var(--radius);padding:12px 14px;outline:0;
+  transition:border-color var(--dur-1),box-shadow var(--dur-1),background var(--dur-1)}
+.auth input::placeholder{color:var(--muted)}
+.auth input:hover{border-color:rgb(var(--border-rgb) / .22)}
+.auth input:focus{border-color:var(--primary-bright);background:var(--surface-active);box-shadow:0 0 0 3px var(--primary-ring)}
+.auth input.is-error{border-color:var(--danger);box-shadow:0 0 0 3px rgb(var(--danger-rgb) / .2)}
+.auth .err{display:block;color:var(--danger);font-size:var(--text-sm);margin-top:6px}
+.auth .pw{position:relative}
+.auth .pw button{position:absolute;inset-inline-end:6px;top:50%;transform:translateY(-50%);background:none;border:0;
+  color:var(--muted);font-size:var(--text-xs);font-weight:700;letter-spacing:var(--tracking-wide);cursor:pointer;padding:6px 8px}
+.auth .pw button:hover{color:var(--text-2)}
+
+/* remember row */
+.auth .remember{display:flex;align-items:center;gap:9px;font-size:var(--text-md);color:var(--text-2);margin:4px 0 20px;cursor:pointer}
+.auth .remember input{appearance:none;-webkit-appearance:none;width:18px;height:18px;border:1.5px solid var(--line-strong);
+  border-radius:5px;background:var(--surface);cursor:pointer;position:relative;transition:all var(--dur-1)}
+.auth .remember input:checked{background:var(--primary);border-color:var(--primary)}
+.auth .remember input:checked::after{content:"\2713";position:absolute;inset:0;display:grid;place-items:center;color:var(--on-primary);font-size:var(--text-xs);font-weight:700}
+.auth .remember input:focus-visible{box-shadow:0 0 0 3px var(--primary-ring)}
+
+/* buttons */
+.auth .btn{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;font-family:var(--body);
+  font-weight:600;font-size:var(--text-base);border:0;cursor:pointer;border-radius:var(--radius);padding:13px 18px;
+  text-decoration:none;transition:background var(--dur-1),transform var(--dur-1),border-color var(--dur-1)}
+.auth .btn-primary{background:var(--primary);color:var(--on-primary)}
+.auth .btn-primary:hover{background:var(--primary-bright)}
+.auth .btn-oauth{background:var(--surface);color:var(--text);border:1px solid var(--line-strong)}
+.auth .btn-oauth:hover{border-color:rgb(var(--border-rgb) / .28);transform:translateY(-1px)}
+.auth .oauth{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media (prefers-reduced-motion: reduce){.auth .btn:hover{transform:none}}
+
+/* divider */
+.auth .divider{display:flex;align-items:center;gap:12px;color:var(--muted);font-size:var(--text-sm);margin:20px 0}
+.auth .divider::before,.auth .divider::after{content:"";flex:1;height:1px;background:var(--line)}
+
+/* footer link */
+.auth .auth-foot{margin-top:24px;text-align:center;color:var(--text-2);font-size:var(--text-md)}
+.auth .auth-foot a{color:var(--primary-bright);text-decoration:none;font-weight:600}
+
+/* corner controls (top-right): theme toggle, links back out of the flow.
+   One .auth-toggle stands alone; several stack inside an .auth-corner row. */
+.auth .auth-toggle{position:fixed;top:18px;inset-inline-end:18px;z-index:10;width:38px;height:38px;border-radius:50%;
+  border:1px solid var(--line);background:var(--surface);color:var(--text-2);display:grid;place-items:center;cursor:pointer;text-decoration:none}
+.auth .auth-toggle:hover{color:var(--text);border-color:var(--line-strong)}
+.auth .auth-corner{position:fixed;top:18px;inset-inline-end:18px;z-index:10;display:flex;gap:10px}
+.auth .auth-corner .auth-toggle{position:static}
+
+/* ---- centered variant (.auth.centered) — single card, no split panel ---- */
+.auth.centered{grid-template-columns:1fr;place-items:center;position:relative;overflow:hidden}
+.auth.centered::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(55% 45% at 50% -5%, rgb(var(--primary-rgb) / .16), transparent 65%),
+    radial-gradient(45% 40% at 85% 100%, rgb(var(--accent-rgb) / .12), transparent 60%)}
+.auth.centered .auth-main{position:relative;z-index:1;width:100%;padding:40px 24px}
+.auth.centered .auth-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);
+  box-shadow:var(--shadow-lg);padding:38px 34px;text-align:start}
+.auth.centered .auth-card .brand{display:inline-flex;margin-bottom:24px}
+.auth.centered .auth-foot{text-align:center}
+
+/* ---- full-flow extras: OTP, strength, status icon, app passwords ---- */
+.auth .auth-card.wide{max-width:540px}
+
+/* OTP / 2FA code inputs */
+.auth .otp{display:flex;gap:10px;justify-content:center;margin:4px 0 18px}
+.auth .otp input{width:52px;height:60px;text-align:center;font-family:var(--mono);font-size:var(--text-2xl);
+  background:var(--surface);color:var(--text);border:1px solid var(--line-strong);border-radius:var(--radius);outline:0;
+  transition:border-color var(--dur-1),box-shadow var(--dur-1),background var(--dur-1)}
+.auth .otp input:focus{border-color:var(--primary-bright);background:var(--surface-active);box-shadow:0 0 0 3px var(--primary-ring)}
+/* phones: trim the card gutters and let the fixed OTP boxes flex to fit the row */
+@media (max-width:640px){
+  .auth .auth-main,.auth.centered .auth-main{padding:32px 16px}
+  .auth .otp{gap:6px}
+  .auth .otp input{width:auto;flex:1;min-width:0;height:54px;font-size:var(--text-xl)}
+}
+
+/* password strength meter */
+.auth .pwbar{height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin-top:9px}
+.auth .pwbar i{display:block;height:100%;width:0;background:var(--danger);border-radius:99px;transition:width var(--dur-2),background var(--dur-2)}
+.auth .pwbar i.weak{background:var(--danger)}
+.auth .pwbar i.fair{background:var(--warning)}
+.auth .pwbar i.good{background:var(--info)}
+.auth .pwbar i.strong{background:var(--primary)}
+.auth .pwhint{display:block;font-size:var(--text-xs);color:var(--muted);margin-top:6px}
+
+/* big status icon (check-email / success) */
+.auth .icon-badge{width:64px;height:64px;border-radius:50%;display:grid;place-items:center;margin:0 auto 18px;
+  background:var(--primary-soft);color:var(--primary-bright);font-size:1.55rem}
+.auth .sent-to{display:inline-block;font-family:var(--mono);font-size:var(--text-md);color:var(--text);
+  background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);padding:6px 12px;margin:4px 0 18px}
+
+/* method buttons (passwordless / alternates) */
+.auth .btn.inline{width:auto;padding:9px 16px;font-size:var(--text-md)}
+.auth .btn-quiet{background:transparent;color:var(--text);box-shadow:inset 0 0 0 1px var(--line-strong)}
+.auth .btn-quiet:hover{box-shadow:inset 0 0 0 1px rgb(var(--border-rgb) / .28)}
+
+/* generated credential (app password) */
+.auth .cred{display:flex;align-items:center;gap:10px;background:var(--surface-sunken);border:1px solid var(--line);
+  border-radius:var(--radius);padding:12px 14px}
+.auth .cred code{flex:1;overflow:auto;white-space:nowrap;font-family:var(--mono);font-size:var(--text-base);letter-spacing:var(--tracking-wide)}
+.auth .cred .btn-icon{flex:0 0 auto}
+
+/* existing app passwords list */
+.auth .applist{display:flex;flex-direction:column;margin-top:6px}
+.auth .approw{display:flex;align-items:center;gap:12px;padding:14px 0;border-bottom:1px solid var(--line)}
+.auth .approw:last-child{border-bottom:0}
+.auth .approw .an{font-weight:600}
+.auth .approw .ad{color:var(--muted);font-size:var(--text-sm);margin-top:2px}
+.auth .approw .btn{margin-inline-start:auto}
+.auth .btn-danger{background:transparent;color:var(--danger);box-shadow:inset 0 0 0 1px rgb(var(--danger-rgb) / .4)}
+.auth .btn-danger:hover{background:rgb(var(--danger-rgb) / .1)}
+
+/* form-level message banner (validation summary / auth errors) */
+.auth .form-msg{display:flex;align-items:flex-start;gap:9px;padding:11px 13px;border-radius:var(--radius);
+  font-size:var(--text-md);line-height:1.45;margin-bottom:18px;border:1px solid}
+.auth .form-msg i{margin-top:2px;flex:0 0 auto}
+.auth .form-msg.error{color:var(--danger);background:rgb(var(--danger-rgb) / .1);border-color:rgb(var(--danger-rgb) / .35)}
+.auth .form-msg.ok{color:var(--primary-bright);background:var(--primary-soft);border-color:rgb(var(--primary-rgb) / .35)}
+.auth .form-msg.warn{color:var(--warning);background:var(--warning-soft);border-color:rgb(var(--warning-rgb) / .35)}
+
+}

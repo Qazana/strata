@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qazana Strata — Email Kit (Transactional)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../../kits/site.css" rel="stylesheet">
+<style>
+  .mail-preview{max-width:680px;margin:0 auto;border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;background:var(--surface)}
+  .mail-preview .cap{display:flex;align-items:center;gap:8px;padding:12px 16px;border-bottom:1px solid var(--line);font-size:.85rem;color:var(--text-2)}
+  .mail-preview .cap b{color:var(--text)}
+  .mail-preview iframe{width:100%;height:760px;border:0;display:block;background:#fff6ef}
+</style>
+</head>
+<body class="site">
+
+<header class="nav" data-nav-scroll>
+  <a class="brand" href="../site/landing.html">
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--primary)"/><circle cx="14.5" cy="15" r="7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-opacity=".95"/><path d="M19 19.5 L24 24.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
+    Qazan<span class="mk">a</span>
+  </a>
+  <nav class="nav-links">
+    <a href="index.html">All</a><a href="transactional.html">Transactional</a><a href="newsletter.html">Newsletter</a>
+  </nav>
+  <div class="nav-actions">
+    <button class="btn-icon" data-theme-toggle="dark-knight,desert-dunes" aria-label="Switch theme"><i class="fa-solid fa-sun"></i></button>
+  </div>
+</header>
+
+<section class="wrap section" style="padding-top:56px">
+  <div class="section-head">
+    <span class="eyebrow">Email kit · transactional</span>
+    <h2>Verify / welcome</h2>
+    <p>A single-action email: clear headline, one CTA, fallback link. Table-based, inline-styled, palette baked from Désert Dunes tokens.</p>
+  </div>
+  <div class="mail-preview">
+    <div class="cap"><i class="fa-solid fa-envelope-circle-check"></i> <b>transactional.html</b> · kits/email/</div>
+    <iframe src="../../kits/email/transactional.html" title="Transactional email"></iframe>
+  </div>
+</section>
+
+<footer class="site-foot">
+  <div class="wrap"><div class="foot-bottom" style="border-top:0;margin-top:0">
+    <span>© 2026 Qazana Strata · Email kit</span><span>Variant: transactional</span>
+  </div></div>
+</footer>
+
+<script src="../../js/qazana.js" defer></script>
+<script>(function(){var n=document.querySelector('[data-nav-scroll]');if(!n)return;var f=function(){n.classList.toggle('scrolled',window.scrollY>8);};f();addEventListener('scroll',f,{passive:true});})();</script>
+</body>
+</html>

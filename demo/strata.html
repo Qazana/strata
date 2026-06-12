@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qazana Strata — one design system, every Qazana product</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../kits/site.css" rel="stylesheet">
+<style>
+  /* page-only chrome: a code panel + labels on the kit gallery tiles */
+  .code{position:relative;z-index:1;font-family:var(--mono);font-size:var(--text-sm);line-height:1.8;
+    color:var(--text-2);text-align:start;margin:0;padding:24px;white-space:pre;overflow:auto;
+    width:100%;max-height:100%}  /* constrain to the .spot-media tile so overflow scrolls instead of clipping */
+  .code .tok{color:var(--primary-bright)}
+  .code .cm{color:var(--muted)}
+  .work b{position:relative;font-family:var(--body);font-weight:700;color:var(--text);margin-top:10px}
+  .work span.sub{position:relative;color:var(--muted);font-size:var(--text-sm)}
+  .hero-art .row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0;position:relative}
+  .hero-title{font-weight:900;font-size:clamp(2.25rem,1.75rem + 2vw,3.25rem)}  /* --display is Figtree (kit default) */
+</style>
+</head>
+<body class="site">
+<a href="#hero" class="skip-link">Skip to main content</a>
+
+<!-- NAV -->
+<header class="nav" data-nav-scroll>
+  <a class="brand" href="index.html">
+    <svg viewBox="0 0 32 33" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <path d="M16 3 29 9.5 16 16 3 9.5Z" style="fill:var(--accent)"></path>
+      <path d="M16 11.5 29 18 16 24.5 3 18Z" style="fill:var(--primary)"></path>
+      <path d="M16 20 29 26.5 16 33 3 26.5Z" style="fill:var(--info)" opacity=".85"></path>
+    </svg>
+    Strat<span class="mk">a</span>
+  </a>
+  <nav class="nav-links">
+    <a href="#foundation">Foundation</a>
+    <a href="#kits">Kits</a>
+    <a href="#theming">Theming</a>
+    <a href="#faq">FAQ</a>
+  </nav>
+  <div class="nav-actions">
+    <button class="btn-icon" data-theme-toggle="dark-knight,desert-dunes" aria-label="Switch theme"><i class="fa-solid fa-moon"></i></button>
+    <a class="btn btn-ghost" href="#theming">Docs</a>
+    <a class="btn btn-primary" href="#get-started">Get started</a>
+    <button class="btn-icon nav-menu-btn" data-nav-drawer-toggle aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+  </div>
+</header>
+
+<!-- Mobile Navigation Drawer -->
+<div class="nav-drawer-overlay" aria-hidden="true"></div>
+<nav class="nav-drawer" aria-label="Mobile navigation">
+  <div class="drawer-head">
+    <a class="brand" href="index.html">
+      <svg viewBox="0 0 32 33" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <path d="M16 3 29 9.5 16 16 3 9.5Z" style="fill:var(--accent)"></path>
+        <path d="M16 11.5 29 18 16 24.5 3 18Z" style="fill:var(--primary)"></path>
+        <path d="M16 20 29 26.5 16 33 3 26.5Z" style="fill:var(--info)" opacity=".85"></path>
+      </svg>
+      Strat<span class="mk">a</span>
+    </a>
+    <button class="btn-icon" data-nav-drawer-toggle aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="drawer-nav">
+    <a href="index.html"><i class="fa-solid fa-border-all"></i> Demos</a>
+    <hr>
+    <a href="#foundation"><i class="fa-solid fa-cubes"></i> Foundation</a>
+    <a href="#kits"><i class="fa-solid fa-layer-group"></i> Kits</a>
+    <a href="#theming"><i class="fa-solid fa-droplet"></i> Theming</a>
+    <a href="#faq"><i class="fa-solid fa-circle-question"></i> FAQ</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="wrap hero" id="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">The Qazana design system</span>
+    <h1 class="hero-title">One foundation.<br><em>Every</em> product.</h1>
+    <p class="hero-lead">Semantic tokens plus vanilla, data-attribute components. Theme the tokens once per brand and the marketing site, the app shell and the checkout all follow — in React, Ember or plain HTML.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary btn-lg" href="index.html"><i class="fa-solid fa-border-all"></i> Browse the demos</a>
+      <button class="btn btn-ghost btn-lg" data-theme-toggle="dark-knight,desert-dunes"><i class="fa-solid fa-circle-half-stroke"></i> Switch the scheme</button>
+    </div>
+    <p class="hero-note">v0.0.1 · 7 kits · no build step · zero dependencies</p>
+  </div>
+  <div class="hero-art">
+    <div class="ha-bar"><i></i><i></i><i></i></div>
+    <div class="row">
+      <button type="button" class="btn btn-primary"><i class="fa-solid fa-bolt"></i> Primary</button>
+      <button type="button" class="btn btn-ghost">Ghost</button>
+      <button type="button" class="btn-icon" data-theme-toggle="dark-knight,desert-dunes" aria-label="Switch theme"><i class="fa-solid fa-sun"></i></button>
+    </div>
+    <div class="capture" style="margin:14px 0">
+      <input type="email" placeholder="you@qazana.net" aria-label="Email address">
+      <button type="button" class="btn btn-primary">Join</button>
+    </div>
+    <div class="row">
+      <span class="avatars"><span>AU</span><span>VE</span><span>NO</span></span>
+      <span class="hero-note" style="margin:0">themed by three products</span>
+    </div>
+    <div class="ha-card">
+      <div class="ha-stat" data-count="100" data-suffix="%">100%</div>
+      <div class="ha-row sh" style="margin-bottom:0"></div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGO CLOUD -->
+<div class="wrap logos">
+  <span>aurora</span><span>vermeil</span><span>nocturne</span><span>your next product</span>
+</div>
+
+<!-- STAT BAND -->
+<section class="wrap section" style="padding-top:0">
+  <div class="stat-band">
+    <div class="stat"><b data-count="7">7</b><span>kits</span></div>
+    <div class="stat"><b>2</b><span>schemes</span></div>
+    <div class="stat"><b>0</b><span>dependencies</span></div>
+    <div class="stat"><b data-count="100" data-suffix="%">100%</b><span>token-driven</span></div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="wrap section" id="foundation" style="padding-top:0">
+  <div class="section-head">
+    <span class="eyebrow">Why Strata</span>
+    <h2>Rules, not vibes</h2>
+    <p>Every component is bound by the same contract: tokens are the single source of truth, behaviors are framework-free, and accessibility is not optional.</p>
+  </div>
+  <div class="features">
+    <div class="feature"><div class="fi"><i class="fa-solid fa-swatchbook"></i></div><h3>Tokens first</h3><p>No component hardcodes a color, radius, space or duration. Override <code>--primary</code> once and every fill, ring and border re-tints.</p></div>
+    <div class="feature"><div class="fi"><i class="fa-solid fa-circle-half-stroke"></i></div><h3>Two schemes, one palette</h3><p>Canonical dark plus the warm Désert Dunes light scheme. Borders flow through a channel variable, so both flip cleanly.</p></div>
+    <div class="feature"><div class="fi"><i class="fa-solid fa-plug"></i></div><h3>Data-attribute behaviors</h3><p>JS attaches to rendered DOM via <code>data-*</code> hooks — combobox, drawer, OTP, theme toggle — and works under React, Ember or nothing at all.</p></div>
+    <div class="feature"><div class="fi"><i class="fa-solid fa-universal-access"></i></div><h3>Accessible by default</h3><p>Keyboard-operable components with sensible ARIA, and every animation respects <code>prefers-reduced-motion</code>.</p></div>
+    <div class="feature"><div class="fi"><i class="fa-solid fa-right-left"></i></div><h3>RTL &amp; density aware</h3><p>Logical properties throughout, plus a density axis for data-heavy screens. Flip the direction; nothing breaks.</p></div>
+    <div class="feature"><div class="fi"><i class="fa-solid fa-font"></i></div><h3>Type discipline</h3><p>The display face is reserved for big headings and brand; body text stays on the body face; data and code stay mono.</p></div>
+  </div>
+</section>
+
+<!-- SPOTLIGHT 1: theming -->
+<section class="wrap spotlight" id="theming">
+  <div class="spot-media"><i class="fa-solid fa-droplet glyph"></i></div>
+  <div class="spot-copy">
+    <span class="eyebrow">Theming</span>
+    <h3>Re-brand in one override</h3>
+    <p>Brand colors are semantic — <code>--primary</code>, <code>--danger</code>, <code>--accent</code> — never literal. Alpha tints use the channel form, so a single per-app override re-tints everything, including soft fills and focus rings.</p>
+    <ul class="spot-list">
+      <li>One product ships mint, another vermilion — same CSS</li>
+      <li>Channel tints: <code>rgb(var(--primary-rgb) / .12)</code></li>
+      <li><code>tokens.json</code> mirror for design tools</li>
+    </ul>
+    <div class="hero-actions" style="margin-top:20px">
+      <button class="btn btn-ghost" data-theme-toggle="dark-knight,desert-dunes"><i class="fa-solid fa-circle-half-stroke"></i> Try it — flip this page</button>
+    </div>
+  </div>
+</section>
+
+<!-- SPOTLIGHT 2: consume anywhere -->
+<section class="wrap spotlight reverse">
+  <div class="spot-media">
+<pre class="code"><span class="cm">/* any stack, no build step */</span>
+<span class="tok">@import</span> "@qazana/strata/tokens";
+<span class="tok">@import</span> "@qazana/strata/site";
+
+<span class="cm">&lt;!-- behaviors attach to the DOM --&gt;</span>
+&lt;script src="qazana.js" <span class="tok">defer</span>&gt;&lt;/script&gt;</pre>
+  </div>
+  <div class="spot-copy">
+    <span class="eyebrow">Integration</span>
+    <h3>Plain CSS in, product out</h3>
+    <p>Strata is stylesheets and one script. There is no runtime to adopt and no compiler to appease — the components are the rendered markup itself.</p>
+    <ul class="spot-list">
+      <li>React + Tailwind apps map the tokens into Tailwind config</li>
+      <li>Ember apps import them straight into app styles</li>
+      <li>Vanilla pages consume the kits as-is — no build step</li>
+    </ul>
+  </div>
+</section>
+
+<!-- KIT GALLERY -->
+<section class="wrap section" id="kits">
+  <div class="section-head">
+    <span class="eyebrow">The kits</span>
+    <h2>Load only what the page needs</h2>
+    <p>Each kit is scoped and independently importable, sharing the same token foundation. Every tile below is a live demo.</p>
+  </div>
+  <div class="work-grid">
+    <a class="work" href="app/components.html"><i class="fa-solid fa-table-columns glyph"></i><b>App</b><span class="sub">shells, tables, inputs</span></a>
+    <a class="work" href="site/landing.html"><i class="fa-solid fa-rocket glyph"></i><b>Site</b><span class="sub">heroes, pricing, FAQ</span></a>
+    <a class="work" href="auth/sign-in.html"><i class="fa-solid fa-fingerprint glyph"></i><b>Auth</b><span class="sub">sign-in, OTP, 2FA</span></a>
+    <a class="work" href="commerce/products.html"><i class="fa-solid fa-cart-shopping glyph"></i><b>Commerce</b><span class="sub">catalog to order</span></a>
+    <a class="work" href="content/blog.html"><i class="fa-solid fa-newspaper glyph"></i><b>Content</b><span class="sub">blogs &amp; articles</span></a>
+    <a class="work" href="media/index.html"><i class="fa-solid fa-clapperboard glyph"></i><b>Media</b><span class="sub">video, audio, social</span></a>
+    <a class="work" href="email/index.html"><i class="fa-solid fa-envelope-open-text glyph"></i><b>Email</b><span class="sub">newsletter, transactional</span></a>
+  </div>
+</section>
+
+<!-- QUOTES -->
+<section class="wrap section" style="padding-top:0">
+  <div class="section-head">
+    <span class="eyebrow">In production</span>
+    <h2>Three products, one surface</h2>
+  </div>
+  <div class="quotes">
+    <div class="quote"><p>We override five tokens and the whole library reads as ours. The domain UI we built on top never fights the foundation.</p><div class="quote-by"><span class="av">AU</span><div><b>aurora</b><span>vanilla JS</span></div></div></div>
+    <div class="quote"><p>The tokens map straight into Tailwind config. Our React components use Strata variables and stay in sync with everyone else for free.</p><div class="quote-by"><span class="av">VE</span><div><b>vermeil</b><span>React + Tailwind</span></div></div></div>
+    <div class="quote"><p>Ember imports the CSS and references the variables. When Strata ships a new kit, our app picks it up with a version bump — no rewrite.</p><div class="quote-by"><span class="av">NO</span><div><b>nocturne</b><span>Ember</span></div></div></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="wrap section" id="faq" style="padding-top:0">
+  <div class="section-head">
+    <span class="eyebrow">FAQ</span>
+    <h2>Common questions</h2>
+  </div>
+  <div class="faq">
+    <details><summary>Does it work with my framework?</summary><p>Yes — Strata is plain CSS plus data-attribute JS that binds to the rendered DOM. It is consumed today by vanilla, React + Tailwind and Ember apps, with no adapters.</p></details>
+    <details><summary>How does theming work?</summary><p>Every component references semantic tokens. A product ships one override file that re-points <code>--primary</code>, <code>--accent</code> and friends; alpha tints are channel-based so they re-tint automatically.</p></details>
+    <details><summary>What about dark and light modes?</summary><p>Both schemes ship in the tokens. Switch by attribute or follow the OS — components never know which scheme is active.</p></details>
+    <details><summary>Where do product-specific components live?</summary><p>In the product. Strata holds only generic primitives; anything that encodes business vocabulary stays in the consuming app, themed by the same tokens.</p></details>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="wrap section" id="get-started" style="padding-top:0">
+  <div class="cta">
+    <h2>Build the next Qazana product on Strata</h2>
+    <p>Start from the demos, theme the tokens, and ship a cohesive frontend without re-deciding a single radius.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary btn-lg" href="index.html"><i class="fa-solid fa-border-all"></i> Explore all demos</a>
+      <a class="btn btn-ghost btn-lg" href="foundations/typography.html">Start with the foundations</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-col">
+        <a class="brand" href="strata.html" style="margin-bottom:14px">
+          <svg viewBox="0 0 32 33" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <path d="M16 3 29 9.5 16 16 3 9.5Z" style="fill:var(--accent)"></path>
+            <path d="M16 11.5 29 18 16 24.5 3 18Z" style="fill:var(--primary)"></path>
+            <path d="M16 20 29 26.5 16 33 3 26.5Z" style="fill:var(--info)" opacity=".85"></path>
+          </svg>
+          Strat<span class="mk">a</span>
+        </a>
+        <p>The shared, framework-agnostic design system behind every Qazana product.</p>
+        <div class="foot-social">
+          <a href="#" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+          <a href="#" aria-label="Figma"><i class="fa-brands fa-figma"></i></a>
+          <a href="#" aria-label="npm"><i class="fa-brands fa-npm"></i></a>
+        </div>
+      </div>
+      <div class="foot-col">
+        <h4>Kits</h4>
+        <a href="app/components.html">App</a>
+        <a href="site/landing.html">Site</a>
+        <a href="auth/sign-in.html">Auth</a>
+        <a href="commerce/products.html">Commerce</a>
+        <a href="content/blog.html">Content</a>
+        <a href="media/index.html">Media</a>
+      </div>
+      <div class="foot-col">
+        <h4>Foundations</h4>
+        <a href="foundations/typography.html">Typography</a>
+        <a href="foundations/forms.html">Forms</a>
+        <a href="foundations/layout.html">Layout</a>
+        <a href="email/index.html">Email</a>
+      </div>
+      <div class="foot-col">
+        <h4>Demos</h4>
+        <a href="index.html">All demos</a>
+        <a href="app/admin.html">Admin</a>
+        <a href="app/errors.html">Error pages</a>
+        <a href="commerce/checkout.html">Checkout</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Qazana · Strata v0.22.0</span>
+      <div class="foot-legal"><a href="#foundation">Foundation</a><a href="#kits">Kits</a><a href="#theming">Theming</a><a href="#faq">FAQ</a></div>
+    </div>
+  </div>
+</footer>
+
+<script src="../js/qazana.js" defer></script>
+<script>(function(){var n=document.querySelector('[data-nav-scroll]');if(!n)return;var f=function(){n.classList.toggle('scrolled',scrollY>8);};f();addEventListener('scroll',f,{passive:true});})();</script>
+</body></html>

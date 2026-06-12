@@ -1,0 +1,9 @@
+/* "Vermeil" — FICTIONAL example theme for the public demo. Vermilion brand with
+   a gilt accent, made for the light scheme; Fraunces display over the kit body. */
+:root{
+  --primary:#d4451d;        --primary-rgb:212 69 29;
+  --primary-bright:#b53312; --primary-bright-rgb:181 51 18;   /* emphasis reads darker on cream */
+  --on-primary:#ffffff;
+  --accent:#b98b2f; --accent-rgb:185 139 47;
+  --display:'Fraunces',serif;
+}

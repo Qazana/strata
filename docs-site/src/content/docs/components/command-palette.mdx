@@ -1,0 +1,45 @@
+---
+title: Command palette
+description: A ⌘K palette with search, grouping and full keyboard navigation.
+sidebar:
+  order: 4
+---
+
+import Demo from '../../../components/Demo.astro';
+
+Open it with **⌘K / Ctrl+K** (or the trigger button) inside the demo. Type to
+filter, arrow keys to move, Enter to select, Esc to close. The selected row is
+clearly highlighted because keyboard navigation is the primary affordance.
+
+<Demo src="app/components.html#overlays" title="Command palette (press ⌘K)" height={520} />
+
+## Markup
+
+```html
+<button data-cmdk-open class="btn btn-secondary">
+  Search… <span class="kbd-hint">⌘K</span>
+</button>
+
+<div class="cmdk-scrim" id="cmdk" role="dialog" aria-modal="true" hidden>
+  <div class="cmdk">
+    <div class="cmdk-search"><input placeholder="Type a command…" /></div>
+    <div class="cmdk-list">
+      <div class="cmd-grp">
+        <div class="cmd-group">Navigation</div>
+        <div class="cmd-item"><span class="ci">…</span> Go to Dashboard <span class="ck">G D</span></div>
+      </div>
+    </div>
+    <div class="cmdk-foot">…</div>
+  </div>
+</div>
+```
+
+| Part | Class |
+| --- | --- |
+| Scrim / dialog | `.cmdk-scrim` > `.cmdk` |
+| Search | `.cmdk-search` > `input` |
+| Group | `.cmd-grp` > `.cmd-group` (label) + `.cmd-item`s |
+| Item | `.cmd-item` (icon `.ci`, shortcut `.ck`) |
+| Selected | `.cmd-item.active` (keyboard) — distinct from `:hover` |
+
+Empty groups hide automatically as you filter.

@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en" data-density="compact">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qazana Strata — Admin Components</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../../kits/app.css" rel="stylesheet">
+</head>
+<body>
+<div class="bg-layer"><div class="glow one"></div><div class="glow two"></div><div class="grid-overlay"></div></div>
+
+<div class="kit">
+  <header class="top">
+    <a class="logo" href="components.html">
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--primary)"/><circle cx="14.5" cy="15" r="7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-opacity=".95"/><path d="M19 19.5 L24 24.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
+      <span class="word">Qazan<span class="brand-8">a</span></span>
+    </a>
+    <nav><a href="../index.html"><i class="fa-solid fa-border-all"></i> Demos</a><a href="components.html">Overview</a><a href="admin.html">Admin</a><a href="errors.html">Errors</a><a href="../site/landing.html">Site</a><button class="btn-icon" data-density-toggle aria-label="Toggle density"><i class="fa-solid fa-compress"></i></button><button class="btn-icon" data-theme-toggle="dark-knight,desert-dunes" aria-label="Switch theme"><i class="fa-solid fa-sun"></i></button></nav>
+  </header>
+
+  <div class="kit-head">
+    <div><h1 class="title">Admin components</h1>
+      <p>The product cockpit, in the same language. Dense, data-first: tables, stat cards, status dots, severity-coded alerts, job logs, ops charts.</p></div>
+  </div>
+  <nav class="kit-nav">
+    <a href="#shell" class="on">Shell</a><a href="#dash">Dashboard</a><a href="#tables">Tables</a><a href="#users">Users</a>
+    <a href="#jobs">Jobs</a><a href="#providers">Providers</a><a href="#alerts">Alerts</a><a href="#ops">Operations</a>
+    <a href="#health">Health</a><a href="#controls">Controls</a><a href="#layouts">Layouts</a><a href="#audit">Audit</a>
+  </nav>
+
+  <!-- SHELL -->
+  <section class="sec" id="shell">
+    <h2>Shell: sidebar (open + collapsed), topbar, status dot</h2>
+    <div class="adminframe">
+      <aside class="sidebar">
+        <div class="sl">Qazan<span class="brand-8">a</span> <span class="badge green">Admin</span></div>
+        <a class="side-item active"><i class="fa-solid fa-gauge-high"></i><span class="lbl-txt">Dashboard</span></a>
+        <a class="side-item"><i class="fa-solid fa-users"></i><span class="lbl-txt">Users</span></a>
+        <a class="side-item"><i class="fa-solid fa-list-check"></i><span class="lbl-txt">Jobs</span></a>
+        <a class="side-item"><i class="fa-solid fa-plug"></i><span class="lbl-txt">Providers</span></a>
+        <a class="side-item"><i class="fa-solid fa-bell"></i><span class="lbl-txt">Alerts</span><span class="ct">3</span></a>
+        <a class="side-item"><i class="fa-solid fa-chart-line"></i><span class="lbl-txt">Analytics</span></a>
+        <a class="side-item"><i class="fa-solid fa-server"></i><span class="lbl-txt">Operations</span></a>
+        <a class="side-item"><i class="fa-solid fa-heart-pulse"></i><span class="lbl-txt">System</span></a>
+      </aside>
+      <div class="adminbody">
+        <div class="admin-bar"><button class="hamb" data-sidebar-toggle=".adminframe" aria-label="Open menu"><i class="fa-solid fa-bars"></i></button> Admin</div>
+        <div class="ah2"><h3>Dashboard</h3><span style="font-size:.8rem;color:var(--muted)"><span class="dot ok"></span> All systems healthy · updated 8s ago</span></div>
+        <div class="stat-grid">
+          <div class="stat-card"><div class="num g">5,210</div><div class="lbl">Total users</div><div class="delta">+128 this week</div></div>
+          <div class="stat-card"><div class="num">18,402</div><div class="lbl">Analyses</div><div class="delta">+212 today</div></div>
+          <div class="stat-card"><div class="num">241k</div><div class="lbl">Songs ID'd</div></div>
+          <div class="stat-card"><div class="num c">3</div><div class="lbl">Open alerts</div></div>
+        </div>
+      </div>
+    </div>
+    <div class="sub">Collapsed (icon-only) — hover an item for its tooltip</div>
+    <aside class="sidebar collapsed rail" style="border:1px solid var(--line);border-radius:var(--radius-lg)">
+      <div class="sl"><span class="brand-8" style="font-family:var(--display);font-weight:800;font-size:1.15rem">Q</span><span class="word-txt"></span></div>
+      <a class="side-item active" data-tip="Dashboard" data-tip-pos="right"><i class="fa-solid fa-gauge-high"></i></a>
+      <a class="side-item" data-tip="Users" data-tip-pos="right"><i class="fa-solid fa-users"></i></a>
+      <a class="side-item" data-tip="Jobs" data-tip-pos="right"><i class="fa-solid fa-list-check"></i></a>
+      <a class="side-item" data-tip="Providers" data-tip-pos="right"><i class="fa-solid fa-plug"></i></a>
+      <a class="side-item" data-tip="Alerts" data-tip-pos="right"><i class="fa-solid fa-bell"></i><span class="ct">3</span></a>
+      <a class="side-item" data-tip="Analytics" data-tip-pos="right"><i class="fa-solid fa-chart-line"></i></a>
+      <a class="side-item" data-tip="Operations" data-tip-pos="right"><i class="fa-solid fa-server"></i></a>
+      <a class="side-item" data-tip="System" data-tip-pos="right"><i class="fa-solid fa-heart-pulse"></i></a>
+    </aside>
+  </section>
+
+  <!-- DASHBOARD -->
+  <section class="sec" id="dash">
+    <h2>Dashboard cards & service status</h2>
+    <div class="grid2">
+      <div class="card"><div class="card-h">Service status</div>
+        <div class="svc-row"><span class="dot ok"></span><span class="sname">PostgreSQL</span><span class="sdetail">12ms</span></div>
+        <div class="svc-row"><span class="dot ok"></span><span class="sname">Redis</span><span class="sdetail">ok</span></div>
+        <div class="svc-row"><span class="dot ok"></span><span class="sname">Celery</span><span class="sdetail">3 workers</span></div>
+        <div class="svc-row"><span class="dot warn"></span><span class="sname">YouTube</span><span class="sdetail">degraded</span></div>
+        <div class="svc-row"><span class="dot down"></span><span class="sname">AudD</span><span class="sdetail">quota</span></div>
+        <div class="svc-row"><span class="dot idle"></span><span class="sname">Email</span><span class="sdetail">not configured</span></div>
+      </div>
+      <div class="card"><div class="card-h">Tier breakdown</div>
+        <div class="kv"><span class="k"><span class="tier tier-free">Free</span></span><span class="v">4,902</span></div>
+        <div class="kv"><span class="k"><span class="tier tier-pro">Pro</span></span><span class="v">296</span></div>
+        <div class="kv"><span class="k"><span class="tier tier-unlimited">Unlimited</span></span><span class="v">12</span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TABLES -->
+  <section class="sec" id="tables">
+    <h2>Tables, search & pagination</h2>
+    <div class="ah2 start"><div class="input-group" style="max-width:300px"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4-4"/></svg><input placeholder="Search users…"></div>
+      <div class="combo" data-combo style="max-width:170px">
+        <button class="combo-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="combo-val">All tiers</span><span class="combo-caret"><i class="fa-solid fa-chevron-down"></i></span></button>
+        <div class="combo-pop" hidden>
+          <div class="combo-search"><input type="text" placeholder="Search…" aria-label="Filter tiers"></div>
+          <ul class="combo-list" role="listbox">
+            <li class="combo-opt sel" role="option" aria-selected="true">All tiers</li>
+            <li class="combo-opt" role="option">Free</li>
+            <li class="combo-opt" role="option">Pro</li>
+            <li class="combo-opt" role="option">Unlimited</li>
+            <li class="combo-empty" hidden>No matches</li>
+          </ul>
+        </div>
+      </div></div>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>ID</th><th>Email</th><th>Tier</th><th>Balance</th><th>Analyses</th><th>Joined</th><th>Role</th></tr></thead>
+      <tbody>
+        <tr><td class="cell-mono">1042</td><td><b>ada@lovelace.io</b></td><td><span class="tier tier-pro">Pro</span></td><td class="cell-mono">38/50</td><td>61</td><td class="cell-mono">2026-03-02</td><td><span class="tier role-admin">Admin</span></td></tr>
+        <tr><td class="cell-mono">1043</td><td><b>grace@hopper.dev</b></td><td><span class="tier tier-free">Free</span></td><td class="cell-mono">1/3</td><td>4</td><td class="cell-mono">2026-05-19</td><td>User</td></tr>
+        <tr><td class="cell-mono">1044</td><td><b>alan@turing.uk</b></td><td><span class="tier tier-unlimited">Unlimited</span></td><td class="cell-mono">∞</td><td>318</td><td class="cell-mono">2026-01-08</td><td>User</td></tr>
+      </tbody>
+    </table></div>
+    <div class="pager"><a href="#">‹ Prev</a><a href="#" class="active">1</a><a href="#">2</a><a href="#">3</a><a href="#">Next ›</a></div>
+  </section>
+
+  <!-- USERS -->
+  <section class="sec" id="users">
+    <h2>User row controls</h2>
+    <div class="demo col" style="max-width:680px">
+      <div class="jobrow"><span class="tier tier-pro">Pro</span><span class="jt">grace@hopper.dev</span>
+        <span class="js">38/50 credits · <span style="color:var(--danger)">12 used</span></span>
+        <div style="display:flex;gap:8px;margin-left:12px"><button class="btn btn-primary btn-sm">+Credits</button><button class="btn btn-ghost btn-sm">Comp ∞</button></div></div>
+      <div class="demo"><span class="swatch">Tier select</span><select style="max-width:140px;border-color:rgb(var(--accent-rgb) / .4)"><option>Free</option><option selected>Pro</option><option>Unlimited</option></select>
+        <span class="swatch">Role select</span><select style="max-width:140px;border-color:rgb(var(--danger-rgb) / .4)"><option>User</option><option selected>Admin</option></select></div>
+    </div>
+  </section>
+
+  <!-- JOBS -->
+  <section class="sec" id="jobs">
+    <h2>Jobs: row, status, inline log</h2>
+    <select style="max-width:170px;margin-bottom:12px"><option>All statuses</option><option>Processing</option><option>Failed</option></select>
+    <div class="demo col">
+      <div class="jobrow"><span class="dot ok"></span><span class="jt">Sunset Set — Désert Dunes</span><span class="js">completed · 14 songs · 1:08:42 · 2d ago</span><button class="btn btn-ghost btn-sm" style="margin-left:10px">Log</button></div>
+      <div class="jobrow"><span class="dot warn"></span><span class="jt">Boiler Room — Night Two</span><span class="js">processing · 62%</span><button class="btn btn-ghost btn-sm" style="margin-left:10px">Log</button></div>
+      <div class="jobrow"><span class="dot down"></span><span class="jt">Corrupt upload test</span><span class="js" style="color:var(--danger)">failed · download truncated</span><button class="btn btn-ghost btn-sm" style="margin-left:10px">Log</button></div>
+      <div class="joblog">[00:02] metadata → <span class="ok">ok</span>
+[00:09] download → <span class="ok">ok</span> (38.4 MB)
+[01:14] identify 12/22 → <span class="ok">match</span> Tale Of Us – Time
+[02:40] gap-retry 38:00–40:40 → <span class="err">no match</span></div>
+    </div>
+  </section>
+
+  <!-- PROVIDERS -->
+  <section class="sec" id="providers">
+    <h2>Providers</h2>
+    <div class="grid2">
+      <div class="pcard"><div class="pn">engine&nbsp;A</div>
+        <div class="pr"><span class="pk">Attempts</span><span class="pv">8,210</span></div>
+        <div class="pr"><span class="pk">Success</span><span class="pv rate-good">82%</span></div>
+        <div class="pr"><span class="pk">Avg latency</span><span class="pv">410ms</span></div>
+        <div class="pr"><span class="pk">Misses</span><span class="pv rate-ok">14%</span></div>
+        <div class="pr"><span class="pk">Failures</span><span class="pv rate-low">4%</span></div></div>
+      <div class="pcard"><div class="pn">engine&nbsp;B</div>
+        <div class="pr"><span class="pk">Attempts</span><span class="pv">3,002</span></div>
+        <div class="pr"><span class="pk">Success</span><span class="pv rate-ok">51%</span></div>
+        <div class="pr"><span class="pk">Avg latency</span><span class="pv">1.2s</span></div>
+        <div class="pr"><span class="pk">Misses</span><span class="pv rate-ok">38%</span></div>
+        <div class="pr"><span class="pk">Failures</span><span class="pv rate-low">11%</span></div></div>
+    </div>
+  </section>
+
+  <!-- ALERTS -->
+  <section class="sec" id="alerts">
+    <h2>Alerts (severity-coded)</h2>
+    <div class="demo col" style="max-width:720px">
+      <div class="alert crit"><div class="ah"><span class="sev">Critical</span><span>worker · 2m ago</span></div><div class="at">Celery queue backed up (84 pending)</div><div class="am">Default worker hasn't acked a task in 6 minutes.</div></div>
+      <div class="alert warn"><div class="ah"><span class="sev">Warning</span><span>proxy · 1h ago</span></div><div class="at">iProyal traffic below 2 GB</div></div>
+      <div class="alert info"><div class="ah"><span class="sev">Info</span><span>billing · 3h ago</span></div><div class="at">12 Pro renewals processed</div></div>
+    </div>
+  </section>
+
+  <!-- OPS -->
+  <section class="sec" id="ops">
+    <h2>Operations: metrics, freshness, chart</h2>
+    <div class="stat-grid" style="margin-bottom:16px">
+      <div class="stat-card"><div class="num">182 GB</div><div class="lbl">Proxy used (est.)</div></div>
+      <div class="stat-card"><div class="num g">41 GB</div><div class="lbl">Proxy remaining</div><div class="fresh">updated 12s ago</div></div>
+      <div class="stat-card"><div class="num g">OK</div><div class="lbl">YouTube canary</div><div class="fresh">last ok 3m ago</div></div>
+      <div class="stat-card"><div class="num">88</div><div class="lbl">Emails today</div></div>
+    </div>
+    <div class="card"><div class="card-h" style="justify-content:space-between"><span>Analyses — last 14 days</span><button class="btn btn-ghost btn-sm">Refresh</button></div>
+      <div class="bars">
+        <div class="bar" style="height:30%"></div><div class="bar" style="height:48%"></div><div class="bar" style="height:40%"></div><div class="bar" style="height:62%"></div><div class="bar" style="height:55%"></div><div class="bar" style="height:78%"></div><div class="bar" style="height:70%"></div><div class="bar" style="height:90%"></div><div class="bar" style="height:66%"></div><div class="bar" style="height:72%"></div><div class="bar" style="height:84%"></div><div class="bar" style="height:60%"></div><div class="bar" style="height:95%"></div><div class="bar" style="height:80%"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- HEALTH -->
+  <section class="sec" id="health">
+    <h2>System health</h2>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="num g">21%</div><div class="lbl">CPU</div></div>
+      <div class="stat-card"><div class="num g">58%</div><div class="lbl">Memory</div><div class="fresh">820 MB free</div></div>
+      <div class="stat-card"><div class="num c">86%</div><div class="lbl">Disk</div><div class="fresh">12 GB free</div></div>
+    </div>
+  </section>
+
+  <!-- CONTROLS -->
+  <section class="sec" id="controls">
+    <h2>Admin controls & forms</h2>
+    <div class="grid2">
+      <div class="card"><div class="card-h">Notification settings</div>
+        <div class="demo" style="justify-content:space-between"><label class="check"><input type="checkbox" checked> Critical alerts</label><select style="max-width:120px"><option>Instant</option><option>Daily</option></select></div>
+        <div class="demo" style="justify-content:space-between;margin-top:10px"><label class="check"><input type="checkbox"> Weekly digest</label><label class="switch"><input type="checkbox"><span class="track"></span></label></div>
+      </div>
+      <div class="card"><div class="card-h">YouTube cookies</div>
+        <div style="font-size:.84rem;margin-bottom:8px"><span class="dot ok"></span> Present · logged in · 142 cookies</div>
+        <textarea rows="2" placeholder="# Netscape HTTP Cookie File…"></textarea>
+        <div class="demo" style="margin-top:10px"><button class="btn btn-primary btn-sm">Update cookies</button><button class="btn btn-ghost btn-sm">Send test</button></div>
+      </div>
+    </div>
+    <div class="sub">Confirm / deny dialogs — actions at both ends</div>
+    <div class="modalrow">
+      <div class="modal-overlay"><div class="modal-dialog"><div class="mh"><span class="mi" style="color:var(--primary-bright);background:rgb(var(--primary-rgb) / .15)"><i class="fa-solid fa-rotate-right"></i></span> Requeue job?</div>
+        <div class="mb">Re-run analysis for <b>Boiler Room — Night Two</b>? No extra credit is spent.</div>
+        <div class="mf split"><button class="btn btn-ghost btn-sm">No, cancel</button><button class="btn btn-primary btn-sm">Yes, requeue</button></div></div></div>
+      <div class="modal-overlay"><div class="modal-dialog danger"><div class="mh"><span class="mi"><i class="fa-solid fa-shield-halved"></i></span> Grant admin</div>
+        <div class="mb">Give <b>grace@hopper.dev</b> full admin access? This is logged.</div>
+        <div class="mf split"><button class="btn btn-danger btn-sm">Deny</button><button class="btn btn-primary btn-sm">Grant admin</button></div></div></div>
+    </div>
+  </section>
+
+  <!-- LAYOUTS & FILTERS -->
+  <section class="sec" id="layouts">
+    <h2>Layouts &amp; filters</h2>
+
+    <div class="sub">Master–detail (split pane) — click a room</div>
+    <div class="split" data-split>
+      <div class="split-list">
+        <div class="split-item active" data-room="r1"><div class="si-name"><span class="dot ok"></span> ROOM-4F2A</div><div class="si-sub">3 devices · playing</div></div>
+        <div class="split-item" data-room="r2"><div class="si-name"><span class="dot warn"></span> ROOM-9KZ1</div><div class="si-sub">1 device · idle</div></div>
+        <div class="split-item" data-room="r3"><div class="si-name"><span class="dot ok"></span> ROOM-7T0P</div><div class="si-sub">5 devices · playing</div></div>
+      </div>
+      <div class="resizer" role="separator" aria-orientation="vertical" aria-label="Resize list"></div>
+      <div class="split-detail">
+        <div class="sd-pane" data-room="r1"><h3 style="font-weight:700;margin-bottom:10px">ROOM-4F2A</h3>
+          <div class="kv"><span class="k">Now playing</span><span class="v">Désert Dunes</span></div>
+          <div class="kv"><span class="k">Devices</span><span class="v">3</span></div>
+          <div class="kv"><span class="k">Host</span><span class="v">ada@lovelace.io</span></div>
+          <div class="demo" style="margin-top:14px"><button class="btn btn-ghost btn-sm">Message</button><button class="btn btn-danger btn-sm">Close room</button></div></div>
+        <div class="sd-pane" data-room="r2" hidden><h3 style="font-weight:700;margin-bottom:10px">ROOM-9KZ1</h3><div class="kv"><span class="k">Status</span><span class="v">Idle</span></div><div class="kv"><span class="k">Devices</span><span class="v">1</span></div></div>
+        <div class="sd-pane" data-room="r3" hidden><h3 style="font-weight:700;margin-bottom:10px">ROOM-7T0P</h3><div class="kv"><span class="k">Now playing</span><span class="v">Night Two</span></div><div class="kv"><span class="k">Devices</span><span class="v">5</span></div></div>
+      </div>
+    </div>
+
+    <div class="sub">Faceted filters + bulk actions — tick rows</div>
+    <div class="facets">
+      <select style="max-width:150px"><option>Status…</option><option>Active</option><option>Banned</option></select>
+      <span class="facet-chips"><span class="fchip"><b>Status:</b> Active <button data-fchip>✕</button></span><span class="fchip"><b>Tier:</b> Pro <button data-fchip>✕</button></span></span>
+      <button class="facet-clear" data-fclear>Clear all</button>
+    </div>
+    <div class="bulkbar" data-bulkbar hidden><span class="bcount">0</span> selected<div class="bx"><button class="btn btn-ghost btn-sm">Export</button><button class="btn btn-ghost btn-sm">Suspend</button><button class="btn btn-danger btn-sm">Delete</button></div></div>
+    <div class="tbl-wrap"><table class="tbl" data-bulk>
+      <thead><tr><th class="sel-col"><input type="checkbox" data-select-all></th><th>Email</th><th>Tier</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td class="sel-col"><input type="checkbox"></td><td><b>ada@lovelace.io</b></td><td><span class="tier tier-pro">Pro</span></td><td><span class="conn-pill up"><span class="cdot"></span> Active</span></td></tr>
+        <tr><td class="sel-col"><input type="checkbox"></td><td><b>grace@hopper.dev</b></td><td><span class="tier tier-free">Free</span></td><td><span class="conn-pill up"><span class="cdot"></span> Active</span></td></tr>
+        <tr><td class="sel-col"><input type="checkbox"></td><td><b>spam@bot.io</b></td><td><span class="tier tier-free">Free</span></td><td><span class="conn-pill down"><span class="cdot"></span> Banned</span></td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="sub">Date-range picker</div>
+    <div class="daterange" data-daterange>
+      <div class="daterange-summary">Select a start and end date</div>
+      <div class="dr-panel"><div class="dr-cals"></div></div>
+    </div>
+  </section>
+
+  <!-- AUDIT -->
+  <section class="sec" id="audit">
+    <h2>Audit log (planned)</h2>
+    <div class="desc">Accountability for tier / role / credit changes — admin, target, old→new, reason, timestamp.</div>
+    <div class="tbl-wrap"><table class="tbl">
+      <thead><tr><th>When</th><th>Admin</th><th>Action</th><th>Target</th><th>Change</th></tr></thead>
+      <tbody>
+        <tr><td class="cell-mono">12:04</td><td>frank</td><td><span class="badge green">tier</span></td><td>grace@hopper.dev</td><td class="cell-mono">Free → Pro</td></tr>
+        <tr><td class="cell-mono">11:48</td><td>frank</td><td><span class="badge amber">credits</span></td><td>ada@lovelace.io</td><td class="cell-mono">+20</td></tr>
+        <tr><td class="cell-mono">09:30</td><td>frank</td><td><span class="badge coral">role</span></td><td>alan@turing.uk</td><td class="cell-mono">User → Admin</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <div class="foot">Qazana Strata · admin component library</div>
+</div>
+<script src="../../js/qazana.js" defer></script>
+</body>
+</html>

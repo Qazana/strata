@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qazana Strata — Demo gallery</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../kits/site.css" rel="stylesheet">
+<style>
+  .kitsec{padding:40px 0 8px}
+  .kitsec h2{font-family:var(--display);font-weight:800;letter-spacing:-.02em;font-size:1.5rem;margin-bottom:4px}
+  .kitsec .desc{color:var(--text-2);margin-bottom:20px;font-size:.95rem}
+  .vlist{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  @media (max-width:760px){.vlist{grid-template-columns:1fr}}
+  .vcard{display:flex;align-items:center;gap:12px;padding:16px 18px;border:1px solid var(--line);border-radius:var(--radius-lg);
+    background:var(--surface);text-decoration:none;color:inherit;transition:transform var(--dur-2) var(--ease),border-color var(--dur-2)}
+  .vcard:hover{transform:translateY(-3px);border-color:rgb(var(--primary-rgb) / .35)}
+  .vcard .ic{display:grid;place-items:center;width:40px;height:40px;flex:0 0 40px;border-radius:var(--radius);background:rgb(var(--primary-rgb) / .12);color:var(--primary-bright)}
+  .vcard b{display:block;font-size:.98rem}
+  .vcard span{color:var(--muted);font-size:.82rem}
+</style>
+</head>
+<body class="site">
+<a href="#main-content" class="skip-link">Skip to main content</a>
+
+<header class="nav" data-nav-scroll>
+  <a class="brand" href="index.html">
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--primary)"/><circle cx="14.5" cy="15" r="7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-opacity=".95"/><path d="M19 19.5 L24 24.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
+    Qazan<span class="mk">a</span>
+  </a>
+  <nav class="nav-links">
+    <a href="strata.html"><i class="fa-solid fa-rocket"></i> About Strata</a>
+  </nav>
+  <div class="nav-actions">
+    <!-- nav-links collapses ≤760px and this page has no drawer — keep an always-visible path -->
+    <a class="btn-icon" href="strata.html" aria-label="About Strata" title="About Strata"><i class="fa-solid fa-rocket"></i></a>
+    <button class="btn-icon" data-dir-toggle aria-label="Switch text direction"><i class="fa-solid fa-right-left"></i></button>
+    <button class="btn-icon" data-theme-toggle="dark-knight,desert-dunes" aria-label="Switch theme"><i class="fa-solid fa-sun"></i></button>
+  </div>
+</header>
+
+<section id="main-content" class="wrap" style="padding-top:56px">
+  <div class="section-head" style="margin-bottom:24px">
+    <span class="eyebrow">Demo gallery</span>
+    <h2 style="font-family:var(--display);font-weight:800;letter-spacing:-.03em;font-size:clamp(1.9rem,3.4vw,2.6rem)">Every kit, every variant</h2>
+    <p>One token foundation, two themes, LTR and RTL (toggles top-right), and a kit per surface. Each folder holds variations — easy to fill gaps and add more.</p>
+  </div>
+
+  <div class="kitsec">
+    <h2>Foundations</h2><div class="desc">The systems every kit is built on — live specimens.</div>
+    <div class="vlist">
+      <a class="vcard" href="foundations/typography.html"><span class="ic"><i class="fa-solid fa-font"></i></span><div><b>Typography</b><span>scale · roles · fonts</span></div></a>
+      <a class="vcard" href="foundations/layout.html"><span class="ic"><i class="fa-solid fa-table-cells"></i></span><div><b>Layout</b><span>.l-* primitives</span></div></a>
+      <a class="vcard" href="foundations/forms.html"><span class="ic"><i class="fa-solid fa-pen-to-square"></i></span><div><b>Forms</b><span>.form-field + states</span></div></a>
+      <a class="vcard" href="themes/index.html"><span class="ic"><i class="fa-solid fa-palette"></i></span><div><b>Themes</b><span>per-product brand overrides</span></div></a>
+    </div>
+  </div>
+
+  <div class="kitsec">
+    <h2>App kit</h2><div class="desc">In-product UI — components, admin shell, error pages.</div>
+    <div class="vlist">
+      <a class="vcard" href="app/components.html"><span class="ic"><i class="fa-solid fa-table-cells-large"></i></span><div><b>Components</b><span>all web components</span></div></a>
+      <a class="vcard" href="app/admin.html"><span class="ic"><i class="fa-solid fa-gauge-high"></i></span><div><b>Admin</b><span>dense / data-first</span></div></a>
+      <a class="vcard" href="app/errors.html"><span class="ic"><i class="fa-solid fa-triangle-exclamation"></i></span><div><b>Error pages</b><span>404 / 500 / 503</span></div></a>
+    </div>
+  </div>
+
+  <div class="kitsec">
+    <h2>Site kit</h2><div class="desc">Landing / marketing frontend.</div>
+    <div class="vlist">
+      <a class="vcard" href="site/landing.html"><span class="ic"><i class="fa-solid fa-rocket"></i></span><div><b>Landing</b><span>full marketing page</span></div></a>
+      <a class="vcard" href="site/minimal.html"><span class="ic"><i class="fa-solid fa-feather"></i></span><div><b>Minimal</b><span>focused single hero</span></div></a>
+      <a class="vcard" href="site/product.html"><span class="ic"><i class="fa-solid fa-wand-magic-sparkles"></i></span><div><b>Product</b><span>feature-led</span></div></a>
+      <a class="vcard" href="site/startup.html"><span class="ic"><i class="fa-solid fa-bolt"></i></span><div><b>Startup</b><span>metrics-forward</span></div></a>
+      <a class="vcard" href="site/app.html"><span class="ic"><i class="fa-solid fa-mobile-screen"></i></span><div><b>App download</b><span>phone + store badges</span></div></a>
+      <a class="vcard" href="site/event.html"><span class="ic"><i class="fa-solid fa-calendar-days"></i></span><div><b>Event</b><span>agenda + speakers</span></div></a>
+      <a class="vcard" href="site/agency.html"><span class="ic"><i class="fa-solid fa-pen-nib"></i></span><div><b>Agency</b><span>work grid + services</span></div></a>
+      <a class="vcard" href="site/newsletter.html"><span class="ic"><i class="fa-solid fa-envelope-open-text"></i></span><div><b>Newsletter</b><span>subscribe + issues</span></div></a>
+      <a class="vcard" href="site/coming-soon.html"><span class="ic"><i class="fa-solid fa-hourglass-half"></i></span><div><b>Coming soon</b><span>countdown + capture</span></div></a>
+      <a class="vcard" href="site/waitlist.html"><span class="ic"><i class="fa-solid fa-user-clock"></i></span><div><b>Waitlist</b><span>private beta signup</span></div></a>
+    </div>
+  </div>
+
+  <div class="kitsec">
+    <h2>Content kit</h2><div class="desc">Blog &amp; long-form.</div>
+    <div class="vlist">
+      <a class="vcard" href="content/blog.html"><span class="ic"><i class="fa-solid fa-newspaper"></i></span><div><b>Blog (grid)</b><span>featured + cards</span></div></a>
+      <a class="vcard" href="content/blog-medium.html"><span class="ic"><i class="fa-solid fa-list"></i></span><div><b>Reading list</b><span>text-only / Medium</span></div></a>
+      <a class="vcard" href="content/article.html"><span class="ic"><i class="fa-solid fa-align-left"></i></span><div><b>Article</b><span>prose typography</span></div></a>
+      <a class="vcard" href="content/article-plain.html"><span class="ic"><i class="fa-solid fa-paragraph"></i></span><div><b>Article (plain)</b><span>no image</span></div></a>
+      <a class="vcard" href="content/article-media.html"><span class="ic"><i class="fa-solid fa-photo-film"></i></span><div><b>Article + media</b><span>video + audio + share</span></div></a>
+    </div>
+  </div>
+
+  <div class="kitsec">
+    <h2>Media kit</h2><div class="desc">Video &amp; social — composes with Site/Content.</div>
+    <div class="vlist">
+      <a class="vcard" href="media/index.html"><span class="ic"><i class="fa-solid fa-photo-film"></i></span><div><b>All</b><span>video + social</span></div></a>
+      <a class="vcard" href="media/video.html"><span class="ic"><i class="fa-solid fa-play"></i></span><div><b>Video</b><span>player, embed, cards</span></div></a>
+      <a class="vcard" href="media/social.html"><span class="ic"><i class="fa-solid fa-share-nodes"></i></span><div><b>Social</b><span>share, follow, profile</span></div></a>
+    </div>
+  </div>
+
+  <div class="kitsec">
+    <h2>Auth kit</h2><div class="desc">Sign in / up / reset.</div>
+    <div class="vlist">
+      <a class="vcard" href="auth/sign-in.html"><span class="ic"><i class="fa-solid fa-right-to-bracket"></i></span><div><b>Sign in</b><span>split + OAuth</span></div></a>
+      <a class="vcard" href="auth/sign-in-centered.html"><span class="ic"><i class="fa-solid fa-window-maximize"></i></span><div><b>Sign in (centered)</b><span>single card</span></div></a>
+      <a class="vcard" href="auth/sign-up.html"><span class="ic"><i class="fa-solid fa-user-plus"></i></span><div><b>Sign up</b><span>create account</span></div></a>
+      <a class="vcard" href="auth/reset.html"><span class="ic"><i class="fa-solid fa-key"></i></span><div><b>Reset</b><span>forgot password</span></div></a>
+      <a class="vcard" href="auth/check-email.html"><span class="ic"><i class="fa-solid fa-envelope-open-text"></i></span><div><b>Check email</b><span>link sent</span></div></a>
+      <a class="vcard" href="auth/new-password.html"><span class="ic"><i class="fa-solid fa-lock"></i></span><div><b>New password</b><span>set + strength</span></div></a>
+      <a class="vcard" href="auth/verify.html"><span class="ic"><i class="fa-solid fa-shield-halved"></i></span><div><b>Verify email</b><span>OTP code</span></div></a>
+      <a class="vcard" href="auth/two-factor.html"><span class="ic"><i class="fa-solid fa-mobile-screen-button"></i></span><div><b>Two-factor</b><span>2FA code</span></div></a>
+      <a class="vcard" href="auth/passwordless.html"><span class="ic"><i class="fa-solid fa-wand-magic-sparkles"></i></span><div><b>Passwordless</b><span>magic link</span></div></a>
+      <a class="vcard" href="auth/app-password.html"><span class="ic"><i class="fa-solid fa-fingerprint"></i></span><div><b>App passwords</b><span>generate + revoke</span></div></a>
+    </div>
+  </div>
+
+  <div class="kitsec">
+    <h2>Commerce kit</h2><div class="desc">Catalog → product → cart → checkout → order.</div>
+    <div class="vlist">
+      <a class="vcard" href="commerce/products.html"><span class="ic"><i class="fa-solid fa-store"></i></span><div><b>Products</b><span>grid, filters, badges</span></div></a>
+      <a class="vcard" href="commerce/product.html"><span class="ic"><i class="fa-solid fa-tag"></i></span><div><b>Product detail</b><span>gallery, variants, stepper</span></div></a>
+      <a class="vcard" href="commerce/cart.html"><span class="ic"><i class="fa-solid fa-cart-shopping"></i></span><div><b>Cart</b><span>lines, mini-cart, promo</span></div></a>
+      <a class="vcard" href="commerce/checkout.html"><span class="ic"><i class="fa-solid fa-credit-card"></i></span><div><b>Checkout</b><span>steps, pay options</span></div></a>
+      <a class="vcard" href="commerce/order.html"><span class="ic"><i class="fa-solid fa-box"></i></span><div><b>Order</b><span>confirmation, history</span></div></a>
+    </div>
+  </div>
+
+  <div class="kitsec">
+    <h2>Email kit</h2><div class="desc">Transactional &amp; newsletter templates.</div>
+    <div class="vlist">
+      <a class="vcard" href="email/index.html"><span class="ic"><i class="fa-solid fa-envelopes-bulk"></i></span><div><b>All</b><span>both, side by side</span></div></a>
+      <a class="vcard" href="email/transactional.html"><span class="ic"><i class="fa-solid fa-envelope-circle-check"></i></span><div><b>Transactional</b><span>verify / welcome</span></div></a>
+      <a class="vcard" href="email/newsletter.html"><span class="ic"><i class="fa-regular fa-newspaper"></i></span><div><b>Newsletter</b><span>monthly digest</span></div></a>
+    </div>
+  </div>
+</section>
+
+<footer class="site-foot">
+  <div class="wrap"><div class="foot-bottom">
+    <span>© 2026 Qazana Strata · demo gallery</span><span>Dark Knight &amp; Désert Dunes</span>
+  </div></div>
+</footer>
+
+<script src="../js/qazana.js" defer></script>
+<script>(function(){var n=document.querySelector('[data-nav-scroll]');if(!n)return;var f=function(){n.classList.toggle('scrolled',window.scrollY>8);};f();addEventListener('scroll',f,{passive:true});})();</script>
+</body>
+</html>

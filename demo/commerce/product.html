@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Commerce — Product Detail · Qazana Strata</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../../kits/site.css" rel="stylesheet">
+<link href="../../kits/commerce.css" rel="stylesheet">
+<style>
+  body{margin:0}
+  .page-wrap{max-width:1100px;margin-inline:auto;padding:var(--space-5)}
+  .demo-nav{display:flex;gap:var(--space-3);margin-bottom:var(--space-6);flex-wrap:wrap}
+  .demo-nav a{font-size:var(--text-sm);color:var(--primary-bright);text-decoration:none;padding:4px 10px;border:1px solid var(--line);border-radius:var(--radius)}
+  .demo-nav a:hover{border-color:var(--primary);color:var(--primary)}
+  .demo-nav a.active{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+  .pdp{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-7);align-items:start}
+  @media(max-width:760px){.pdp{grid-template-columns:1fr}}
+  .section-label{font-size:var(--text-xs);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:var(--space-7) 0 var(--space-4);padding-top:var(--space-6);border-top:1px solid var(--line)}
+  .divider{border:none;border-top:1px solid var(--line);margin:var(--space-4) 0}
+  .add-row{display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap}
+  .breadcrumb{display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);color:var(--muted);margin-bottom:var(--space-4)}
+  .breadcrumb a{color:var(--muted);text-decoration:none}.breadcrumb a:hover{color:var(--text)}
+  .breadcrumb span{color:var(--line-strong)}
+  /* modal scrim for quick-view demo */
+  .modal-scrim{position:fixed;inset:0;z-index:200;background:rgb(0 0 0 / .6);
+    display:flex;align-items:center;justify-content:center}
+  .modal-scrim[hidden]{display:none}
+  .modal-scrim.is-open{display:flex}
+</style>
+</head>
+<body class="shop" style="background:var(--bg);min-height:100vh">
+
+<!-- Quick-view modal (reuses modal controller) -->
+<div class="modal-scrim" id="qv-demo" hidden aria-modal="true" role="dialog" aria-label="Quick view">
+  <div class="quickview">
+    <button class="quickview-close" data-modal-close aria-label="Close quick view">
+      <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+    </button>
+    <div class="gallery" style="min-width:0">
+      <div class="gallery-main">
+        <div style="width:100%;height:100%;background:linear-gradient(135deg,var(--surface-2),var(--surface-3));display:grid;place-items:center">
+          <i class="fa-solid fa-headphones" style="font-size:4rem;color:var(--muted);opacity:.3"></i>
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:var(--space-4)">
+      <h2 style="margin:0;font-size:var(--fs-h3);font-weight:700">Aurora Pro 900</h2>
+      <div class="price sale"><span class="price-now">$219.99</span><span class="price-was">$279.99</span></div>
+      <p style="color:var(--text-2);font-size:var(--text-sm);margin:0">Premium wireless headphones with 40hr battery and active noise cancellation.</p>
+      <button class="btn btn-primary btn-full" data-modal-close>Add to cart</button>
+      <a href="product.html" style="text-align:center;font-size:var(--text-sm);color:var(--primary-bright)">View full details →</a>
+    </div>
+  </div>
+</div>
+
+<div class="page-wrap">
+
+  <!-- Demo nav -->
+  <nav class="demo-nav" aria-label="Commerce kit pages">
+    <a href="../index.html"><i class="fa-solid fa-border-all"></i> Demos</a>
+    <a href="products.html">Products</a>
+    <a href="product.html" class="active">Product detail</a>
+    <a href="cart.html">Cart</a>
+    <a href="checkout.html">Checkout</a>
+    <a href="order.html">Order</a>
+    <button class="btn btn-ghost btn-sm" data-modal-open="#qv-demo" style="margin-inline-start:auto">
+      <i class="fa-solid fa-eye"></i> Open quick-view
+    </button>
+    <button class="btn-icon" data-theme-toggle="dark-knight,desert-dunes" style="display:grid;place-items:center;width:36px;height:36px;border-radius:50%;border:1px solid var(--line);background:var(--surface);color:var(--text-2);cursor:pointer" aria-label="Switch theme">
+      <i class="fa-solid fa-sun"></i>
+    </button>
+  </nav>
+
+  <!-- Breadcrumb -->
+  <nav class="breadcrumb" aria-label="Breadcrumb">
+    <a href="products.html">Audio Gear</a>
+    <span aria-hidden="true">/</span>
+    <a href="products.html">Headphones</a>
+    <span aria-hidden="true">/</span>
+    <span aria-current="page">Aurora Pro 900</span>
+  </nav>
+
+  <!-- ---- PDP layout ---- -->
+  <div class="pdp">
+
+    <!-- Gallery -->
+    <div data-tabs>
+      <div class="gallery">
+        <!-- Thumb tabs -->
+        <div class="gallery-thumbs" role="tablist" aria-label="Product images">
+          <button class="tab active" role="tab" aria-selected="true" aria-controls="gp-1" id="gt-1">
+            <div style="width:100%;height:100%;background:linear-gradient(135deg,var(--surface-2),var(--surface-3));display:grid;place-items:center">
+              <i class="fa-solid fa-headphones" style="color:var(--muted);opacity:.5"></i>
+            </div>
+          </button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="gp-2" id="gt-2" tabindex="-1">
+            <div style="width:100%;height:100%;background:linear-gradient(135deg,var(--surface-3),var(--surface-sunken));display:grid;place-items:center">
+              <i class="fa-solid fa-headphones-simple" style="color:var(--muted);opacity:.5"></i>
+            </div>
+          </button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="gp-3" id="gt-3" tabindex="-1">
+            <div style="width:100%;height:100%;background:linear-gradient(135deg,var(--surface-sunken),var(--surface-2));display:grid;place-items:center">
+              <i class="fa-solid fa-ear-listen" style="color:var(--muted);opacity:.5"></i>
+            </div>
+          </button>
+          <button class="tab" role="tab" aria-selected="false" aria-controls="gp-4" id="gt-4" tabindex="-1">
+            <div style="width:100%;height:100%;background:var(--surface-2);display:grid;place-items:center">
+              <i class="fa-solid fa-cable-car" style="color:var(--muted);opacity:.5"></i>
+            </div>
+          </button>
+        </div>
+        <!-- Image panels -->
+        <div class="gallery-main tabpanel" id="gp-1" role="tabpanel" aria-labelledby="gt-1">
+          <div style="width:100%;height:100%;background:linear-gradient(135deg,var(--surface-2),var(--surface-3));display:grid;place-items:center">
+            <i class="fa-solid fa-headphones" style="font-size:6rem;color:var(--muted);opacity:.3"></i>
+          </div>
+        </div>
+        <div class="gallery-main tabpanel" id="gp-2" role="tabpanel" aria-labelledby="gt-2" hidden>
+          <div style="width:100%;height:100%;background:linear-gradient(135deg,var(--surface-3),var(--surface-sunken));display:grid;place-items:center">
+            <i class="fa-solid fa-headphones-simple" style="font-size:6rem;color:var(--muted);opacity:.3"></i>
+          </div>
+        </div>
+        <div class="gallery-main tabpanel" id="gp-3" role="tabpanel" aria-labelledby="gt-3" hidden>
+          <div style="width:100%;height:100%;background:linear-gradient(135deg,var(--surface-sunken),var(--surface-2));display:grid;place-items:center">
+            <i class="fa-solid fa-ear-listen" style="font-size:6rem;color:var(--muted);opacity:.3"></i>
+          </div>
+        </div>
+        <div class="gallery-main tabpanel" id="gp-4" role="tabpanel" aria-labelledby="gt-4" hidden>
+          <div style="width:100%;height:100%;background:var(--surface-2);display:grid;place-items:center">
+            <i class="fa-solid fa-cable-car" style="font-size:6rem;color:var(--muted);opacity:.3"></i>
+          </div>
+        </div>
+      </div>
+    </div><!-- /data-tabs -->
+
+    <!-- Info panel -->
+    <div style="display:flex;flex-direction:column;gap:var(--space-4)">
+
+      <!-- Title + rating -->
+      <div>
+        <div style="display:flex;gap:var(--space-3);align-items:center;margin-bottom:var(--space-2)">
+          <span class="badge new">New arrival</span>
+          <span class="badge sale">20% off</span>
+        </div>
+        <h1 style="margin:0 0 var(--space-2);font-size:var(--fs-h2);font-weight:800;letter-spacing:var(--tracking-tight)">Aurora Pro 900 Wireless</h1>
+        <div class="stars" role="img" aria-label="4.5 out of 5 stars">
+          <span class="stars-row" aria-hidden="true">
+            <i class="fa-solid fa-star on"></i>
+            <i class="fa-solid fa-star on"></i>
+            <i class="fa-solid fa-star on"></i>
+            <i class="fa-solid fa-star on"></i>
+            <i class="fa-solid fa-star-half-stroke on"></i>
+          </span>
+          <span class="stars-count">4.5 (128 reviews)</span>
+        </div>
+      </div>
+
+      <!-- Price -->
+      <div class="price sale" style="align-items:center">
+        <span class="price-now" style="font-size:var(--fs-h3)">$219.99</span>
+        <span class="price-was">$279.99</span>
+        <span class="badge sale" style="margin-inline-start:4px">Save $60</span>
+      </div>
+
+      <hr class="divider">
+
+      <!-- Colour swatch variant -->
+      <div class="variant">
+        <div class="variant-label">Colour: <span id="colour-val">Midnight Black</span></div>
+        <div class="swatches" data-variant data-variant-label="#colour-val" aria-label="Select colour">
+          <button class="sw on" role="radio" aria-checked="true" data-value="Midnight Black"
+            style="background:#1a1a1a;border-color:#555" aria-label="Midnight Black"></button>
+          <button class="sw" role="radio" aria-checked="false" data-value="Deep Navy"
+            style="background:#1a2a4a" aria-label="Deep Navy"></button>
+          <button class="sw" role="radio" aria-checked="false" data-value="Desert Sand"
+            style="background:#c9a87c" aria-label="Desert Sand"></button>
+          <button class="sw oos" role="radio" aria-checked="false" aria-disabled="true" data-value="Sage Green"
+            style="background:#7a9e7e" aria-label="Sage Green (out of stock)"></button>
+        </div>
+      </div>
+
+      <!-- Connectivity chip variant -->
+      <div class="variant">
+        <div class="variant-label">Connection: <span id="conn-val">Wireless</span></div>
+        <div class="vchips" data-variant data-variant-label="#conn-val" aria-label="Select connection type">
+          <button class="vchip" role="radio" aria-checked="false" data-value="Wireless">Wireless</button>
+          <button class="vchip" role="radio" aria-checked="false" data-value="Wired 3.5mm">Wired 3.5mm</button>
+          <button class="vchip oos" role="radio" aria-checked="false" aria-disabled="true" data-value="USB-C">USB-C <small>(sold out)</small></button>
+        </div>
+      </div>
+
+      <!-- Stock + qty + add to cart -->
+      <div>
+        <div class="stock low-stock" style="margin-bottom:var(--space-3)">Only 3 left in stock</div>
+        <div class="add-row">
+          <div class="qty" data-stepper>
+            <button data-dec aria-label="Decrease quantity" disabled>−</button>
+            <input type="number" value="1" min="1" max="10" aria-label="Quantity">
+            <button data-inc aria-label="Increase quantity">+</button>
+          </div>
+          <button class="btn btn-primary" style="flex:1">
+            <i class="fa-solid fa-cart-plus" aria-hidden="true"></i> Add to cart
+          </button>
+          <button class="btn btn-ghost btn-icon-only" aria-label="Add to wishlist">
+            <i class="fa-regular fa-heart" aria-hidden="true"></i>
+          </button>
+        </div>
+      </div>
+
+      <hr class="divider">
+
+      <!-- Key specs -->
+      <ul style="list-style:none;padding:0;margin:0;display:flex;flex-direction:column;gap:var(--space-2)">
+        <li style="display:flex;gap:var(--space-3);font-size:var(--text-sm)">
+          <i class="fa-solid fa-battery-full" style="color:var(--primary);width:16px;margin-top:2px" aria-hidden="true"></i>
+          <span><strong>40-hour battery</strong> — 30min charge for 3 hours playback</span>
+        </li>
+        <li style="display:flex;gap:var(--space-3);font-size:var(--text-sm)">
+          <i class="fa-solid fa-volume-xmark" style="color:var(--primary);width:16px;margin-top:2px" aria-hidden="true"></i>
+          <span><strong>Active Noise Cancellation</strong> — 3 levels + transparency mode</span>
+        </li>
+        <li style="display:flex;gap:var(--space-3);font-size:var(--text-sm)">
+          <i class="fa-solid fa-bluetooth" style="color:var(--primary);width:16px;margin-top:2px" aria-hidden="true"></i>
+          <span><strong>Bluetooth 5.3</strong> — multipoint connection (2 devices simultaneously)</span>
+        </li>
+        <li style="display:flex;gap:var(--space-3);font-size:var(--text-sm)">
+          <i class="fa-solid fa-truck" style="color:var(--primary);width:16px;margin-top:2px" aria-hidden="true"></i>
+          <span><strong>Free shipping</strong> on orders over $99 · In-store pickup available</span>
+        </li>
+      </ul>
+
+    </div><!-- /info panel -->
+  </div><!-- /pdp -->
+
+  <!-- ---- Variant states section ---- -->
+  <h2 class="section-label">Variant picker states</h2>
+  <div style="display:flex;flex-direction:column;gap:var(--space-5)">
+
+    <div>
+      <p style="color:var(--text-2);font-size:var(--text-sm);margin:0 0 var(--space-3)">Chip variants — normal / selected / OOS diagonal strike</p>
+      <div class="vchips" data-variant aria-label="Size">
+        <button class="vchip" role="radio" aria-checked="false">XS</button>
+        <button class="vchip" role="radio" aria-checked="false">S</button>
+        <button class="vchip on" role="radio" aria-checked="true">M</button>
+        <button class="vchip" role="radio" aria-checked="false">L</button>
+        <button class="vchip oos" role="radio" aria-checked="false" aria-disabled="true">XL <small>(sold out)</small></button>
+        <button class="vchip oos" role="radio" aria-checked="false" aria-disabled="true">XXL</button>
+      </div>
+    </div>
+
+    <div>
+      <p style="color:var(--text-2);font-size:var(--text-sm);margin:0 0 var(--space-3)">Swatch variants — normal / selected ring / OOS faded</p>
+      <div class="swatches" data-variant aria-label="Colour">
+        <button class="sw" role="radio" aria-checked="false" style="background:#e63946" aria-label="Red"></button>
+        <button class="sw on" role="radio" aria-checked="true" style="background:#2dd4bf" aria-label="Teal (selected)"></button>
+        <button class="sw" role="radio" aria-checked="false" style="background:#f4a261" aria-label="Orange"></button>
+        <button class="sw" role="radio" aria-checked="false" style="background:#a8dadc" aria-label="Sky Blue"></button>
+        <button class="sw oos" role="radio" aria-checked="false" aria-disabled="true" style="background:#8d99ae" aria-label="Slate (out of stock)"></button>
+      </div>
+    </div>
+
+    <div>
+      <p style="color:var(--text-2);font-size:var(--text-sm);margin:0 0 var(--space-3)">Quantity stepper — clamped 1–5, starts at bounds (dec disabled)</p>
+      <div class="qty" data-stepper>
+        <button data-dec aria-label="Decrease quantity" disabled>−</button>
+        <input type="number" value="1" min="1" max="5" aria-label="Quantity">
+        <button data-inc aria-label="Increase quantity">+</button>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- /page-wrap -->
+
+<script src="../../js/qazana.js" defer></script>
+</body>
+</html>

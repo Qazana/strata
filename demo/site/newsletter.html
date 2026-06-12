@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qazana Strata — Site Kit (Newsletter)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../../kits/site.css" rel="stylesheet">
+<link href="../../kits/content.css" rel="stylesheet">
+</head>
+<body class="site blog">
+<header class="nav" data-nav-scroll>
+  <a class="brand" href="landing.html"><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--primary)"/><circle cx="14.5" cy="15" r="7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-opacity=".95"/><path d="M19 19.5 L24 24.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg> The Dispatch</a>
+  <div class="nav-actions"><button class="btn-icon" data-theme-toggle="dark-knight,desert-dunes" aria-label="Switch theme"><i class="fa-solid fa-sun"></i></button><a class="btn btn-primary" href="#sub">Subscribe</a></div>
+</header>
+
+<section class="wrap" id="sub" style="text-align:center;padding:84px 24px 48px;max-width:780px">
+  <span class="eyebrow">A weekly letter</span>
+  <h1 class="hero-title" style="margin:22px auto">Ideas on design systems, <em>every Friday</em>.</h1>
+  <p class="hero-lead" style="max-width:50ch;margin:0 auto">Short, practical notes on tokens, theming and shipping product UI. Read by 12,000+ builders.</p>
+  <form class="capture" onsubmit="return false"><input type="email" placeholder="you@example.com" aria-label="Email"><button class="btn btn-primary" type="submit">Subscribe</button></form>
+  <p class="hero-note">Free · one email a week · unsubscribe anytime</p>
+</section>
+
+<section class="wrap section" style="padding-top:32px">
+  <div class="section-head"><span class="eyebrow">Recent issues</span><h2>Catch up</h2></div>
+  <div class="post-list" style="max-width:680px;margin:0 auto">
+    <a class="post-row" href="../content/article.html"><span class="post-tag">#14</span><h3>Why one set of tokens beats five component libraries</h3><div class="post-meta">Jun 6 · 8 min</div></a>
+    <a class="post-row" href="../content/article-plain.html"><span class="post-tag">#13</span><h3>Theming with CSS custom properties, the hybrid way</h3><div class="post-meta">May 30 · 6 min</div></a>
+    <a class="post-row" href="../content/article.html"><span class="post-tag">#12</span><h3>Catching the bug a single-theme screenshot can't see</h3><div class="post-meta">May 23 · 5 min</div></a>
+  </div>
+</section>
+
+<footer class="site-foot"><div class="wrap"><div class="foot-bottom"><span>© 2026 The Dispatch</span><span>Site kit · newsletter</span></div></div></footer>
+<script src="../../js/qazana.js" defer></script>
+<script>(function(){var n=document.querySelector('[data-nav-scroll]');if(!n)return;var f=function(){n.classList.toggle('scrolled',scrollY>8);};f();addEventListener('scroll',f,{passive:true});})();</script>
+</body></html>

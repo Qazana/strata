@@ -1,0 +1,26 @@
+---
+title: Progress & uploads
+description: Spinners, progress bars, skeletons, step tracker and upload list.
+sidebar:
+  order: 7
+---
+
+import Demo from '../../../components/Demo.astro';
+
+<Demo src="app/components.html#loading" title="Loading, steps & uploads" height={560} />
+
+## Loading
+
+`.spin` (`.sm` / `.lg`) · progress bar · indeterminate `.prog-indet` · `.radial`
+· skeletons `.skel` (`.skel-line`) · section `.loading-block` · activity log
+`.log` (`.t` / `.ok` / `.warn` / `.cur` / `.blink`).
+
+## Step tracker
+
+`.steps` > `.step` (`.done` / `.active`) + `.sdot`, separated by `.sline`. A
+`.step.done` tints the following `.sline`.
+
+## Upload list
+
+`.upload-list` > `.upload-row` (`.done`) with `.uicon` / `.uinfo` (`.uname` /
+`.umeta` / `.ubar` > `i`) + `.urm` remove button.

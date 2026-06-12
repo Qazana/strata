@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qazana Strata — Content Kit (Article)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../../kits/site.css" rel="stylesheet">
+<link href="../../kits/content.css" rel="stylesheet">
+</head>
+<body class="site">
+
+<header class="nav" data-nav-scroll>
+  <a class="brand" href="../site/landing.html">
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--primary)"/><circle cx="14.5" cy="15" r="7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-opacity=".95"/><path d="M19 19.5 L24 24.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
+    Qazan<span class="mk">a</span>
+  </a>
+  <nav class="nav-links">
+    <a href="blog.html">Grid</a><a href="blog-medium.html">Reading list</a><a href="article.html">Article</a>
+  </nav>
+  <div class="nav-actions">
+    <button class="btn-icon" data-theme-toggle="dark-knight,desert-dunes" aria-label="Switch theme"><i class="fa-solid fa-sun"></i></button>
+  </div>
+</header>
+
+<article>
+  <div class="article-head">
+    <span class="post-tag">Design systems</span>
+    <h1>Why one set of tokens beats five component libraries</h1>
+    <div class="article-meta"><span class="av">A</span> Ada N. · Jun 6, 2026 · 8 min read</div>
+  </div>
+  <div class="article-hero"><div class="ph"><i class="fa-solid fa-layer-group" style="font-size:2.4rem"></i></div></div>
+
+  <div class="doc-layout">
+    <nav class="toc" data-toc aria-label="On this page">
+      <div class="toc-h">On this page</div>
+      <a href="#tokens">Tokens are the source of truth</a>
+      <a href="#themes">Themes are just overrides</a>
+      <a href="#shipped">What we shipped</a>
+    </nav>
+    <div class="prose">
+      <p class="lead">When every product ships its own buttons, the seams show. We replaced five drifting component libraries with one token foundation — and the surface area we maintain dropped by an order of magnitude.</p>
+      <p>A design system isn't a component library. It's the <strong>contract</strong> underneath one: the colours, spacing, type and motion that every component references instead of hardcoding.</p>
+
+      <h2 id="tokens">Tokens are the single source of truth</h2>
+      <p>Each colour ships as a solid value and a channel triple, so alpha tints stay themeable:</p>
+      <pre><code>--primary:#ff6b4a;  --primary-rgb:255 107 74;
+background:rgb(var(--primary-rgb) / .12);  /* soft fill */</code></pre>
+      <div class="callout tip"><b>Tip</b> Name tokens semantically — <code>--primary</code>, not <code>--green</code>.</div>
+
+      <h2 id="themes">Themes are just overrides</h2>
+      <table>
+        <thead><tr><th>Scheme</th><th>Surface</th><th>Accent</th></tr></thead>
+        <tbody>
+          <tr><td>Dark Knight</td><td>deep navy</td><td>teal</td></tr>
+          <tr><td>Désert Dunes</td><td>warm cream</td><td>coral</td></tr>
+        </tbody>
+      </table>
+      <blockquote>The best design system is the one your team forgets is there.</blockquote>
+
+      <h2 id="shipped">What we shipped</h2>
+      <ul><li>One foundation, every product</li><li>Composable kits</li><li>A render harness that verifies both themes</li></ul>
+      <div class="callout warn"><b>Watch out</b> A single-theme screenshot can't catch a token that breaks in the other scheme.</div>
+      <p>The result: a homepage and an app that finally feel like the same product.</p>
+    </div>
+  </div>
+
+  <div class="article-foot">
+    <div class="tags"><span class="post-tag">Design systems</span><span class="post-tag">Tokens</span><span class="post-tag">Theming</span></div>
+    <div class="author-bio">
+      <span class="av">A</span>
+      <div><b>Ada N.</b><p>Lead engineer on Qazana Strata. Writes about design systems and shipping consistent product surfaces.</p></div>
+    </div>
+  </div>
+</article>
+
+<footer class="site-foot">
+  <div class="wrap"><div class="foot-bottom" style="border-top:0;margin-top:0">
+    <span>© 2026 Qazana Strata · Content kit</span><span>Variant: article / prose</span>
+  </div></div>
+</footer>
+
+<script src="../../js/qazana.js" defer></script>
+<script>(function(){var n=document.querySelector('[data-nav-scroll]');if(!n)return;var f=function(){n.classList.toggle('scrolled',window.scrollY>8);};f();addEventListener('scroll',f,{passive:true});})();</script>
+</body>
+</html>

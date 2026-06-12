@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qazana Strata — Content Kit (Article with media)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../../kits/site.css" rel="stylesheet">
+<link href="../../kits/content.css" rel="stylesheet">
+<link href="../../kits/media.css" rel="stylesheet">
+</head>
+<body class="site media">
+
+<header class="nav" data-nav-scroll>
+  <a class="brand" href="../site/landing.html"><svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--primary)"/><circle cx="14.5" cy="15" r="7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-opacity=".95"/><path d="M19 19.5 L24 24.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg> Qazan<span class="mk">a</span></a>
+  <nav class="nav-links"><a href="blog.html">Grid</a><a href="article.html">Article</a><a href="article-media.html">Article + media</a></nav>
+  <div class="nav-actions"><button class="btn-icon" data-theme-toggle="dark-knight,desert-dunes" aria-label="Switch theme"><i class="fa-solid fa-sun"></i></button></div>
+</header>
+
+<article>
+  <div class="article-head">
+    <span class="post-tag">Tutorial</span>
+    <h1>Building a video walkthrough into your docs</h1>
+    <div class="article-meta"><span class="av">A</span> Ada N. · Jun 8, 2026 · 7 min watch + read</div>
+  </div>
+
+  <div class="article">
+    <div class="prose">
+      <p class="lead">Some things are easier shown than told. Here's how an article composes the Content and Media kits — video, audio, and share — on one set of tokens.</p>
+
+      <!-- video embed inside prose -->
+      <div class="embed">
+        <iframe src="../media/_embed.html" title="Walkthrough video" loading="lazy" allowfullscreen></iframe>
+      </div>
+
+      <p>The video above is the Media kit's responsive <code>.embed</code> wrapper — drop any iframe in and it keeps a 16:9 ratio. Prefer audio? The same kit ships a player:</p>
+
+      <!-- audio player inside prose -->
+      <div class="audio">
+        <button class="play-btn" aria-label="Play"><i class="fa-solid fa-play"></i></button>
+        <div class="ainfo">
+          <div class="atitle">Episode 14 — One foundation, every surface</div>
+          <div class="awrap"><span class="atime">12:04</span><span class="atrack"><i></i></span><span class="atime">38:21</span></div>
+        </div>
+      </div>
+
+      <h2>Why compose kits</h2>
+      <p>The article body is the Content kit's <code>.prose</code>; the video and audio are the Media kit. Because both reference the same tokens, they theme together — no seams.</p>
+      <blockquote>Write once, compose per page. The reader never sees the kit boundary.</blockquote>
+
+      <h3>What you get</h3>
+      <ul><li>Responsive video embeds</li><li>An audio player for podcasts</li><li>Share + follow, all themed</li></ul>
+    </div>
+  </div>
+
+  <div class="article-foot">
+    <div class="eyebrow" style="margin-bottom:12px">Share this</div>
+    <div class="share" style="padding-bottom:24px;border-bottom:1px solid var(--line)">
+      <a class="share-btn" href="#"><i class="fa-brands fa-x-twitter"></i> Share</a>
+      <a class="share-btn" href="#"><i class="fa-brands fa-linkedin-in"></i> Post</a>
+      <button class="share-btn" data-copy="https://qazana.net"><i class="fa-solid fa-link"></i> Copy link</button>
+    </div>
+    <div class="author-bio">
+      <span class="av">A</span>
+      <div>
+        <b>Ada N.</b>
+        <p>Lead engineer on Qazana Strata.</p>
+        <span class="socials" style="margin-top:8px"><a href="#" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a><a href="#" aria-label="GitHub"><i class="fa-brands fa-github"></i></a></span>
+      </div>
+    </div>
+  </div>
+</article>
+
+<footer class="site-foot">
+  <div class="wrap"><div class="foot-bottom">
+    <span>© 2026 Qazana Strata · Content + Media</span>
+    <span class="socials"><a href="#" aria-label="X"><i class="fa-brands fa-x-twitter"></i></a><a href="#" aria-label="YouTube"><i class="fa-brands fa-youtube"></i></a></span>
+  </div></div>
+</footer>
+
+<script src="../../js/qazana.js" defer></script>
+<script>(function(){var n=document.querySelector('[data-nav-scroll]');if(!n)return;var f=function(){n.classList.toggle('scrolled',scrollY>8);};f();addEventListener('scroll',f,{passive:true});})();</script>
+</body></html>

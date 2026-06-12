@@ -1,0 +1,95 @@
+---
+title: Commerce kit
+description: Catalog → product detail → cart → checkout → order — a complete storefront surface built on the token foundation.
+sidebar:
+  order: 7
+---
+
+import Demo from '../../../components/Demo.astro';
+
+The **Commerce kit** (`@qazana/strata/commerce`) is a standalone storefront layer
+built directly on `base.css` and the token foundation. Load `site.css + commerce.css + qazana.js`
+— no `app.css` dependency. All components are scoped under `.shop` so they compose
+cleanly alongside any other kit.
+
+## Products catalog
+
+Grid, filter rail, badges, price display, star ratings, wishlist toggle, skeleton state
+and pagination:
+
+<Demo src="commerce/products.html" title="Commerce — catalog" height={700} />
+
+## Product detail
+
+Gallery (reuses `[data-tabs]`), variant chip and colour-swatch pickers (`[data-variant]`),
+quantity stepper (`[data-stepper]`), stock states, and a quick-view dialog:
+
+<Demo src="commerce/product.html" title="Commerce — product detail" height={700} />
+
+## Cart
+
+Cart lines with inline steppers, mini-cart drawer, order summary, promo code (idle + applied),
+and the empty-cart state:
+
+<Demo src="commerce/cart.html" title="Commerce — cart" height={700} />
+
+## Checkout
+
+Checkout progress steps, shipping-method and payment-method option cards, credit card field
+group, and order summary recap:
+
+<Demo src="commerce/checkout.html" title="Commerce — checkout" height={700} />
+
+## Order confirmation
+
+Confirmation header, shipment-status timeline, order summary, and order history table:
+
+<Demo src="commerce/order.html" title="Commerce — order" height={700} />
+
+## What's inside
+
+| Component | Class / hook | Notes |
+|-----------|-------------|-------|
+| Product grid | `.product-grid` | `auto-fill`, min 260 px |
+| Product card | `.product` | link element, hover lift |
+| Price display | `.price` · `.sale` | tabular-nums, `--danger` on sale |
+| Badges | `.badge.sale/.new/.low/.oos` | semantic tokens only |
+| Stock status | `.stock.in-stock/.low-stock/.out-of-stock` | dot via `::before` |
+| Star rating | `.stars` | `role="img"` + `aria-label`; glyphs `aria-hidden` |
+| Qty stepper | `[data-stepper]` + `.qty` | clamps min/max/step; disables at bounds |
+| Variant picker | `[data-variant]` + `.vchips`/`.swatches` | arrow-key radiogroup; skips `.oos` |
+| PDP gallery | `.gallery` + `[data-tabs]` | tabs controller drives thumb/panel sync |
+| Quick-view | `.quickview` + `[data-modal-open]` | reuses modal controller |
+| Cart line | `.cart-line` | thumb + info + price grid |
+| Mini-cart | `.minicart-scrim` + `.minicart` | drawer; `aria-live` count badge |
+| Order summary | `.order-summary` | `.os-row.discount/.free` colour modifiers |
+| Promo code | `.promo` · `.promo-applied` | idle + applied states |
+| Checkout steps | `.checkout-steps` + `.step.done/.active` | responsive (labels hidden narrow) |
+| Pay/ship option | `.pay-opt` + `:has(input:checked)` | baseline 2023 `:has()` |
+| Card field | `.card-field` | grouped number/expiry/CVC rows |
+| Filter rail | `.filters` + `.facet` (`<details>`) | native open/close, chevron CSS |
+| Active chips | `.fchips` + `.fchip` | remove button per chip |
+| Pagination | `.pager` | `.active` = current page |
+| Skeleton | `.skeleton` + `.skel-line` | `skel-pulse` animation; reduced-motion off |
+| Empty cart | `.cart-empty` | icon + heading + CTA |
+| Order confirm | `.order-confirm` + `.order-ref` | mono badge |
+| Timeline | `.timeline` + `.tl-item.done/.active` | `::before` vertical connector |
+
+## Usage
+
+```html
+<!-- storefront page -->
+<link rel="stylesheet" href="@qazana/strata/site">
+<link rel="stylesheet" href="@qazana/strata/commerce">
+<script type="module" src="@qazana/strata"></script>
+
+<body class="shop">
+  <!-- all commerce components live inside .shop -->
+</body>
+```
+
+:::note
+The kit ships no currency formatting, cart state, or payment processing — those are
+app-vocabulary concerns. The `[data-stepper]` quantity change fires a native `change`
+event; cart updates are the consuming app's responsibility.
+:::

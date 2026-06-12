@@ -1,0 +1,10 @@
+/* "Aurora" — FICTIONAL example theme for the public demo. Shows the per-product
+   override pattern: one :root block re-brands the whole kit. Polar mint on the
+   dark scheme with a violet accent; Space Grotesk display. */
+:root{
+  --primary:#46e3b7;        --primary-rgb:70 227 183;
+  --primary-bright:#7df0cd; --primary-bright-rgb:125 240 205;
+  --on-primary:#04261b;     /* light mint fill needs dark ink */
+  --accent:#8b5cf6; --accent-rgb:139 92 246;
+  --display:'Space Grotesk',sans-serif;
+}

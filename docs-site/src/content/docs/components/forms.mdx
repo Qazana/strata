@@ -1,0 +1,36 @@
+---
+title: Forms
+description: Inputs, composite controls, field anatomy and live validation.
+sidebar:
+  order: 2
+---
+
+import Demo from '../../../components/Demo.astro';
+
+<Demo src="app/components.html#forms" title="Forms" height={620} />
+
+## Inputs & controls
+
+| Pattern | Markup |
+| --- | --- |
+| Input / textarea / select | `.field` or bare `input` / `textarea` / `select` |
+| Input group (icon + button) | `.input-group`; paste button `data-paste="#id"` |
+| Add-ons | `.addon-group` + `.addon` |
+| Password | `.pw` + `.pw-toggle` + `.pwbar` |
+| Searchable select | `.combo` + `data-combo` |
+| Choice | `.choice` · `.switch` · `.check` |
+| Range | `input.slider` · dual `.dual` + `data-dual` |
+| Numeric | `.stepper` · `.amount-field` + `data-amount` |
+| Tags / OTP / upload | `.tagsinput` · `.otp` · `.dropzone` |
+
+## Field anatomy
+
+`.field-row` + `.label`/`.fld` (+`.req`/`.opt`) + `.fhelp` / `.ferr` / `.fok`;
+state classes `.is-error` / `.is-success`.
+
+## Live validation
+
+Add `[data-validate]` to a `<form>`. Per-field rules: `required`, `type=email`,
+`minlength`, and `data-match="#otherField"`. On submit, invalid fields get
+`.is-error` + a `.ferr` message, and a summary `.form-msg` (`.error` / `.ok`)
+announces the result. Errors clear as the user types.

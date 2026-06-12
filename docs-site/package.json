@@ -1,0 +1,21 @@
+{
+  "name": "qazana-docs-site",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Documentation site for the Qazana web component library (Astro + Starlight). Dev-only — not part of the published package.",
+  "scripts": {
+    "sync": "node scripts/sync-assets.mjs",
+    "gen": "node scripts/gen-tokens.mjs",
+    "prebuild": "npm run sync && npm run gen",
+    "predev": "npm run sync && npm run gen",
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@astrojs/starlight": "^0.34.0",
+    "astro": "^5.6.0",
+    "sharp": "^0.33.5"
+  }
+}
