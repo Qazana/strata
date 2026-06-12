@@ -1,0 +1,43 @@
+---
+title: Media kit
+description: Video and social embeds that compose into the Content kit.
+sidebar:
+  order: 6
+---
+
+import Demo from '../../../components/Demo.astro';
+
+The **Media kit** (`@qazana/strata/media`) covers video players,
+an audio/podcast player, social cards and embeds. It composes into the Content
+kit so an article can carry rich media without leaving the token system.
+
+## Video
+
+<Demo src="media/video.html" title="Media — video" height={600} />
+
+## Audio
+
+A podcast / article-audio player: `.audio` > `.play-btn` + `.ainfo` (`.atitle`
+and an `.awrap` with `.atime` + `.atrack` progress). Beyond the inline row:
+
+- `.audio-lg` — featured/episode player: `.acover` art + `.abody` with title,
+  `.ameta`, progress, and an `.actions` row (`.askip` skip buttons, `.arate`
+  speed chip, `.avol` volume range — give the range input `data-vol` and
+  `qazana.js` keeps the track fill in sync with its value).
+- `.wave` — waveform progress, a drop-in alternative to `.atrack`: an empty
+  element with `data-wave` and `data-progress="0–100"`; `qazana.js` renders the
+  bars and marks played ones `.on` (`data-bars` overrides the default 48).
+- `.achapters` — chapter list of `.chap` buttons (`.ctime` + `.cname`,
+  `.active` for the current chapter).
+- `.player-bar` — sticky page-bottom mini player (play, title, track, times,
+  volume).
+
+<Demo src="media/audio.html" title="Media — audio" height={760} />
+
+## Social
+
+<Demo src="media/social.html" title="Media — social" height={600} />
+
+## Overview
+
+<Demo src="media/index.html" title="Media — overview" height={560} />

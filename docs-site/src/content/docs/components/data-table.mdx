@@ -1,0 +1,31 @@
+---
+title: Data table
+description: Sort, select, filter, expandable rows and a sticky header.
+sidebar:
+  order: 5
+---
+
+import Demo from '../../../components/Demo.astro';
+
+<Demo src="app/components.html#datatable" title="Data table" height={500} />
+
+## Basics
+
+`.tbl` inside `.tbl-wrap`. Behaviours via `data-*`:
+
+| Feature | Hook |
+| --- | --- |
+| Sort | `[data-table-sort]` + `th.sortable` |
+| Select all | `[data-select-all]` |
+| Bulk actions | `.bulkbar` + `[data-bulk]` |
+| Faceted filters | `.facets` / `.fchip` (`data-fchip` remove, `data-fclear` clear) |
+| Pagination | `.pager` |
+
+## Advanced
+
+<Demo src="app/components.html#advtable" title="Advanced table" height={460} />
+
+- Sticky header: `.tbl-wrap.sticky`
+- Type-to-filter: `[data-table-filter="#id"]`
+- Expandable rows: a `.row-toggle` button + a following `tr.row-detail` (`.rd-body`);
+  `tr.is-open` reveals it.

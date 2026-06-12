@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qazana Strata — Site Kit</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../../kits/site.css" rel="stylesheet">
+</head>
+<body class="site">
+<a href="#hero" class="skip-link">Skip to main content</a>
+
+<!-- NAV -->
+<header class="nav" data-nav-scroll>
+  <a class="brand" href="landing.html">
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--primary)"/><circle cx="14.5" cy="15" r="7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-opacity=".95"/><path d="M19 19.5 L24 24.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
+    Qazan<span class="mk">a</span>
+  </a>
+  <nav class="nav-links">
+    <a href="../index.html"><i class="fa-solid fa-border-all"></i> Demos</a>
+    <a href="#features">Features</a><a href="#pricing">Pricing</a><a href="#faq">FAQ</a>
+    <a href="../app/components.html">Components</a>
+  </nav>
+  <div class="nav-actions">
+    <button class="btn-icon" data-theme-toggle="dark-knight,desert-dunes" aria-label="Switch theme"><i class="fa-solid fa-sun"></i></button>
+    <a class="btn btn-ghost" href="#">Sign in</a>
+    <a class="btn btn-primary" href="#">Get started</a>
+    <button class="btn-icon nav-menu-btn" data-nav-drawer-toggle aria-label="Open menu"><i class="fa-solid fa-bars"></i></button>
+  </div>
+</header>
+
+<!-- Mobile Navigation Drawer -->
+<div class="nav-drawer-overlay" aria-hidden="true"></div>
+<nav class="nav-drawer" aria-label="Mobile navigation">
+  <div class="drawer-head">
+    <a class="brand" href="landing.html">
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--primary)"/><circle cx="14.5" cy="15" r="7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-opacity=".95"/><path d="M19 19.5 L24 24.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
+      Qazan<span class="mk">a</span>
+    </a>
+    <button class="btn-icon" data-nav-drawer-toggle aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
+  </div>
+  <div class="drawer-nav">
+    <a href="../index.html"><i class="fa-solid fa-border-all"></i> Demos</a>
+    <hr>
+    <a href="#features"><i class="fa-solid fa-star"></i> Features</a>
+    <a href="#pricing"><i class="fa-solid fa-tag"></i> Pricing</a>
+    <a href="#faq"><i class="fa-solid fa-circle-question"></i> FAQ</a>
+    <a href="../app/components.html"><i class="fa-solid fa-layer-group"></i> Components</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="wrap hero" id="hero">
+  <div class="hero-copy">
+    <span class="eyebrow">One design system · every product</span>
+    <h1 class="hero-title">Ship a <em>cohesive</em> frontend in a weekend.</h1>
+    <p class="hero-lead">Qazana Strata gives every Qazana product the same tokens, themes and components — from the marketing site to the app shell. Build once, theme per brand, stay consistent everywhere.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary btn-lg" href="#"><i class="fa-solid fa-bolt"></i> Get started</a>
+      <a class="btn btn-ghost btn-lg" href="../app/components.html">Explore components</a>
+    </div>
+    <p class="hero-note">No build step · framework-agnostic · dark &amp; Désert Dunes themes.</p>
+  </div>
+  <div class="hero-art" aria-hidden="true">
+    <div class="ha-bar"><i></i><i></i><i></i></div>
+    <div class="ha-row brand"></div>
+    <div class="ha-row"></div>
+    <div class="ha-row sh"></div>
+    <div class="ha-card">
+      <div class="ha-stat">+128%</div>
+      <div class="ha-row sh" style="margin-bottom:0"></div>
+    </div>
+  </div>
+</section>
+
+<!-- LOGO CLOUD -->
+<div class="wrap logos">
+  <span>aurora</span><span>vermeil</span><span>nocturne</span><span>qazana.net</span><span>+ more</span>
+</div>
+
+<!-- FEATURES -->
+<section class="wrap section" id="features">
+  <div class="section-head">
+    <span class="eyebrow">Why Qazana Strata</span>
+    <h2>Everything you need, nothing you don't</h2>
+    <p>Semantic tokens are the single source of truth. Components never hardcode a value, so one theme override re-skins the entire surface.</p>
+  </div>
+  <div class="features">
+    <div class="feature"><div class="fi"><i class="fa-solid fa-palette"></i></div><h3>Token-driven theming</h3><p>Colour, type, spacing and motion live as tokens. Override the brand once; everything follows.</p></div>
+    <div class="feature"><div class="fi"><i class="fa-solid fa-circle-half-stroke"></i></div><h3>Dark &amp; light schemes</h3><p>Canonical dark plus the warm "Désert Dunes" light scheme — switch by attribute or follow the OS.</p></div>
+    <div class="feature"><div class="fi"><i class="fa-solid fa-cubes"></i></div><h3>Composable kits</h3><p>App, Site and Content kits share one foundation. Load only what a page needs.</p></div>
+    <div class="feature"><div class="fi"><i class="fa-solid fa-feather"></i></div><h3>Vanilla &amp; portable</h3><p>Plain CSS + data-attribute JS. Works in any framework, with no build step required.</p></div>
+    <div class="feature"><div class="fi"><i class="fa-solid fa-universal-access"></i></div><h3>Accessible by default</h3><p>Keyboard-operable components, sensible ARIA, and reduced-motion respected throughout.</p></div>
+    <div class="feature"><div class="fi"><i class="fa-solid fa-gauge-high"></i></div><h3>Verified renders</h3><p>A Playwright harness screenshots every page in both themes and gates regressions.</p></div>
+  </div>
+</section>
+
+<!-- SPOTLIGHT 1 -->
+<section class="wrap spotlight">
+  <div class="spot-media"><i class="fa-solid fa-swatchbook glyph"></i></div>
+  <div class="spot-copy">
+    <span class="eyebrow">Foundation</span>
+    <h3>One set of tokens, every brand</h3>
+    <p>Each product themes the same semantic tokens — coral for Qazana, and whatever each app needs. Alpha tints use channel variables, so a single override re-tints fills, rings and borders.</p>
+    <ul class="spot-list">
+      <li>Semantic names: <code>--primary</code>, <code>--danger</code>, <code>--accent</code></li>
+      <li>Channel tints: <code>rgb(var(--primary-rgb) / .12)</code></li>
+      <li>Figma-friendly <code>tokens.json</code> mirror</li>
+    </ul>
+  </div>
+</section>
+
+<!-- SPOTLIGHT 2 -->
+<section class="wrap spotlight reverse">
+  <div class="spot-media"><i class="fa-solid fa-layer-group glyph"></i></div>
+  <div class="spot-copy">
+    <span class="eyebrow">Kits</span>
+    <h3>From landing page to app shell</h3>
+    <p>The Site kit covers your marketing frontend; the App kit covers the product UI; the Content kit covers blogs and docs. They share the foundation, so the seam between your homepage and your app disappears.</p>
+    <ul class="spot-list">
+      <li>Scoped per kit — compose without collisions</li>
+      <li>Independently importable</li>
+      <li>Themed identically across the board</li>
+    </ul>
+  </div>
+</section>
+
+<!-- STAT BAND -->
+<section class="wrap section">
+  <div class="stat-band">
+    <div class="stat"><b>4</b><span>kits</span></div>
+    <div class="stat"><b>2</b><span>themes</span></div>
+    <div class="stat"><b>0</b><span>build steps</span></div>
+    <div class="stat"><b>100%</b><span>token-driven</span></div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="wrap section" id="pricing">
+  <div class="section-head">
+    <span class="eyebrow">Pricing</span>
+    <h2>Simple, transparent plans</h2>
+    <p>Start free, upgrade when you grow. Every plan ships the full component set.</p>
+  </div>
+  <div class="pricing">
+    <div class="price-card">
+      <div class="tier">Starter</div>
+      <div class="price-amt">$0<small>/mo</small></div>
+      <ul class="price-list"><li>Core components</li><li>Both themes</li><li>Community support</li></ul>
+      <a class="btn btn-ghost" href="#" style="width:100%;justify-content:center">Get started</a>
+    </div>
+    <div class="price-card featured">
+      <span class="tag">Popular</span>
+      <div class="tier">Pro</div>
+      <div class="price-amt">$19<small>/mo</small></div>
+      <ul class="price-list"><li>Everything in Starter</li><li>Figma token library</li><li>Priority support</li><li>Custom themes</li></ul>
+      <a class="btn btn-primary" href="#" style="width:100%;justify-content:center">Start free trial</a>
+    </div>
+    <div class="price-card">
+      <div class="tier">Enterprise</div>
+      <div class="price-amt">Custom</div>
+      <ul class="price-list"><li>Everything in Pro</li><li>SLA &amp; SSO</li><li>Dedicated onboarding</li></ul>
+      <a class="btn btn-ghost" href="#" style="width:100%;justify-content:center">Contact sales</a>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="wrap section">
+  <div class="section-head">
+    <span class="eyebrow">Loved by teams</span>
+    <h2>Built for product velocity</h2>
+  </div>
+  <div class="quotes">
+    <div class="quote"><p>We unified three apps onto one design system in a sprint. The token model just clicks.</p><div class="quote-by"><span class="av">A</span><div><b>Ada N.</b><span>Lead Engineer</span></div></div></div>
+    <div class="quote"><p>The dark and Désert Dunes themes are gorgeous out of the box — no fiddling.</p><div class="quote-by"><span class="av">G</span><div><b>Grace H.</b><span>Product Designer</span></div></div></div>
+    <div class="quote"><p>Marketing site and app finally feel like the same product. That's the whole point.</p><div class="quote-by"><span class="av">T</span><div><b>Alan T.</b><span>Founder</span></div></div></div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="wrap section" id="faq">
+  <div class="section-head"><span class="eyebrow">FAQ</span><h2>Questions, answered</h2></div>
+  <div class="faq">
+    <details open><summary>Do I need a build step?</summary><p>No. Link the tokens and a kit stylesheet, add the script, and you're done — it works in any framework via the rendered DOM.</p></details>
+    <details><summary>How do themes work?</summary><p>Set <code>data-theme="desert-dunes"</code> or <code>"dark"</code> on the html element, or leave it unset to follow the OS. Tokens set <code>color-scheme</code> for you.</p></details>
+    <details><summary>Can I use my own brand colours?</summary><p>Yes — override the brand tokens in a small theme file. One override re-tints everything because components reference tokens, never raw values.</p></details>
+    <details><summary>Which kits are available?</summary><p>The App and Site kits ship today; Content, Auth and Email kits are on the roadmap. All share the same foundation.</p></details>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="wrap section">
+  <div class="cta">
+    <h2>Build your next surface on Qazana Strata</h2>
+    <p>One foundation, every kit, both themes. Start with the components and theme it your way.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary btn-lg" href="#"><i class="fa-solid fa-bolt"></i> Get started</a>
+      <a class="btn btn-ghost btn-lg" href="../app/components.html">Browse components</a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-col">
+        <a class="brand" href="landing.html" style="margin-bottom:14px">
+          <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--primary)"/><circle cx="14.5" cy="15" r="7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-opacity=".95"/><path d="M19 19.5 L24 24.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
+          Qazan<span class="mk">a</span>
+        </a>
+        <p>The shared design system for every Qazana product — tokens, themes and composable kits.</p>
+        <div class="foot-social">
+          <a href="#" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
+          <a href="#" aria-label="GitHub"><i class="fa-brands fa-github"></i></a>
+          <a href="#" aria-label="Discord"><i class="fa-brands fa-discord"></i></a>
+        </div>
+      </div>
+      <div class="foot-col"><h4>Product</h4><a href="#features">Features</a><a href="#pricing">Pricing</a><a href="../app/components.html">Components</a><a href="../app/admin.html">Admin kit</a></div>
+      <div class="foot-col"><h4>Resources</h4><a href="#faq">FAQ</a><a href="../app/errors.html">Error pages</a><a href="#">Docs</a><a href="#">Changelog</a></div>
+      <div class="foot-col">
+        <h4>Newsletter</h4>
+        <div class="foot-news">
+          <p>Get updates on new components and releases.</p>
+          <form class="foot-form" onsubmit="event.preventDefault();">
+            <input type="email" placeholder="your@email.com" aria-label="Email address">
+            <button type="submit" class="btn btn-primary">Subscribe</button>
+          </form>
+        </div>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Qazana Strata · Site kit</span>
+      <div class="foot-legal">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Cookies</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script src="../../js/qazana.js" defer></script>
+<script>
+  // tiny demo-only: add .scrolled to the nav once the page moves
+  (function () {
+    var nav = document.querySelector('[data-nav-scroll]');
+    if (!nav) return;
+    var onScroll = function () { nav.classList.toggle('scrolled', window.scrollY > 8); };
+    onScroll(); window.addEventListener('scroll', onScroll, { passive: true });
+  })();
+</script>
+</body>
+</html>

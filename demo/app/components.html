@@ -1,0 +1,926 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qazana Strata — Components</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../../kits/app.css" rel="stylesheet">
+</head>
+<body>
+<div class="bg-layer"><div class="glow one"></div><div class="glow two"></div><div class="grid-overlay"></div></div>
+
+<div class="kit">
+  <header class="top">
+    <a class="logo" href="components.html">
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--primary)"/><circle cx="14.5" cy="15" r="7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-opacity=".95"/><path d="M19 19.5 L24 24.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
+      <span class="word">Qazan<span class="brand-8">a</span></span>
+    </a>
+    <nav><a href="components.html">Overview</a><a href="admin.html">Admin</a><a href="errors.html">Errors</a><a href="../site/landing.html">Site</a><button class="btn-icon" data-density-toggle aria-label="Toggle density"><i class="fa-solid fa-compress"></i></button><button class="btn-icon" data-theme-toggle="dark-knight,desert-dunes" aria-label="Switch theme"><i class="fa-solid fa-sun"></i></button></nav>
+  </header>
+
+  <div class="kit-head">
+    <div><h1 class="title">Web app components</h1>
+      <p>Every user-facing element type in the Qazana Strata language — themeable, framework-agnostic, token-driven. Syne is the signature face (brand + this title only); everything else is DM Sans, with system-mono for data and Font Awesome for icons.</p></div>
+  </div>
+  <nav class="kit-nav">
+    <a href="#color" class="on">Foundations</a><a href="#type">Type</a><a href="#icons">Icons</a>
+    <a href="#buttons">Buttons</a><a href="#forms">Forms</a>
+    <a href="#badges">Badges</a><a href="#avatars">Avatars</a><a href="#cards">Cards</a><a href="#charts">Charts</a><a href="#stats">Stats</a>
+    <a href="#carousel">Carousel</a><a href="#datatable">Data table</a><a href="#ctxmenu">Menu</a>
+    
+    <a href="#loading">Loading</a><a href="#feedback">Feedback</a><a href="#overlays">Overlays</a>
+    <a href="#wizard">Wizard</a><a href="#more">More</a><a href="#reusable">Shared</a>
+    <a href="#billing">Billing</a><a href="#profile">Profile</a>
+  </nav>
+
+  <!-- COLOR -->
+  <section class="sec" id="color">
+    <h2>Foundations</h2>
+    <div class="desc">Brand/semantic tokens are overridden per app; neutral surfaces rarely change. Alpha tints use the channel form <code style="font-family:var(--mono)">rgb(var(--primary-rgb) / .12)</code> so one override re-tints everything.</div>
+    <div class="palette">
+      <div class="tok"><div class="chipc" style="background:var(--bg)"></div><div class="meta"><b>bg</b>--bg</div></div>
+      <div class="tok"><div class="chipc" style="background:var(--surface)"></div><div class="meta"><b>surface</b>--surface</div></div>
+      <div class="tok"><div class="chipc" style="background:var(--surface-2)"></div><div class="meta"><b>surface-2</b>--surface-2</div></div>
+      <div class="tok"><div class="chipc" style="background:var(--primary)"></div><div class="meta"><b>primary</b>--primary</div></div>
+      <div class="tok"><div class="chipc" style="background:var(--primary-bright)"></div><div class="meta"><b>primary-bright</b>--primary-bright</div></div>
+      <div class="tok"><div class="chipc" style="background:var(--danger)"></div><div class="meta"><b>danger</b>--danger</div></div>
+      <div class="tok"><div class="chipc" style="background:var(--warning)"></div><div class="meta"><b>warning</b>--warning</div></div>
+      <div class="tok"><div class="chipc" style="background:var(--accent)"></div><div class="meta"><b>accent</b>--accent</div></div>
+      <div class="tok"><div class="chipc" style="background:var(--info)"></div><div class="meta"><b>info</b>--info</div></div>
+      <div class="tok"><div class="chipc" style="background:#f0f0f0"></div><div class="meta"><b>text</b>#f0f0f0</div></div>
+      <div class="tok"><div class="chipc" style="background:#8c8c8c"></div><div class="meta"><b>muted</b>#8c8c8c</div></div>
+    </div>
+    <div class="sub">Radius scale</div>
+    <div class="demo">
+      <span class="swatchwrap" style="align-items:center"><span style="width:64px;height:48px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm)"></span><span class="swatch">sm · 6</span></span>
+      <span class="swatchwrap" style="align-items:center"><span style="width:64px;height:48px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius)"></span><span class="swatch">base · 8</span></span>
+      <span class="swatchwrap" style="align-items:center"><span style="width:64px;height:48px;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-lg)"></span><span class="swatch">lg · 12</span></span>
+      <span class="swatchwrap" style="align-items:center"><span style="width:64px;height:48px;background:var(--surface-2);border:1px solid var(--line);border-radius:99px"></span><span class="swatch">pill</span></span>
+      <span class="swatchwrap" style="align-items:center"><span style="width:48px;height:48px;background:var(--surface-2);border:1px solid var(--line);border-radius:50%"></span><span class="swatch">circular</span></span>
+    </div>
+    <div class="sub">Elevation</div>
+    <div class="demo" style="gap:24px">
+      <span class="swatchwrap" style="align-items:center"><span style="width:80px;height:54px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)"></span><span class="swatch">flat</span></span>
+      <span class="swatchwrap" style="align-items:center"><span style="width:80px;height:54px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-sm)"></span><span class="swatch">sm</span></span>
+      <span class="swatchwrap" style="align-items:center"><span style="width:80px;height:54px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)"></span><span class="swatch">base</span></span>
+      <span class="swatchwrap" style="align-items:center"><span style="width:80px;height:54px;background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-lg)"></span><span class="swatch">lg</span></span>
+    </div>
+    <div class="sub">Spacing scale (4 · 8 · 12 · 16 · 24 · 32)</div>
+    <div class="demo" style="align-items:flex-end">
+      <span class="swatchwrap" style="align-items:center"><span style="width:4px;height:32px;background:var(--primary)"></span><span class="swatch">4</span></span>
+      <span class="swatchwrap" style="align-items:center"><span style="width:8px;height:32px;background:var(--primary)"></span><span class="swatch">8</span></span>
+      <span class="swatchwrap" style="align-items:center"><span style="width:12px;height:32px;background:var(--primary)"></span><span class="swatch">12</span></span>
+      <span class="swatchwrap" style="align-items:center"><span style="width:16px;height:32px;background:var(--primary)"></span><span class="swatch">16</span></span>
+      <span class="swatchwrap" style="align-items:center"><span style="width:24px;height:32px;background:var(--primary)"></span><span class="swatch">24</span></span>
+      <span class="swatchwrap" style="align-items:center"><span style="width:32px;height:32px;background:var(--primary)"></span><span class="swatch">32</span></span>
+    </div>
+    <div class="sub">Motion</div>
+    <div class="demo"><span class="swatch">ease <code style="font-family:var(--mono)">cubic-bezier(.22,1,.36,1)</code> · durations 120–300ms · all respect <code style="font-family:var(--mono)">prefers-reduced-motion</code></span></div>
+  </section>
+
+  <!-- TYPE -->
+  <section class="sec" id="type">
+    <h2>Typography</h2>
+    <div class="desc">Syne for large headings only · DM Sans for everything else · system-mono for data.</div>
+    <div class="type-row"><span class="tag">display / Syne 800</span><span class="title" style="font-size:2.2rem">Désert Dunes</span></div>
+    <div class="type-row"><span class="tag">h2 / DM Sans 700</span><span style="font-weight:700;font-size:1.25rem">Section heading</span></div>
+    <div class="type-row"><span class="tag">body / DM Sans 400</span><span>The quick brown fox jumps over the lazy dog.</span></div>
+    <div class="type-row"><span class="tag">mono / data</span><span class="cell-mono">v2.4.1 · 99.98% · 1,284 ms</span></div>
+    <div class="type-row"><span class="tag">kbd</span><span><kbd>⌘</kbd> <kbd>V</kbd> to paste</span></div>
+  </section>
+
+  <!-- ICONS -->
+  <section class="sec" id="icons">
+    <h2>Icons</h2>
+    <div class="desc">Font Awesome 6 (matches the app). Use at the surrounding text color; brand glyphs for streaming services.</div>
+    <div class="demo" style="font-size:1.2rem;color:var(--text-2);gap:20px">
+      <i class="fa-solid fa-paste" title="paste"></i><i class="fa-solid fa-magnifying-glass" title="search"></i>
+      <i class="fa-solid fa-link" title="link"></i><i class="fa-solid fa-play" title="play"></i>
+      <i class="fa-solid fa-download" title="download"></i><i class="fa-solid fa-share-nodes" title="share"></i>
+      <i class="fa-solid fa-music" title="music"></i><i class="fa-solid fa-user" title="user"></i>
+      <i class="fa-solid fa-gear" title="settings"></i><i class="fa-solid fa-bell" title="alerts"></i>
+      <i class="fa-solid fa-trash" title="delete"></i><i class="fa-solid fa-check" title="ok"></i>
+      <i class="fa-brands fa-spotify" style="color:var(--primary-bright)" title="spotify"></i>
+      <i class="fa-brands fa-youtube" style="color:var(--danger)" title="youtube"></i>
+      <i class="fa-brands fa-apple" title="apple"></i>
+    </div>
+  </section>
+
+  <!-- BUTTONS -->
+  <section class="sec" id="buttons">
+    <h2>Buttons</h2>
+    <div class="sub">Variants</div>
+    <div class="demo">
+      <button class="btn btn-primary"><i class="fa-solid fa-play"></i> Primary</button>
+      <button class="btn btn-secondary">Secondary</button>
+      <button class="btn btn-outline">Outline</button>
+      <button class="btn btn-ghost">Ghost</button>
+      <button class="btn btn-danger"><i class="fa-solid fa-trash"></i> Danger</button>
+      <button class="btn btn-link">Link</button>
+      <button class="btn btn-primary btn-sm">Small</button>
+      <button class="btn-icon" aria-label="settings"><i class="fa-solid fa-gear"></i></button>
+    </div>
+    <div class="sub">Waiting states</div>
+    <div class="demo">
+      <button class="btn btn-primary">Idle</button>
+      <button class="btn btn-primary is-loading"><span class="spin sm"></span> Saving…</button>
+      <button class="btn btn-primary is-success"><i class="fa-solid fa-check"></i> Saved</button>
+      <button class="btn btn-primary is-disabled">Disabled</button>
+      <button class="btn btn-ghost is-loading"><span class="spin sm"></span> Connecting…</button>
+    </div>
+    <div class="sub">Button group · button group (joined)</div>
+    <div class="demo">
+      <div class="btn-group"><button class="on">List</button><button>Grid</button><button>Timeline</button></div>
+      <div class="btn-group"><button aria-label="bold"><i class="fa-solid fa-rotate-left"></i></button><button aria-label="play"><i class="fa-solid fa-play"></i></button><button aria-label="forward"><i class="fa-solid fa-rotate-right"></i></button></div>
+    </div>
+  </section>
+
+  <!-- FORMS -->
+  <section class="sec" id="forms">
+    <h2>Forms — full coverage</h2>
+    <div class="desc">Clear resting affordance; strong high-contrast focus (green-bright border + ring + subtle bg lift); minimal motion.</div>
+
+    <div class="sub">Field anatomy &amp; states</div>
+    <div class="grid2">
+      <div class="field-row"><label class="fld">Playlist name <span class="req">*</span></label><input type="text" value="Sunset set" placeholder="My set"><span class="fhelp">Shown on the public share page.</span></div>
+      <div class="field-row"><label class="fld">Email</label><input type="email" class="is-error" value="not-an-email"><span class="ferr"><i class="fa-solid fa-circle-exclamation"></i> Enter a valid email.</span></div>
+      <div class="field-row"><label class="fld">Handle</label><input type="text" class="is-success" value="djfrank"><span class="fok">Available</span></div>
+      <div class="field-row"><label class="fld">API key (read-only · copyable)</label><div class="input-group"><input value="sk_live_8fa2e91c4d" readonly><button class="btn-icon" data-copy="sk_live_8fa2e91c4d" title="Copy" aria-label="Copy"><i class="fa-regular fa-copy"></i></button></div></div>
+      <div class="field-row"><label class="fld">Disabled</label><input type="text" placeholder="Unavailable" disabled></div>
+      <div class="field-row"><label class="fld">Date</label><input type="date" value="2026-06-09"></div>
+    </div>
+
+    <div class="sub">Inputs with add-ons &amp; the URL paste</div>
+    <div class="grid2">
+      <div class="field-row"><label class="fld">YouTube URL</label>
+        <div class="input-group"><i class="fa-solid fa-link" style="opacity:.5"></i><input id="webUrl" placeholder="Paste a YouTube DJ mix URL…"><button class="btn-icon" data-paste="#webUrl" title="Paste from clipboard" aria-label="Paste"><i class="fa-solid fa-paste"></i></button><button class="btn btn-primary btn-sm">Analyze</button></div>
+      </div>
+      <div class="field-row"><label class="fld">Search</label>
+        <div class="input-group"><i class="fa-solid fa-magnifying-glass" style="opacity:.5"></i><input placeholder="Search by title or uploader…"></div>
+      </div>
+      <div class="field-row"><label class="fld">Custom domain</label><div class="addon-group"><span class="addon">https://</span><input value="frank"><span class="addon">.example.com</span></div></div>
+      <div class="field-row"><label class="fld">Password</label>
+        <div class="pw"><input type="password" value="hunter2horse"><button class="pw-toggle" type="button">SHOW</button></div>
+        <div class="pwbar"><i></i></div><span class="fhelp">Medium strength</span></div>
+    </div>
+
+    <div class="sub">Textarea · select · searchable select · multiselect</div>
+    <div class="grid2">
+      <div class="field-row"><label class="fld">Notes</label><textarea rows="3" maxlength="140" placeholder="Add a note…"></textarea><span class="counter">0 / 140</span></div>
+      <div class="field-row"><label class="fld">Sort by</label><select><option>Newest first</option><option>Most songs</option><option>Longest</option></select></div>
+      <div class="field-row"><label class="fld">Genre filter (searchable)</label>
+        <div class="combo" data-combo>
+          <button class="combo-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="combo-val">All genres</span><span class="combo-caret"><i class="fa-solid fa-chevron-down"></i></span></button>
+          <div class="combo-pop" hidden>
+            <div class="combo-search"><input type="text" placeholder="Search genres…"></div>
+            <ul class="combo-list" role="listbox">
+              <li class="combo-opt sel" role="option">All genres</li><li class="combo-opt" role="option">Melodic House</li>
+              <li class="combo-opt" role="option">Organic House</li><li class="combo-opt" role="option">Melodic Techno</li>
+              <li class="combo-opt" role="option">Afro House</li><li class="combo-opt" role="option">Progressive</li>
+              <li class="combo-empty" hidden>No matches</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="field-row"><label class="fld">Export formats (multi)</label><select multiple size="4"><option selected>Spotify</option><option selected>CSV</option><option>JSON</option><option>M3U</option></select></div>
+    </div>
+
+    <div class="sub">Choice controls</div>
+    <div class="grid2">
+      <div class="field-row"><label class="fld">Visibility (radio)</label>
+        <div class="choice"><label><input type="radio" name="vis" checked> Public — anyone with the link</label>
+          <label><input type="radio" name="vis"> Private — only me</label></div></div>
+      <div class="field-row"><label class="fld">Include in export (checkbox group)</label>
+        <div class="choice"><label><input type="checkbox" checked> Timestamps</label>
+          <label><input type="checkbox" checked> Confidence</label>
+          <label class="disabled"><input type="checkbox" disabled> Album art (Pro)</label></div></div>
+      <div class="field-row"><label class="fld">Plan (segmented)</label>
+        <div class="segmented"><button class="on">Monthly</button><button>Annual −20%</button></div></div>
+      <div class="field-row"><label class="fld">Preferences (toggle / switch)</label>
+        <div class="demo"><label class="switch"><input type="checkbox" checked><span class="track"></span></label>
+          <label class="check"><input type="checkbox" checked> Email me when done</label></div></div>
+    </div>
+
+    <div class="sub">Numeric · tags · code · upload</div>
+    <div class="grid2">
+      <div class="field-row"><label class="fld">Min confidence (slider)</label>
+        <div class="rangewrap"><input type="range" class="slider" min="0" max="100" value="60" oninput="this.nextElementSibling.value=this.value+'%'"><output>60%</output></div></div>
+      <div class="field-row"><label class="fld">Segments per pass (stepper)</label>
+        <div class="stepper"><button type="button">−</button><input type="text" value="12"><button type="button">+</button></div></div>
+      <div class="field-row"><label class="fld">Tags</label>
+        <div class="tagsinput"><span class="tagchip">house <button>×</button></span><span class="tagchip">2024 <button>×</button></span><input placeholder="Add tag…"></div></div>
+      <div class="field-row"><label class="fld">Verification code</label>
+        <div class="otp"><input maxlength="1" value="4"><input maxlength="1" value="8"><input maxlength="1"><input maxlength="1"></div></div>
+      <div class="field-row full"><label class="fld">Cookie file (upload)</label>
+        <div class="dropzone"><div class="dzi"><i class="fa-solid fa-cloud-arrow-up"></i></div>Drop a file here or <b>browse</b><div class="fhelp" style="margin-top:4px">Netscape cookie format, up to 1 MB</div></div></div>
+    </div>
+
+    <div class="sub">Date picker · dual-thumb range</div>
+    <div class="grid2">
+      <div class="field-row"><label class="fld">Released after (picker)</label>
+        <div class="picker" data-picker><input type="text" readonly value="2026-06-09" placeholder="Pick a date"><div class="cal" hidden></div></div>
+      </div>
+      <div class="field-row"><label class="fld">Duration range — <span class="dual-out">20–80</span> min</label>
+        <div class="dual" data-dual><div class="track"><i></i></div><input type="range" min="0" max="180" value="20"><input type="range" min="0" max="180" value="80"></div>
+      </div>
+    </div>
+
+    <div class="sub">Inline calendar</div>
+    <div class="cal cal-inline" data-calendar></div>
+
+    <div class="sub">Composed form</div>
+    <div class="card" style="max-width:560px">
+      <div class="form-grid">
+        <div class="field-row"><label class="fld">First name</label><input type="text" value="Ada"></div>
+        <div class="field-row"><label class="fld">Last name</label><input type="text" value="G."></div>
+        <div class="field-row full"><label class="fld">Bio</label><textarea rows="2" placeholder="A line about you…"></textarea></div>
+      </div>
+      <div class="form-actions"><button class="btn btn-ghost btn-sm">Cancel</button><button class="btn btn-primary btn-sm">Save changes</button></div>
+    </div>
+  </section>
+
+  <!-- BADGES -->
+  <section class="sec" id="badges">
+    <h2>Badges, tags &amp; status</h2>
+    <div class="sub">Pills</div>
+    <div class="demo">
+      <span class="badge green"><i class="fa-solid fa-check"></i> Verified</span><span class="badge amber">Uncertain</span>
+      <span class="badge coral">Gap</span><span class="badge info">Experimental</span><span class="badge neutral">Transition</span>
+    </div>
+    <div class="sub">Tier / role · status dots</div>
+    <div class="demo"><span class="tier tier-free">Free</span><span class="tier tier-pro">Pro</span><span class="tier tier-unlimited">Unlimited</span><span class="tier role-admin">Admin</span>
+      <span style="margin-left:14px"><span class="dot ok"></span> Healthy</span><span><span class="dot warn"></span> Degraded</span><span><span class="dot down"></span> Down</span></div>
+  </section>
+
+  <!-- AVATARS -->
+  <section class="sec" id="avatars">
+    <h2>Avatars</h2>
+    <div class="demo">
+      <span class="avatar avatar-sm">F</span><span class="avatar">F</span><span class="avatar avatar-lg">F</span>
+      <span class="avatar-wrap"><span class="avatar">G</span><span class="dot ok"></span></span>
+      <span class="avatar-stack" style="margin-left:10px"><span class="avatar">A</span><span class="avatar">B</span><span class="avatar">C</span><span class="avatar" style="background:var(--surface-2);color:var(--text-2)">+9</span></span>
+    </div>
+  </section>
+
+  <!-- CARDS -->
+  <section class="sec" id="cards">
+    <h2>Cards &amp; panels</h2>
+    <div class="sub">Feature · plan · pack</div>
+    <div class="grid2">
+      <div class="feature-card"><div class="fi"><i class="fa-solid fa-music"></i></div><h4>Every track, timestamped</h4><p>Paste a mix, get the full setlist with jump-to timecodes.</p></div>
+      <div class="plan popular"><span class="badge green pop">Popular</span><div class="pname">Pro</div><div class="price">$14.99<small>/mo</small></div><ul><li>50 credits / month</li><li>Priority processing</li></ul><button class="btn btn-primary" style="width:100%">Upgrade</button></div>
+      <div class="pack"><div class="pc">15</div><div class="pp">credits · $14.99</div><button class="btn btn-primary btn-sm" style="width:100%">Buy</button></div>
+    </div>
+    <div class="sub">Cost preview (before spending a credit)</div>
+    <div class="cost-preview" style="max-width:520px">
+      <div class="thumb" style="background:rgb(var(--primary-rgb) / .08);border:1px solid rgb(var(--primary-rgb) / .2);border-radius:var(--radius-sm);display:grid;place-items:center;color:var(--primary-bright)"><i class="fa-solid fa-play"></i></div>
+      <div><div style="font-weight:600">Boiler Room — Night Two</div><div class="fhelp">1:42:08 · ~5 segments</div></div>
+      <div class="ctable"><div class="crow"><span>Cost</span><span class="cv">1 credit</span></div><div class="crow"><span>Balance after</span><span class="cv">46</span></div></div>
+    </div>
+  </section>
+
+  <!-- CHARTS -->
+  <section class="sec" id="charts">
+    <h2>Graphs &amp; charts</h2>
+    <div class="desc">SVG, dependency-free, themed. Line/area, donut, bar, inline sparklines.</div>
+    <div class="grid2">
+      <div class="chart">
+        <div class="chart-h"><h4>Analyses — 14 days</h4><span class="big">▲ 18%</span></div>
+        <svg viewBox="0 0 300 90">
+          <line x1="0" y1="24" x2="300" y2="24" style="stroke:var(--line)"/><line x1="0" y1="58" x2="300" y2="58" style="stroke:var(--line)"/>
+          <polygon style="fill:rgb(var(--primary-rgb) / .15)" points="0,60 25,55 50,58 75,44 100,48 125,36 150,40 175,28 200,34 225,20 250,26 275,12 300,18 300,90 0,90"/>
+          <polyline fill="none" style="stroke:var(--primary-bright)" stroke-width="2" points="0,60 25,55 50,58 75,44 100,48 125,36 150,40 175,28 200,34 225,20 250,26 275,12 300,18"/>
+          <circle cx="275" cy="12" r="3.5" style="fill:var(--primary-bright)"/>
+        </svg>
+      </div>
+      <div class="chart">
+        <div class="chart-h"><h4>Users by tier</h4></div>
+        <div class="donut-wrap">
+          <svg viewBox="0 0 80 80" style="width:100px;flex-shrink:0">
+            <circle cx="40" cy="40" r="30" fill="none" style="stroke:var(--surface-2)" stroke-width="12"/>
+            <circle cx="40" cy="40" r="30" fill="none" style="stroke:var(--primary)" stroke-width="12" stroke-dasharray="165.9 22.6" transform="rotate(-90 40 40)"/>
+            <circle cx="40" cy="40" r="30" fill="none" style="stroke:var(--accent)" stroke-width="12" stroke-dasharray="17 171.5" stroke-dashoffset="-165.9" transform="rotate(-90 40 40)"/>
+            <circle cx="40" cy="40" r="30" fill="none" style="stroke:var(--warning)" stroke-width="12" stroke-dasharray="5.6 182.9" stroke-dashoffset="-182.9" transform="rotate(-90 40 40)"/>
+            <text x="40" y="44" class="donut-center" style="fill:var(--text)">5.2k</text>
+          </svg>
+          <div class="legend" style="flex-direction:column;gap:8px;margin-top:0">
+            <span><i style="background:var(--primary)"></i> Free · 88%</span>
+            <span><i style="background:var(--accent)"></i> Pro · 9%</span>
+            <span><i style="background:var(--warning)"></i> Unlimited · 3%</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="sub">Bar chart · sparklines</div>
+    <div class="chart" style="max-width:520px;margin-bottom:14px"><div class="chart-h"><h4>Songs identified / day</h4></div>
+      <div class="bars"><div class="bar" style="height:40%"></div><div class="bar" style="height:55%"></div><div class="bar" style="height:48%"></div><div class="bar" style="height:70%"></div><div class="bar" style="height:62%"></div><div class="bar" style="height:85%"></div><div class="bar" style="height:74%"></div><div class="bar" style="height:95%"></div><div class="bar" style="height:68%"></div><div class="bar" style="height:80%"></div></div>
+    </div>
+    <div class="demo" style="gap:24px">
+      <span>Revenue <svg class="spark" width="80" height="22" viewBox="0 0 80 22"><polyline fill="none" style="stroke:var(--primary-bright)" stroke-width="1.5" points="0,18 13,14 26,16 39,8 52,11 65,4 80,6"/></svg> <span style="color:var(--primary-bright)">+12%</span></span>
+      <span>Churn <svg class="spark" width="80" height="22" viewBox="0 0 80 22"><polyline fill="none" style="stroke:var(--danger)" stroke-width="1.5" points="0,6 13,9 26,7 39,12 52,10 65,15 80,17"/></svg> <span style="color:var(--danger)">+3%</span></span>
+    </div>
+
+    <div class="sub">Multi-series line · stacked bars</div>
+    <div class="grid2">
+      <div class="chart"><div class="chart-h"><h4>Success vs failure</h4></div>
+        <svg viewBox="0 0 300 90">
+          <line x1="0" y1="24" x2="300" y2="24" style="stroke:var(--line)"/><line x1="0" y1="58" x2="300" y2="58" style="stroke:var(--line)"/>
+          <polyline fill="none" style="stroke:var(--primary-bright)" stroke-width="2" points="0,30 50,26 100,34 150,22 200,28 250,18 300,22"/>
+          <polyline fill="none" style="stroke:var(--danger)" stroke-width="2" stroke-dasharray="5 4" points="0,72 50,68 100,74 150,64 200,70 250,66 300,72"/>
+        </svg>
+        <div class="legend"><span><i style="background:var(--primary-bright)"></i> Success</span><span><i style="background:var(--danger)"></i> Failure</span></div>
+      </div>
+      <div class="chart"><div class="chart-h"><h4>Spend by source / day</h4></div>
+        <div class="sbars">
+          <div class="sbar"><span style="height:28px;background:var(--primary)"></span><span style="height:16px;background:var(--accent)"></span><span style="height:9px;background:var(--warning)"></span></div>
+          <div class="sbar"><span style="height:34px;background:var(--primary)"></span><span style="height:12px;background:var(--accent)"></span><span style="height:14px;background:var(--warning)"></span></div>
+          <div class="sbar"><span style="height:22px;background:var(--primary)"></span><span style="height:20px;background:var(--accent)"></span><span style="height:8px;background:var(--warning)"></span></div>
+          <div class="sbar"><span style="height:40px;background:var(--primary)"></span><span style="height:18px;background:var(--accent)"></span><span style="height:12px;background:var(--warning)"></span></div>
+          <div class="sbar"><span style="height:30px;background:var(--primary)"></span><span style="height:24px;background:var(--accent)"></span><span style="height:10px;background:var(--warning)"></span></div>
+          <div class="sbar"><span style="height:46px;background:var(--primary)"></span><span style="height:14px;background:var(--accent)"></span><span style="height:16px;background:var(--warning)"></span></div>
+        </div>
+        <div class="legend"><span><i style="background:var(--primary)"></i> Recognition</span><span><i style="background:var(--accent)"></i> Proxy</span><span><i style="background:var(--warning)"></i> AI</span></div>
+      </div>
+    </div>
+
+    <div class="sub">Horizontal / ranking · gauge</div>
+    <div class="grid2">
+      <div class="chart"><div class="chart-h"><h4>Top providers (success)</h4></div>
+        <div class="hbar">
+          <div class="hrow"><span class="hlabel">Engine A</span><span class="htrack"><i style="width:82%"></i></span><span class="hval">82%</span></div>
+          <div class="hrow"><span class="hlabel">Engine B</span><span class="htrack"><i class="amber" style="width:51%"></i></span><span class="hval">51%</span></div>
+          <div class="hrow"><span class="hlabel">Engine C</span><span class="htrack"><i class="coral" style="width:34%"></i></span><span class="hval">34%</span></div>
+          <div class="hrow"><span class="hlabel">Engine D</span><span class="htrack"><i style="width:74%"></i></span><span class="hval">74%</span></div>
+        </div>
+      </div>
+      <div class="chart"><div class="chart-h"><h4>Uptime (30d)</h4></div>
+        <svg class="gauge" viewBox="0 0 120 72" style="max-width:170px;margin:6px auto 0;display:block">
+          <path d="M10 62 A50 50 0 0 1 110 62" fill="none" style="stroke:var(--surface-2)" stroke-width="10" stroke-linecap="round"/>
+          <path d="M10 62 A50 50 0 0 1 110 62" fill="none" style="stroke:var(--primary)" stroke-width="10" stroke-linecap="round" stroke-dasharray="157" stroke-dashoffset="13"/>
+          <text x="60" y="58" text-anchor="middle" font-size="17" style="fill:var(--text)">99.2%</text>
+        </svg>
+      </div>
+    </div>
+
+    <div class="sub">Heatmap · candlestick</div>
+    <div class="grid2">
+      <div class="chart"><div class="chart-h"><h4>Activity (70 days)</h4></div>
+        <div class="heatmap" data-heatmap data-cols="14" data-rows="5"></div>
+      </div>
+      <div class="chart"><div class="chart-h"><h4>KES / USD</h4></div>
+        <svg viewBox="0 0 300 90">
+          <g>
+            <line x1="20" y1="18" x2="20" y2="70" style="stroke:var(--primary-bright)"/><rect x="14" y="30" width="12" height="26" style="fill:var(--primary-bright)"/>
+            <line x1="55" y1="24" x2="55" y2="74" style="stroke:var(--danger)"/><rect x="49" y="36" width="12" height="22" style="fill:var(--danger)"/>
+            <line x1="90" y1="20" x2="90" y2="64" style="stroke:var(--primary-bright)"/><rect x="84" y="28" width="12" height="24" style="fill:var(--primary-bright)"/>
+            <line x1="125" y1="14" x2="125" y2="58" style="stroke:var(--primary-bright)"/><rect x="119" y="22" width="12" height="20" style="fill:var(--primary-bright)"/>
+            <line x1="160" y1="22" x2="160" y2="72" style="stroke:var(--danger)"/><rect x="154" y="34" width="12" height="26" style="fill:var(--danger)"/>
+            <line x1="195" y1="16" x2="195" y2="60" style="stroke:var(--primary-bright)"/><rect x="189" y="24" width="12" height="22" style="fill:var(--primary-bright)"/>
+            <line x1="230" y1="20" x2="230" y2="66" style="stroke:var(--danger)"/><rect x="224" y="30" width="12" height="20" style="fill:var(--danger)"/>
+            <line x1="265" y1="12" x2="265" y2="54" style="stroke:var(--primary-bright)"/><rect x="259" y="18" width="12" height="24" style="fill:var(--primary-bright)"/>
+          </g>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS / DATA -->
+  <section class="sec" id="stats">
+    <h2>Stats &amp; data display</h2>
+    <div class="sub">Stat chips (count-up)</div>
+    <div class="stats">
+      <div class="chip"><div class="n g" data-count="9">9</div><div class="l">found</div></div>
+      <div class="chip"><div class="n g">42:10</div><div class="l">scanned</div></div>
+      <div class="chip"><div class="n" data-count="62" data-suffix="%">62%</div><div class="l">done</div></div>
+    </div>
+    <div class="sub">Stat cards (delta / freshness)</div>
+    <div class="stat-grid">
+      <div class="stat-card"><div class="num g">5,210</div><div class="lbl">Total users</div><div class="delta">+128 this week</div></div>
+      <div class="stat-card"><div class="num">18,402</div><div class="lbl">Analyses</div><div class="delta">+212 today</div></div>
+      <div class="stat-card"><div class="num g">41 GB</div><div class="lbl">Proxy left</div><div class="fresh">updated 12s ago</div></div>
+      <div class="stat-card"><div class="num c">3</div><div class="lbl">Open alerts</div></div>
+    </div>
+    <div class="sub">Key–value / detail list</div>
+    <div class="card" style="max-width:420px">
+      <div class="kv"><span class="k">Genre</span><span class="v">Melodic Techno</span></div>
+      <div class="kv"><span class="k">BPM · key</span><span class="v">120 · A min</span></div>
+      <div class="kv"><span class="k">Released</span><span class="v">2017</span></div>
+      <div class="kv"><span class="k">Seen in</span><span class="v" style="color:var(--primary-bright)">72 tracklists</span></div>
+    </div>
+    <div class="sub">Album art (sizes)</div>
+    <div class="demo">
+      <span class="albumart xs"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="34" fill="none" stroke="rgb(var(--primary-rgb) / .55)" stroke-width="3"/><circle cx="50" cy="50" r="12" fill="none" stroke="rgb(var(--primary-rgb) / .45)" stroke-width="3"/><circle cx="50" cy="50" r="4" fill="rgb(var(--primary-bright-rgb) / .9)"/></svg></span>
+      <span class="albumart sm"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="34" fill="none" stroke="rgb(var(--primary-rgb) / .55)" stroke-width="2"/><circle cx="50" cy="50" r="22" fill="none" stroke="rgb(var(--primary-rgb) / .32)" stroke-width="1.5"/><circle cx="50" cy="50" r="12" fill="none" stroke="rgb(var(--primary-rgb) / .45)" stroke-width="2"/><circle cx="50" cy="50" r="4" fill="rgb(var(--primary-bright-rgb) / .9)"/></svg></span>
+      <span class="albumart md"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="34" fill="none" stroke="rgb(var(--primary-rgb) / .55)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="rgb(var(--primary-rgb) / .32)" stroke-width="1"/><circle cx="50" cy="50" r="12" fill="none" stroke="rgb(var(--primary-rgb) / .45)" stroke-width="1.5"/><circle cx="50" cy="50" r="4" fill="rgb(var(--primary-bright-rgb) / .9)"/></svg></span>
+      <span class="albumart lg"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="34" fill="none" stroke="rgb(var(--primary-rgb) / .55)" stroke-width="1.5"/><circle cx="50" cy="50" r="22" fill="none" stroke="rgb(var(--primary-rgb) / .32)" stroke-width="1"/><circle cx="50" cy="50" r="12" fill="none" stroke="rgb(var(--primary-rgb) / .45)" stroke-width="1.2"/><circle cx="50" cy="50" r="4" fill="rgb(var(--primary-bright-rgb) / .9)"/></svg></span>
+      <span class="albumart xl"><svg viewBox="0 0 100 100"><circle cx="50" cy="50" r="34" fill="none" stroke="rgb(var(--primary-rgb) / .55)" stroke-width="1.2"/><circle cx="50" cy="50" r="22" fill="none" stroke="rgb(var(--primary-rgb) / .32)" stroke-width="1"/><circle cx="50" cy="50" r="12" fill="none" stroke="rgb(var(--primary-rgb) / .45)" stroke-width="1.2"/><circle cx="50" cy="50" r="4" fill="rgb(var(--primary-bright-rgb) / .9)"/></svg></span>
+    </div>
+  </section>
+
+  <!-- CAROUSEL -->
+  <section class="sec" id="carousel">
+    <h2>Carousel</h2>
+    <div class="desc">Horizontal scroll-snap (themed scrollbar). Drag or scroll through cards.</div>
+    <div class="carousel">
+      <div class="rcard" style="flex-direction:column;align-items:flex-start"><div class="thumb" style="width:100%;height:96px"><i class="fa-solid fa-play"></i></div><div class="rmeta"><div class="rt">Désert Dunes</div><div class="rs">14 songs · 2d</div></div></div>
+      <div class="rcard" style="flex-direction:column;align-items:flex-start"><div class="thumb" style="width:100%;height:96px"><i class="fa-solid fa-play"></i></div><div class="rmeta"><div class="rt">Night Two</div><div class="rs">9 songs · 5d</div></div></div>
+      <div class="rcard" style="flex-direction:column;align-items:flex-start"><div class="thumb" style="width:100%;height:96px"><i class="fa-solid fa-play"></i></div><div class="rmeta"><div class="rt">Sunrise Set</div><div class="rs">22 songs · 1w</div></div></div>
+      <div class="rcard" style="flex-direction:column;align-items:flex-start"><div class="thumb" style="width:100%;height:96px"><i class="fa-solid fa-play"></i></div><div class="rmeta"><div class="rt">Warehouse</div><div class="rs">17 songs · 2w</div></div></div>
+    </div>
+    <div class="carousel-dots"><i class="on"></i><i></i><i></i></div>
+  </section>
+
+  <!-- DATA TABLE -->
+  <section class="sec" id="datatable">
+    <h2>Data table</h2>
+    <div class="desc">Sortable headers (click), select-all + row selection, toolbar.</div>
+    <div class="tbl-toolbar"><label class="check"><input type="checkbox" data-select-all> Select all</label><span style="margin-left:auto;color:var(--muted)">3 rows</span><button class="btn btn-ghost btn-sm"><i class="fa-solid fa-file-export"></i> Export</button></div>
+    <div class="tbl-wrap"><table class="tbl" data-table-sort>
+      <thead><tr><th class="sel-col"></th><th class="sortable asc">Email <span class="sort">▲</span></th><th class="sortable">Tier <span class="sort">▲</span></th><th class="sortable">Analyses <span class="sort">▲</span></th><th class="sortable">Joined <span class="sort">▲</span></th></tr></thead>
+      <tbody>
+        <tr><td class="sel-col"><input type="checkbox"></td><td><b>ada@lovelace.io</b></td><td><span class="tier tier-pro">Pro</span></td><td>61</td><td class="cell-mono">2026-03-02</td></tr>
+        <tr><td class="sel-col"><input type="checkbox"></td><td><b>grace@hopper.dev</b></td><td><span class="tier tier-free">Free</span></td><td>4</td><td class="cell-mono">2026-05-19</td></tr>
+        <tr><td class="sel-col"><input type="checkbox"></td><td><b>alan@turing.uk</b></td><td><span class="tier tier-unlimited">Unlimited</span></td><td>318</td><td class="cell-mono">2026-01-08</td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- ADVANCED TABLE: filter · expandable rows · sticky header -->
+  <section class="sec" id="advtable">
+    <h2>Advanced table</h2>
+    <div class="desc">Global filter, expandable detail rows, sticky header (scroll the body).</div>
+    <div class="tbl-toolbar"><div class="input-group" style="max-width:280px"><i class="fa-solid fa-magnifying-glass" style="opacity:.5"></i><input data-table-filter="#advt" placeholder="Filter rows…"></div></div>
+    <div class="tbl-wrap sticky"><table class="tbl" id="advt">
+      <thead><tr><th style="width:36px"></th><th>Email</th><th>Tier</th><th>Joined</th></tr></thead>
+      <tbody>
+        <tr><td><button class="row-toggle" aria-label="Expand" aria-expanded="false"><i class="fa-solid fa-chevron-right"></i></button></td><td><b>ada@lovelace.io</b></td><td><span class="tier tier-pro">Pro</span></td><td class="cell-mono">2026-03-02</td></tr>
+        <tr class="row-detail" hidden><td></td><td colspan="3"><div class="rd-body">Last seen 3h ago · 61 analyses · 2 API keys · plan renews Jul 1.</div></td></tr>
+        <tr><td><button class="row-toggle" aria-label="Expand" aria-expanded="false"><i class="fa-solid fa-chevron-right"></i></button></td><td><b>grace@hopper.dev</b></td><td><span class="tier tier-free">Free</span></td><td class="cell-mono">2026-05-19</td></tr>
+        <tr class="row-detail" hidden><td></td><td colspan="3"><div class="rd-body">Last seen 6d ago · 4 analyses · 1/3 credits used.</div></td></tr>
+        <tr><td><button class="row-toggle" aria-label="Expand" aria-expanded="false"><i class="fa-solid fa-chevron-right"></i></button></td><td><b>alan@turing.uk</b></td><td><span class="tier tier-unlimited">Unlimited</span></td><td class="cell-mono">2026-01-08</td></tr>
+        <tr class="row-detail" hidden><td></td><td colspan="3"><div class="rd-body">Last seen 12m ago · 318 analyses · admin.</div></td></tr>
+      </tbody>
+    </table></div>
+  </section>
+
+  <!-- TREE + VALIDATION -->
+  <section class="sec" id="tree">
+    <h2>Tree &amp; form validation</h2>
+    <div class="grid2">
+      <div>
+        <div class="sub">Tree view (arrows to navigate, →/← expand/collapse)</div>
+        <ul class="tree" data-tree>
+          <li class="tree-item" role="treeitem" aria-expanded="true">
+            <div class="tree-row" tabindex="0"><span class="tw"><i class="fa-solid fa-chevron-right"></i></span><span class="ti"><i class="fa-solid fa-folder"></i></span> src</div>
+            <ul class="tree-children">
+              <li class="tree-item" role="treeitem" aria-expanded="true">
+                <div class="tree-row" tabindex="-1"><span class="tw"><i class="fa-solid fa-chevron-right"></i></span><span class="ti"><i class="fa-solid fa-folder"></i></span> kits</div>
+                <ul class="tree-children">
+                  <li class="tree-item" role="treeitem"><div class="tree-row" tabindex="-1"><span class="tw leaf"></span><span class="ti"><i class="fa-regular fa-file-code"></i></span> app.css</div></li>
+                  <li class="tree-item" role="treeitem"><div class="tree-row" tabindex="-1"><span class="tw leaf"></span><span class="ti"><i class="fa-regular fa-file-code"></i></span> site.css</div></li>
+                </ul>
+              </li>
+              <li class="tree-item" role="treeitem"><div class="tree-row" tabindex="-1"><span class="tw leaf"></span><span class="ti"><i class="fa-regular fa-file-code"></i></span> qazana.js</div></li>
+            </ul>
+          </li>
+          <li class="tree-item" role="treeitem" aria-expanded="false">
+            <div class="tree-row" tabindex="-1"><span class="tw"><i class="fa-solid fa-chevron-right"></i></span><span class="ti"><i class="fa-solid fa-folder"></i></span> tokens</div>
+            <ul class="tree-children">
+              <li class="tree-item" role="treeitem"><div class="tree-row" tabindex="-1"><span class="tw leaf"></span><span class="ti"><i class="fa-regular fa-file"></i></span> qazana.tokens.css</div></li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+      <div>
+        <div class="sub">Validated form (submit to check)</div>
+        <form data-validate class="card" style="max-width:420px">
+          <div class="field-row"><label class="fld">Email <span class="req">*</span></label><input type="email" required placeholder="you@example.com"></div>
+          <div class="field-row"><label class="fld">Password <span class="req">*</span></label><input id="vpw" type="password" required minlength="8" placeholder="At least 8 characters"></div>
+          <div class="field-row"><label class="fld">Confirm <span class="req">*</span></label><input type="password" required data-match="#vpw" placeholder="Re-enter password"></div>
+          <div class="form-actions"><button class="btn btn-primary btn-sm" type="submit">Create account</button></div>
+        </form>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTEXT MENU -->
+  <section class="sec" id="ctxmenu">
+    <h2>Context menu</h2>
+    <div class="desc">Right-click the zone for a context menu with grouped, collapsible actions and a destructive item.</div>
+    <div class="ctx-zone" data-ctx="#ctx1"><i class="fa-solid fa-arrow-pointer"></i> Right-click anywhere in here</div>
+    <div class="menu ctx" id="ctx1">
+      <div class="menu-label">Track</div>
+      <a class="menu-item"><i class="fa-solid fa-play"></i> Play segment <span class="sc">↵</span></a>
+      <a class="menu-item"><i class="fa-brands fa-spotify"></i> Open in Spotify</a>
+      <a class="menu-item"><i class="fa-solid fa-pen"></i> Edit title <span class="sc">E</span></a>
+      <div class="menu-sep"></div>
+      <div class="menu-label">Share</div>
+      <a class="menu-item"><i class="fa-solid fa-link"></i> Copy link</a>
+      <div class="menu-sep"></div>
+      <a class="menu-item danger"><i class="fa-solid fa-trash"></i> Remove <span class="sc">⌫</span></a>
+    </div>
+  </section>
+
+  <!-- LOADING -->
+  <section class="sec" id="loading">
+    <h2>Loading &amp; progress states</h2>
+    <div class="sub">Spinners · progress · indeterminate · radial</div>
+    <div class="demo" style="gap:26px">
+      <span><span class="spin sm" style="color:var(--primary-bright)"></span> small</span>
+      <span><span class="spin" style="color:var(--primary-bright)"></span> default</span>
+      <span><span class="spin lg" style="color:var(--primary-bright)"></span> large</span>
+      <span class="radial" style="--p:72;position:relative"><span>72%</span></span>
+    </div>
+    <div class="demo col" style="max-width:520px;margin-top:14px">
+      <div><span class="swatch">Determinate</span><div style="height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden"><i style="display:block;height:100%;width:62%;background:var(--primary)"></i></div></div>
+      <div><span class="swatch">Indeterminate</span><div class="prog-indet"></div></div>
+    </div>
+    <div class="sub">Skeleton loaders</div>
+    <div class="grid2">
+      <div class="card"><div class="skel" style="width:60%;height:16px;margin-bottom:12px"></div><div class="skel skel-line"></div><div class="skel skel-line"></div><div class="skel skel-line sh"></div></div>
+      <div class="card">
+        <div class="l-row gap-3" style="margin-bottom:12px"><div class="skel" style="width:48px;height:48px;border-radius:50%"></div><div style="flex:1"><div class="skel skel-line" style="width:50%"></div><div class="skel skel-line sh" style="margin-bottom:0"></div></div></div>
+        <div class="skel skel-line"></div><div class="skel skel-line sh"></div>
+      </div>
+    </div>
+    <div class="sub">Activity log (live)</div>
+    <div class="log" style="max-width:560px">
+      <div><span class="t">[42:02]</span> segment 38:00–38:30 → <span class="ok">match</span> Stephan Bodzin – Boavista <span class="t">(90%)</span></div>
+      <div><span class="t">[42:05]</span> segment 38:30–39:00 → no match, queueing for gap retry</div>
+      <div><span class="t">[42:07]</span> segment 39:00–39:30 → <span class="ok">match</span> Mind Against – Walking Away <span class="t">(88%)</span></div>
+      <div><span class="t">[42:09]</span> <span class="warn">provider busy</span> — falling back to next engine</div>
+      <div><span class="t">[42:10]</span> segment 39:30–40:00 → <span class="ok">match</span> Massano – The Feeling <span class="t">(93%)</span></div>
+      <div><span class="cur">[42:11] scanning 40:00–40:30 <span class="blink"></span></span></div>
+    </div>
+    <div class="sub">Section loading state</div>
+    <div class="loading-block" style="max-width:520px"><div><span class="spin lg"></span></div><div>Loading your analyses…</div></div>
+    <div class="sub">Step tracker</div>
+    <div class="steps" style="max-width:560px">
+      <span class="step done"><span class="sdot"><i class="fa-solid fa-check"></i></span> Upload</span>
+      <span class="sline"></span>
+      <span class="step done"><span class="sdot"><i class="fa-solid fa-check"></i></span> Analyze</span>
+      <span class="sline"></span>
+      <span class="step active"><span class="sdot">3</span> Review</span>
+      <span class="sline"></span>
+      <span class="step"><span class="sdot">4</span> Export</span>
+    </div>
+    <div class="sub">Upload list</div>
+    <div class="upload-list" style="max-width:520px">
+      <div class="upload-row done">
+        <span class="uicon"><i class="fa-solid fa-file-audio"></i></span>
+        <div class="uinfo"><div class="uname">sunset-set-2026.wav</div><div class="umeta">48.2 MB · uploaded</div><div class="ubar"><i style="width:100%"></i></div></div>
+        <button class="urm" aria-label="Remove"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+      <div class="upload-row">
+        <span class="uicon"><i class="fa-solid fa-file-audio"></i></span>
+        <div class="uinfo"><div class="uname">warehouse-b2b-final-master.mp3</div><div class="umeta">31.7 MB · 64%</div><div class="ubar"><i style="width:64%"></i></div></div>
+        <button class="urm" aria-label="Remove"><i class="fa-solid fa-xmark"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEEDBACK -->
+  <section class="sec" id="feedback">
+    <h2>Feedback</h2>
+    <div class="sub">Toasts</div>
+    <div class="demo">
+      <div class="toast ok"><span class="ic"><i class="fa-solid fa-check"></i></span><div><div class="ti2">Playlist created</div><p>14 tracks added to Spotify.</p></div></div>
+      <div class="toast err"><span class="ic"><i class="fa-solid fa-xmark"></i></span><div><div class="ti2">Export failed</div><p>Reconnect Spotify and try again.</p></div></div>
+      <div class="toast warn"><span class="ic"><i class="fa-solid fa-triangle-exclamation"></i></span><div><div class="ti2">Low credits</div><p>1 credit left this month.</p></div></div>
+      <div class="toast info"><span class="ic"><i class="fa-solid fa-trash"></i></span><div><div class="ti2">Analysis deleted</div></div><div class="undo"><button>Undo</button><button class="x" aria-label="Dismiss">✕</button></div></div>
+    </div>
+    <div class="sub">Banner · session · empty</div>
+    <div class="demo col" style="max-width:640px">
+      <div class="banner">A new version is available.<div class="bx"><button class="btn btn-primary btn-sm">Refresh</button><button class="btn btn-ghost btn-sm">Dismiss</button></div></div>
+      <div class="session-bar">Your session expired. <a href="#">Reload to sign in again.</a></div>
+      <div class="empty"><div class="ei"><i class="fa-solid fa-compact-disc"></i></div><h4>No analyses yet</h4><div>Paste a mix to get your first tracklist.</div></div>
+    </div>
+  </section>
+
+  <!-- OVERLAYS -->
+  <section class="sec" id="overlays">
+    <h2>Overlays</h2>
+    <div class="sub">Interactive dialog (focus-trap · scroll-lock · Esc · click-outside)</div>
+    <div class="demo">
+      <button class="btn btn-primary" data-modal-open="#demo-modal"><i class="fa-solid fa-up-right-from-square"></i> Open dialog</button>
+    </div>
+    <div class="modal-scrim" id="demo-modal" role="dialog" aria-modal="true" aria-labelledby="dm-title" hidden>
+      <div class="modal-dialog info">
+        <div class="mh"><span class="mi"><i class="fa-solid fa-circle-info"></i></span> <span id="dm-title">Name your playlist</span><button class="mclose" data-modal-close aria-label="Close"><i class="fa-solid fa-xmark"></i></button></div>
+        <div class="mb"><input type="text" value="Sunset set" aria-label="Playlist name"></div>
+        <div class="mf"><button class="btn btn-ghost btn-sm" data-modal-close>Cancel</button><button class="btn btn-primary btn-sm" data-modal-close>Create</button></div>
+      </div>
+    </div>
+
+    <div class="sub">Popover · popconfirm · drawer</div>
+    <div class="demo" style="gap:14px">
+      <span class="popover-wrap">
+        <button class="btn btn-secondary" data-popover aria-haspopup="dialog"><i class="fa-solid fa-sliders"></i> Filters</button>
+        <div class="popover" role="dialog" aria-label="Filters" style="min-width:240px">
+          <div class="field-row"><label class="fld">Status</label><select><option>Any</option><option>Active</option><option>Archived</option></select></div>
+          <label class="check"><input type="checkbox" checked> Only mine</label>
+          <div class="form-actions" style="margin-top:12px"><button class="btn btn-ghost btn-sm" data-popover-close>Reset</button><button class="btn btn-primary btn-sm" data-popover-close>Apply</button></div>
+        </div>
+      </span>
+      <span class="popover-wrap">
+        <button class="btn btn-danger" data-popover><i class="fa-solid fa-trash"></i> Delete</button>
+        <div class="popover popconfirm" role="dialog" aria-label="Confirm delete">
+          <div class="pc-msg"><i class="fa-solid fa-triangle-exclamation"></i> Delete this item? This can't be undone.</div>
+          <div class="pc-actions"><button class="btn btn-ghost btn-sm" data-popover-close>Cancel</button><button class="btn btn-danger btn-sm" data-popover-close>Delete</button></div>
+        </div>
+      </span>
+      <button class="btn btn-outline" data-modal-open="#demo-drawer"><i class="fa-solid fa-bars-staggered"></i> Open drawer</button>
+    </div>
+    <div class="drawer-scrim" id="demo-drawer" role="dialog" aria-modal="true" aria-labelledby="dr-title" hidden>
+      <aside class="drawer right">
+        <div class="mh"><span id="dr-title">Edit profile</span><button class="mclose" data-modal-close aria-label="Close"><i class="fa-solid fa-xmark"></i></button></div>
+        <div class="mb" style="flex:1">
+          <div class="field-row"><label class="fld">Display name</label><input type="text" value="Ada Lovelace"></div>
+          <div class="field-row"><label class="fld">Bio</label><textarea rows="3">Building things.</textarea></div>
+          <div class="field-row"><label class="fld">Role</label><select><option>Admin</option><option>Member</option></select></div>
+        </div>
+        <div class="mf"><button class="btn btn-ghost btn-sm" data-modal-close>Cancel</button><button class="btn btn-primary btn-sm" data-modal-close>Save changes</button></div>
+      </aside>
+    </div>
+
+    <div class="sub">Command palette (<kbd>⌘</kbd><kbd>K</kbd> · search · arrow keys)</div>
+    <div class="demo">
+      <button class="btn btn-secondary" data-cmdk-open><i class="fa-solid fa-magnifying-glass"></i> Search… <span class="kbd-hint">⌘K</span></button>
+    </div>
+    <div class="cmdk-scrim" id="cmdk" role="dialog" aria-modal="true" aria-label="Command palette" hidden>
+      <div class="cmdk">
+        <div class="cmdk-search"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Type a command or search…" aria-label="Command"></div>
+        <div class="cmdk-list">
+          <div class="cmd-grp">
+            <div class="cmd-group">Navigation</div>
+            <div class="cmd-item"><span class="ci"><i class="fa-solid fa-gauge-high"></i></span> Go to Dashboard <span class="ck">G D</span></div>
+            <div class="cmd-item"><span class="ci"><i class="fa-solid fa-users"></i></span> Go to Users <span class="ck">G U</span></div>
+            <div class="cmd-item"><span class="ci"><i class="fa-solid fa-list-check"></i></span> Go to Jobs <span class="ck">G J</span></div>
+          </div>
+          <div class="cmd-grp">
+            <div class="cmd-group">Actions</div>
+            <div class="cmd-item"><span class="ci"><i class="fa-solid fa-plus"></i></span> New project <span class="ck">⌘N</span></div>
+            <div class="cmd-item"><span class="ci"><i class="fa-solid fa-circle-half-stroke"></i></span> Toggle theme</div>
+            <div class="cmd-item"><span class="ci"><i class="fa-solid fa-compress"></i></span> Toggle density</div>
+            <div class="cmd-item"><span class="ci"><i class="fa-solid fa-arrow-right-from-bracket"></i></span> Sign out</div>
+          </div>
+          <div class="cmd-empty" hidden>No results</div>
+        </div>
+        <div class="cmdk-foot"><span><kbd>↑</kbd><kbd>↓</kbd> navigate</span><span><kbd>↵</kbd> select</span><span><kbd>esc</kbd> close</span></div>
+      </div>
+    </div>
+    <div class="sub">Modals (by intent)</div>
+    <div class="modalrow">
+      <div class="modal-overlay"><div class="modal-dialog danger"><div class="mh"><span class="mi"><i class="fa-solid fa-trash"></i></span> Delete account</div>
+        <div class="mb">Permanently deletes your account and private analyses. Type <code style="font-family:var(--mono)">DELETE</code> to confirm.</div>
+        <div class="mf"><button class="btn btn-ghost btn-sm">Cancel</button><button class="btn btn-danger btn-sm">Delete</button></div></div></div>
+      <div class="modal-overlay"><div class="modal-dialog info"><div class="mh"><span class="mi"><i class="fa-solid fa-circle-info"></i></span> Name your playlist</div>
+        <div class="mb"><input type="text" value="Sunset set"></div>
+        <div class="mf"><button class="btn btn-ghost btn-sm">Cancel</button><button class="btn btn-primary btn-sm">Create</button></div></div></div>
+      <div class="modal-overlay"><div class="modal-dialog ok"><div class="mh"><span class="mi"><i class="fa-solid fa-check"></i></span> Done</div>
+        <div class="mb">Your playlist is live on Spotify.</div>
+        <div class="mf"><button class="btn btn-primary btn-sm">Open in Spotify</button></div></div></div>
+      <div class="modal-overlay"><div class="modal-dialog warn"><div class="mh"><span class="mi"><i class="fa-solid fa-triangle-exclamation"></i></span> Heads up</div>
+        <div class="mb">That used your last credit. Top up to keep identifying mixes.</div>
+        <div class="mf"><button class="btn btn-primary btn-sm">Got it</button></div></div></div>
+    </div>
+    <div class="sub">Sheet (extends dialog — side &amp; bottom)</div>
+    <div class="grid2">
+      <div class="sheet-demo">
+        <div class="sheet-scrim"></div>
+        <div class="sheet right"><div class="sheet-h">Filters <button aria-label="Close">✕</button></div>
+          <div class="sheet-b">Refine by genre, BPM, confidence — complementary controls that slide in without leaving the page.</div></div>
+      </div>
+      <div class="sheet-demo">
+        <div class="sheet-scrim"></div>
+        <div class="sheet bottom"><div class="grab"></div><div class="sheet-h">Track detail <button aria-label="Close">✕</button></div>
+          <div class="sheet-b">Genre · year · BPM · seen in N tracklists. Slides up over the list on mobile.</div></div>
+      </div>
+    </div>
+    <div class="sub">Tooltips (positions) — compact attr-text</div>
+    <div class="demo" style="gap:26px;padding:10px 0;overflow-x:clip">
+      <span class="badge neutral" data-tip="Top tooltip" tabindex="0">top</span>
+      <span class="badge neutral" data-tip="Bottom tooltip" data-tip-pos="bottom" tabindex="0">bottom</span>
+      <span class="badge neutral" data-tip="Right tooltip" data-tip-pos="right" tabindex="0">right</span>
+      <span class="badge neutral" data-tip="Left tooltip" data-tip-pos="left" tabindex="0">left</span>
+      <i class="fa-solid fa-circle-question" data-tip="On an icon — keyboard-focusable too" tabindex="0" style="color:var(--muted)"></i>
+    </div>
+    <div class="sub">Card variant <code>data-tip-card</code> — elevated, multi-line, wraps</div>
+    <div class="demo" style="gap:26px;padding:10px 0;overflow-x:clip">
+      <span class="badge neutral" data-tip="A roomier, elevated tooltip that wraps onto multiple lines for longer help text." data-tip-card data-tip-pos="bottom" tabindex="0">card · bottom</span>
+      <span class="badge neutral" data-tip="Same card look, pointing from above." data-tip-card data-tip-pos="top" tabindex="0">card · top</span>
+      <i class="fa-solid fa-circle-info" data-tip="Live Connections are the number of devices viewing a room at the same time." data-tip-card data-tip-pos="bottom" tabindex="0" style="color:var(--muted)"></i>
+    </div>
+    <div class="sub">Rich popover <code>.tip</code> &rsaquo; <code>.tip-pop</code> — arbitrary markup (rows, divider, note)</div>
+    <div class="demo" style="gap:26px;padding:10px 0;align-items:center;overflow-x:clip">
+      <span>Pro <strong>$210</strong>/yr
+        <span class="tip">
+          <i class="fa-solid fa-circle-info" tabindex="0" role="button" aria-label="Pricing details" aria-describedby="tip-pro" style="color:var(--muted);cursor:help"></i>
+          <span class="tip-pop" role="tooltip" id="tip-pro" data-tip-pos="bottom">
+            <span class="tip-row"><span>Pro plan</span><span>$210</span></span>
+            <span class="tip-row strong"><span>Total</span><span>$210/year</span></span>
+            <span class="tip-divider"></span>
+            <span class="tip-note">Save $126 vs. 12 single-event licenses</span>
+          </span>
+        </span>
+      </span>
+    </div>
+    <div class="sub">Menu · interactive tabs · single-open accordion · breadcrumbs · divider</div>
+    <div class="demo" style="align-items:flex-start">
+      <div class="menu"><a class="menu-item"><i class="fa-brands fa-spotify"></i> Connect Spotify</a><a class="menu-item"><i class="fa-solid fa-list"></i> My analyses</a><div class="menu-sep"></div><a class="menu-item"><i class="fa-solid fa-arrow-right-from-bracket"></i> Sign out</a></div>
+      <div style="display:flex;flex-direction:column;gap:14px;flex:1;min-width:260px">
+        <div class="crumbs"><a href="#">Home</a><span class="sep">/</span><a href="#">Library</a><span class="sep">/</span><span class="cur">Désert Dunes</span></div>
+        <div data-tabs>
+          <div class="tabs"><button class="tab active">Songs</button><button class="tab">Gaps</button><button class="tab">Stats</button></div>
+          <div class="tabpanel">14 identified tracks, in mix order.</div>
+          <div class="tabpanel" hidden>2 unidentified stretches — tag them to improve the catalog.</div>
+          <div class="tabpanel" hidden>91% coverage · average confidence 89%.</div>
+        </div>
+        <div class="acc">
+          <details name="faq" open><summary>How is confidence calculated?</summary><div class="acc-body">It's the match strength reported for each identified segment.</div></details>
+          <details name="faq"><summary>Why are some segments gaps?</summary><div class="acc-body">No engine returned a confident match for that stretch.</div></details>
+          <details name="faq"><summary>Can I edit a track?</summary><div class="acc-body">Yes — fix a title or tag a gap; it improves future results.</div></details>
+        </div>
+        <div class="divider">or</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WIZARD -->
+  <section class="sec" id="wizard">
+    <h2>Multi-step wizard</h2>
+    <div class="desc">For multi-stage flows (onboarding, connect-and-export). Click Next / Back.</div>
+    <div data-wizard style="max-width:620px">
+      <div class="wsteps">
+        <div class="wstep active"><span class="wnum">1</span><span class="wlab">Paste URL</span></div><span class="wline"></span>
+        <div class="wstep"><span class="wnum">2</span><span class="wlab">Review</span></div><span class="wline"></span>
+        <div class="wstep"><span class="wnum">3</span><span class="wlab">Export</span></div>
+      </div>
+      <div class="wpane">Step 1 — paste a YouTube DJ mix URL and confirm the credit cost.</div>
+      <div class="wpane" hidden>Step 2 — review the identified tracklist and tag any gaps.</div>
+      <div class="wpane" hidden>Step 3 — connect Spotify and export in mix order.</div>
+      <div class="form-actions"><button class="btn btn-ghost btn-sm" data-wback>Back</button><button class="btn btn-primary btn-sm" data-wnext>Next</button></div>
+    </div>
+  </section>
+
+  <!-- MORE -->
+  <section class="sec" id="more">
+    <h2>More controls</h2>
+
+    <div class="sub">Accessible form field (label + control + help)</div>
+    <div class="field-row" style="max-width:420px">
+      <label class="label" for="mixName">Mix name <span class="req" aria-hidden="true">*</span></label>
+      <input id="mixName" type="text" aria-required="true" aria-describedby="mixHelp" placeholder="Sunset set">
+      <span class="fhelp" id="mixHelp">Shown on the public share page.</span>
+    </div>
+    <div class="sub">Grouped inputs</div>
+    <div class="demo">
+      <div class="addon-group" style="max-width:240px"><span class="addon">@</span><input placeholder="handle"></div>
+      <div class="addon-group" style="max-width:240px"><input placeholder="amount" style="text-align:right"><span class="addon">credits</span></div>
+    </div>
+
+    <div class="sub">Toggle group (multi-select)</div>
+    <div class="toggle-group">
+      <button class="on"><i class="fa-solid fa-bold"></i> Bold</button>
+      <button><i class="fa-solid fa-italic"></i> Italic</button>
+      <button class="on"><i class="fa-solid fa-underline"></i> Underline</button>
+    </div>
+
+    <div class="sub">Stars &amp; rating</div>
+    <div class="demo">
+      <span><span class="rating"><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i></span><span class="rating-val">0/5</span></span>
+      <span class="sep-v" style="height:22px"></span>
+      <span><span class="rating ro"><i class="fa-solid fa-star on"></i><i class="fa-solid fa-star on"></i><i class="fa-solid fa-star on"></i><i class="fa-solid fa-star on"></i><i class="fa-solid fa-star"></i></span><span class="rating-val">4.0 · read-only</span></span>
+    </div>
+
+    <div class="sub">Label · separator</div>
+    <div class="demo"><span class="label">Confidence <span class="req">*</span></span><span class="sep-v" style="height:18px"></span><span class="label">Genre <span class="opt">optional</span></span></div>
+    <div style="max-width:420px;margin-top:12px"><hr class="separator"><div class="separator labeled">or</div></div>
+
+    <div class="sub">Hover card</div>
+    <span class="hc-trigger">
+      <a href="#" style="color:var(--primary-bright);text-decoration:none" tabindex="0">@tale_of_us</a>
+      <span class="hovercard">
+        <span class="hc-head"><span class="avatar avatar-sm">T</span> Tale Of Us</span>
+        <span class="hc-body">Melodic techno duo · 24 tracks in the Qazana catalog · seen in 312 mixes.</span>
+      </span>
+    </span>
+
+    <div class="sub">Live toast (click to trigger)</div>
+    <div class="demo">
+      <button class="btn btn-primary btn-sm" data-toast="Playlist created" data-toast-type="ok">Trigger success</button>
+      <button class="btn btn-ghost btn-sm" data-toast="Saved to library" data-toast-type="info">Trigger info</button>
+    </div>
+    <div class="sub">Toast positions (<code>data-toast-pos</code>)</div>
+    <div class="demo">
+      <button class="btn btn-outline btn-sm" data-toast="Top-left" data-toast-type="info" data-toast-pos="tl">Top-left</button>
+      <button class="btn btn-outline btn-sm" data-toast="Top-right (default)" data-toast-type="ok">Top-right</button>
+      <button class="btn btn-outline btn-sm" data-toast="Bottom-left" data-toast-type="info" data-toast-pos="bl">Bottom-left</button>
+      <button class="btn btn-outline btn-sm" data-toast="Bottom-right" data-toast-type="ok" data-toast-pos="br">Bottom-right</button>
+    </div>
+  </section>
+
+  <!-- SHARED (cross-app) -->
+  <section class="sec" id="reusable">
+    <h2>Shared (cross-app)</h2>
+    <div class="desc">General components for reuse across products — built on the same tokens.</div>
+
+    <div class="sub">QR code · pairing code</div>
+    <div class="demo" style="gap:28px;align-items:center">
+      <span class="qr"><svg viewBox="0 0 100 100">
+        <g fill="#000"><rect x="4" y="4" width="28" height="28"/><rect x="68" y="4" width="28" height="28"/><rect x="4" y="68" width="28" height="28"/></g>
+        <g fill="#fff"><rect x="9" y="9" width="18" height="18"/><rect x="73" y="9" width="18" height="18"/><rect x="9" y="73" width="18" height="18"/></g>
+        <g fill="#000"><rect x="13" y="13" width="10" height="10"/><rect x="77" y="13" width="10" height="10"/><rect x="13" y="77" width="10" height="10"/>
+          <rect x="40" y="6" width="6" height="6"/><rect x="52" y="6" width="6" height="6"/><rect x="40" y="18" width="6" height="6"/><rect x="58" y="18" width="6" height="6"/>
+          <rect x="6" y="40" width="6" height="6"/><rect x="18" y="40" width="6" height="6"/><rect x="6" y="52" width="6" height="6"/><rect x="18" y="58" width="6" height="6"/>
+          <rect x="40" y="40" width="6" height="6"/><rect x="52" y="46" width="6" height="6"/><rect x="64" y="40" width="6" height="6"/><rect x="76" y="46" width="6" height="6"/><rect x="88" y="40" width="6" height="6"/>
+          <rect x="40" y="58" width="6" height="6"/><rect x="58" y="64" width="6" height="6"/><rect x="70" y="58" width="6" height="6"/><rect x="82" y="64" width="6" height="6"/>
+          <rect x="40" y="76" width="6" height="6"/><rect x="52" y="82" width="6" height="6"/><rect x="64" y="76" width="6" height="6"/><rect x="76" y="82" width="6" height="6"/><rect x="88" y="76" width="6" height="6"/>
+          <rect x="46" y="88" width="6" height="6"/><rect x="70" y="88" width="6" height="6"/></g>
+      </svg></span>
+      <span class="paircode"><span>A</span><span>7</span><span>K</span><span>9</span><span>2</span><span>F</span></span>
+    </div>
+
+    <div class="sub">Color picker</div>
+    <div class="colorpicker" data-colorpicker>
+      <span class="sw on" data-c="var(--primary)"></span><span class="sw" data-c="var(--info)"></span><span class="sw" data-c="var(--accent)"></span>
+      <span class="sw" data-c="var(--danger)"></span><span class="sw" data-c="var(--warning)"></span>
+      <input type="color" value="var(--primary)" aria-label="Custom color">
+    </div>
+
+    <div class="sub">Drag to reorder</div>
+    <div class="reorder" data-reorder>
+      <div class="reorder-item"><i class="fa-solid fa-grip-vertical grip"></i><span class="rname">Setsa — Âme</span><span class="rsub">00:00</span></div>
+      <div class="reorder-item"><i class="fa-solid fa-grip-vertical grip"></i><span class="rname">Saraya — Bedouin</span><span class="rsub">06:32</span></div>
+      <div class="reorder-item"><i class="fa-solid fa-grip-vertical grip"></i><span class="rname">Time — Tale Of Us</span><span class="rsub">28:05</span></div>
+    </div>
+
+    <div class="sub">Amount / currency input · currency picker</div>
+    <div class="demo">
+      <div class="amount-field" data-amount><span class="cur">KES</span><input value="12500" inputmode="decimal"></div>
+      <div class="combo" data-combo style="max-width:200px">
+        <button class="combo-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="combo-val">🇰🇪 KES</span><span class="combo-caret"><i class="fa-solid fa-chevron-down"></i></span></button>
+        <div class="combo-pop" hidden>
+          <div class="combo-search"><input type="text" placeholder="Search currency…"></div>
+          <ul class="combo-list" role="listbox">
+            <li class="combo-opt sel">🇰🇪 KES — Kenyan Shilling</li><li class="combo-opt">🇺🇸 USD — US Dollar</li>
+            <li class="combo-opt">🇪🇺 EUR — Euro</li><li class="combo-opt">🇬🇧 GBP — Pound</li><li class="combo-opt">🇳🇬 NGN — Naira</li>
+            <li class="combo-empty" hidden>No matches</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="sub">Quota / usage meter</div>
+    <div class="demo col" style="max-width:380px">
+      <div class="quota"><div class="qh"><span>Storage</span><span class="qv">2.1 / 5 GB</span></div><div class="qbar"><i style="width:42%"></i></div></div>
+      <div class="quota warn"><div class="qh"><span>Credits</span><span class="qv">41 / 50</span></div><div class="qbar"><i style="width:82%"></i></div></div>
+      <div class="quota crit"><div class="qh"><span>Disk</span><span class="qv">86 / 90 GB</span></div><div class="qbar"><i style="width:95%"></i></div></div>
+    </div>
+
+    <div class="sub">Activity timeline (direction-coded)</div>
+    <div class="timeline">
+      <div class="tl-item in"><span class="tl-dot"></span><div class="tl-h"><span class="tl-label">Salary</span><span class="tl-amt">+120,000</span><span class="tl-time">Jun 1</span></div><div class="tl-note">Monthly inflow</div></div>
+      <div class="tl-item out"><span class="tl-dot"></span><div class="tl-h"><span class="tl-label">Rent</span><span class="tl-amt">−45,000</span><span class="tl-time">Jun 3</span></div></div>
+      <div class="tl-item"><span class="tl-dot"></span><div class="tl-h"><span class="tl-label">Transfer to savings</span><span class="tl-amt">−20,000</span><span class="tl-time">Jun 5</span></div><div class="tl-note">Neutral · internal</div></div>
+    </div>
+
+    <div class="sub">Connection status</div>
+    <div class="demo">
+      <span class="conn-pill up"><span class="cdot"></span> Connected <span class="qbars"><i style="height:4px"></i><i style="height:7px"></i><i style="height:11px"></i></span></span>
+      <span class="conn-pill recon"><span class="cdot"></span> Reconnecting…</span>
+      <span class="conn-pill down"><span class="cdot"></span> Offline</span>
+    </div>
+  </section>
+
+  <!-- BILLING -->
+  <section class="sec" id="billing">
+    <h2>Credits &amp; billing</h2>
+    <div class="grid2">
+      <div class="balance"><div class="bn">47</div><div class="bl">credits remaining</div></div>
+      <div class="card"><div class="card-h">Transactions</div>
+        <div class="tbl-wrap"><table class="tbl"><tbody>
+          <tr><td>Today</td><td>Analysis · Désert Dunes</td><td style="color:var(--danger)">−1</td><td><b>47</b></td></tr>
+          <tr><td>Jun 1</td><td>Monthly grant</td><td style="color:var(--primary-bright)">+50</td><td><b>48</b></td></tr>
+        </tbody></table></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROFILE -->
+  <section class="sec" id="profile">
+    <h2>Profile &amp; account</h2>
+    <div class="grid2">
+      <div class="conn-row"><span class="avatar">F</span><div class="cinfo"><div class="cn">Ada L.</div><div class="cs">ada@lovelace.io</div></div><span class="bell" style="margin-left:auto"><i class="fa-solid fa-bell"></i><span class="nbadge">3</span></span></div>
+      <div class="conn-row"><span class="dot ok"></span><div class="cinfo"><div class="cn"><i class="fa-brands fa-spotify"></i> Spotify</div><div class="cs">Connected · frank</div></div><div class="cact"><button class="btn btn-danger btn-sm">Disconnect</button></div></div>
+      <div class="keyitem"><code>sk_live_8fa2…e91</code><span class="cs" style="color:var(--muted);font-size:.78rem">used 2d ago</span><button class="btn btn-danger btn-sm" style="margin-left:auto"><i class="fa-solid fa-trash"></i> Revoke</button></div>
+      <div class="conn-row" style="border-color:rgb(var(--danger-rgb) / .3)"><div class="cinfo"><div class="cn" style="color:var(--danger)">Delete account</div><div class="cs">Permanently remove your account</div></div><div class="cact"><button class="btn btn-danger btn-sm">Delete</button></div></div>
+    </div>
+  </section>
+
+  <div class="foot">Qazana Strata · component library</div>
+</div>
+<script src="../../js/qazana.js" defer></script>
+</body>
+</html>

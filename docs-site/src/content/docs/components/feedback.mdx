@@ -1,0 +1,28 @@
+---
+title: Feedback
+description: Toasts (with positions), banners, alerts and empty states.
+sidebar:
+  order: 6
+---
+
+import Demo from '../../../components/Demo.astro';
+
+<Demo src="app/components.html#feedback" title="Feedback" height={460} />
+
+## Toasts
+
+| Part | Class / hook |
+| --- | --- |
+| Toast | `.toast` (`.ok` / `.err` / `.warn` / `.info`) + icon chip |
+| Undo affordance | `.undo` |
+| Host | `.toast-host` (default top-right) + `.tl` / `.bl` / `.br` for other corners |
+| Live trigger | `data-toast="message"` `data-toast-type` `data-toast-pos="tl\|bl\|br"` |
+
+Left-anchored hosts slide in from the left; the trigger maintains one host per
+position.
+
+## Other feedback
+
+- `.alert` (`.crit` / `.warn` / `.info`)
+- `.banner` · `.session-bar`
+- empty state `.empty`

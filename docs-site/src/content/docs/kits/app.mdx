@@ -1,0 +1,40 @@
+---
+title: App kit
+description: The product UI kit — buttons, forms, tables, overlays, command palette and more.
+sidebar:
+  order: 1
+---
+
+import Demo from '../../../components/Demo.astro';
+
+The **App kit** (`@qazana/strata/app`) is the workhorse: everything
+you need inside a product UI. It composes the behaviour primitives (dismissable
+layers, roving focus) so overlays and the command palette are keyboard- and
+screen-reader-friendly out of the box.
+
+## Components gallery
+
+Every variant and state, live, in both themes (use the theme toggle in the demo
+header):
+
+<Demo src="app/components.html" title="App kit — components" height={620} />
+
+## Admin shell
+
+The data-dense side: sidebar shell, stat cards, faceted filters, bulk actions,
+master–detail with a drag-resizable split.
+
+<Demo src="app/admin.html" title="App kit — admin" height={620} />
+
+## Error pages
+
+<Demo src="app/errors.html" title="App kit — error pages" height={480} />
+
+## What's inside
+
+Buttons & variants · full form coverage (inputs, combobox, stepper, tags, OTP,
+upload, validation) · badges/tags/status · cards · charts · stats · data table
+(sort/select/filter/expand/sticky) · tree · overlays (modal, drawer, popover,
+popconfirm, command palette, tooltip, menu) · loading & progress · steps · upload
+list · toasts & banners. See the [Components](/strata/components/buttons/)
+section for per-area detail and APIs.

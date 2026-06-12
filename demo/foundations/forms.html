@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qazana Strata — Forms</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../../kits/app.css" rel="stylesheet">
+<style>.spec-lbl{font-family:var(--mono);font-size:var(--text-xs);color:var(--muted);margin-bottom:8px}</style>
+</head>
+<body>
+<div class="bg-layer"><div class="glow one"></div><div class="glow two"></div><div class="grid-overlay"></div></div>
+
+<div class="kit">
+  <header class="top">
+    <a class="logo" href="forms.html">
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--primary)"/><circle cx="14.5" cy="15" r="7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-opacity=".95"/><path d="M19 19.5 L24 24.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
+      <span class="word">Qazan<span class="brand-8">a</span></span>
+    </a>
+    <nav><a href="typography.html">Typography</a><a href="layout.html">Layout</a><a href="../app/components.html">Components</a><button class="btn-icon" data-density-toggle aria-label="Toggle density"><i class="fa-solid fa-compress"></i></button><button class="btn-icon" data-theme-toggle="dark-knight,desert-dunes" aria-label="Switch theme"><i class="fa-solid fa-sun"></i></button></nav>
+  </header>
+
+  <div class="kit-head">
+    <div><h1 class="title">Forms</h1>
+      <p>The canonical field group <code>.form-field</code> (label + control + help + error + required) and validation states — universal via <code>base.css</code>, so every kit's forms match. Put <code>.is-error</code> on the group to light up the control, label, and message together.</p></div>
+  </div>
+
+  <section class="sec">
+    <h2>Field group <span class="spec-lbl" style="display:inline">.form-field</span></h2>
+    <div class="l-grid" style="--col:18rem">
+      <form class="l-stack">
+        <div class="spec-lbl">label + help + required</div>
+        <div class="form-field">
+          <label for="e1">Email <span class="field-req">*</span></label>
+          <input id="e1" type="email" placeholder="you@example.com">
+          <span class="field-help">We'll never share it.</span>
+        </div>
+        <div class="form-field">
+          <label for="r1">Role <span class="field-optional">optional</span></label>
+          <select id="r1"><option>Engineer</option><option>Designer</option><option>Producer</option></select>
+        </div>
+        <div class="form-field">
+          <label for="n1">Notes</label>
+          <textarea id="n1" rows="3" placeholder="Anything else…"></textarea>
+        </div>
+      </form>
+      <form class="l-stack">
+        <div class="spec-lbl">validation states</div>
+        <div class="form-field is-error">
+          <label for="p1">Password</label>
+          <input id="p1" type="password" value="abc">
+          <span class="field-error"><i class="fa-solid fa-circle-exclamation"></i> Must be at least 8 characters.</span>
+        </div>
+        <div class="form-field">
+          <label for="p2">Confirmed</label>
+          <input id="p2" type="text" class="is-success" value="looks good">
+        </div>
+        <div class="form-field">
+          <label for="d1">Disabled</label>
+          <input id="d1" type="text" value="unavailable" disabled>
+        </div>
+        <div class="form-field">
+          <label for="ro1">Read-only</label>
+          <input id="ro1" type="text" value="ada@lovelace.io" readonly>
+        </div>
+      </form>
+    </div>
+  </section>
+
+  <section class="sec">
+    <h2>Fieldset <span class="spec-lbl" style="display:inline">.fieldset — grouped under a legend</span></h2>
+    <fieldset class="fieldset" style="max-width:var(--measure)">
+      <legend>Billing address</legend>
+      <div class="form-field"><label for="st">Street</label><input id="st" type="text"></div>
+      <div class="l-row gap-3" style="align-items:flex-end">
+        <div class="form-field" style="flex:1"><label for="ci">City</label><input id="ci" type="text"></div>
+        <div class="form-field" style="flex:1"><label for="zp">Postal code</label><input id="zp" type="text" inputmode="numeric"></div>
+      </div>
+    </fieldset>
+  </section>
+
+  <section class="sec">
+    <h2>Form summary <span class="spec-lbl" style="display:inline">.form-msg</span></h2>
+    <div class="l-stack gap-3" style="max-width:var(--measure)">
+      <div class="form-msg error"><i class="fa-solid fa-circle-exclamation"></i> Please fix the highlighted fields.</div>
+      <div class="form-msg ok"><i class="fa-solid fa-circle-check"></i> Saved successfully.</div>
+    </div>
+  </section>
+
+  <div class="foot">Qazana Strata · forms</div>
+</div>
+<script src="../../js/qazana.js" defer></script>
+</body>
+</html>

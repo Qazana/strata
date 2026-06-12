@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qazana Strata — Content Kit (Blog)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../../kits/site.css" rel="stylesheet">
+<link href="../../kits/content.css" rel="stylesheet">
+</head>
+<body class="site blog">
+
+<!-- NAV (Site kit) -->
+<header class="nav" data-nav-scroll>
+  <a class="brand" href="../site/landing.html">
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--primary)"/><circle cx="14.5" cy="15" r="7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-opacity=".95"/><path d="M19 19.5 L24 24.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
+    Qazan<span class="mk">a</span>
+  </a>
+  <nav class="nav-links">
+    <a href="../index.html"><i class="fa-solid fa-border-all"></i> Demos</a>
+    <a href="../site/landing.html">Home</a><a href="blog.html">Blog</a><a href="../app/components.html">Components</a>
+  </nav>
+  <div class="nav-actions">
+    <!-- nav-links collapses ≤760px and this page has no drawer — keep an always-visible path -->
+    <a class="btn-icon" href="../index.html" aria-label="All demos" title="All demos"><i class="fa-solid fa-border-all"></i></a>
+    <button class="btn-icon" data-theme-toggle="dark-knight,desert-dunes" aria-label="Switch theme"><i class="fa-solid fa-sun"></i></button>
+    <a class="btn btn-primary" href="#">Subscribe</a>
+  </div>
+</header>
+
+<!-- BLOG INDEX -->
+<section class="wrap section" style="padding-top:64px">
+  <div class="section-head">
+    <span class="eyebrow">The Qazana blog</span>
+    <h2>Notes on design systems &amp; building products</h2>
+    <p>Deep dives, release notes, and the occasional opinion — from the team building Qazana Strata.</p>
+  </div>
+
+  <div class="cats">
+    <a class="cat on" href="#">All</a><a class="cat" href="#">Design systems</a><a class="cat" href="#">Engineering</a>
+    <a class="cat" href="#">Product</a><a class="cat" href="#">Release notes</a>
+  </div>
+
+  <div class="post-grid">
+    <!-- featured -->
+    <a class="post-card featured" href="article.html">
+      <div class="post-thumb"><i class="fa-solid fa-layer-group glyph"></i></div>
+      <div class="post-body">
+        <span class="post-tag">Design systems</span>
+        <h3>Why one set of tokens beats five component libraries</h3>
+        <p>We unified three products onto a single foundation. Here's the token model that made it click — and the migration that took a sprint, not a quarter.</p>
+        <div class="post-meta"><span class="av">A</span> Ada N. <span class="dot"></span> Jun 6, 2026 <span class="dot"></span> 8 min read</div>
+      </div>
+    </a>
+
+    <a class="post-card" href="article.html">
+      <div class="post-thumb"><i class="fa-solid fa-circle-half-stroke glyph"></i></div>
+      <div class="post-body">
+        <span class="post-tag">Engineering</span>
+        <h3>Theming with CSS custom properties, the hybrid way</h3>
+        <p>Auto-follow the OS, but let an explicit choice win. A small pattern that scales to any number of named themes.</p>
+        <div class="post-meta"><span class="av">G</span> Grace H. <span class="dot"></span> Jun 2, 2026 <span class="dot"></span> 6 min read</div>
+      </div>
+    </a>
+    <a class="post-card" href="article.html">
+      <div class="post-thumb"><i class="fa-solid fa-vial glyph"></i></div>
+      <div class="post-body">
+        <span class="post-tag">Engineering</span>
+        <h3>Catching the bug a single-theme screenshot can't see</h3>
+        <p>A render harness that screenshots every page in both themes — and why <code>var()</code> in an SVG attribute silently breaks.</p>
+        <div class="post-meta"><span class="av">T</span> Alan T. <span class="dot"></span> May 28, 2026 <span class="dot"></span> 5 min read</div>
+      </div>
+    </a>
+    <a class="post-card" href="article.html">
+      <div class="post-thumb"><i class="fa-solid fa-cubes glyph"></i></div>
+      <div class="post-body">
+        <span class="post-tag">Product</span>
+        <h3>Kits: composing a frontend from shared parts</h3>
+        <p>App, Site, Content — focused component sets on one foundation, loaded only where needed.</p>
+        <div class="post-meta"><span class="av">A</span> Ada N. <span class="dot"></span> May 21, 2026 <span class="dot"></span> 7 min read</div>
+      </div>
+    </a>
+  </div>
+
+  <nav class="pager">
+    <a href="#">‹</a><a class="on" href="#">1</a><a href="#">2</a><a href="#">3</a><a href="#">›</a>
+  </nav>
+
+  <div class="newsletter">
+    <h3>Get the next post in your inbox</h3>
+    <p>One email when we publish. No spam, unsubscribe anytime.</p>
+    <form class="news-form" onsubmit="return false">
+      <input type="email" placeholder="you@example.com" aria-label="Email address">
+      <button class="btn btn-primary" type="submit">Subscribe</button>
+    </form>
+  </div>
+</section>
+
+
+<!-- FOOTER (Site kit) -->
+<footer class="site-foot">
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-col">
+        <a class="brand" href="../site/landing.html" style="margin-bottom:14px">
+          <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--primary)"/><circle cx="14.5" cy="15" r="7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-opacity=".95"/><path d="M19 19.5 L24 24.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
+          Qazan<span class="mk">a</span>
+        </a>
+        <p>The shared design system for every Qazana product — tokens, themes and composable kits.</p>
+      </div>
+      <div class="foot-col"><h4>Product</h4><a href="site.html#features">Features</a><a href="site.html#pricing">Pricing</a><a href="../app/components.html">Components</a></div>
+      <div class="foot-col"><h4>Resources</h4><a href="blog.html">Blog</a><a href="#">Docs</a><a href="../app/errors.html">Error pages</a></div>
+      <div class="foot-col"><h4>Company</h4><a href="#">About</a><a href="#">Careers</a><a href="#">Contact</a></div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 Qazana Strata · Content kit</span>
+      <span>Dark Knight &amp; Désert Dunes themes</span>
+    </div>
+  </div>
+</footer>
+
+<script src="../../js/qazana.js" defer></script>
+<script>
+  (function () {
+    var nav = document.querySelector('[data-nav-scroll]');
+    if (!nav) return;
+    var onScroll = function () { nav.classList.toggle('scrolled', window.scrollY > 8); };
+    onScroll(); window.addEventListener('scroll', onScroll, { passive: true });
+  })();
+</script>
+</body>
+</html>

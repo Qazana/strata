@@ -1,0 +1,14 @@
+# Astro / build
+node_modules/
+dist/
+.astro/
+
+# Synced from the repo root at build time (single source of truth lives at ../)
+public/demo/
+public/kits/
+public/tokens/
+public/js/
+public/themes/
+
+# Generated docs page (emitted from tokens.json by scripts/gen-tokens.mjs)
+src/content/docs/foundations/tokens.md

@@ -1,0 +1,29 @@
+---
+title: Content kit
+description: Long-form reading — blog indexes, articles, prose, callouts and a TOC scrollspy.
+sidebar:
+  order: 3
+---
+
+import Demo from '../../../components/Demo.astro';
+
+The **Content kit** (`@qazana/strata/content`) handles editorial
+surfaces: blog listings, article layouts, `.prose` typography, callouts, and a
+docs layout with a sticky table-of-contents scrollspy.
+
+## Article with TOC
+
+The `.doc-layout` puts prose beside a sticky `.toc` ( `[data-toc]` ) whose links
+highlight the section in view via IntersectionObserver:
+
+<Demo src="content/article.html" title="Content — article + TOC" height={620} />
+
+## Blog index
+
+<Demo src="content/blog.html" title="Content — blog index" height={560} />
+
+## Variants
+
+`blog`, `blog-medium`, `article`, `article-plain` (no hero image), and
+`article-media` (with embedded video/audio). The prose styles (`.prose`,
+`.callout`, `blockquote`, code blocks) compose with the Site kit header/footer.

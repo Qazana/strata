@@ -1,0 +1,229 @@
+/* ============================================================================
+   Qazana Strata — design tokens (single source of truth).
+   Framework-agnostic. Dark is the canonical scheme.
+
+   THEMING
+   -------
+   Override the brand/semantic tokens per app. Each color has a solid hex AND an
+   `-rgb` channel triple so alpha tints stay themeable:
+       --primary:#2dd4bf;  --primary-rgb:45 212 191;
+   Tints are built with rgb(var(--primary-rgb) / <alpha>), so a single override
+   re-tints every soft fill / ring / border.
+
+   SCHEMES
+   -------
+   Two named schemes: "Dark Knight" (canonical dark, teal accent on deep-navy)
+   and "Désert Dunes" (light, coral on warm cream). Opt-in and hybrid:
+     • `<html data-theme="dark-knight">`   forces dark   (alias: data-theme="dark")
+     • `<html data-theme="desert-dunes">`  forces light  (alias: data-theme="light")
+     • unset  → follows the OS via @media (prefers-color-scheme)
+   Neutral lines/borders flow through `--border-rgb` so they flip with the
+   scheme; `color-scheme` is set per scheme so native controls match.
+
+   Brand colours are Qazana's (sourced from qazana.net): Désert Dunes is coral
+   on warm cream; the dark scheme uses a teal accent on deep-navy.
+   ============================================================================ */
+
+/* ---- self-hosted variable fonts (WOFF2, latin). Single variable file per
+   family with a weight RANGE — one request covers the whole weight ramp (no
+   faux-bold). Self-hosting keeps visitor IPs off Google (GDPR) and the fonts on
+   our origin. `swap` keeps text visible immediately, and the metric-matched
+   fallbacks below (capsize-computed from the WOFF2) keep the swap shift ~0 (CLS). ---- */
+@font-face{font-family:'DM Sans';font-style:normal;font-weight:100 1000;font-display:swap;
+  src:url("../fonts/dm-sans-var.woff2") format("woff2")}
+@font-face{font-family:'Figtree';font-style:normal;font-weight:300 900;font-display:swap;
+  src:url("../fonts/figtree-var.woff2") format("woff2")}
+@font-face{font-family:'Syne';font-style:normal;font-weight:400 800;font-display:swap;
+  src:url("../fonts/syne-var.woff2") format("woff2")}   /* loaded only by themes that opt into it */
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:100 800;font-display:swap;
+  src:url("../fonts/jetbrains-mono-var.woff2") format("woff2")}
+/* metric-matched fallbacks over local system fonts — same box as the web font,
+   so font-display:swap produces ~0 layout shift. Stacks below name these. */
+@font-face{font-family:'DM Sans Fallback';src:local('Arial'),local('ArialMT');ascent-override:94.9001%;descent-override:29.6563%;line-gap-override:0%;size-adjust:104.531%}
+@font-face{font-family:'Figtree Fallback';src:local('Arial'),local('ArialMT');ascent-override:95.3853%;descent-override:25.1014%;line-gap-override:0%;size-adjust:99.5961%}
+@font-face{font-family:'Syne Fallback';src:local('Arial'),local('ArialMT');ascent-override:93.933%;descent-override:27.926%;line-gap-override:0%;size-adjust:98.4745%}
+@font-face{font-family:'JetBrains Mono Fallback';src:local('Courier New'),local('CourierNewPSMT');ascent-override:102.0166%;descent-override:30.0049%;size-adjust:99.9837%}
+
+/* Tokens live in the same `qazana` layer as the kits, so UNLAYERED CSS — the
+   per-app themes/*.css overrides and consumers' own styles — beats every
+   scheme block below regardless of selector specificity. (Without the layer,
+   the light-scheme blocks' higher-specificity selectors would re-impose the
+   default brand over a product theme.) */
+@layer qazana {
+
+:root{
+  color-scheme:dark;
+  --font-smooth:antialiased;      /* light-on-dark blooms → antialiased thins it back; light scheme overrides to auto */
+
+  /* ---- neutral surfaces (rarely overridden) ---- */
+  --bg:#0a0a0a;
+  --surface:#141414;
+  --surface-2:#1e1e1e;
+  --surface-3:#161616;            /* popovers / tooltips / menus */
+  --surface-sunken:#0c0c0c;       /* recessed code / terminal / log panels */
+  --surface-active:#17171b;       /* focused-field activation lift */
+  --skeleton:#262626;             /* skeleton shimmer band (grey, per scheme) */
+  --border-rgb:255 255 255;       /* line/border channel — flips per scheme */
+  --line:rgb(var(--border-rgb) / .08);
+  --line-strong:rgb(var(--border-rgb) / .14);
+  --text:#f0f0f0;
+  --text-2:#b3b3b3;
+  --muted:#8c8c8c;
+
+  /* ---- brand + semantic (OVERRIDE per app) ---- */
+  --primary:#2dd4bf;         --primary-rgb:45 212 191;       /* brand / primary action (dark scheme: teal; light overrides to coral) */
+  --primary-bright:#5eead4;  --primary-bright-rgb:94 234 212; /* hover / emphasis (on dark) */
+  --on-primary:#04241f;                                      /* text on a primary fill (dark teal needs dark ink) */
+  --danger:#f43f5e;          --danger-rgb:244 63 94;         /* destructive — kept distinct from coral */
+  --warning:#ffa726;         --warning-rgb:255 167 38;
+  --info:#5aa9ff;            --info-rgb:90 169 255;
+  --accent:#a98bff;          --accent-rgb:169 139 255;       /* categorical / tier */
+
+  /* ---- foreground pairs: text colour on a SOLID fill of each semantic colour.
+     Bright dark-scheme fills need dark ink; light overrides these to white. ---- */
+  --on-danger:#ffffff;
+  --on-warning:#241200;
+  --on-info:#04203f;
+  --on-accent:#1e1340;
+
+  /* ---- derived tints (themeable via the channels above) ---- */
+  --primary-soft:rgb(var(--primary-rgb) / .12);   /* soft fill */
+  --primary-ring:rgb(var(--primary-rgb) / .22);   /* focus ring */
+  --primary-line:rgb(var(--primary-rgb) / .30);   /* brand border/accent */
+  --danger-soft:rgb(var(--danger-rgb) / .12);
+  --warning-soft:rgb(var(--warning-rgb) / .12);
+  --info-soft:rgb(var(--info-rgb) / .12);
+
+  /* ---- radius (one knob: --radius scales sm/lg) ---- */
+  --radius:8px;
+  --radius-sm:calc(var(--radius) - 2px);
+  --radius-lg:calc(var(--radius) + 4px);
+  --radius-pill:99px;
+
+  /* ---- elevation ---- */
+  --shadow-sm:0 2px 6px -3px rgba(0,0,0,.35);
+  --shadow:0 6px 18px -10px rgba(0,0,0,.4);
+  --shadow-lg:0 12px 30px -16px rgba(0,0,0,.45);
+
+  /* ---- spacing scale ---- */
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+  --space-5:24px; --space-6:32px; --space-7:48px;
+
+  /* ---- density (control sizing; orthogonal to color scheme) ---- */
+  --ctl-font:var(--text-md);             /* base control text (inputs/selects/buttons) — 14px, on-scale */
+  --ctl-pad-y:11px;  --ctl-pad-x:13px;   /* inputs / selects / textarea */
+  --btn-pad-y:13px;  --btn-pad-x:22px;   /* buttons */
+  --cell-pad-y:11px; --cell-pad-x:14px;  /* table cells */
+  --row-pad-y:9px;   --row-pad-x:11px;   /* nav / list rows */
+
+  /* ---- typography (override per brand) ---- */
+  --display:'Figtree','Figtree Fallback',sans-serif;                    /* hero titles + brand wordmark only; product themes may opt into Syne */
+  --body:'DM Sans','DM Sans Fallback',system-ui,sans-serif;            /* body / UI */
+  --mono:'JetBrains Mono','JetBrains Mono Fallback','SF Mono','Fira Code','SFMono-Regular',ui-monospace,monospace;/* data / code */
+
+  /* ---- type scale · Tier 1 primitive steps (size + paired leading + tracking).
+     Band-aware + pixel-snapped: small near-integer UI steps, steeper display.
+     Anchor 16px. UI/body STATIC; display FLUID via clamp() (keeps a rem term so
+     browser text-zoom still works — WCAG 1.4.4). ---- */
+  --text-2xs:.6875rem;   /* 11px  overlines, micro */
+  --text-xs:.75rem;      /* 12px  captions, badges */
+  --text-sm:.8125rem;    /* 13px  dense controls, secondary */
+  --text-md:.875rem;     /* 14px  base UI (controls) */
+  --text-base:1rem;      /* 16px  reading body / prose */
+  --text-lg:1.125rem;    /* 18px  lead paragraph */
+  --text-xl:1.25rem;     /* 20px  card titles */
+  --text-2xl:1.5rem;     /* 24px  large subhead (largest static) */
+  --text-3xl:clamp(1.75rem,1.607rem + 0.714vw,2.25rem);  /* 28→36 */
+  --text-4xl:clamp(2.25rem,2.036rem + 1.071vw,3rem);     /* 36→48 */
+  --text-5xl:clamp(2.75rem,2.464rem + 1.429vw,3.75rem);  /* 44→60 */
+  --text-6xl:clamp(3.25rem,2.893rem + 1.786vw,4.5rem);   /* 52→72 */
+
+  /* leading — unitless; tightens as size grows */
+  --leading-none:1; --leading-tight:1.1; --leading-snug:1.3;
+  --leading-normal:1.5; --leading-relaxed:1.7;
+
+  /* tracking — crossover: positive on small text, negative on display */
+  --tracking-2xs:.01em; --tracking-xs:.005em; --tracking-sm:.0025em;
+  --tracking-normal:0; --tracking-tight:-.01em; --tracking-tighter:-.02em;
+  --tracking-wide:.06em;  /* overlines / small uppercase labels */
+  --tracking-caps:.12em;  /* ALL-CAPS eyebrows */
+
+  /* weight ramp — the matching weights must be LOADED (see kits/… font setup) */
+  --weight-regular:400; --weight-medium:500; --weight-semibold:600;
+  --weight-bold:700; --weight-black:800;
+
+  /* measure (line length) — prose ~65ch; never apply prose measure to UI text */
+  --measure:65ch; --measure-narrow:48ch; --measure-wide:75ch;
+
+  /* ---- type roles · Tier 2 semantic aliases (components reference THESE, not
+     the raw steps, so the ladder can be retuned without touching components). ---- */
+  --fs-display:var(--text-6xl); --fs-h1:var(--text-5xl); --fs-h2:var(--text-4xl);
+  --fs-h3:var(--text-3xl); --fs-h4:var(--text-2xl); --fs-title:var(--text-xl);
+  --fs-body:var(--text-base); --fs-ui:var(--text-md); --fs-label:var(--text-sm);
+  --fs-caption:var(--text-xs); --fs-code:var(--text-sm);
+
+  /* ---- motion ---- */
+  --ease:cubic-bezier(.22,1,.36,1);
+  --dur-1:120ms; --dur-2:180ms; --dur-3:250ms;
+}
+
+/* ============================================================================
+   "DÉSERT DUNES" (light scheme) — warm-cream surface, navy ink, coral brand.
+   Only the values that differ from dark are overridden. The two selectors are
+   kept in sync deliberately: the @media block is the OS-auto default (unless an
+   explicit data-theme is set), and the [data-theme] block is the manual
+   override (canonical "desert-dunes", with "light" kept as an alias).
+   ============================================================================ */
+/* "Dark Knight" (canonical dark) — explicit handle; values come from :root. */
+:root[data-theme="dark-knight"]{ color-scheme:dark; }
+
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]):not([data-theme="dark-knight"]){
+    color-scheme:light;
+    --font-smooth:auto;             /* dark-on-light needs no thinning — keep glyphs full */
+    --bg:#fff6ef; --surface:#ffffff; --surface-2:#fbeee3; --surface-3:#ffffff; --surface-sunken:#f5ece2; --surface-active:#fff1ec; --skeleton:#eae5de;
+    --border-rgb:11 15 26;
+    --text:#0b0f1a; --text-2:#3b4356; --muted:#5b6475;
+    --primary:#ff6b4a; --primary-rgb:255 107 74; --on-primary:#ffffff;   /* light keeps the Qazana coral brand */
+    --primary-bright:#f0502a; --primary-bright-rgb:240 80 42;   /* emphasis/hover reads darker on cream */
+    --danger:#d92d3f; --danger-rgb:217 45 63;
+    --warning:#b9730a; --warning-rgb:185 115 10;
+    --info:#2f6fed;   --info-rgb:47 111 237;
+    --accent:#7c5cff; --accent-rgb:124 92 255; --on-warning:#fff; --on-info:#fff; --on-accent:#fff;
+    --shadow-sm:0 2px 6px -3px rgb(11 15 26 / .08);
+    --shadow:0 8px 20px -12px rgb(11 15 26 / .12);
+    --shadow-lg:0 16px 36px -18px rgb(11 15 26 / .14);
+  }
+}
+:root[data-theme="desert-dunes"],
+:root[data-theme="light"]{
+  color-scheme:light;
+  --font-smooth:auto;
+  --bg:#fff6ef; --surface:#ffffff; --surface-2:#fbeee3; --surface-3:#ffffff; --surface-sunken:#f5ece2; --surface-active:#fff1ec; --skeleton:#eae5de;
+  --border-rgb:11 15 26;
+  --text:#0b0f1a; --text-2:#3b4356; --muted:#5b6475;
+  --primary:#ff6b4a; --primary-rgb:255 107 74; --on-primary:#ffffff;
+  --primary-bright:#f0502a; --primary-bright-rgb:240 80 42;
+  --danger:#d92d3f; --danger-rgb:217 45 63;
+  --warning:#b9730a; --warning-rgb:185 115 10;
+  --info:#2f6fed;   --info-rgb:47 111 237;
+  --accent:#7c5cff; --accent-rgb:124 92 255; --on-warning:#fff; --on-info:#fff; --on-accent:#fff;
+  --shadow-sm:0 2px 6px -3px rgb(11 15 26 / .08);
+  --shadow:0 8px 20px -12px rgb(11 15 26 / .12);
+  --shadow-lg:0 16px 36px -18px rgb(11 15 26 / .14);
+}
+
+/* ============================================================================
+   COMPACT density — for dense admin / data UIs. Orthogonal to the color scheme:
+   combine freely, e.g. <html data-theme="dark-knight" data-density="compact">.
+   (data-density="comfortable" or unset = the default sizing above.)
+   ============================================================================ */
+:root[data-density="compact"]{
+  --ctl-font:.84rem;
+  --ctl-pad-y:7px;   --ctl-pad-x:10px;
+  --btn-pad-y:8px;   --btn-pad-x:15px;
+  --cell-pad-y:6px;  --cell-pad-x:10px;
+  --row-pad-y:6px;   --row-pad-x:9px;
+}
+
+}

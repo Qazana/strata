@@ -1,0 +1,39 @@
+---
+title: Auth kit
+description: The full authentication flow — sign-in/up, reset, 2FA, passwordless and more.
+sidebar:
+  order: 4
+---
+
+import Demo from '../../../components/Demo.astro';
+
+The **Auth kit** (`@qazana/strata/auth`) is a complete, accessible
+authentication flow with password reveal, strength meter and OTP inputs wired via
+`data-*` hooks.
+
+## Sign in
+
+<Demo src="auth/sign-in.html" title="Auth — sign in" height={620} />
+
+## The full flow
+
+| Screen | File |
+| --- | --- |
+| Sign in (split / centered) | `sign-in`, `sign-in-centered` |
+| Sign up | `sign-up` |
+| Reset password | `reset` |
+| Check your email | `check-email` |
+| Set a new password | `new-password` |
+| Verify email | `verify` |
+| Two-factor | `two-factor` |
+| Passwordless (magic link) | `passwordless` |
+| App password | `app-password` |
+
+<Demo src="auth/two-factor.html" title="Auth — two-factor" height={560} />
+
+Password fields support reveal (`data-pw-toggle`), a strength meter
+(`data-pw-strength`) and the OTP component (`data-otp`). Reveal is delegated
+globally, so it works regardless of how many password fields are on the page.
+
+Out-of-flow controls (theme toggle, escape links) use `.auth-toggle` — fixed
+top-right on its own, or stack several inside an `.auth-corner` row.

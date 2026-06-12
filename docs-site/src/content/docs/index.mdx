@@ -1,0 +1,62 @@
+---
+title: Qazana Strata
+description: A framework-agnostic, token-driven design system — vanilla CSS + data-attribute behaviours, themeable per product.
+template: splash
+hero:
+  tagline: One token foundation. Every product. No framework, no build step.
+  actions:
+    - text: Get started
+      link: /strata/getting-started/install/
+      icon: right-arrow
+      variant: primary
+    - text: View on GitHub
+      link: https://github.com/qazana/strata
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## Why Qazana Strata
+
+A design system isn't a component library — it's the **contract** underneath one:
+the colours, spacing, type and motion every component references instead of
+hardcoding. Qazana Strata is that contract, owned in-house and consumed by every
+Qazana product.
+
+<CardGrid stagger>
+  <Card title="Tokens are the contract" icon="setting">
+    Nothing hardcodes a colour or size — everything references a token. One
+    override re-skins everything. That's what makes themes, density and
+    per-product brands possible at all.
+  </Card>
+  <Card title="Two orthogonal axes" icon="puzzle">
+    Colour scheme (`data-theme`: Dark Knight / Désert Dunes) and density
+    (`data-density`: comfortable / compact) are independent and compose freely.
+    Neither is a fork of the CSS.
+  </Card>
+  <Card title="Vanilla + data-attributes" icon="document">
+    Behaviours attach via `data-*` hooks and work in any framework through the
+    rendered DOM. No framework dependency. No build step to consume.
+  </Card>
+  <Card title="Accessibility in the primitive" icon="approve-check">
+    One dismissable-layer + roving-focus core powers modal, drawer, menu,
+    combobox, command palette and popover — so every component inherits keyboard
+    and ARIA support.
+  </Card>
+</CardGrid>
+
+## The 30-second version
+
+```html
+<link rel="stylesheet" href="@qazana/strata/tokens" />
+<link rel="stylesheet" href="@qazana/strata/app" />
+<script type="module" src="@qazana/strata"></script>
+
+<button class="btn btn-primary">Primary</button>
+<button data-cmdk-open class="btn btn-secondary">Search… <span class="kbd-hint">⌘K</span></button>
+```
+
+That's the whole integration: tokens + a kit + the behaviour script. Theme it
+per product by overriding a handful of brand tokens. See
+[Install](/strata/getting-started/install/) to go deeper.

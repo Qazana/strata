@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qazana Strata — Content Kit (Article, no image)</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../../kits/site.css" rel="stylesheet">
+<link href="../../kits/content.css" rel="stylesheet">
+</head>
+<body class="site">
+
+<header class="nav" data-nav-scroll>
+  <a class="brand" href="../site/landing.html">
+    <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--primary)"/><circle cx="14.5" cy="15" r="7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-opacity=".95"/><path d="M19 19.5 L24 24.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
+    Qazan<span class="mk">a</span>
+  </a>
+  <nav class="nav-links">
+    <a href="blog.html">Grid</a><a href="blog-medium.html">Reading list</a><a href="article.html">Article</a><a href="article-plain.html">Article (plain)</a>
+  </nav>
+  <div class="nav-actions">
+    <button class="btn-icon" data-theme-toggle="dark-knight,desert-dunes" aria-label="Switch theme"><i class="fa-solid fa-sun"></i></button>
+  </div>
+</header>
+
+<article>
+  <div class="article-head">
+    <span class="post-tag">Engineering</span>
+    <h1>Theming with CSS custom properties, the hybrid way</h1>
+    <div class="article-meta"><span class="av">G</span> Grace H. · Jun 2, 2026 · 6 min read</div>
+  </div>
+
+  <div class="article">
+    <div class="prose">
+      <p class="lead">A no-image article — pure reading. Auto-follow the OS, but let an explicit choice win. A small pattern that scales to any number of named themes.</p>
+      <p>Most theming setups force a choice: follow the system, or expose a manual toggle. You can have both, with a predictable precedence rule and almost no JavaScript.</p>
+
+      <h2>The precedence rule</h2>
+      <p>Treat an explicit <code>data-theme</code> as the source of truth; fall back to the OS only when it's absent:</p>
+      <pre><code>:root { /* canonical dark */ }
+@media (prefers-color-scheme: light){
+  :root:not([data-theme="dark"]):not([data-theme="dark-knight"]){ /* light */ }
+}
+:root[data-theme="desert-dunes"]{ /* light, forced */ }</code></pre>
+      <div class="callout note"><b>Note</b> Set <code>color-scheme</code> per theme so native controls match.</div>
+
+      <h2>Naming the schemes</h2>
+      <p>Names beat "light/dark" for a product voice — ours are <strong>Dark Knight</strong> and <strong>Désert Dunes</strong>, each with an alias so the plain values still work.</p>
+      <blockquote>The toggle should change one attribute and persist one string. Everything else is CSS.</blockquote>
+
+      <h3>Takeaways</h3>
+      <ul><li>Explicit choice wins over the OS</li><li>One attribute drives every component</li><li>Add a theme = add a token block + a name</li></ul>
+    </div>
+  </div>
+
+  <div class="article-foot">
+    <div class="tags"><span class="post-tag">Engineering</span><span class="post-tag">Theming</span><span class="post-tag">CSS</span></div>
+    <div class="author-bio">
+      <span class="av">G</span>
+      <div><b>Grace H.</b><p>Engineer on Qazana Strata. Writes about CSS architecture and theming.</p></div>
+    </div>
+  </div>
+</article>
+
+<footer class="site-foot">
+  <div class="wrap"><div class="foot-bottom" style="border-top:0;margin-top:0">
+    <span>© 2026 Qazana Strata · Content kit</span><span>Variant: article (no image)</span>
+  </div></div>
+</footer>
+
+<script src="../../js/qazana.js" defer></script>
+<script>(function(){var n=document.querySelector('[data-nav-scroll]');if(!n)return;var f=function(){n.classList.toggle('scrolled',window.scrollY>8);};f();addEventListener('scroll',f,{passive:true});})();</script>
+</body>
+</html>

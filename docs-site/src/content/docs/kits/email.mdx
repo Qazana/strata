@@ -1,0 +1,26 @@
+---
+title: Email kit
+description: Transactional and newsletter email templates built on the same tokens.
+sidebar:
+  order: 5
+---
+
+import Demo from '../../../components/Demo.astro';
+
+The **Email kit** (`@qazana/strata/email/*`) provides
+table-based, client-safe email templates that still draw their colours and type
+from the token foundation.
+
+## Transactional
+
+<Demo src="email/transactional.html" title="Email — transactional" height={620} />
+
+## Newsletter
+
+<Demo src="email/newsletter.html" title="Email — newsletter" height={620} />
+
+:::note
+Email clients are unforgiving — these templates use table layout and inlined-safe
+patterns rather than the `data-*` behaviours or `@layer` cascade used elsewhere.
+The shared element is the **palette and type**, not the interactive JS.
+:::

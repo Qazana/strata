@@ -1,0 +1,8 @@
+/* Qazana umbrella-brand theme — local copy for the public demo (canonical: themes/qazana.css). */
+:root{
+  --primary:#ff6b4a;        --primary-rgb:255 107 74;     /* qazana coral */
+  --primary-bright:#f0502a; --primary-bright-rgb:240 80 42;
+  --on-primary:#ffffff;
+  --display:'Fraunces',serif;
+  --body:'Space Grotesk',system-ui,sans-serif;
+}

@@ -1,0 +1,36 @@
+name: Release
+
+# Publish @qazana/strata to npm when a version tag is pushed.
+# Requires the NPM_TOKEN secret: a granular automation token created by the
+# qazana org owner (qazana-hd) with read/write on @qazana packages.
+#
+# When this repo goes public, add `--provenance` to the publish command
+# (provenance requires a public repo) for a verifiable build chain.
+
+on:
+  push:
+    tags: ['v*']
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write   # harmless now; required if --provenance is enabled later
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Verify tag matches package.json version
+        run: |
+          PKG="v$(node -p "require('./package.json').version")"
+          [ "$PKG" = "$GITHUB_REF_NAME" ] || { echo "tag $GITHUB_REF_NAME != package $PKG"; exit 1; }
+
+      - name: Publish
+        run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}

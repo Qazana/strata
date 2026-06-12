@@ -1,0 +1,9 @@
+/* "Nocturne" — FICTIONAL example theme for the public demo. Indigo brand on the
+   dark scheme; Bricolage Grotesque display. */
+:root{
+  --primary:#818cf8;        --primary-rgb:129 140 248;
+  --primary-bright:#a5b0fc; --primary-bright-rgb:165 176 252;
+  --on-primary:#10123a;     /* light indigo fill needs dark ink */
+  --accent:#f8b4d9; --accent-rgb:248 180 217;
+  --display:'Bricolage Grotesque',sans-serif;
+}

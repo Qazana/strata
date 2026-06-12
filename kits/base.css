@@ -1,0 +1,134 @@
+@import "../tokens/qazana.tokens.css";
+
+@layer qazana {
+
+/* ============================================================================
+   Qazana Strata — BASE (universal foundation, imported by EVERY kit). Type-role
+   utilities, numeric/ligature utilities, and layout primitives — all built on
+   the shared tokens, so they're available on every page regardless of kit.
+   Component CSS lives in the per-kit files (app/site/auth/content/media).
+   ============================================================================ */
+
+/* ---- type role utilities — each applies a role's size+weight+leading+tracking
+   together (one source per role → no drift). --display is for .t-display only;
+   the rest are the body face (inherited). ---- */
+.t-display{font-family:var(--display);font-size:var(--fs-display);font-weight:var(--weight-black);line-height:var(--leading-tight);letter-spacing:var(--tracking-tighter)}
+.t-h1{font-size:var(--fs-h1);font-weight:var(--weight-black);line-height:var(--leading-tight);letter-spacing:var(--tracking-tight)}
+.t-h2{font-size:var(--fs-h2);font-weight:var(--weight-black);line-height:var(--leading-tight);letter-spacing:var(--tracking-tight)}
+.t-h3{font-size:var(--fs-h3);font-weight:var(--weight-bold);line-height:var(--leading-snug);letter-spacing:var(--tracking-tight)}
+.t-h4{font-size:var(--fs-h4);font-weight:var(--weight-bold);line-height:var(--leading-snug);letter-spacing:var(--tracking-normal)}
+.t-lead{font-size:var(--text-lg);font-weight:var(--weight-regular);line-height:var(--leading-normal);color:var(--text-2)}
+.t-caption{font-size:var(--fs-caption);font-weight:var(--weight-medium);line-height:var(--leading-snug);letter-spacing:var(--tracking-xs);color:var(--muted)}
+
+/* ---- numeric & ligature utilities — modern property + legacy font-feature-
+   settings fallback. Each sets a single property, so don't stack two on one. ---- */
+.nums-tabular{font-variant-numeric:tabular-nums;font-feature-settings:"tnum"}
+.nums-proportional{font-variant-numeric:proportional-nums;font-feature-settings:"pnum"}
+.zero-slashed{font-variant-numeric:slashed-zero;font-feature-settings:"zero"}
+.ligatures-none{font-variant-ligatures:none}
+
+/* ---- form controls (universal so every kit's inputs match) — one consistent
+   size from the density tokens; states are canonical .is-error / .is-success. ---- */
+input[type=text],input[type=url],input[type=email],input[type=password],
+input[type=search],input[type=number],input[type=tel],input[type=date],input[type=time],
+textarea,select{
+  font-family:var(--body);font-size:var(--ctl-font);color:var(--text);width:100%;
+  background:var(--surface);border:1px solid rgb(var(--border-rgb) / .14);border-radius:var(--radius);
+  padding:var(--ctl-pad-y) var(--ctl-pad-x);outline:none;-webkit-appearance:none;appearance:none;
+  transition:border-color .15s ease,box-shadow .15s ease,background-color .15s ease}
+select:not([multiple]){
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%238c8c8c' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 13px center;padding-inline-end:34px}
+input::placeholder,textarea::placeholder{color:var(--muted)}
+input:hover:not(:focus),textarea:hover:not(:focus),select:hover:not(:focus){border-color:rgb(var(--border-rgb) / .22)}
+input:focus-visible,textarea:focus-visible,select:focus-visible{
+  border-color:var(--primary-bright);background:var(--surface-active);box-shadow:0 0 0 3px var(--primary-ring);caret-color:var(--primary-bright)}
+input.invalid,input.is-error,textarea.is-error,select.is-error{border-color:var(--danger);box-shadow:0 0 0 3px rgb(var(--danger-rgb) / .18)}
+input.is-success,textarea.is-success,select.is-success{border-color:var(--primary);box-shadow:0 0 0 3px rgb(var(--primary-rgb) / .14)}
+input.is-error:focus,input.is-success:focus{box-shadow:0 0 0 3px rgb(var(--danger-rgb) / .22)}
+input[readonly]{color:var(--text-2);background:var(--surface-2);cursor:default;border-style:dashed}
+input:disabled,textarea:disabled,select:disabled{opacity:.5;cursor:not-allowed}
+
+/* ---- field group: label + control + help + error. Put .is-error on the group
+   to light up the control border, label, and error message together. ---- */
+.form-field{display:flex;flex-direction:column;gap:var(--space-2)}
+.form-field > label,.form-field .field-label{font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--text)}
+.field-req{color:var(--danger);margin-inline-start:2px}
+.field-optional{color:var(--muted);font-weight:var(--weight-regular);font-size:var(--text-xs);margin-inline-start:6px}
+.field-help{font-size:var(--text-xs);color:var(--muted)}
+.field-error{font-size:var(--text-xs);color:var(--danger);display:flex;align-items:center;gap:5px}
+.form-field.is-error :is(input,textarea,select){border-color:var(--danger);box-shadow:0 0 0 3px rgb(var(--danger-rgb) / .18)}
+.form-field.is-error > label,.form-field.is-error .field-label{color:var(--danger)}
+/* fieldset — group related fields under a legend */
+.fieldset{border:1px solid var(--line);border-radius:var(--radius);padding:var(--space-4);margin:0;min-width:0;display:flex;flex-direction:column;gap:var(--space-4)}
+.fieldset > legend{padding:0 var(--space-2);margin-inline-start:calc(var(--space-2) * -1);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--text-2)}
+
+/* ---- layout primitives — composable building blocks. Gap is var-driven
+   (`--gap`, default per primitive); set it inline or with a .gap-N helper.
+   Prefixed .l-* so they never collide with consumer (Tailwind/Bootstrap/Ember)
+   markup. ---- */
+.l-container{width:100%;max-width:var(--container,72rem);margin-inline:auto;padding-inline:var(--gutter,var(--space-5))}
+.l-stack{display:flex;flex-direction:column;gap:var(--gap,var(--space-4))}
+.l-row{display:flex;flex-wrap:wrap;align-items:center;gap:var(--gap,var(--space-3))}
+/* auto-fit grid; min(--col,100%) keeps it from overflowing narrow viewports */
+.l-grid{display:grid;gap:var(--gap,var(--space-4));grid-template-columns:repeat(auto-fit,minmax(min(var(--col,16rem),100%),1fr))}
+.l-spacer{flex:1 1 auto}
+/* row alignment modifiers */
+.l-row.between{justify-content:space-between}
+.l-row.center{justify-content:center}
+.l-row.end{justify-content:flex-end}
+.l-row.start{align-items:flex-start}
+.l-row.baseline{align-items:baseline}
+/* gap helpers → space scale */
+.gap-1{--gap:var(--space-1)}.gap-2{--gap:var(--space-2)}.gap-3{--gap:var(--space-3)}
+.gap-4{--gap:var(--space-4)}.gap-5{--gap:var(--space-5)}.gap-6{--gap:var(--space-6)}.gap-7{--gap:var(--space-7)}
+
+/* ---- forced-colors / Windows High-Contrast Mode. Focus rings here are drawn
+   with box-shadow, which the OS DROPS in forced-colors mode — so keyboard focus
+   would become invisible. Restore a visible focus indicator with `outline`
+   (which forced-colors keeps), using the system Highlight colour. Only active in
+   forced-colors mode → zero effect on normal rendering. ---- */
+@media (forced-colors: active){
+  :focus-visible,
+  a:focus-visible,button:focus-visible,
+  input:focus-visible,select:focus-visible,textarea:focus-visible,
+  [tabindex]:focus-visible,[data-tip]:focus-visible{
+    outline:2px solid Highlight;
+    outline-offset:2px;
+  }
+}
+
+/* ---- skip-link: accessibility — first focusable element, jumps to main content.
+   Hidden until focused, then visible at page top. Keep this as the first element
+   in <body> on every page, as an <a>.
+   The `a` qualifier is LOAD-BEARING: it out-specs same-layer blanket child rules
+   (site.css's `.site > *{position:relative}`) that would otherwise drop the pill
+   into the page flow. Consumers still override freely — their CSS is unlayered
+   and beats this layer at any specificity. ---- */
+a.skip-link{position:fixed;top:16px;left:50%;transform:translate(-50%,calc(-100% - 32px));z-index:9999;
+  background:var(--primary);color:var(--on-primary);font-weight:600;font-size:var(--text-base);
+  text-decoration:none;white-space:nowrap;padding:14px 28px;border-radius:var(--radius-pill);
+  box-shadow:var(--shadow-lg);transition:transform var(--dur-2) var(--ease)}
+a.skip-link:focus{transform:translate(-50%,0)}
+@media (prefers-reduced-motion:reduce){a.skip-link{transition:none}}
+
+/* ---- print. The dark scheme is light-on-dark, and browsers don't print
+   backgrounds by default → it would print as near-invisible light text on white
+   paper. Force ink-on-paper colours (the one legitimate place literal #000/#fff
+   beat theme tokens), drop decorative/interactive chrome, and keep blocks whole
+   across page breaks. ---- */
+@media print{
+  body,.site,.auth,.kit{background:#fff !important;color:#000 !important}
+  .bg-layer,.toast-host,[data-theme-toggle],[data-density-toggle]{display:none !important}
+  *{box-shadow:none !important;text-shadow:none !important}
+  .card,.field,input,select,textarea,pre,.prose pre{background:#fff !important;border:1px solid #999 !important;color:#000 !important}
+  .card,figure,pre,blockquote,table,tr,.l-grid > *{break-inside:avoid}
+  a{color:#000 !important;text-decoration:underline}
+}
+
+/* ---- RTL refinement: `background-position` has no logical form, so the native
+   select chevron doesn't flip with the logical-property sweep — move it under
+   dir=rtl so it matches the (now-flipped) padding. ---- */
+[dir="rtl"] select:not([multiple]){background-position:left 13px center}
+
+}
