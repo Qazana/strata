@@ -4,8 +4,6 @@ name: Release
 # Requires the NPM_TOKEN secret: a granular automation token created by the
 # qazana org owner (qazana-hd) with read/write on @qazana packages.
 #
-# When this repo goes public, add `--provenance` to the publish command
-# (provenance requires a public repo) for a verifiable build chain.
 
 on:
   push:
@@ -31,6 +29,6 @@ jobs:
           [ "$PKG" = "$GITHUB_REF_NAME" ] || { echo "tag $GITHUB_REF_NAME != package $PKG"; exit 1; }
 
       - name: Publish
-        run: npm publish
+        run: npm publish --provenance
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
