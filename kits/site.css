@@ -69,11 +69,13 @@
   .site .nav-links{display:none}
   .site .nav-menu-btn{display:inline-grid}
   /* polished slide-out drawer */
+  /* visibility:hidden keeps the closed panel out of the tab order + a11y tree
+     while still allowing the slide transition (it hides only after it finishes) */
   .site .nav-drawer{display:block;position:fixed;inset-block:0;inset-inline-start:0;width:min(300px,85vw);background:var(--surface);
-    border-inline-end:1px solid var(--line);z-index:100;padding:24px;transform:translateX(-100%);transition:transform var(--dur-2) var(--ease);
-    box-shadow:var(--shadow-lg)}
+    border-inline-end:1px solid var(--line);z-index:100;padding:24px;transform:translateX(-100%);visibility:hidden;
+    transition:transform var(--dur-2) var(--ease),visibility var(--dur-2) var(--ease);box-shadow:var(--shadow-lg)}
   [dir="rtl"] .site .nav-drawer{transform:translateX(100%);inset-inline-start:auto;inset-inline-end:0}
-  .site .nav-drawer.open{transform:translateX(0)}
+  .site .nav-drawer.open{transform:translateX(0);visibility:visible}
   .site .nav-drawer-overlay{position:fixed;inset:0;background:rgb(0 0 0 / .35);backdrop-filter:blur(2px);z-index:99;opacity:0;pointer-events:none;transition:opacity var(--dur-1)}
   .site .nav-drawer-overlay.open{opacity:1;pointer-events:auto}
   .site .nav-drawer .drawer-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--line)}
@@ -82,6 +84,9 @@
   .site .nav-drawer .drawer-nav a{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:var(--radius);color:var(--text-2);text-decoration:none;font-size:var(--text-base);font-weight:500;transition:background var(--dur-1),color var(--dur-1)}
   .site .nav-drawer .drawer-nav a:hover{background:var(--surface-2);color:var(--text)}
   .site .nav-drawer .drawer-nav a.active{background:var(--primary-soft);color:var(--primary-bright);font-weight:600}
+}
+@media (prefers-reduced-motion: reduce){
+  .site .nav-drawer,.site .nav-drawer-overlay{transition:none}
 }
 /* phones: drop the secondary (ghost) CTA, shrink brand + buttons, and let the
    header wrap as a last resort so the primary CTA is never clipped off-screen */
