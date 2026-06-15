@@ -4,7 +4,7 @@
   "description": "Qazana Strata — the shared, framework-agnostic design system — semantic design tokens + vanilla (data-attribute) component CSS/JS, themeable per product with a single :root override.",
   "license": "MIT",
   "repository": { "type": "git", "url": "git+https://github.com/Qazana/strata.git" },
-  "homepage": "https://qazana.github.io/strata/",
+  "homepage": "https://docs.qazana.net/",
   "bugs": "https://github.com/Qazana/strata/issues",
   "publishConfig": { "access": "public" },
   "type": "module",

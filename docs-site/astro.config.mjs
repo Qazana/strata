@@ -1,9 +1,9 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
-// GitHub Pages project site: https://qazana.github.io/strata/
-const SITE = 'https://qazana.github.io';
-const BASE = '/strata';
+// Served at the docs custom domain (GitHub Pages; Cloudflare CNAME docs -> qazana.github.io)
+const SITE = 'https://docs.qazana.net';
+const BASE = '/';
 
 export default defineConfig({
   site: SITE,
@@ -15,7 +15,7 @@ export default defineConfig({
         'Framework-agnostic, token-driven design system — vanilla CSS + data-attribute behaviours, themeable per product.',
       tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 3 },
       social: [
-        { icon: 'github', label: 'GitHub', href: 'https://github.com/qazana/strata' },
+        { icon: 'github', label: 'GitHub', href: 'https://github.com/Qazana/strata' },
       ],
       sidebar: [
         {
