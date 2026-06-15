@@ -303,7 +303,12 @@ document.addEventListener('DOMContentLoaded', function () {
   });
   document.querySelectorAll('[data-select-all]').forEach(function (cb) {
     cb.addEventListener('change', function () {
-      cb.closest('table').querySelectorAll('tbody input[type=checkbox]').forEach(function (x) {
+      // the controlled table: the one this checkbox lives in, or — when it sits
+      // in a toolbar/header beside the table — the nearest ancestor that has one
+      var table = cb.closest('table');
+      if (!table) { var p = cb.parentElement; while (p && !(table = p.querySelector('table'))) p = p.parentElement; }
+      if (!table) return;
+      table.querySelectorAll('tbody input[type=checkbox]').forEach(function (x) {
         x.checked = cb.checked; x.closest('tr').classList.toggle('selected', cb.checked);
       });
     });
@@ -458,6 +463,7 @@ document.addEventListener('DOMContentLoaded', function () {
         g.appendChild(e);})(d);}
       box.appendChild(g);
       h.querySelectorAll('[data-nav]').forEach(function(b){b.addEventListener('click',function(){M+=+b.dataset.nav;if(M<0){M=11;Y--;}if(M>11){M=0;Y++;}render();});});
+      cals.appendChild(box);
     }
     function render(){
       cals.innerHTML='';

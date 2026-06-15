@@ -1,0 +1,319 @@
+// Behavior/interaction harness for Qazana Strata's overlay & picker components.
+//
+// Sibling to behaviors.mjs. This one DRIVES the overlay/popover family in a
+// headless browser against the real demos — open/close, keyboard, focus,
+// filtering, selection — and exits non-zero if any check fails, so it doubles
+// as a regression gate. Same throwaway static server pattern as behaviors.mjs.
+//
+//   node harness/behaviors-overlays.mjs
+//
+// Covered: data-cmdk-open (command palette), data-ctx (context menu),
+// data-picker (date popover), data-calendar (inline calendar),
+// data-daterange (range calendar), data-colorpicker (swatch picker).
+//
+// Add a behavior: push a { name, url, viewport, run(page) } onto CHECKS. `run`
+// drives the interaction and returns an array of failure strings ([] = pass).
+import http from 'node:http';
+import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
+import { chromium } from 'playwright';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.resolve(__dirname, '..');
+const PORT = Number(process.env.PORT || 4186);
+const BASE = `http://localhost:${PORT}`;
+const MIME = {
+  '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript',
+  '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png',
+  '.woff2': 'font/woff2', '.woff': 'font/woff',
+};
+
+// throwaway static server rooted at the repo (so /demo, /kits, /js resolve)
+const server = http.createServer((req, res) => {
+  const urlPath = decodeURIComponent(req.url.split('?')[0]);
+  const filePath = path.join(ROOT, urlPath);
+  if (!filePath.startsWith(ROOT)) { res.writeHead(403).end(); return; }
+  fs.readFile(filePath, (err, data) => {
+    if (err) { res.writeHead(404).end('not found'); return; }
+    res.writeHead(200, { 'content-type': MIME[path.extname(filePath)] || 'application/octet-stream' });
+    res.end(data);
+  });
+});
+
+// collecting assert: records failures instead of throwing on the first
+const checker = () => {
+  const fails = [];
+  return { t: (cond, msg) => { if (!cond) fails.push(msg); }, fails };
+};
+
+const CHECKS = [
+  {
+    // Command palette: opens via [data-cmdk-open] click AND Ctrl/Cmd+K, the
+    // search field focuses, typing filters .cmd-item items (sets [hidden]),
+    // a non-matching query reveals .cmd-empty, ArrowDown highlights (.active),
+    // Esc closes.
+    name: 'cmdk',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const scrim = page.locator('.cmdk-scrim');
+      if (!(await scrim.count())) return ['no .cmdk-scrim in fixture'];
+      const opener = page.locator('[data-cmdk-open]').first();
+      if (!(await opener.count())) return ['no [data-cmdk-open] trigger in fixture'];
+
+      // closed: scrim [hidden], no .is-open
+      t(await scrim.evaluate((el) => el.hidden), 'cmdk scrim starts hidden');
+
+      // open via the trigger button -> .is-open + search field focused
+      await opener.click();
+      t(await scrim.evaluate((el) => el.classList.contains('is-open')),
+        'clicking [data-cmdk-open] opens the palette (.is-open)');
+      t(await scrim.evaluate((el) => el.querySelector('.cmdk-search input') === document.activeElement),
+        'focus moves into the cmdk search field on open');
+
+      // typing filters items: query a known item, others hidden
+      const totalItems = await scrim.locator('.cmd-item').count();
+      await page.locator('.cmdk-search input').fill('Sign out');
+      const visAfter = await scrim.evaluate((el) =>
+        Array.prototype.slice.call(el.querySelectorAll('.cmd-item')).filter((i) => !i.hidden).length);
+      t(visAfter < totalItems && visAfter >= 1,
+        `typing filters the list (visible ${visAfter} of ${totalItems})`);
+      t(await scrim.evaluate((el) => {
+        const v = Array.prototype.slice.call(el.querySelectorAll('.cmd-item')).filter((i) => !i.hidden);
+        return v.every((i) => /sign out/i.test(i.textContent));
+      }), 'only matching items remain visible after filtering');
+
+      // a query with no matches reveals the .cmd-empty state
+      await page.locator('.cmdk-search input').fill('zzzznomatch');
+      t(await scrim.evaluate((el) => {
+        const e = el.querySelector('.cmd-empty');
+        const vis = Array.prototype.slice.call(el.querySelectorAll('.cmd-item')).filter((i) => !i.hidden);
+        return vis.length === 0 && e && !e.hidden;
+      }), 'a non-matching query shows the empty state and hides all items');
+
+      // clear, ArrowDown highlights the first visible item (.active)
+      await page.locator('.cmdk-search input').fill('');
+      await page.keyboard.press('ArrowDown');
+      t(await scrim.evaluate((el) => !!el.querySelector('.cmd-item.active')),
+        'ArrowDown highlights a command (.active)');
+
+      // Esc closes
+      await page.keyboard.press('Escape');
+      t(!(await scrim.evaluate((el) => el.classList.contains('is-open'))),
+        'Escape closes the command palette');
+
+      // also opens via Ctrl/Cmd+K (the documented shortcut)
+      await page.keyboard.press('Control+k');
+      t(await scrim.evaluate((el) => el.classList.contains('is-open')),
+        'Ctrl+K opens the command palette');
+      await page.keyboard.press('Control+k');
+      t(!(await scrim.evaluate((el) => el.classList.contains('is-open'))),
+        'Ctrl+K again toggles the command palette closed');
+      return fails;
+    },
+  },
+  {
+    // Context menu: right-click ([contextmenu]) inside [data-ctx] reveals the
+    // referenced .menu (display:block, positioned at the cursor); clicking
+    // outside closes it (the JS has no Esc handler — close is click/outside).
+    name: 'ctx',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const zone = page.locator('[data-ctx]').first();
+      if (!(await zone.count())) return ['no [data-ctx] zone in fixture'];
+      const sel = await zone.getAttribute('data-ctx');
+      const menu = page.locator(sel);
+      if (!(await menu.count())) return [`[data-ctx] target ${sel} not found`];
+
+      // closed: menu not displayed
+      t(await menu.evaluate((el) => getComputedStyle(el).display === 'none'),
+        'context menu starts hidden (display:none)');
+
+      // right-click the zone -> menu shown (display:block). Element-relative
+      // click so Playwright scrolls the zone (far down the page) into view and
+      // the contextmenu fires at a real in-viewport position.
+      await zone.scrollIntoViewIfNeeded();
+      await zone.click({ button: 'right' });
+      t(await menu.evaluate((el) => el.style.display === 'block'),
+        'right-clicking the zone opens the context menu (display:block)');
+      t(await menu.evaluate((el) => parseFloat(el.style.left) >= 0 && parseFloat(el.style.top) >= 0),
+        'context menu is positioned at the cursor');
+
+      // outside-click closes
+      await page.mouse.click(5, 5);
+      t(await menu.evaluate((el) => el.style.display === 'none'),
+        'outside-click closes the context menu');
+
+      // clicking an item inside the menu also closes it
+      await zone.click({ button: 'right' });
+      t(await menu.evaluate((el) => el.style.display === 'block'), 'context menu re-opens');
+      await menu.locator('.menu-item, button, a, li').first().click();
+      t(await menu.evaluate((el) => el.style.display === 'none'),
+        'clicking a menu item closes the context menu');
+      return fails;
+    },
+  },
+  {
+    // Date picker popover: the input opens a .cal on focus/click; clicking a
+    // day cell writes the value into the input and closes; outside-click closes.
+    name: 'picker',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const pk = page.locator('.picker[data-picker]').first();
+      if (!(await pk.count())) return ['no .picker[data-picker] in fixture'];
+      const input = pk.locator('input');
+      const cal = pk.locator('.cal');
+
+      // closed: .cal hidden
+      t(await cal.evaluate((el) => el.hidden), 'picker calendar starts hidden');
+
+      // focusing the input opens the calendar with day cells
+      await input.click();
+      t(!(await cal.evaluate((el) => el.hidden)), 'clicking the input opens the calendar');
+      t(await cal.locator('.day').count() >= 28, 'calendar renders day cells');
+
+      // clicking a day writes the value and closes
+      const before = await input.inputValue();
+      const day = cal.locator('.day').filter({ hasText: /^15$/ }).first();
+      await day.click();
+      const after = await input.inputValue();
+      t(after !== before && /\d{4}-\d{2}-\d{2}/.test(after),
+        `selecting a day updates the input value (before=${before} after=${after})`);
+      t(/-15$/.test(after), `selected day reflected in the value (${after})`);
+      t(await cal.evaluate((el) => el.hidden), 'selecting a day closes the calendar');
+
+      // re-open then outside-click closes
+      await input.click();
+      t(!(await cal.evaluate((el) => el.hidden)), 'picker re-opens');
+      await page.mouse.click(5, 5);
+      t(await cal.evaluate((el) => el.hidden), 'outside-click closes the picker');
+      return fails;
+    },
+  },
+  {
+    // Inline calendar: [data-calendar] self-renders a .cal-grid of .day cells;
+    // clicking a day moves the .sel marker to it.
+    name: 'calendar',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const cal = page.locator('[data-calendar]').first();
+      if (!(await cal.count())) return ['no [data-calendar] in fixture'];
+
+      t(await cal.locator('.cal-grid').count() >= 1, 'inline calendar renders a grid');
+      t(await cal.locator('.day').count() >= 28, 'inline calendar renders day cells');
+      t(await cal.locator('.day.sel').count() === 1, 'a single day starts selected (.sel)');
+
+      // pick a day distinct from the current selection -> .sel moves to it
+      const selText = await cal.locator('.day.sel').first().textContent();
+      const target = selText.trim() === '20' ? '21' : '20';
+      await cal.locator('.day').filter({ hasText: new RegExp(`^${target}$`) }).first().click();
+      t(await cal.locator('.day.sel').count() === 1, 'still exactly one selected day after picking');
+      t((await cal.locator('.day.sel').first().textContent()).trim() === target,
+        `selecting a day moves .sel to it (now ${target})`);
+      return fails;
+    },
+  },
+  {
+    // Range calendar: [data-daterange] renders two month grids; first day click
+    // sets the start (.rstart .sel), a later day click sets the end (.rend),
+    // and the summary reflects the selection.
+    name: 'daterange',
+    url: '/demo/app/admin.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const dr = page.locator('[data-daterange]').first();
+      if (!(await dr.count())) return ['no [data-daterange] in fixture'];
+      const summary = dr.locator('.daterange-summary');
+      const cals = dr.locator('.dr-cals');
+
+      t(await cals.locator('.month').count() === 2, 'range calendar renders two months');
+      t(await cals.locator('.day').count() >= 56, 'range calendar renders day cells');
+
+      // first month's grid, pick a start then a later end (same month)
+      const month0 = cals.locator('.month').nth(0);
+      await month0.locator('.day').filter({ hasText: /^10$/ }).first().click();
+      t(await month0.locator('.day.rstart.sel').count() === 1,
+        'first click sets a start day (.rstart .sel)');
+      t(/→\s*…/.test((await summary.textContent())),
+        'summary shows the pending start (start → …)');
+
+      await month0.locator('.day').filter({ hasText: /^18$/ }).first().click();
+      t(await month0.locator('.day.rend').count() === 1, 'second click sets an end day (.rend)');
+      t(await month0.locator('.day.range').count() >= 1, 'days between start and end are marked (.range)');
+      t(/\d{4}-\d{2}-\d{2}\s*→\s*\d{4}-\d{2}-\d{2}/.test((await summary.textContent())),
+        `summary shows the full range (${(await summary.textContent()).trim()})`);
+      return fails;
+    },
+  },
+  {
+    // Color picker: clicking a swatch (.sw) makes it the sole active one (.on),
+    // clearing .on from the previously-active swatch.
+    name: 'colorpicker',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const cp = page.locator('[data-colorpicker]').first();
+      if (!(await cp.count())) return ['no [data-colorpicker] in fixture'];
+      const sws = cp.locator('.sw');
+      if ((await sws.count()) < 2) return ['colorpicker needs >=2 swatches to test'];
+
+      // one swatch starts active
+      t(await cp.locator('.sw.on').count() === 1, 'exactly one swatch starts active (.on)');
+      const startActive = await cp.evaluate((el) =>
+        Array.prototype.slice.call(el.querySelectorAll('.sw')).findIndex((s) => s.classList.contains('on')));
+
+      // click a different swatch -> it becomes the sole active one
+      const targetIdx = startActive === 0 ? 1 : 0;
+      await sws.nth(targetIdx).click();
+      t(await cp.locator('.sw.on').count() === 1, 'still exactly one active swatch after selecting');
+      t(await sws.nth(targetIdx).evaluate((el) => el.classList.contains('on')),
+        'clicking a swatch marks it active (.on)');
+      t(await cp.evaluate((el, i) => !el.querySelectorAll('.sw')[i].classList.contains('on'), startActive),
+        'the previously-active swatch is deactivated');
+      return fails;
+    },
+  },
+];
+
+await new Promise((r) => server.listen(PORT, r));
+const browser = await chromium.launch({ headless: true });
+let failed = 0;
+
+for (const c of CHECKS) {
+  // reducedMotion: deterministic (no waiting on slide/fade transitions)
+  const ctx = await browser.newContext({ viewport: c.viewport, reducedMotion: 'reduce' });
+  const page = await ctx.newPage();
+  const pageErrors = [];
+  page.on('pageerror', (e) => pageErrors.push(e.message.slice(0, 160)));
+
+  let fails = [];
+  try {
+    await page.goto(BASE + c.url, { waitUntil: 'load', timeout: 30000 });
+    await page.waitForTimeout(150);
+    fails = await c.run(page);
+  } catch (e) {
+    fails = ['threw: ' + (e.message || String(e)).slice(0, 200)];
+  }
+  if (pageErrors.length) fails.push(...pageErrors.map((e) => 'pageerror: ' + e));
+
+  const ok = fails.length === 0;
+  if (!ok) failed++;
+  console.log(`${ok ? 'PASS' : 'FAIL'}  ${c.name}`);
+  for (const f of fails) console.log(`        - ${f}`);
+  await ctx.close();
+}
+
+await browser.close();
+await new Promise((r) => server.close(r));
+console.log(`\n${CHECKS.length - failed}/${CHECKS.length} behavior checks passed`);
+process.exit(failed ? 1 : 0);
