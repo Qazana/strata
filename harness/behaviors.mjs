@@ -207,6 +207,22 @@ const CHECKS = [
       // specifically: the first item should now sit after the (former) second
       t(after.indexOf(before[0]) > after.indexOf(before[1]),
         `dragged item moves past its drop target (after=[${after}])`);
+
+      // keyboard reorder (a11y): items are focusable and Alt+ArrowDown moves the
+      // focused item down, announced via an aria-live region
+      t(await items.first().evaluate((el) => el.tabIndex >= 0), 'reorder items are keyboard-focusable');
+      const kbBefore = await list.evaluate((el) =>
+        Array.from(el.querySelectorAll('.reorder-item .rname')).map((n) => n.textContent.trim()));
+      await items.first().focus();
+      await page.keyboard.press('Alt+ArrowDown');
+      const kbAfter = await list.evaluate((el) =>
+        Array.from(el.querySelectorAll('.reorder-item .rname')).map((n) => n.textContent.trim()));
+      t(kbBefore[0] === kbAfter[1] && kbBefore[1] === kbAfter[0],
+        `Alt+ArrowDown moves the focused item down one (before=[${kbBefore}] after=[${kbAfter}])`);
+      t(await list.evaluate((el) => {
+        const lr = el.querySelector('[aria-live]');
+        return !!lr && /position\s*2\s*of/i.test(lr.textContent);
+      }), 'move is announced via aria-live (position 2 of N)');
       return fails;
     },
   },

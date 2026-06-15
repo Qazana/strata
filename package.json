@@ -1,6 +1,6 @@
 {
   "name": "@qazana/strata",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Qazana Strata — the shared, framework-agnostic design system — semantic design tokens + vanilla (data-attribute) component CSS/JS, themeable per product with a single :root override.",
   "license": "MIT",
   "repository": {
@@ -43,7 +43,7 @@
     "harness": "node harness/shoot.mjs",
     "harness:behaviors": "node harness/behaviors.mjs",
     "contract": "node harness/contract.mjs",
-    "test": "node harness/behaviors.mjs"
+    "test": "node harness/contract.mjs && node harness/behaviors.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.0",

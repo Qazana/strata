@@ -103,11 +103,11 @@ kbd,.kbd{font-variant-numeric:slashed-zero}
    .form-field group moved to base.css (universal across every kit). */
 
 /* ---- custom scrollbar (themed, thin) ---- */
-*{scrollbar-width:thin;scrollbar-color:#2c2c2c transparent}
+*{scrollbar-width:thin;scrollbar-color:var(--line-strong) transparent}
 ::-webkit-scrollbar{width:11px;height:11px}
 ::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:#2c2c2c;border-radius:99px;border:3px solid var(--bg);background-clip:padding-box}
-::-webkit-scrollbar-thumb:hover{background:#3c3c3c;background-clip:padding-box;border:3px solid var(--bg)}
+::-webkit-scrollbar-thumb{background:var(--line-strong);border-radius:99px;border:3px solid var(--bg);background-clip:padding-box}
+::-webkit-scrollbar-thumb:hover{background:rgb(var(--border-rgb) / .22);background-clip:padding-box;border:3px solid var(--bg)}
 ::-webkit-scrollbar-corner{background:transparent}
 
 /* render native controls (date/time pickers, selects, scrollbars) in dark */
@@ -286,7 +286,7 @@ label.fld{display:block;font-size:var(--text-sm);color:var(--text-2);margin-bott
 .banner{display:flex;align-items:center;gap:14px;background:rgb(var(--primary-rgb) / .1);border:1px solid var(--primary-line);
   border-radius:var(--radius);padding:11px 16px;font-size:var(--text-md)}
 .banner .bx{margin-inline-start:auto;display:flex;gap:8px}
-.session-bar{background:#b00020;color:#fff;padding:10px 16px;border-radius:var(--radius);font-size:var(--text-md);display:flex;gap:14px;align-items:center}
+.session-bar{background:var(--danger);color:#fff;padding:10px 16px;border-radius:var(--radius);font-size:var(--text-md);display:flex;gap:14px;align-items:center}
 .session-bar a{color:#fff;text-decoration:underline}
 
 /* ---- modal ---- */
@@ -442,7 +442,7 @@ table.tbl td b{color:var(--text);font-weight:600}
 .side-item:hover{color:var(--text);background:var(--surface)}
 /* active = filled pill + colored text, not a left bar */
 .side-item.active{color:var(--primary-bright);background:var(--primary-soft);font-weight:600}
-.side-item .ct{margin-inline-start:auto;font-size:var(--text-2xs);background:var(--danger);color:#2a0c0c;border-radius:99px;padding:1px 7px;font-weight:700}
+.side-item .ct{margin-inline-start:auto;font-size:var(--text-2xs);background:var(--danger);color:var(--on-danger);border-radius:99px;padding:1px 7px;font-weight:700}
 .adminbody{padding:22px}
 .ah2{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;flex-wrap:wrap}
 .ah2.start{justify-content:flex-start}
@@ -853,7 +853,7 @@ kbd,.kbd{font-family:var(--mono);font-size:var(--text-xs);background:var(--surfa
   background:var(--surface-2);border:1px solid var(--line);color:var(--text-2);cursor:pointer}
 .bell:hover{color:var(--text)}
 .bell .nbadge{position:absolute;top:-5px;inset-inline-end:-5px;min-width:17px;height:17px;border-radius:99px;background:var(--danger);
-  color:#2a0c0c;font-size:var(--text-2xs);font-weight:700;display:grid;place-items:center;padding:0 4px;border:2px solid var(--bg)}
+  color:var(--on-danger);font-size:var(--text-2xs);font-weight:700;display:grid;place-items:center;padding:0 4px;border:2px solid var(--bg)}
 
 /* ============================================================
    Button waiting states + loading states
@@ -954,24 +954,6 @@ kbd,.kbd{font-family:var(--mono);font-size:var(--text-xs);background:var(--surfa
 .dual-out{font-family:var(--mono);font-size:var(--text-sm);color:var(--primary-bright)}
 
 /* ============================================================
-   Streaming-service buttons (current + future platforms)
-   ============================================================ */
-.svcbtn{display:inline-flex;align-items:center;gap:9px;font-family:var(--body);font-weight:600;font-size:var(--text-md);
-  padding:11px 17px;border-radius:var(--radius);border:1px solid var(--line);background:var(--surface-2);color:var(--text);
-  text-decoration:none;cursor:pointer;transition:filter .16s,border-color .16s,transform .15s}
-.svcbtn:hover{transform:translateY(-1px)}
-.svcbtn i{font-size:var(--text-base)}
-.svcbtn.spotify{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}.svcbtn.spotify:hover{filter:brightness(1.08)}
-.svcbtn.apple{background:#fa233b;color:#fff;border-color:#fa233b}.svcbtn.apple:hover{filter:brightness(1.08)}
-.svcbtn.ytm{background:#ff0000;color:#fff;border-color:#ff0000}.svcbtn.ytm:hover{filter:brightness(1.1)}
-.svcbtn.soundcloud{background:#ff5500;color:#fff;border-color:#ff5500}.svcbtn.soundcloud:hover{filter:brightness(1.1)}
-.svcbtn.tidal{background:#0a0a0a;color:#fff;border-color:rgba(255,255,255,.3)}.svcbtn.tidal:hover{border-color:#fff}
-.svcbtn.deezer{background:#a238ff;color:#fff;border-color:#a238ff}.svcbtn.deezer:hover{filter:brightness(1.1)}
-.svcbtn.outline{background:transparent;color:var(--text);border:1px solid var(--line)}.svcbtn.outline:hover{border-color:rgb(var(--border-rgb) / .25)}
-.svcbtn.soon{opacity:.5;cursor:default;pointer-events:none;background:var(--surface-2);color:var(--text-2);border-color:var(--line)}
-.svcbtn .soon-tag{font-size:var(--text-2xs);font-family:var(--mono);margin-inline-start:5px;text-transform:uppercase;letter-spacing:var(--tracking-caps);color:var(--muted)}
-
-/* ============================================================
    Graphs & charts (SVG, dependency-free)
    ============================================================ */
 .chart{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);padding:16px}
@@ -990,7 +972,7 @@ kbd,.kbd{font-family:var(--mono);font-size:var(--text-xs);background:var(--surfa
 .btn-group{display:inline-flex;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
 .btn-group button{border:0;background:var(--surface-2);color:var(--text-2);font-family:var(--body);font-weight:600;font-size:var(--text-md);padding:9px 15px;cursor:pointer;border-inline-end:1px solid var(--line);transition:.15s}
 .btn-group button:last-child{border-inline-end:0}
-.btn-group button:hover{color:var(--text);background:#242424}
+.btn-group button:hover{color:var(--text);background:var(--surface-active)}
 .btn-group button.on{background:var(--primary);color:var(--on-primary)}
 
 /* carousel (scroll-snap) */
@@ -1030,7 +1012,7 @@ table.tbl tbody tr.selected{background:rgb(var(--primary-rgb) / .07)}
 .toggle-group button.on{background:rgb(var(--primary-rgb) / .14);border-color:var(--primary);color:var(--primary-bright)}
 
 .rating{display:inline-flex;gap:4px;font-size:var(--text-lg)}
-.rating i{cursor:pointer;color:#3a3a3a;transition:color .12s}
+.rating i{cursor:pointer;color:rgb(var(--border-rgb) / .22);transition:color .12s}
 .rating i.on{color:var(--warning)}
 .rating.ro i{cursor:default}
 .rating-val{font-family:var(--mono);font-size:var(--text-sm);color:var(--muted);margin-inline-start:8px}
