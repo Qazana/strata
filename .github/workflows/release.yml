@@ -29,6 +29,14 @@ jobs:
           PKG="v$(node -p "require('./package.json').version")"
           [ "$PKG" = "$GITHUB_REF_NAME" ] || { echo "tag $GITHUB_REF_NAME != package $PKG"; exit 1; }
 
+      - name: Diagnose token identity (temporary)
+        run: |
+          echo "== whoami =="; npm whoami || echo "whoami FAILED"
+          echo "== org members (qazana) =="; npm org ls qazana 2>&1 || echo "cannot list org qazana"
+          echo "== @qazana package access =="; npm access list packages @qazana 2>&1 || echo "no @qazana access"
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
       - name: Publish
         run: npm publish --provenance
         env:
