@@ -1,8 +1,8 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
 
-// Served at the docs custom domain (GitHub Pages; Cloudflare CNAME docs -> qazana.github.io)
-const SITE = 'https://docs.qazana.net';
+// Per-product docs subdomain (GitHub Pages; Cloudflare CNAME strata.docs -> qazana.github.io)
+const SITE = 'https://strata.docs.qazana.net';
 const BASE = '/';
 
 export default defineConfig({

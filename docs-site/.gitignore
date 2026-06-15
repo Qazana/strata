@@ -8,6 +8,7 @@ public/demo/
 public/kits/
 public/tokens/
 public/js/
+public/fonts/
 public/themes/
 
 # Generated docs page (emitted from tokens.json by scripts/gen-tokens.mjs)
