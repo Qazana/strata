@@ -133,4 +133,7 @@
    so prose never forces horizontal page overflow on phones */
 .doc-layout > *{min-width:0}
 .prose{overflow-wrap:break-word}
+
+/* honor reduced motion: kill the content kit's transitions */
+@media (prefers-reduced-motion: reduce){.blog *{transition:none}}
 }
