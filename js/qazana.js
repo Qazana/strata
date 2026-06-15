@@ -351,8 +351,21 @@ document.addEventListener('DOMContentLoaded', function () {
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('[data-reorder]').forEach(function (list) {
     var dragEl = null;
+    // a11y: keyboard reordering announces moves through a polite live region
+    var live = document.createElement('div');
+    live.setAttribute('aria-live', 'polite');
+    live.style.cssText = 'position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap';
+    list.appendChild(live);
+    function siblings() { return Array.prototype.slice.call(list.querySelectorAll('.reorder-item')); }
+    function announce(it) {
+      var items = siblings(), pos = items.indexOf(it) + 1;
+      var label = (it.textContent || 'Item').trim().replace(/\s+/g, ' ').slice(0, 40);
+      live.textContent = label + ', position ' + pos + ' of ' + items.length;
+    }
     list.querySelectorAll('.reorder-item').forEach(function (it) {
       it.draggable = true;
+      if (!(it.getAttribute('tabindex'))) it.tabIndex = 0;          // keyboard-focusable
+      it.setAttribute('aria-roledescription', 'Reorderable item, press Alt with Arrow Up or Down to move');
       it.addEventListener('dragstart', function () { dragEl = it; it.classList.add('dragging'); });
       it.addEventListener('dragend', function () { it.classList.remove('dragging'); list.querySelectorAll('.over').forEach(function (x) { x.classList.remove('over'); }); });
       it.addEventListener('dragover', function (e) { e.preventDefault(); if (it !== dragEl) it.classList.add('over'); });
@@ -362,6 +375,13 @@ document.addEventListener('DOMContentLoaded', function () {
         if (!dragEl || it === dragEl) return;
         var items = Array.prototype.slice.call(list.children);
         if (items.indexOf(dragEl) < items.indexOf(it)) it.after(dragEl); else it.before(dragEl);
+      });
+      // keyboard reorder: Alt+ArrowUp / Alt+ArrowDown move the focused item
+      it.addEventListener('keydown', function (e) {
+        if (!e.altKey || (e.key !== 'ArrowUp' && e.key !== 'ArrowDown')) return;
+        var items = siblings(), idx = items.indexOf(it);
+        if (e.key === 'ArrowUp' && idx > 0) { e.preventDefault(); list.insertBefore(it, items[idx - 1]); it.focus(); announce(it); }
+        else if (e.key === 'ArrowDown' && idx < items.length - 1) { e.preventDefault(); list.insertBefore(items[idx + 1], it); it.focus(); announce(it); }
       });
     });
   });

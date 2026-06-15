@@ -138,8 +138,17 @@ function checkHardcodedColors() {
 
   for (const file of kitFiles) {
     const lines = read(file).split('\n');
+    // @media print intentionally forces fixed neutral colors (white bg, black
+    // text, grey borders) regardless of theme — a legitimate fixed-color
+    // context, like #000/#fff. Track print-block membership and skip it.
+    let printDepth = 0;
     lines.forEach((line, i) => {
-      // skip comment-only lines (cheap heuristic: line is inside a comment)
+      const entering = printDepth === 0 && /@media[^{]*\bprint\b/.test(line);
+      if (printDepth > 0 || entering) {
+        printDepth += (line.match(/\{/g) || []).length - (line.match(/\}/g) || []).length;
+        return;   // skip every line within an @media print block
+      }
+
       for (const m of line.matchAll(COLOR_RE)) {
         const tok = m[0];
 
