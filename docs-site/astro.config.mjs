@@ -71,6 +71,14 @@ export default defineConfig({
             { label: 'Changelog', link: '/reference/changelog/' },
           ],
         },
+        {
+          label: 'Qazana',
+          items: [
+            { label: 'Strata marketing site', link: 'https://strata.qazana.net/' },
+            { label: 'All Qazana docs', link: 'https://docs.qazana.net/' },
+            { label: 'qazana.net', link: 'https://qazana.net/' },
+          ],
+        },
       ],
     }),
   ],
