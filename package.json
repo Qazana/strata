@@ -42,6 +42,7 @@
     "demo": "python3 -m http.server 4178 --bind 127.0.0.1",
     "harness": "node harness/shoot.mjs",
     "harness:behaviors": "node harness/behaviors.mjs",
+    "contract": "node harness/contract.mjs",
     "test": "node harness/behaviors.mjs"
   },
   "devDependencies": {
