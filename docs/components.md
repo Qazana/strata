@@ -155,7 +155,7 @@ bottom-left, bottom-right. Trigger live toasts with `data-toast="msg"` + `data-t
 ### Site kit (marketing/landing)
 - **Header/Nav** — `.nav` + `.brand` + `.nav-links` + `.nav-actions` — sticky with scroll state
 - **Nav states** — `.active` / `[aria-current="page"]` for current page; `.disabled` / `[aria-disabled]` for unavailable
-- **Mobile drawer** — `.nav-drawer` + `.nav-drawer-overlay` + `[data-nav-drawer-toggle]` — hamburger-triggered slide-out
+- **Mobile drawer** — `.nav-drawer` + `.nav-drawer-overlay` + `[data-nav-drawer-toggle]` — hamburger-triggered slide-out. `[data-nav-drawer-toggle]` toggles (a second click, the in-drawer close button, the overlay, `Esc`, or any nav link all close it). Keyboard-trapped while open, focus returns to the opener on close, and the opener's `aria-expanded` reflects state — give the panel an `id` and point the opener at it with `aria-controls`. The closed panel is `visibility:hidden` so it stays out of the tab order; the slide respects `prefers-reduced-motion`.
 - **Vertical nav** — `.vnav` + `.vnav-section` + `.vnav-nested` — sidebar docs/content navigation
 - **Footer** — `.site-foot` + `.foot-grid` + `.foot-col` + `.foot-bottom` + `.foot-news` + `.foot-social` + `.foot-legal`
 

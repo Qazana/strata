@@ -965,6 +965,19 @@ document.addEventListener('DOMContentLoaded', function () {
 (function () {
   'use strict';
   var drawer = null, overlay = null, trigger = null;
+  function focusables(c) {
+    return Array.prototype.slice.call(c.querySelectorAll(
+      'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'
+    )).filter(function (el) { return el.offsetParent !== null; });
+  }
+  function isOpen() { return !!(drawer && drawer.classList.contains('open')); }
+  /* reflect state on the external opener(s) only — not the in-drawer close button */
+  function syncToggles(expanded) {
+    var toggles = document.querySelectorAll('[data-nav-drawer-toggle]');
+    Array.prototype.forEach.call(toggles, function (t) {
+      if (!t.closest('.nav-drawer')) t.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+    });
+  }
   function open() {
     drawer = document.querySelector('.nav-drawer');
     overlay = document.querySelector('.nav-drawer-overlay');
@@ -972,8 +985,9 @@ document.addEventListener('DOMContentLoaded', function () {
     drawer.classList.add('open');
     if (overlay) overlay.classList.add('open');
     document.body.style.overflow = 'hidden';
-    var firstLink = drawer.querySelector('a, button');
-    if (firstLink) firstLink.focus();
+    syncToggles(true);
+    var f = focusables(drawer);
+    (f[0] || drawer).focus();
   }
   function close() {
     if (!drawer) drawer = document.querySelector('.nav-drawer');
@@ -981,25 +995,26 @@ document.addEventListener('DOMContentLoaded', function () {
     if (drawer) drawer.classList.remove('open');
     if (overlay) overlay.classList.remove('open');
     document.body.style.overflow = '';
+    syncToggles(false);
     if (trigger && trigger.focus) trigger.focus();
     trigger = null;
   }
   document.addEventListener('click', function (e) {
     var btn = e.target.closest('[data-nav-drawer-toggle]');
-    if (btn) { e.preventDefault(); trigger = btn; open(); return; }
+    if (btn) { e.preventDefault(); if (isOpen()) { close(); } else { trigger = btn; open(); } return; }
     if (e.target.closest('.nav-drawer-overlay.open')) { close(); return; }
     if (e.target.closest('.nav-drawer') && e.target.closest('a')) close();
   });
   document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape') close();
-    if (!drawer || !drawer.classList.contains('open')) return;
-    if (e.key === 'Tab') {
-      var focusables = Array.prototype.slice.call(drawer.querySelectorAll('a[href],button'));
-      if (!focusables.length) return;
-      var first = focusables[0], last = focusables[focusables.length - 1];
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-    }
+    if (!isOpen()) return;          /* only act while open — no cross-component side effects */
+    if (e.key === 'Escape') { close(); return; }
+    if (e.key !== 'Tab') return;
+    var f = focusables(drawer);
+    if (!f.length) { e.preventDefault(); drawer.focus(); return; }
+    var first = f[0], last = f[f.length - 1];
+    if (!drawer.contains(document.activeElement)) { e.preventDefault(); first.focus(); return; }
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
   });
 })();
 
