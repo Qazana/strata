@@ -105,6 +105,149 @@ const CHECKS = [
       return fails;
     },
   },
+  {
+    name: 'combo',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const combo = page.locator('.combo[data-combo]').first();
+      if (!(await combo.count())) return ['no .combo[data-combo] in fixture'];
+      const btn = combo.locator('.combo-btn');
+      const pop = combo.locator('.combo-pop');
+
+      // closed: listbox popover is [hidden], button aria-expanded=false
+      t(await pop.evaluate((el) => el.hidden), 'combo-pop starts hidden');
+      t(await btn.getAttribute('aria-expanded') === 'false', 'combo aria-expanded=false closed');
+
+      // open via the button -> pop revealed, aria-expanded, search focused
+      await btn.click();
+      t(!(await pop.evaluate((el) => el.hidden)), 'clicking combo-btn reveals the listbox');
+      t(await btn.getAttribute('aria-expanded') === 'true', 'combo aria-expanded=true when open');
+      t(await combo.evaluate((el) => el.querySelector('.combo-search input') === document.activeElement),
+        'focus moves into the combo search field on open');
+
+      // ArrowDown highlights the first visible option (.active)
+      await page.keyboard.press('ArrowDown');
+      const activeText = await combo.evaluate((el) => {
+        const a = el.querySelector('.combo-opt.active'); return a ? a.textContent.trim() : null;
+      });
+      t(activeText !== null, 'ArrowDown highlights an option (.active)');
+
+      // Enter selects: .combo-val text updates to the highlighted option + closes
+      await page.keyboard.press('Enter');
+      t(await combo.evaluate((el, text) => el.querySelector('.combo-val').textContent.trim() === text, activeText),
+        'Enter selects the highlighted option (combo-val updates)');
+      t(await pop.evaluate((el) => el.hidden), 'Enter closes the listbox after selecting');
+
+      // re-open then Esc closes + resets aria
+      await btn.click();
+      t(!(await pop.evaluate((el) => el.hidden)), 'combo re-opens');
+      await page.keyboard.press('Escape');
+      t(await pop.evaluate((el) => el.hidden), 'Escape closes the combo');
+      t(await btn.getAttribute('aria-expanded') === 'false', 'combo aria-expanded=false after Escape');
+      return fails;
+    },
+  },
+  {
+    name: 'popover',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const wrap = page.locator('.popover-wrap').first();
+      if (!(await wrap.count())) return ['no .popover-wrap in fixture'];
+      const trig = wrap.locator('[data-popover]');
+      const pop = wrap.locator('.popover');
+
+      // closed: no .is-open
+      t(!(await pop.evaluate((el) => el.classList.contains('is-open'))), 'popover starts closed');
+
+      // click trigger -> .is-open + focus moves into the panel
+      await trig.click();
+      t(await pop.evaluate((el) => el.classList.contains('is-open')), 'clicking trigger opens the popover (.is-open)');
+      t(await pop.evaluate((el) => el.contains(document.activeElement)),
+        'focus moves into the popover panel on open');
+
+      // Escape closes
+      await page.keyboard.press('Escape');
+      t(!(await pop.evaluate((el) => el.classList.contains('is-open'))), 'Escape closes the popover');
+
+      // re-open then outside-click closes
+      await trig.click();
+      t(await pop.evaluate((el) => el.classList.contains('is-open')), 'popover re-opens');
+      await page.mouse.click(5, 5);   // click far outside the panel
+      t(!(await pop.evaluate((el) => el.classList.contains('is-open'))), 'outside-click closes the popover');
+      return fails;
+    },
+  },
+  {
+    name: 'reorder',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const list = page.locator('.reorder[data-reorder]').first();
+      if (!(await list.count())) return ['no .reorder[data-reorder] in fixture'];
+      const items = list.locator('.reorder-item');
+      if ((await items.count()) < 2) return ['reorder list needs >=2 .reorder-item to test'];
+
+      // items are draggable (the JS wires reorder via native HTML5 DnD only)
+      t(await items.first().evaluate((el) => el.draggable === true),
+        'reorder items are draggable');
+
+      // capture order, drag the first item onto the second, assert order changed
+      const before = await list.evaluate((el) =>
+        Array.from(el.querySelectorAll('.reorder-item .rname')).map((n) => n.textContent.trim()));
+      await items.nth(0).dragTo(items.nth(1));
+      const after = await list.evaluate((el) =>
+        Array.from(el.querySelectorAll('.reorder-item .rname')).map((n) => n.textContent.trim()));
+      t(before.join('|') !== after.join('|'),
+        `dragging item 1 onto item 2 reorders the list (before=[${before}] after=[${after}])`);
+      // specifically: the first item should now sit after the (former) second
+      t(after.indexOf(before[0]) > after.indexOf(before[1]),
+        `dragged item moves past its drop target (after=[${after}])`);
+      return fails;
+    },
+  },
+  {
+    name: 'otp',
+    url: '/demo/auth/two-factor.html',
+    viewport: { width: 480, height: 720 },
+    async run(page) {
+      const { t, fails } = checker();
+      const box = page.locator('.otp[data-otp]').first();
+      if (!(await box.count())) return ['no .otp[data-otp] in fixture'];
+      const inputs = box.locator('input');
+      const n = await inputs.count();
+      if (n < 2) return ['otp needs >=2 inputs to test auto-advance'];
+
+      // type a digit into the first field -> focus auto-advances to the second
+      await inputs.nth(0).focus();
+      await inputs.nth(0).type('4');
+      t(await box.evaluate((el) => el.querySelectorAll('input')[1] === document.activeElement),
+        'typing a digit in field 1 auto-advances focus to field 2');
+      t(await inputs.nth(0).inputValue() === '4', 'field 1 retains the typed digit');
+
+      // type another digit -> advances again to field 3
+      await inputs.nth(1).type('2');
+      t(await box.evaluate((el) => el.querySelectorAll('input')[2] === document.activeElement),
+        'typing in field 2 auto-advances focus to field 3');
+
+      // Backspace on an empty field steps focus back to the previous field
+      await inputs.nth(2).focus();
+      await page.keyboard.press('Backspace');
+      t(await box.evaluate((el) => el.querySelectorAll('input')[1] === document.activeElement),
+        'Backspace on an empty field steps focus back to the previous field');
+
+      // non-digit input is rejected (kept empty)
+      await inputs.nth(0).focus();
+      await inputs.nth(0).fill('');
+      await inputs.nth(0).type('x');
+      t(await inputs.nth(0).inputValue() === '', 'non-digit input is rejected');
+      return fails;
+    },
+  },
 ];
 
 await new Promise((r) => server.listen(PORT, r));
