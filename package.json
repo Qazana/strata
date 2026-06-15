@@ -43,10 +43,12 @@
     "harness": "node harness/shoot.mjs",
     "harness:behaviors": "node harness/behaviors.mjs",
     "contract": "node harness/contract.mjs",
-    "test": "node harness/contract.mjs && node harness/behaviors.mjs"
+    "a11y": "node harness/a11y.mjs",
+    "test": "node harness/contract.mjs && node harness/behaviors.mjs && node harness/behaviors-forms.mjs && node harness/behaviors-overlays.mjs && node harness/behaviors-toggles.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.0",
+    "axe-core": "^4.12.1",
     "playwright": "^1.60.0"
   }
 }
