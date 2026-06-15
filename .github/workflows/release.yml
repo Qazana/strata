@@ -1,9 +1,10 @@
 name: Release
 
 # Publish @qazana/strata to npm when a version tag is pushed.
-# Requires the NPM_TOKEN secret: a granular automation token created by the
-# qazana org owner (qazana-hd) with read/write on @qazana packages.
-#
+# Requires the NPM_TOKEN secret created by the qazana org owner (qazana-hd):
+# a token that bypasses 2FA on publish — a classic Automation token, or a
+# granular token with 2FA-bypass enabled and read/write on @qazana packages.
+# The account enforces 2FA for writes, so a plain granular token gets a 403.
 
 on:
   push:
@@ -14,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      id-token: write   # harmless now; required if --provenance is enabled later
+      id-token: write   # required for `npm publish --provenance` below
     steps:
       - uses: actions/checkout@v4
 
