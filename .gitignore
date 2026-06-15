@@ -4,4 +4,10 @@ dist/
 *.log
 harness/out/
 /.firecrawl
-docs-site/public/
+# public/ holds tracked static assets (e.g. CNAME); only the build-synced
+# subdirs are generated — those are ignored in docs-site/.gitignore
+docs-site/public/demo/
+docs-site/public/kits/
+docs-site/public/tokens/
+docs-site/public/js/
+docs-site/public/themes/
