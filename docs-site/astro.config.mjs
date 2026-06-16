@@ -79,6 +79,7 @@ export default defineConfig({
             { label: 'All Qazana docs', link: 'https://docs.qazana.net/' },
             { label: 'qazana.net', link: 'https://qazana.net/' },
             { label: 'Figma library', link: 'https://www.figma.com/design/bcPBKFlIq3QmtGDPCpd6I2/Qazana-Strata--Design-System?node-id=44-2' },
+            { label: 'npm package', link: 'https://www.npmjs.com/package/@qazana/strata' },
           ],
         },
       ],
