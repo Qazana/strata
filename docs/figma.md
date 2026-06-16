@@ -84,6 +84,31 @@ single source of truth; Figma mirrors it.
 - **v2+** — kit-specific (commerce cart/product, media player/waveform, auth
   flows, email blocks, content/blog, site marketing sections) + the Patterns page.
 
+## Component build (settled in grill #2)
+
+- **State model:** `State = {Default, Focus, Disabled}` as variants. Hover is NOT
+  a placeable variant (its signature is a `translateY` lift Figma can't render
+  statically) — model hover as a Figma interactive-component reaction. Focus =
+  3px ring (`primary` @ 22%, i.e. `primary-ring`); Disabled = layer opacity 50%.
+- **Button matrix:** `Variant {Primary, Secondary, Outline, Ghost, Danger, Link}`
+  × `Size {sm, md}` × `State {Default, Focus, Disabled}` = 36 variants (built full,
+  it's the reference component). **Icon Button is a SEPARATE component** (square,
+  icon-only). Right-size every other primitive (don't force 36).
+- **Component API (house pattern):** a `Label` TEXT property + `Leading icon` /
+  `Trailing icon` boolean toggles gating instance-swap slots.
+- **Icons:** a generic `Icon` component (instance-swap default, fill inherits the
+  control's text color) + ~8–10 curated geometric essentials (check, xmark,
+  chevron-down, chevron-right, magnifying-glass, plus, minus, star, sun). Do NOT
+  vendor Font Awesome — teams add the official FA Figma library and swap into the
+  slots (mirrors FA being an external CDN dep in code).
+- **Cadence:** full Button + Icon set = the one hard sign-off gate; then primitives
+  in 4 groups (Form controls, Containers, Overlays, Navigation), reviewed per
+  group. Light mode spot-checked (bindings guarantee both modes resolve).
+- **Pages:** Cover/About · Foundations (+ Icon set) · Components (sectioned by the
+  4 groups, Button/Icon up top) · Patterns (v2). Each component's Description
+  carries the canonical HTML snippet (Code-Connect-lite). Publish as a library at
+  v1 (Foundations + primitives) complete.
+
 ## Sync / anti-drift
 
 - **Tokens** — regenerate `tokens.figma.json` from the code, re-import via Tokens
