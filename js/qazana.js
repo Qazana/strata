@@ -294,6 +294,16 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('click', function () { menu.style.display = 'none'; });
     menu.addEventListener('click', function (e) { e.stopPropagation(); menu.style.display = 'none'; });
   });
+  // Horizontally-scrollable table wrappers must be keyboard-reachable so the
+  // content can be scrolled without a pointer (WCAG 2.1.1). For any .tbl-wrap
+  // whose content overflows, expose it as a focusable, labelled region.
+  document.querySelectorAll('.tbl-wrap').forEach(function (wrap) {
+    if (wrap.scrollWidth > wrap.clientWidth) {
+      if (!wrap.hasAttribute('tabindex')) wrap.setAttribute('tabindex', '0');
+      if (!wrap.hasAttribute('role')) wrap.setAttribute('role', 'region');
+      if (!wrap.hasAttribute('aria-label')) wrap.setAttribute('aria-label', 'Table, scrollable');
+    }
+  });
   document.querySelectorAll('[data-table-sort] th.sortable').forEach(function (th) {
     th.addEventListener('click', function () {
       var asc = th.classList.contains('asc');

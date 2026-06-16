@@ -81,7 +81,7 @@
 
   /* ---- foreground pairs: text colour on a SOLID fill of each semantic colour.
      Bright dark-scheme fills need dark ink; light overrides these to white. ---- */
-  --on-danger:#ffffff;
+  --on-danger:#2a0c0c;
   --on-warning:#241200;
   --on-info:#04203f;
   --on-accent:#1e1340;
@@ -183,13 +183,13 @@
     --font-smooth:auto;             /* dark-on-light needs no thinning — keep glyphs full */
     --bg:#fff6ef; --surface:#ffffff; --surface-2:#fbeee3; --surface-3:#ffffff; --surface-sunken:#f5ece2; --surface-active:#fff1ec; --skeleton:#eae5de;
     --border-rgb:11 15 26;
-    --text:#0b0f1a; --text-2:#3b4356; --muted:#5b6475;
-    --primary:#ff6b4a; --primary-rgb:255 107 74; --on-primary:#ffffff;   /* light keeps the Qazana coral brand */
-    --primary-bright:#f0502a; --primary-bright-rgb:240 80 42;   /* emphasis/hover reads darker on cream */
-    --danger:#d92d3f; --danger-rgb:217 45 63;
-    --warning:#b9730a; --warning-rgb:185 115 10;
-    --info:#2f6fed;   --info-rgb:47 111 237;
-    --accent:#7c5cff; --accent-rgb:124 92 255; --on-warning:#fff; --on-info:#fff; --on-accent:#fff;
+    --text:#0b0f1a; --text-2:#323848; --muted:#5b6475;   /* text-2 darkened so .7-opacity contexts (logo cloud) still hit AA */
+    --primary:#bf5038; --primary-rgb:191 80 56; --on-primary:#ffffff;   /* light keeps the Qazana coral brand, deepened just enough that white passes AA (4.5:1) */
+    --primary-bright:#a84731; --primary-bright-rgb:168 71 49;   /* emphasis/hover reads darker on cream; AA as link/delta text on soft tints, and white reads on it as a fill */
+    --danger:#c12838; --danger-rgb:193 40 56;
+    --warning:#905a08; --warning-rgb:144 90 8;
+    --info:#2860cb;   --info-rgb:40 96 203;
+    --accent:#684cd6; --accent-rgb:104 76 214; --on-warning:#fff; --on-info:#fff; --on-accent:#fff; --on-danger:#fff;
     --shadow-sm:0 2px 6px -3px rgb(11 15 26 / .08);
     --shadow:0 8px 20px -12px rgb(11 15 26 / .12);
     --shadow-lg:0 16px 36px -18px rgb(11 15 26 / .14);
@@ -201,13 +201,13 @@
   --font-smooth:auto;
   --bg:#fff6ef; --surface:#ffffff; --surface-2:#fbeee3; --surface-3:#ffffff; --surface-sunken:#f5ece2; --surface-active:#fff1ec; --skeleton:#eae5de;
   --border-rgb:11 15 26;
-  --text:#0b0f1a; --text-2:#3b4356; --muted:#5b6475;
-  --primary:#ff6b4a; --primary-rgb:255 107 74; --on-primary:#ffffff;
-  --primary-bright:#f0502a; --primary-bright-rgb:240 80 42;
-  --danger:#d92d3f; --danger-rgb:217 45 63;
-  --warning:#b9730a; --warning-rgb:185 115 10;
-  --info:#2f6fed;   --info-rgb:47 111 237;
-  --accent:#7c5cff; --accent-rgb:124 92 255; --on-warning:#fff; --on-info:#fff; --on-accent:#fff;
+  --text:#0b0f1a; --text-2:#323848; --muted:#5b6475;   /* text-2 darkened so .7-opacity contexts (logo cloud) still hit AA */
+  --primary:#bf5038; --primary-rgb:191 80 56; --on-primary:#ffffff;   /* light keeps the Qazana coral brand, deepened just enough that white passes AA (4.5:1) */
+  --primary-bright:#a84731; --primary-bright-rgb:168 71 49;   /* emphasis/hover reads darker on cream; AA as link/delta text on soft tints, and white reads on it as a fill */
+  --danger:#c12838; --danger-rgb:193 40 56;
+  --warning:#905a08; --warning-rgb:144 90 8;
+  --info:#2860cb;   --info-rgb:40 96 203;
+  --accent:#684cd6; --accent-rgb:104 76 214; --on-warning:#fff; --on-info:#fff; --on-accent:#fff; --on-danger:#fff;
   --shadow-sm:0 2px 6px -3px rgb(11 15 26 / .08);
   --shadow:0 8px 20px -12px rgb(11 15 26 / .12);
   --shadow-lg:0 16px 36px -18px rgb(11 15 26 / .14);
