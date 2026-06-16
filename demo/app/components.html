@@ -144,11 +144,11 @@
     <div class="sub">Field anatomy &amp; states</div>
     <div class="grid2">
       <div class="field-row"><label class="fld">Playlist name <span class="req">*</span></label><input type="text" value="Sunset set" placeholder="My set"><span class="fhelp">Shown on the public share page.</span></div>
-      <div class="field-row"><label class="fld">Email</label><input type="email" class="is-error" value="not-an-email"><span class="ferr"><i class="fa-solid fa-circle-exclamation"></i> Enter a valid email.</span></div>
-      <div class="field-row"><label class="fld">Handle</label><input type="text" class="is-success" value="djfrank"><span class="fok">Available</span></div>
-      <div class="field-row"><label class="fld">API key (read-only · copyable)</label><div class="input-group"><input value="sk_live_8fa2e91c4d" readonly><button class="btn-icon" data-copy="sk_live_8fa2e91c4d" title="Copy" aria-label="Copy"><i class="fa-regular fa-copy"></i></button></div></div>
+      <div class="field-row"><label class="fld">Email</label><input type="email" class="is-error" aria-label="Email" value="not-an-email"><span class="ferr"><i class="fa-solid fa-circle-exclamation"></i> Enter a valid email.</span></div>
+      <div class="field-row"><label class="fld">Handle</label><input type="text" class="is-success" aria-label="Handle" value="djfrank"><span class="fok">Available</span></div>
+      <div class="field-row"><label class="fld">API key (read-only · copyable)</label><div class="input-group"><input value="sk_live_8fa2e91c4d" readonly aria-label="API key"><button class="btn-icon" data-copy="sk_live_8fa2e91c4d" title="Copy" aria-label="Copy"><i class="fa-regular fa-copy"></i></button></div></div>
       <div class="field-row"><label class="fld">Disabled</label><input type="text" placeholder="Unavailable" disabled></div>
-      <div class="field-row"><label class="fld">Date</label><input type="date" value="2026-06-09"></div>
+      <div class="field-row"><label class="fld">Date</label><input type="date" aria-label="Date" value="2026-06-09"></div>
     </div>
 
     <div class="sub">Inputs with add-ons &amp; the URL paste</div>
@@ -159,16 +159,16 @@
       <div class="field-row"><label class="fld">Search</label>
         <div class="input-group"><i class="fa-solid fa-magnifying-glass" style="opacity:.5"></i><input placeholder="Search by title or uploader…"></div>
       </div>
-      <div class="field-row"><label class="fld">Custom domain</label><div class="addon-group"><span class="addon">https://</span><input value="frank"><span class="addon">.example.com</span></div></div>
+      <div class="field-row"><label class="fld">Custom domain</label><div class="addon-group"><span class="addon">https://</span><input value="frank" aria-label="Custom domain"><span class="addon">.example.com</span></div></div>
       <div class="field-row"><label class="fld">Password</label>
-        <div class="pw"><input type="password" value="hunter2horse"><button class="pw-toggle" type="button">SHOW</button></div>
+        <div class="pw"><input type="password" value="hunter2horse" aria-label="Password"><button class="pw-toggle" type="button">SHOW</button></div>
         <div class="pwbar"><i></i></div><span class="fhelp">Medium strength</span></div>
     </div>
 
     <div class="sub">Textarea · select · searchable select · multiselect</div>
     <div class="grid2">
       <div class="field-row"><label class="fld">Notes</label><textarea rows="3" maxlength="140" placeholder="Add a note…"></textarea><span class="counter">0 / 140</span></div>
-      <div class="field-row"><label class="fld">Sort by</label><select><option>Newest first</option><option>Most songs</option><option>Longest</option></select></div>
+      <div class="field-row"><label class="fld">Sort by</label><select aria-label="Sort by"><option>Newest first</option><option>Most songs</option><option>Longest</option></select></div>
       <div class="field-row"><label class="fld">Genre filter (searchable)</label>
         <div class="combo" data-combo>
           <button class="combo-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="combo-val">All genres</span><span class="combo-caret"><i class="fa-solid fa-chevron-down"></i></span></button>
@@ -183,7 +183,7 @@
           </div>
         </div>
       </div>
-      <div class="field-row"><label class="fld">Export formats (multi)</label><select multiple size="4"><option selected>Spotify</option><option selected>CSV</option><option>JSON</option><option>M3U</option></select></div>
+      <div class="field-row"><label class="fld">Export formats (multi)</label><select multiple size="4" aria-label="Export formats"><option selected>Spotify</option><option selected>CSV</option><option>JSON</option><option>M3U</option></select></div>
     </div>
 
     <div class="sub">Choice controls</div>
@@ -198,20 +198,20 @@
       <div class="field-row"><label class="fld">Plan (segmented)</label>
         <div class="segmented"><button class="on">Monthly</button><button>Annual −20%</button></div></div>
       <div class="field-row"><label class="fld">Preferences (toggle / switch)</label>
-        <div class="demo"><label class="switch"><input type="checkbox" checked><span class="track"></span></label>
+        <div class="demo"><label class="switch"><input type="checkbox" checked aria-label="Enable preference"><span class="track"></span></label>
           <label class="check"><input type="checkbox" checked> Email me when done</label></div></div>
     </div>
 
     <div class="sub">Numeric · tags · code · upload</div>
     <div class="grid2">
       <div class="field-row"><label class="fld">Min confidence (slider)</label>
-        <div class="rangewrap"><input type="range" class="slider" min="0" max="100" value="60" oninput="this.nextElementSibling.value=this.value+'%'"><output>60%</output></div></div>
+        <div class="rangewrap"><input type="range" class="slider" aria-label="Min confidence" min="0" max="100" value="60" oninput="this.nextElementSibling.value=this.value+'%'"><output>60%</output></div></div>
       <div class="field-row"><label class="fld">Segments per pass (stepper)</label>
-        <div class="stepper"><button type="button">−</button><input type="text" value="12"><button type="button">+</button></div></div>
+        <div class="stepper"><button type="button">−</button><input type="text" value="12" aria-label="Segments per pass"><button type="button">+</button></div></div>
       <div class="field-row"><label class="fld">Tags</label>
         <div class="tagsinput"><span class="tagchip">house <button>×</button></span><span class="tagchip">2024 <button>×</button></span><input placeholder="Add tag…"></div></div>
       <div class="field-row"><label class="fld">Verification code</label>
-        <div class="otp"><input maxlength="1" value="4"><input maxlength="1" value="8"><input maxlength="1"><input maxlength="1"></div></div>
+        <div class="otp"><input maxlength="1" value="4" aria-label="Verification code digit 1"><input maxlength="1" value="8" aria-label="Verification code digit 2"><input maxlength="1" aria-label="Verification code digit 3"><input maxlength="1" aria-label="Verification code digit 4"></div></div>
       <div class="field-row full"><label class="fld">Cookie file (upload)</label>
         <div class="dropzone"><div class="dzi"><i class="fa-solid fa-cloud-arrow-up"></i></div>Drop a file here or <b>browse</b><div class="fhelp" style="margin-top:4px">Netscape cookie format, up to 1 MB</div></div></div>
     </div>
@@ -222,7 +222,7 @@
         <div class="picker" data-picker><input type="text" readonly value="2026-06-09" placeholder="Pick a date"><div class="cal" hidden></div></div>
       </div>
       <div class="field-row"><label class="fld">Duration range — <span class="dual-out">20–80</span> min</label>
-        <div class="dual" data-dual><div class="track"><i></i></div><input type="range" min="0" max="180" value="20"><input type="range" min="0" max="180" value="80"></div>
+        <div class="dual" data-dual><div class="track"><i></i></div><input type="range" min="0" max="180" value="20" aria-label="Duration range minimum (minutes)"><input type="range" min="0" max="180" value="80" aria-label="Duration range maximum (minutes)"></div>
       </div>
     </div>
 
@@ -232,8 +232,8 @@
     <div class="sub">Composed form</div>
     <div class="card" style="max-width:560px">
       <div class="form-grid">
-        <div class="field-row"><label class="fld">First name</label><input type="text" value="Ada"></div>
-        <div class="field-row"><label class="fld">Last name</label><input type="text" value="G."></div>
+        <div class="field-row"><label class="fld">First name</label><input type="text" value="Ada" aria-label="First name"></div>
+        <div class="field-row"><label class="fld">Last name</label><input type="text" value="G." aria-label="Last name"></div>
         <div class="field-row full"><label class="fld">Bio</label><textarea rows="2" placeholder="A line about you…"></textarea></div>
       </div>
       <div class="form-actions"><button class="btn btn-ghost btn-sm">Cancel</button><button class="btn btn-primary btn-sm">Save changes</button></div>
@@ -439,9 +439,9 @@
     <div class="tbl-wrap"><table class="tbl" data-table-sort>
       <thead><tr><th class="sel-col"></th><th class="sortable asc">Email <span class="sort">▲</span></th><th class="sortable">Tier <span class="sort">▲</span></th><th class="sortable">Analyses <span class="sort">▲</span></th><th class="sortable">Joined <span class="sort">▲</span></th></tr></thead>
       <tbody>
-        <tr><td class="sel-col"><input type="checkbox"></td><td><b>ada@lovelace.io</b></td><td><span class="tier tier-pro">Pro</span></td><td>61</td><td class="cell-mono">2026-03-02</td></tr>
-        <tr><td class="sel-col"><input type="checkbox"></td><td><b>grace@hopper.dev</b></td><td><span class="tier tier-free">Free</span></td><td>4</td><td class="cell-mono">2026-05-19</td></tr>
-        <tr><td class="sel-col"><input type="checkbox"></td><td><b>alan@turing.uk</b></td><td><span class="tier tier-unlimited">Unlimited</span></td><td>318</td><td class="cell-mono">2026-01-08</td></tr>
+        <tr><td class="sel-col"><input type="checkbox" aria-label="Select ada@lovelace.io"></td><td><b>ada@lovelace.io</b></td><td><span class="tier tier-pro">Pro</span></td><td>61</td><td class="cell-mono">2026-03-02</td></tr>
+        <tr><td class="sel-col"><input type="checkbox" aria-label="Select grace@hopper.dev"></td><td><b>grace@hopper.dev</b></td><td><span class="tier tier-free">Free</span></td><td>4</td><td class="cell-mono">2026-05-19</td></tr>
+        <tr><td class="sel-col"><input type="checkbox" aria-label="Select alan@turing.uk"></td><td><b>alan@turing.uk</b></td><td><span class="tier tier-unlimited">Unlimited</span></td><td>318</td><td class="cell-mono">2026-01-08</td></tr>
       </tbody>
     </table></div>
   </section>
@@ -470,13 +470,13 @@
     <div class="grid2">
       <div>
         <div class="sub">Tree view (arrows to navigate, →/← expand/collapse)</div>
-        <ul class="tree" data-tree>
+        <ul class="tree" data-tree role="tree" aria-label="File tree">
           <li class="tree-item" role="treeitem" aria-expanded="true">
             <div class="tree-row" tabindex="0"><span class="tw"><i class="fa-solid fa-chevron-right"></i></span><span class="ti"><i class="fa-solid fa-folder"></i></span> src</div>
-            <ul class="tree-children">
+            <ul class="tree-children" role="group">
               <li class="tree-item" role="treeitem" aria-expanded="true">
                 <div class="tree-row" tabindex="-1"><span class="tw"><i class="fa-solid fa-chevron-right"></i></span><span class="ti"><i class="fa-solid fa-folder"></i></span> kits</div>
-                <ul class="tree-children">
+                <ul class="tree-children" role="group">
                   <li class="tree-item" role="treeitem"><div class="tree-row" tabindex="-1"><span class="tw leaf"></span><span class="ti"><i class="fa-regular fa-file-code"></i></span> app.css</div></li>
                   <li class="tree-item" role="treeitem"><div class="tree-row" tabindex="-1"><span class="tw leaf"></span><span class="ti"><i class="fa-regular fa-file-code"></i></span> site.css</div></li>
                 </ul>
@@ -486,7 +486,7 @@
           </li>
           <li class="tree-item" role="treeitem" aria-expanded="false">
             <div class="tree-row" tabindex="-1"><span class="tw"><i class="fa-solid fa-chevron-right"></i></span><span class="ti"><i class="fa-solid fa-folder"></i></span> tokens</div>
-            <ul class="tree-children">
+            <ul class="tree-children" role="group">
               <li class="tree-item" role="treeitem"><div class="tree-row" tabindex="-1"><span class="tw leaf"></span><span class="ti"><i class="fa-regular fa-file"></i></span> qazana.tokens.css</div></li>
             </ul>
           </li>
@@ -676,7 +676,7 @@
         <div class="mb">Permanently deletes your account and private analyses. Type <code style="font-family:var(--mono)">DELETE</code> to confirm.</div>
         <div class="mf"><button class="btn btn-ghost btn-sm">Cancel</button><button class="btn btn-danger btn-sm">Delete</button></div></div></div>
       <div class="modal-overlay"><div class="modal-dialog info"><div class="mh"><span class="mi"><i class="fa-solid fa-circle-info"></i></span> Name your playlist</div>
-        <div class="mb"><input type="text" value="Sunset set"></div>
+        <div class="mb"><input type="text" value="Sunset set" aria-label="Playlist name"></div>
         <div class="mf"><button class="btn btn-ghost btn-sm">Cancel</button><button class="btn btn-primary btn-sm">Create</button></div></div></div>
       <div class="modal-overlay"><div class="modal-dialog ok"><div class="mh"><span class="mi"><i class="fa-solid fa-check"></i></span> Done</div>
         <div class="mb">Your playlist is live on Spotify.</div>
@@ -858,7 +858,7 @@
 
     <div class="sub">Amount / currency input · currency picker</div>
     <div class="demo">
-      <div class="amount-field" data-amount><span class="cur">KES</span><input value="12500" inputmode="decimal"></div>
+      <div class="amount-field" data-amount><span class="cur">KES</span><input value="12500" inputmode="decimal" aria-label="Amount"></div>
       <div class="combo" data-combo style="max-width:200px">
         <button class="combo-btn" type="button" aria-haspopup="listbox" aria-expanded="false"><span class="combo-val">🇰🇪 KES</span><span class="combo-caret"><i class="fa-solid fa-chevron-down"></i></span></button>
         <div class="combo-pop" hidden>

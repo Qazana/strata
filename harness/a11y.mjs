@@ -103,9 +103,19 @@ for (const url of PAGES) {
 
     const gated = [];
     let noise = 0;
+    // WCAG 1.4.3 exempts disabled/inactive controls from contrast — drop those
+    // nodes from color-contrast findings (a disabled control is dimmed by design).
+    const isExemptDisabled = (node) =>
+      /(?:^|[\s.#[])(?:is-disabled|disabled)\b|\[disabled\]|aria-disabled/i.test((node.target || []).join(' '));
     if (result) {
       for (const v of result.violations) {
-        if (GATE.has(v.impact)) gated.push(v);
+        let vv = v;
+        if (v.id === 'color-contrast') {
+          const nodes = (v.nodes || []).filter((n) => !isExemptDisabled(n));
+          if (!nodes.length) continue;        // only disabled controls → exempt
+          vv = { ...v, nodes };
+        }
+        if (GATE.has(vv.impact)) gated.push(vv);
         else noise++;
       }
     }
