@@ -41,6 +41,8 @@
   "scripts": {
     "demo": "python3 -m http.server 4178 --bind 127.0.0.1",
     "harness": "node harness/shoot.mjs",
+    "visual": "node harness/visual.mjs",
+    "visual:baseline": "HARNESS_BASELINE=1 node harness/visual.mjs",
     "harness:behaviors": "node harness/behaviors.mjs",
     "contract": "node harness/contract.mjs",
     "a11y": "node harness/a11y.mjs",
