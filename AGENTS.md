@@ -32,7 +32,9 @@ These rules govern how coding agents maintain it.
 
 - Update the **demo** (`demo/`) so the change is visible.
 - Update the relevant **doc** in `docs/`.
-- Keep `tokens/tokens.json` in sync with `tokens/qazana.tokens.css`.
+- Keep `tokens/tokens.json` in sync with `tokens/qazana.tokens.css`, then
+  regenerate the Figma export (`node scripts/figma-tokens.mjs` →
+  `tokens/tokens.figma.json`; see `docs/figma.md`).
 - **Bump the version** in `package.json` (semver: patch = fix, minor = additive
   component/token, major = rename/removal/breaking token change). Renaming or
   removing a token is a **breaking** change — note it in the commit.
