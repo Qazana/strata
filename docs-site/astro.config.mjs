@@ -16,6 +16,7 @@ export default defineConfig({
       tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 3 },
       social: [
         { icon: 'github', label: 'GitHub', href: 'https://github.com/Qazana/strata' },
+        { icon: 'figma', label: 'Figma library', href: 'https://www.figma.com/design/bcPBKFlIq3QmtGDPCpd6I2/Qazana-Strata--Design-System?node-id=44-2' },
       ],
       sidebar: [
         {
@@ -77,6 +78,7 @@ export default defineConfig({
             { label: 'Strata marketing site', link: 'https://strata.qazana.net/' },
             { label: 'All Qazana docs', link: 'https://docs.qazana.net/' },
             { label: 'qazana.net', link: 'https://qazana.net/' },
+            { label: 'Figma library', link: 'https://www.figma.com/design/bcPBKFlIq3QmtGDPCpd6I2/Qazana-Strata--Design-System?node-id=44-2' },
           ],
         },
       ],

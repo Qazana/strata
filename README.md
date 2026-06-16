@@ -14,6 +14,8 @@ products. One **token + theme foundation**, consumed by a set of composable
 Brand colours come from qazana.net: a coral primary, with a teal accent on the
 dark scheme and a warm-cream "Désert Dunes" light scheme.
 
+**Links:** [Docs](https://strata.docs.qazana.net/) · [Site](https://strata.qazana.net/) · [Figma library](https://www.figma.com/design/bcPBKFlIq3QmtGDPCpd6I2/Qazana-Strata--Design-System?node-id=44-2) · [npm](https://www.npmjs.com/package/@qazana/strata)
+
 ---
 
 ## Contents
