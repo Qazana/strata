@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support — Ticket detail · Qazana Strata</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../../kits/support.css" rel="stylesheet">
+<style>
+  body{margin:0}
+  .page-wrap{max-width:880px;margin-inline:auto;padding:var(--space-5)}
+  .demo-nav{display:flex;gap:var(--space-3);margin-bottom:var(--space-6);flex-wrap:wrap}
+  .demo-nav a{font-size:var(--text-sm);color:var(--primary-bright);text-decoration:none;padding:4px 10px;border:1px solid var(--line);border-radius:var(--radius)}
+  .demo-nav a:hover{border-color:var(--primary);color:var(--primary)}
+  .demo-nav a.active{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+</style>
+</head>
+<body class="support" style="background:var(--bg);min-height:100vh">
+
+<div class="page-wrap">
+
+  <nav class="demo-nav" aria-label="Support demo pages">
+    <a href="../index.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> All demos</a>
+    <a href="contact.html">Contact</a>
+    <a href="tickets.html">Tickets</a>
+    <a href="ticket.html" class="active">Ticket detail</a>
+  </nav>
+
+  <!-- ---- Header ---- -->
+  <div class="ticket-head">
+    <div class="th-main">
+      <h1>Charge failed but card was charged</h1>
+      <div class="th-meta">
+        <span class="th-id">#4821</span>
+        <span class="badge open">Open</span>
+        <span class="prio urgent">Urgent</span>
+        <span>Opened by <b style="color:var(--text-2)">Dana Okoro</b> · 2h ago</span>
+      </div>
+    </div>
+    <div class="th-actions">
+      <button type="button" class="btn btn-secondary btn-sm">Assign</button>
+      <button type="button" class="btn btn-primary btn-sm"><i class="fa-solid fa-check" aria-hidden="true"></i> Mark solved</button>
+    </div>
+  </div>
+
+  <!-- ---- Conversation thread ---- -->
+  <div class="thread">
+
+    <div class="msg">
+      <div class="av" aria-hidden="true">DO</div>
+      <div class="bubble">
+        <div class="m-head">
+          <span class="m-author">Dana Okoro</span>
+          <span class="m-role">Customer</span>
+          <span class="m-time">2h ago</span>
+        </div>
+        <div class="m-body"><p>I tried to upgrade to Pro and got an error saying the charge failed, but my bank shows a $12 charge went through. Did the upgrade work or not?</p></div>
+      </div>
+    </div>
+
+    <div class="msg agent">
+      <div class="av" aria-hidden="true">QA</div>
+      <div class="bubble">
+        <div class="m-head">
+          <span class="m-author">Quinn (Support)</span>
+          <span class="m-role">Agent</span>
+          <span class="m-time">1h ago</span>
+        </div>
+        <div class="m-body"><p>Thanks for flagging this, Dana. That $12 is an authorization hold, not a completed charge — it'll drop off in 3–5 business days. I've manually applied your Pro upgrade so you're not blocked in the meantime.</p></div>
+      </div>
+    </div>
+
+    <div class="msg note">
+      <div class="av" aria-hidden="true">QA</div>
+      <div class="bubble">
+        <div class="m-head">
+          <span class="m-author">Quinn</span>
+          <span class="m-role">Internal note</span>
+          <span class="m-time">1h ago</span>
+        </div>
+        <div class="m-body"><p>Gateway returned a soft-decline then a retry succeeded — duplicate auth. Flagged to billing to confirm only one capture settles.</p></div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ---- Reply composer ---- -->
+  <div class="composer">
+    <textarea placeholder="Write a reply…" aria-label="Reply to ticket"></textarea>
+    <div class="c-bar">
+      <details class="macros">
+        <summary><i class="fa-solid fa-bolt" aria-hidden="true"></i> Canned replies</summary>
+        <div class="macro-menu" role="menu">
+          <button type="button" role="menuitem"><span class="mm-t">Authorization hold</span><span class="mm-d">Explains pending vs. captured charges</span></button>
+          <button type="button" role="menuitem"><span class="mm-t">Refund initiated</span><span class="mm-d">Confirms a refund and timeline</span></button>
+          <button type="button" role="menuitem"><span class="mm-t">Ask for more detail</span><span class="mm-d">Requests steps to reproduce</span></button>
+        </div>
+      </details>
+      <button type="button" class="btn btn-ghost btn-sm" aria-label="Attach file"><i class="fa-solid fa-paperclip" aria-hidden="true"></i></button>
+      <div class="c-actions">
+        <button type="button" class="btn btn-secondary btn-sm">Add internal note</button>
+        <button type="button" class="btn btn-primary btn-sm">Send reply</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script src="../../js/qazana.js" defer></script>
+</body>
+</html>
