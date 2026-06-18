@@ -160,7 +160,7 @@ const PAGES = [
   'email/index', 'email/transactional', 'email/newsletter',
   'media/index', 'media/video', 'media/audio', 'media/social',
   'commerce/products', 'commerce/product', 'commerce/cart', 'commerce/checkout', 'commerce/order',
-  'billing/plans', 'billing/methods', 'billing/invoices',
+  'billing/plans', 'billing/methods', 'billing/invoices', 'billing/overview',
 ];
 const NEEDS_BG = new Set(['app/components', 'app/admin', 'app/errors']); // app demos use .bg-layer; others bring their own atmosphere
 

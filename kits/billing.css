@@ -168,4 +168,65 @@
   color:var(--text-2);font-family:var(--body);font-weight:600;font-size:var(--text-md);cursor:pointer;transition:.16s}
 .billing .pay-add:hover{border-color:var(--primary);color:var(--text)}
 
+/* ============================================================================
+   USAGE / METERED BILLING  —  scoped .quota copy + cost projection + nudge
+   ============================================================================ */
+
+.billing .quota .qh{display:flex;justify-content:space-between;font-size:var(--text-sm);margin-bottom:6px}
+.billing .quota .qh .qv{font-family:var(--mono);color:var(--text-2)}
+.billing .quota .qbar{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.billing .quota .qbar i{display:block;height:100%;border-radius:99px;background:var(--primary)}
+.billing .quota.warn .qbar i{background:var(--warning)}.billing .quota.warn .qh .qv{color:var(--warning)}
+.billing .quota.crit .qbar i{background:var(--danger)}.billing .quota.crit .qh .qv{color:var(--danger)}
+
+.billing .usage{display:flex;flex-direction:column;gap:var(--space-5)}
+.billing .usage-row .ur-head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--space-3);margin-bottom:8px}
+.billing .usage-row .ur-name{font-weight:600}
+.billing .usage-row .ur-cost{font-family:var(--mono);font-size:var(--text-sm);color:var(--text-2)}
+.billing .usage-row .ur-cost b{color:var(--text);font-weight:700}
+/* over-limit upgrade nudge — surfaces only when the meter is critical */
+.billing .usage-row .ur-nudge{display:none;margin-top:10px;align-items:center;gap:10px;font-size:var(--text-sm);
+  background:rgb(var(--danger-rgb) / .06);border:1px solid rgb(var(--danger-rgb) / .25);border-radius:var(--radius);padding:9px 12px}
+.billing .usage-row.crit .ur-nudge{display:flex}
+.billing .usage-row .ur-nudge .um{margin-inline-end:auto;color:var(--text-2)}
+
+/* ============================================================================
+   DUNNING / FAILED-PAYMENT BANNER  —  role=alert; static deadline (no timer)
+   ============================================================================ */
+
+.billing .bill-banner{display:flex;align-items:center;gap:14px;padding:13px 16px;border-radius:var(--radius);
+  font-size:var(--text-md);border:1px solid var(--line);background:var(--surface)}
+.billing .bill-banner .bb-icon{font-size:1.1rem;flex:0 0 auto}
+.billing .bill-banner .bb-text{min-width:0}
+.billing .bill-banner .bb-text b{font-weight:700}
+.billing .bill-banner .bb-actions{margin-inline-start:auto;display:flex;gap:var(--space-2);flex-shrink:0}
+/* severity: warn = in grace period, crit = suspended */
+.billing .bill-banner.warn{background:rgb(var(--warning-rgb) / .07);border-color:rgb(var(--warning-rgb) / .3)}
+.billing .bill-banner.warn .bb-icon{color:var(--warning)}
+.billing .bill-banner.crit{background:rgb(var(--danger-rgb) / .07);border-color:rgb(var(--danger-rgb) / .3)}
+.billing .bill-banner.crit .bb-icon{color:var(--danger)}
+
+/* ============================================================================
+   SEAT MANAGEMENT  —  .seat-row + scoped .stepper copy (reuses [data-stepper])
+   ============================================================================ */
+
+.billing .stepper{display:inline-flex;align-items:center;border:1px solid rgb(var(--border-rgb) / .14);
+  border-radius:var(--radius);overflow:hidden}
+.billing .stepper button{width:38px;height:38px;border:0;background:var(--surface-2);color:var(--text);
+  font-size:var(--text-lg);cursor:pointer;transition:.16s}
+.billing .stepper button:hover:not(:disabled){background:var(--primary);color:var(--on-primary)}
+.billing .stepper button:disabled{opacity:.45;cursor:not-allowed}
+.billing .stepper input{width:54px;height:38px;padding:0;text-align:center;border:0;
+  border-inline-start:1px solid var(--line);border-inline-end:1px solid var(--line);border-radius:0;
+  background:var(--surface);color:var(--text);font-family:var(--body);outline:0}
+.billing .stepper input:focus{box-shadow:none;background:var(--surface)}
+
+.billing .seat-row{display:flex;align-items:center;gap:var(--space-4);background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.billing .seat-row .sr-info{min-width:0}
+.billing .seat-row .sr-info .srt{font-weight:600}
+.billing .seat-row .sr-info .srs{font-size:var(--text-sm);color:var(--text-2);margin-top:2px}
+.billing .seat-row .sr-ctl{margin-inline-start:auto;display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap;justify-content:flex-end}
+.billing .seat-row .sr-cost{font-family:var(--mono);font-weight:600;white-space:nowrap}
+
 } /* end @layer qazana */
