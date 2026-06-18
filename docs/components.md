@@ -410,3 +410,33 @@ desc) + `.api-code` request/response samples. No two-panel scroll-sync (that's a
 ### Help article
 `.crumbs` breadcrumb (`a` + `.sep`) → `<article class="prose">` → `.help-vote` ("was this helpful?"
 + `.hv-btns`) → `.help-related` related-article cards.
+
+## Support kit
+
+`kits/support.css` — root scope `.support`. Standalone on base.css (form controls and `.form-field`
+come from base). Generic helpdesk UI only — no SLA timers, agent routing, live send, or ticketing
+backend (per-product/helpdesk concerns). Zero new behavior JS.
+
+### Contact / ticket form
+`.support-form` (flex column; `.row` for side-by-side fields) reuses base `.form-field` + native
+controls. `.attach` dashed dropzone. `.support-sent` confirmation state (`.ss-ic` + heading + `.ref`
+ticket-number badge).
+
+### Status & priority
+Scoped `.badge` status modifiers: `.open`→info · `.pending`→warning · `.solved`→primary ·
+`.closed`→muted. `.prio` priority label with a leading dot: `.low`→muted · `.normal`→info ·
+`.high`→warning · `.urgent`→danger.
+
+### Ticket list
+`.ticket-list` table → `.t-id` (mono) · `.t-subj` (link + `.t-req` requester/category) · status badge ·
+`.prio` · `.t-time` (mono). Rows link to the ticket.
+
+### Ticket detail + conversation thread
+`.ticket-head` (title + `.th-meta` id/status/priority + `.th-actions`). `.thread` > `.msg` stacked
+cards — `.av` avatar + `.bubble` (`.m-head`: `.m-author` + `.m-role` + `.m-time`; `.m-body` prose).
+Variants: `.msg.agent` (primary avatar/role) and `.msg.note` (internal note, warning-tinted).
+
+### Reply composer + macros
+`.composer` (textarea + `.c-bar` toolbar + `.c-actions`). `.macros` canned-reply picker is a native
+`<details>` dropdown (`.macro-menu` opens upward; `.mm-t` + `.mm-d` per entry). Selection/insertion
+is consumer-wired.
