@@ -3,6 +3,21 @@
 All notable changes to `@qazana/strata`. Semver: patch = fix, minor = additive
 component/token, major = rename/removal/breaking token change.
 
+## 0.2.0 — 2026-06-18
+
+Additive: a new **Docs kit** (`@qazana/strata/docs`, scope `.docs`). No breaking changes.
+
+- **Docs kit** — documentation surface that **pairs with the Content kit** (load
+  `content.css + docs.css`): a 3-column doc shell (collapsible sidebar nav, prose,
+  TOC), stacked API-reference blocks (verb badges, params tables, request/response
+  samples), a version/locale switcher, prev/next pager, and a help-center landing
+  (search hero, category grid, popular articles, breadcrumb, "was this helpful?",
+  related articles). The reading column reuses content.css's prose/callouts/code.
+- **Zero new behavior JS** — sidebar nesting is native `<details>` (correct nav
+  ARIA, not a tree widget); the TOC reuses the existing `[data-toc]` scrollspy.
+  Search is a provider hook (Algolia/Pagefind), not a baked modal.
+- Also linked the previously-missing **Commerce** kit in the docs-site sidebar.
+
 ## 0.1.0 — 2026-06-18
 
 Additive: a new **Billing kit** (`@qazana/strata/billing`, scope `.billing`) —
