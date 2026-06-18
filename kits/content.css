@@ -81,6 +81,8 @@
 .prose{font-size:var(--text-lg);line-height:var(--leading-relaxed);color:var(--text);max-width:var(--measure)}
 .prose > * + *{margin-top:1.2em}
 .prose .lead{font-size:var(--text-xl);line-height:1.6;color:var(--text-2)}
+/* article title — display face, largest step; first child so no top margin */
+.prose h1{font-family:var(--display);font-weight:800;letter-spacing:var(--tracking-tight);font-size:clamp(1.9rem,3.2vw,2.4rem);line-height:1.08;margin-top:0}
 .prose h2{font-family:var(--body);font-weight:800;letter-spacing:var(--tracking-tighter);font-size:1.7rem;line-height:1.2;margin-top:1.9em}
 .prose h3{font-family:var(--body);font-weight:700;font-size:var(--text-xl);line-height:1.25;margin-top:1.6em}
 .prose h4{font-weight:700;font-size:var(--text-lg);margin-top:1.4em}
