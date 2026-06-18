@@ -252,6 +252,52 @@ const CHECKS = [
       return fails;
     },
   },
+  {
+    // [data-billing-cycle="<sel>"]: a monthly/annual radiogroup that flips
+    // data-cycle on the named target so CSS swaps pre-rendered price spans.
+    // Asserts the swap is real (month price visible, year hidden, and back).
+    name: 'billing-cycle',
+    url: '/demo/billing/plans.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const group = page.locator('[data-billing-cycle]').first();
+      if (!(await group.count())) return ['no [data-billing-cycle] in fixture'];
+
+      const sel = await group.getAttribute('data-billing-cycle');
+      const target = page.locator(sel).first();
+      if (!(await target.count())) return [`cycle target ${sel} not found`];
+
+      const cycle = () => target.getAttribute('data-cycle');
+      const opts = group.locator('[role="radio"]');
+      const monthOpt = group.locator('[data-value="month"]').first();
+      const yearOpt = group.locator('[data-value="year"]').first();
+
+      // a price element of each cycle (first plan card)
+      const monthPrice = target.locator('[data-cy="month"]').first();
+      const yearPrice = target.locator('[data-cy="year"]').first();
+      const visible = (loc) => loc.evaluate((el) => getComputedStyle(el).display !== 'none');
+
+      // init: synced to the checked option (monthly) — month visible, year hidden
+      t((await cycle()) === 'month', `starts on monthly cycle (got ${await cycle()})`);
+      t(await visible(monthPrice), 'monthly price visible at start');
+      t(!(await visible(yearPrice)), 'annual price hidden at start');
+      t((await monthOpt.getAttribute('aria-checked')) === 'true', 'monthly option aria-checked at start');
+
+      // click Annual -> data-cycle flips, annual price shows, monthly hides
+      await yearOpt.click();
+      t((await cycle()) === 'year', `clicking Annual flips cycle to year (got ${await cycle()})`);
+      t(await visible(yearPrice), 'annual price visible after toggle');
+      t(!(await visible(monthPrice)), 'monthly price hidden after toggle');
+      t((await yearOpt.getAttribute('aria-checked')) === 'true', 'annual option aria-checked after toggle');
+
+      // ArrowLeft returns focus/selection to monthly (radiogroup keyboard nav)
+      await yearOpt.press('ArrowLeft');
+      t((await cycle()) === 'month', `ArrowLeft returns to monthly (got ${await cycle()})`);
+      t((await opts.count()) === 2, 'exactly two cycle options');
+      return fails;
+    },
+  },
 ];
 
 await new Promise((r) => server.listen(PORT, r));

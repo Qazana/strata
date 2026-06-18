@@ -29,6 +29,7 @@
     "./tokens": "./tokens/qazana.tokens.css",
     "./tokens.json": "./tokens/tokens.json",
     "./commerce": "./kits/commerce.css",
+    "./billing": "./kits/billing.css",
     "./js": "./js/qazana.js"
   },
   "files": [
