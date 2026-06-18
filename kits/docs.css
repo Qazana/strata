@@ -88,4 +88,50 @@
 .docs .doc-pager .pt{font-weight:600;color:var(--primary-bright)}
 @media (max-width:560px){.docs .doc-pager{grid-template-columns:1fr}}
 
+/* ---- version / locale switcher (styled native <select>; no JS) ---- */
+.docs .doc-version{position:relative;margin-bottom:16px}
+.docs .doc-version select{appearance:none;-webkit-appearance:none;width:100%;background:var(--surface-2);
+  border:1px solid var(--line);border-radius:var(--radius);padding:8px 32px 8px 11px;color:var(--text);
+  font-family:var(--body);font-size:var(--text-md);cursor:pointer}
+.docs .doc-version select:hover{border-color:var(--line-strong)}
+.docs .doc-version select:focus-visible{outline:0;border-color:var(--primary-bright);box-shadow:0 0 0 3px var(--primary-ring)}
+.docs .doc-version::after{content:"";position:absolute;top:50%;inset-inline-end:13px;transform:translateY(-25%);
+  pointer-events:none;border:5px solid transparent;border-top-color:var(--muted)}
+
+/* ============================================================================
+   API REFERENCE  —  stacked, collapsible endpoint blocks (<details>)
+   Verb colours map to existing tokens (no new tokens).
+   ============================================================================ */
+
+.docs .api-ref{border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;margin:var(--space-5) 0}
+.docs .api-ref > summary{display:flex;align-items:center;gap:12px;list-style:none;cursor:pointer;
+  padding:14px 16px;background:var(--surface);flex-wrap:wrap}
+.docs .api-ref > summary::-webkit-details-marker{display:none}
+.docs .api-ref > summary:hover{background:var(--surface-2)}
+.docs .api-ref[open] > summary{border-bottom:1px solid var(--line)}
+.docs .api-method{font-family:var(--mono);font-weight:700;font-size:var(--text-2xs);text-transform:uppercase;
+  letter-spacing:.04em;padding:4px 9px;border-radius:6px;flex:0 0 auto}
+.docs .api-method.get{background:rgb(var(--info-rgb) / .14);color:var(--info)}
+.docs .api-method.post{background:rgb(var(--primary-rgb) / .14);color:var(--primary-bright)}
+.docs .api-method.put,.docs .api-method.patch{background:rgb(var(--warning-rgb) / .14);color:var(--warning)}
+.docs .api-method.delete{background:rgb(var(--danger-rgb) / .14);color:var(--danger)}
+.docs .api-path{font-family:var(--mono);font-size:var(--text-md);color:var(--text);word-break:break-all}
+.docs .api-summary{margin-inline-start:auto;color:var(--muted);font-size:var(--text-sm)}
+.docs .api-body{padding:18px 16px;display:flex;flex-direction:column;gap:var(--space-5)}
+.docs .api-sec-h{font-size:var(--text-2xs);text-transform:uppercase;letter-spacing:var(--tracking-wide);
+  color:var(--muted);margin-bottom:9px}
+/* params table */
+.docs .api-params{width:100%;border-collapse:collapse;font-size:var(--text-md)}
+.docs .api-params th{text-align:start;font-size:var(--text-2xs);text-transform:uppercase;
+  letter-spacing:var(--tracking-wide);color:var(--muted);font-weight:600;padding:0 12px 8px;border-bottom:1px solid var(--line)}
+.docs .api-params td{padding:10px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+.docs .api-params tbody tr:last-child td{border-bottom:0}
+.docs .api-params .pn{font-family:var(--mono);font-weight:600;color:var(--text)}
+.docs .api-params .pty{font-family:var(--mono);font-size:var(--text-sm);color:var(--info)}
+.docs .api-params .req{font-size:var(--text-2xs);color:var(--danger);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.docs .api-params .pd{color:var(--text-2)}
+/* request / response code sample (self-sufficient — not prose-wrapped) */
+.docs .api-code{background:var(--surface-sunken);border:1px solid var(--line);border-radius:var(--radius);
+  padding:14px 16px;overflow-x:auto;font-family:var(--mono);font-size:var(--text-sm);line-height:1.65;color:var(--text-2);white-space:pre}
+
 } /* end @layer qazana */
