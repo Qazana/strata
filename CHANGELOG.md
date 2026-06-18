@@ -3,6 +3,16 @@
 All notable changes to `@qazana/strata`. Semver: patch = fix, minor = additive
 component/token, major = rename/removal/breaking token change.
 
+## 0.3.1 — 2026-06-18
+
+Aesthetic refinement (no API changes):
+
+- Removed coloured left-accent border stripes in favour of the repo's established
+  pattern (full subtle tint + coloured title/filled-pill active state): content
+  `.callout` (note/tip/warn) and the docs sidebar/TOC active states no longer use
+  a coloured side border. Tinted chip/title text now mixes toward `--text` via
+  `color-mix` so it clears AA contrast in both themes.
+
 ## 0.3.0 — 2026-06-18
 
 Additive: a new **Support kit** (`@qazana/strata/support`, scope `.support`). No breaking changes.
