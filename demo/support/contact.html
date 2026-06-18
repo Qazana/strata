@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Support — Contact · Qazana Strata</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../../kits/support.css" rel="stylesheet">
+<style>
+  body{margin:0}
+  .page-wrap{max-width:680px;margin-inline:auto;padding:var(--space-5)}
+  .demo-nav{display:flex;gap:var(--space-3);margin-bottom:var(--space-6);flex-wrap:wrap}
+  .demo-nav a{font-size:var(--text-sm);color:var(--primary-bright);text-decoration:none;padding:4px 10px;border:1px solid var(--line);border-radius:var(--radius)}
+  .demo-nav a:hover{border-color:var(--primary);color:var(--primary)}
+  .demo-nav a.active{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+  .section-label{font-size:var(--text-xs);font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:var(--space-7) 0 var(--space-4)}
+  h1.t{font-family:var(--display);font-weight:800;letter-spacing:-.02em;font-size:1.9rem;margin-bottom:6px}
+  .sub{color:var(--text-2);margin-bottom:var(--space-5)}
+</style>
+</head>
+<body class="support" style="background:var(--bg);min-height:100vh">
+
+<div class="page-wrap">
+
+  <nav class="demo-nav" aria-label="Support demo pages">
+    <a href="../index.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> All demos</a>
+    <a href="contact.html" class="active">Contact</a>
+    <a href="tickets.html">Tickets</a>
+    <a href="ticket.html">Ticket detail</a>
+  </nav>
+
+  <h1 class="t">Contact support</h1>
+  <p class="sub">Tell us what's going on and we'll get back to you, usually within a few hours.</p>
+
+  <form class="support-form" onsubmit="return false">
+    <div class="form-field">
+      <label for="subj">Subject <span class="field-req" aria-hidden="true">*</span></label>
+      <input type="text" id="subj" required placeholder="Brief summary of the issue">
+    </div>
+
+    <div class="row">
+      <div class="form-field">
+        <label for="cat">Category</label>
+        <select id="cat">
+          <option>Billing</option>
+          <option>Technical issue</option>
+          <option>Account</option>
+          <option>Feature request</option>
+        </select>
+      </div>
+      <div class="form-field">
+        <label for="prio">Priority</label>
+        <select id="prio">
+          <option>Low</option>
+          <option selected>Normal</option>
+          <option>High</option>
+          <option>Urgent</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="form-field">
+      <label for="msg">Message <span class="field-req" aria-hidden="true">*</span></label>
+      <textarea id="msg" required placeholder="Describe the problem, what you expected, and any steps to reproduce."></textarea>
+      <span class="field-help">Include error messages and screenshots where you can.</span>
+    </div>
+
+    <label class="attach">
+      <i class="fa-solid fa-paperclip" aria-hidden="true"></i> Attach files
+      <input type="file" multiple hidden>
+    </label>
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary">Send message</button>
+      <button type="button" class="btn btn-ghost">Cancel</button>
+    </div>
+  </form>
+
+  <!-- ---- Confirmation state (shown after submit) ---- -->
+  <h2 class="section-label">Confirmation state</h2>
+  <div class="support-sent">
+    <div class="ss-ic" aria-hidden="true"><i class="fa-solid fa-check"></i></div>
+    <h2>Message sent</h2>
+    <p>Thanks — we've received your request and emailed you a copy. We'll reply soon.</p>
+    <span class="ref">Ticket #4821</span>
+  </div>
+
+</div>
+
+<script src="../../js/qazana.js" defer></script>
+</body>
+</html>
