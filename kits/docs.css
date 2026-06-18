@@ -42,6 +42,8 @@
 .docs .doc-shell > *{min-width:0}
 /* the right-hand TOC (content.css .toc) only fits at the 3-column width */
 @media (max-width:1119px){.docs .doc-shell > .toc{display:none}}
+/* active TOC item = colored text only, no colored accent bar (kit philosophy) */
+.docs .doc-shell .toc a.active{border-inline-start-color:var(--line)}
 
 /* ---- sidebar nav: multi-level via native <details>; active = aria-current ---- */
 .docs .doc-nav{position:sticky;top:24px;align-self:start;font-size:var(--text-md);
@@ -63,11 +65,10 @@
 .docs .doc-nav summary .chev{margin-inline-start:auto;transition:transform var(--dur-1);color:var(--muted);font-size:var(--text-2xs)}
 .docs .doc-nav details[open] > summary .chev{transform:rotate(90deg)}
 .docs .doc-nav ul{list-style:none;margin:2px 0 10px;padding-inline-start:10px}
-.docs .doc-nav li a{display:block;padding:5px 10px;border-radius:var(--radius-sm);color:var(--text-2);
-  text-decoration:none;border-inline-start:2px solid var(--line)}
-.docs .doc-nav li a:hover{color:var(--text)}
-.docs .doc-nav li a[aria-current="page"]{color:var(--primary-bright);
-  border-inline-start-color:var(--primary-bright);background:var(--primary-soft);font-weight:600}
+.docs .doc-nav li a{display:block;padding:6px 11px;border-radius:var(--radius-sm);color:var(--text-2);text-decoration:none}
+.docs .doc-nav li a:hover{color:var(--text);background:var(--surface-2)}
+/* active = filled pill + colored text (matches app.css .side-item — no accent bar) */
+.docs .doc-nav li a[aria-current="page"]{color:var(--primary-bright);background:var(--primary-soft);font-weight:600}
 @media (prefers-reduced-motion:reduce){.docs .doc-nav summary .chev{transition:none}}
 
 /* mobile: sidebar + TOC stack above the reading column */
