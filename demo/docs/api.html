@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Docs — API reference · Qazana Strata</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../../kits/content.css" rel="stylesheet">
+<link href="../../kits/docs.css" rel="stylesheet">
+<style>
+  body{margin:0}
+  .demo-nav{display:flex;gap:var(--space-3);max-width:1280px;margin:0 auto;padding:var(--space-5) 24px 0;flex-wrap:wrap}
+  .demo-nav a{font-size:var(--text-sm);color:var(--primary-bright);text-decoration:none;padding:4px 10px;border:1px solid var(--line);border-radius:var(--radius)}
+  .demo-nav a:hover{border-color:var(--primary);color:var(--primary)}
+  .demo-nav a.active{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+</style>
+</head>
+<body class="docs" style="background:var(--bg);min-height:100vh">
+
+<nav class="demo-nav" aria-label="Docs demo pages">
+  <a href="../index.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> All demos</a>
+  <a href="guide.html">Guide</a>
+  <a href="api.html" class="active">API reference</a>
+  <a href="help.html">Help center</a>
+  <a href="article.html">Help article</a>
+</nav>
+
+<div class="doc-shell">
+
+  <nav class="doc-nav" aria-label="API reference">
+    <div class="doc-version">
+      <label class="api-sec-h" for="ver">Version</label>
+      <select id="ver" aria-label="API version">
+        <option>v1 (latest)</option>
+        <option>2026-04-01</option>
+        <option>2025-10-15</option>
+      </select>
+    </div>
+    <button type="button" class="doc-search" aria-label="Search API reference">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Search…
+      <span class="dk" aria-hidden="true">⌘K</span>
+    </button>
+    <div class="dn-sec">Charges</div>
+    <ul>
+      <li><a href="#list" aria-current="page">List charges</a></li>
+      <li><a href="#create">Create a charge</a></li>
+      <li><a href="#delete">Delete a charge</a></li>
+    </ul>
+  </nav>
+
+  <article class="prose">
+    <p class="lead">The Charges API lets you create and manage payments. All endpoints are relative to
+    <code>https://api.example.com/v1</code>.</p>
+
+    <details class="api-ref" id="list" open>
+      <summary>
+        <span class="api-method get">Get</span>
+        <span class="api-path">/charges</span>
+        <span class="api-summary">List charges</span>
+      </summary>
+      <div class="api-body">
+        <div>
+          <div class="api-sec-h">Query parameters</div>
+          <table class="api-params">
+            <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><span class="pn">limit</span></td><td><span class="pty">integer</span></td><td class="pd">A limit on objects returned, 1–100. Default 10.</td></tr>
+              <tr><td><span class="pn">starting_after</span></td><td><span class="pty">string</span></td><td class="pd">A cursor for pagination.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="api-sec-h">Response</div>
+          <div class="api-code">{
+  "object": "list",
+  "data": [{ "id": "ch_1N…", "amount": 1200, "currency": "usd" }],
+  "has_more": false
+}</div>
+        </div>
+      </div>
+    </details>
+
+    <details class="api-ref" id="create">
+      <summary>
+        <span class="api-method post">Post</span>
+        <span class="api-path">/charges</span>
+        <span class="api-summary">Create a charge</span>
+      </summary>
+      <div class="api-body">
+        <div>
+          <div class="api-sec-h">Body parameters</div>
+          <table class="api-params">
+            <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><span class="pn">amount</span> <span class="req">required</span></td><td><span class="pty">integer</span></td><td class="pd">Amount in the smallest currency unit.</td></tr>
+              <tr><td><span class="pn">currency</span> <span class="req">required</span></td><td><span class="pty">string</span></td><td class="pd">Three-letter ISO currency code.</td></tr>
+              <tr><td><span class="pn">source</span></td><td><span class="pty">string</span></td><td class="pd">A payment source to charge.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div>
+          <div class="api-sec-h">Request</div>
+          <div class="api-code">curl https://api.example.com/v1/charges \
+  -H "Authorization: Bearer sk_live_…" \
+  -d amount=1200 -d currency=usd</div>
+        </div>
+      </div>
+    </details>
+
+    <details class="api-ref" id="delete">
+      <summary>
+        <span class="api-method delete">Delete</span>
+        <span class="api-path">/charges/:id</span>
+        <span class="api-summary">Delete a charge</span>
+      </summary>
+      <div class="api-body">
+        <div>
+          <div class="api-sec-h">Path parameters</div>
+          <table class="api-params">
+            <thead><tr><th>Name</th><th>Type</th><th>Description</th></tr></thead>
+            <tbody>
+              <tr><td><span class="pn">id</span> <span class="req">required</span></td><td><span class="pty">string</span></td><td class="pd">The identifier of the charge to delete.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </details>
+
+  </article>
+
+  <nav class="toc" data-toc aria-label="On this page">
+    <div class="toc-h">Endpoints</div>
+    <a href="#list">List charges</a>
+    <a href="#create">Create a charge</a>
+    <a href="#delete">Delete a charge</a>
+  </nav>
+
+</div>
+
+<script src="../../js/qazana.js" defer></script>
+</body>
+</html>
