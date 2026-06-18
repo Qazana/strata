@@ -3,6 +3,14 @@
 All notable changes to `@qazana/strata`. Semver: patch = fix, minor = additive
 component/token, major = rename/removal/breaking token change.
 
+## 0.3.2 — 2026-06-18
+
+- Content `.prose h1` was unstyled (browser default — no design-system tracking,
+  line-height, scale step, and a stray UA top margin). Added the display-face
+  title treatment (`clamp(1.9–2.4rem)`, `--display`, tight tracking, `margin-top:0`)
+  so article/help-article titles read as the top of the hierarchy above the
+  body-font section headings. Affects every prose article (Content + Docs kits).
+
 ## 0.3.1 — 2026-06-18
 
 Aesthetic refinement (no API changes):
