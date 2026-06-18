@@ -58,6 +58,7 @@ const PAGES = [
   '/demo/strata.html',
   '/demo/billing/overview.html',
   '/demo/docs/guide.html',
+  '/demo/support/ticket.html',
 ];
 
 // dark = emulate prefers-color-scheme:dark, no theme attribute (canonical :root);

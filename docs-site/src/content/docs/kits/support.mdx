@@ -1,0 +1,71 @@
+---
+title: Support kit
+description: Helpdesk surface — contact/ticket form, ticket list, and a ticket-detail conversation thread with reply composer and canned replies.
+sidebar:
+  order: 10
+---
+
+import Demo from '../../../components/Demo.astro';
+
+The **Support kit** (`@qazana/strata/support`) is the helpdesk surface — where customers file
+tickets and agents work them. It's standalone on `base.css` (the form controls and `.form-field`
+groups come from base), scoped under `.support`.
+
+It stays on the generic side of the boundary: a contact form, a ticket list, and a ticket-detail
+conversation thread. No SLA timers, agent routing, live send, or ticketing backend — those are
+per-product/helpdesk concerns. Zero new behavior JS (the canned-reply picker is a native
+`<details>` dropdown).
+
+## Contact
+
+A contact/ticket form that reuses the base form controls, with an attachment dropzone and a
+confirmation state:
+
+<Demo src="support/contact.html" title="Support — contact" height={640} />
+
+## Tickets
+
+A ticket-list table with status badges and priority indicators:
+
+<Demo src="support/tickets.html" title="Support — tickets" height={520} />
+
+## Ticket detail
+
+A conversation thread of stacked message cards (customer / agent / internal note), a reply composer,
+and a canned-reply picker:
+
+<Demo src="support/ticket.html" title="Support — ticket detail" height={680} />
+
+## What's inside
+
+| Component | Class / hook | Notes |
+|-----------|-------------|-------|
+| Contact form | `.support-form` | reuses base `.form-field` + controls |
+| Attachment | `.attach` | dashed dropzone |
+| Confirmation | `.support-sent` | icon + `.ref` ticket number |
+| Status badge | `.badge.open/.pending/.solved/.closed` | info/warning/primary/muted |
+| Priority | `.prio.low/.normal/.high/.urgent` | leading dot, semantic tokens |
+| Ticket list | `.ticket-list` | rows link to ticket |
+| Ticket header | `.ticket-head` | title + meta + actions |
+| Thread | `.thread` > `.msg` | stacked cards |
+| Message variants | `.msg.agent` · `.msg.note` | agent + internal note |
+| Composer | `.composer` | textarea + toolbar |
+| Macros | `.macros` (`<details>`) | canned replies; insertion app-side |
+
+## Usage
+
+```html
+<!-- support / helpdesk page -->
+<link rel="stylesheet" href="@qazana/strata/support">
+<script type="module" src="@qazana/strata"></script>
+
+<body class="support">
+  <!-- all support components live inside .support -->
+</body>
+```
+
+:::note
+The kit ships no ticketing backend, SLA logic, agent routing, or live message send. Form submission,
+macro insertion, and status transitions are the consuming app's responsibility — the kit provides
+the styled, accessible surface.
+:::

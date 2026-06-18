@@ -3,6 +3,20 @@
 All notable changes to `@qazana/strata`. Semver: patch = fix, minor = additive
 component/token, major = rename/removal/breaking token change.
 
+## 0.3.0 — 2026-06-18
+
+Additive: a new **Support kit** (`@qazana/strata/support`, scope `.support`). No breaking changes.
+
+- **Support kit** — helpdesk surface, standalone on base.css: a contact/ticket
+  form (reusing base form controls) with attachment dropzone and a confirmation
+  state; a ticket-list table with status badges (open/pending/solved/closed) and
+  priority dots (low/normal/high/urgent); and a ticket-detail view with a
+  conversation thread of stacked message cards (customer / agent / internal-note
+  variants), a reply composer, and a canned-reply (macro) picker.
+- **Zero new behavior JS** — the macro picker is a native `<details>` dropdown;
+  status/priority are CSS-only. No SLA timers, agent routing, live send, or
+  ticketing backend — those are per-product/helpdesk concerns kept out of the kit.
+
 ## 0.2.0 — 2026-06-18
 
 Additive: a new **Docs kit** (`@qazana/strata/docs`, scope `.docs`). No breaking changes.

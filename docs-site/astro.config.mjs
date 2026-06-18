@@ -54,6 +54,7 @@ export default defineConfig({
             { label: 'Commerce', link: '/kits/commerce/' },
             { label: 'Billing', link: '/kits/billing/' },
             { label: 'Docs', link: '/kits/docs/' },
+            { label: 'Support', link: '/kits/support/' },
           ],
         },
         {
