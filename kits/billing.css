@@ -121,4 +121,51 @@
   color:var(--text);font-weight:700}
 .billing .proration .pr-note{font-size:var(--text-sm);color:var(--muted);margin:8px 0 12px}
 
+/* ============================================================================
+   INVOICE HISTORY  —  .invoices table + status badges
+   Status keys map to semantic tokens; Stripe `uncollectible` => .past-due.
+   ============================================================================ */
+
+.billing .invoices{width:100%;border-collapse:collapse;font-size:var(--text-md)}
+.billing .invoices th{text-align:start;font-size:var(--text-2xs);text-transform:uppercase;
+  letter-spacing:var(--tracking-wide);color:var(--muted);font-weight:600;padding:0 14px 10px;border-bottom:1px solid var(--line)}
+.billing .invoices td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+.billing .invoices tbody tr:last-child td{border-bottom:0}
+.billing .invoices tbody tr:hover{background:var(--surface)}
+.billing .invoices .inv-id{font-family:var(--mono);color:var(--text-2)}
+.billing .invoices .inv-amt{font-family:var(--mono);font-weight:600;font-variant-numeric:tabular-nums}
+.billing .invoices th.num,.billing .invoices td.num{text-align:end}
+.billing .invoices .inv-dl{color:var(--primary-bright);text-decoration:none;white-space:nowrap;font-weight:600}
+.billing .invoices .inv-dl:hover{text-decoration:underline}
+.billing .invoices .inv-dl[aria-disabled="true"]{color:var(--muted);pointer-events:none}
+
+/* status badges — modifiers on the scoped .badge */
+.billing .badge.paid{background:rgb(var(--primary-rgb) / .14);color:var(--primary-bright)}
+.billing .badge.open{background:rgb(var(--warning-rgb) / .14);color:var(--warning)}
+.billing .badge.past-due{background:rgb(var(--danger-rgb) / .14);color:var(--danger)}
+.billing .badge.refunded{background:rgb(var(--info-rgb) / .14);color:var(--info)}
+.billing .badge.void{background:rgb(var(--border-rgb) / .10);color:var(--muted)}
+
+/* ============================================================================
+   PAYMENT METHODS  —  saved-state cards (default = server state, not a radio)
+   ============================================================================ */
+
+.billing .pay-methods{display:flex;flex-direction:column;gap:var(--space-3);max-width:580px}
+.billing .pay-method{display:flex;align-items:center;gap:var(--space-4);background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+.billing .pay-method.default{border-color:rgb(var(--primary-rgb) / .4)}
+.billing .pay-method .brand{flex:0 0 auto;width:46px;height:32px;display:grid;place-items:center;
+  background:var(--surface-2);border:1px solid var(--line);border-radius:6px;font-size:1.3rem;color:var(--text-2)}
+.billing .pay-method .pm-info{min-width:0}
+.billing .pay-method .pm-num{font-weight:600;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.billing .pay-method .pm-num .dots{font-family:var(--mono);color:var(--text-2);letter-spacing:.12em}
+.billing .pay-method .pm-exp{font-size:var(--text-sm);color:var(--muted);margin-top:2px}
+.billing .pay-method .pm-exp.expired{color:var(--danger)}
+.billing .pay-method .pm-actions{margin-inline-start:auto;display:flex;align-items:center;gap:var(--space-2);flex-shrink:0}
+/* add-method affordance (provider form/iframe lives in the consuming app) */
+.billing .pay-add{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;max-width:580px;
+  padding:14px;border:1px dashed var(--line-strong);border-radius:var(--radius);background:transparent;
+  color:var(--text-2);font-family:var(--body);font-weight:600;font-size:var(--text-md);cursor:pointer;transition:.16s}
+.billing .pay-add:hover{border-color:var(--primary);color:var(--text)}
+
 } /* end @layer qazana */
