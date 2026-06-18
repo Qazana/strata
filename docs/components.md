@@ -307,3 +307,67 @@ Inputs inherit base.css field styles; focus-visible bg lift via `var(--surface-a
 `.order-confirm` header (confirm icon + heading + `.order-ref` mono badge).
 `.timeline` → `.tl-item` (`.done` / `.active`) → `.tl-dot` + `.tl-body` (`.tl-title` + `.tl-meta`).
 Order history: standard `table.tbl` rows (see App kit table docs).
+
+## Billing kit
+
+`kits/billing.css` — root scope `.billing`. Import `billing.css + qazana.js`; no `app.css`
+dependency. This is the **in-product** subscription surface (Billing & Plans settings), distinct
+from `site.css .pricing` (marketing pricing) and `commerce.css` (one-time storefront checkout).
+All money is **static markup** — no currency math, no `Intl.NumberFormat`, no payment processing
+(provider SDK/iframe, card validation, tax/VAT, and plan/feature copy stay in the consuming app).
+Scoped copies of `.btn` / `.badge` / `.tier` / `.plan` / `.quota` / `.stepper` / modal live here so
+the kit is self-contained on `base.css`.
+
+### Current-plan summary
+`.bill-summary` → `.bs-main` (`.bs-plan` with `.tier` badge + `.bs-meta`) · `.bs-actions`.
+Trial variant: add `.trial` (info-tinted) with a `.bs-days` countdown rendered as **static text**.
+
+### Plan switcher + cycle toggle `[data-billing-cycle]`
+```html
+<div class="cycle" data-billing-cycle="#plan-grid" aria-label="Billing cycle">
+  <button role="radio" aria-checked="true"  data-value="month">Monthly</button>
+  <button role="radio" aria-checked="false" data-value="year">Annual <span class="save">Save 20%</span></button>
+</div>
+<div class="plan-switch" id="plan-grid" data-cycle="month">
+  <div class="plan current">…<div class="price" data-cy="month">$12<small>/mo</small></div>
+       <div class="price" data-cy="year">$120<small>/yr</small></div>…</div>
+</div>
+```
+The controller is a **radiogroup** (arrow-key nav, like `[data-variant]`) that sets `data-cycle`
+on the **named target region**; CSS shows the matching `[data-cy]` price spans and reveals
+`.only-year` notes. **No math** — both prices live in the markup. Ships `data-cycle="month"` so it
+degrades without JS. `.plan` modifiers: `.popular`, `.current` (+ `.is-current` foot label).
+
+### Proration (inline confirm — no modal)
+Upgrade is the frictionless path: a native `<details class="switch">` whose `summary.btn` reveals a
+`.proration` panel (`.pr-row`, `.pr-row.total`, `.pr-note`) under the chosen plan. Consumer fills the
+prorated numbers server-side.
+
+### Invoice history
+`table.invoices` (real `th[scope=col]`, tabular-nums `.inv-amt`, `.inv-id` mono, `.inv-dl` download
+link with `aria-disabled` when none). Status via scoped `.badge` modifiers: `.paid` (primary) ·
+`.open` (warning) · `.past-due` (danger) · `.refunded` (info) · `.void` (muted). Stripe
+`uncollectible` → `.past-due`.
+
+### Payment methods (saved state, not a radiogroup)
+`.pay-methods` > `.pay-method` (+ `.default` modifier = **server state**) → `.brand` slot (drop your
+provider's mark; demo uses Font Awesome `cc-*`) · `.pm-info` (`.pm-num` + `.dots` + `.pm-exp`, add
+`.expired` for danger) · `.pm-actions` (Set-default / Edit / Remove). `.pay-add` dashed add button.
+
+### Usage → cost + over-limit nudge
+`.usage` > `.usage-row` → `.ur-head` (`.ur-name` + `.ur-cost`) + scoped `.quota` meter
+(`.warn` / `.crit`). Add `.crit` to the `.usage-row` to surface `.ur-nudge` (an in-context upgrade
+prompt) only when over limit.
+
+### Dunning / failed-payment banner
+`.bill-banner` with `role="alert"` → `.bb-icon` + `.bb-text` (static **deadline date**, no live
+timer) + `.bb-actions`. Severity: `.warn` (grace period) / `.crit` (suspended) via modifier class.
+
+### Seat management
+`.seat-row` → `.sr-info` + `.sr-ctl` (scoped `.stepper` via `[data-stepper]` + `.sr-cost`).
+
+### Cancel / downgrade (reuses `[data-modal-open]`)
+Single retention-framed modal: `.cancel-loss` (consequence + end date), `.keep` > `.opt`
+alternatives (pause / switch — the prominent path), static `.reasons` chips
+(`:has(input:checked)`), and a **de-emphasized** `.cancel-confirm` (friction by design) beside the
+primary "Keep my plan". No discount offers baked in — that's per-product business logic.

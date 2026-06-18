@@ -1,0 +1,286 @@
+@import "./base.css";
+
+@layer qazana {
+
+/* ============================================================================
+   Qazana Strata — BILLING KIT (in-product subscription / plans / invoices).
+   Standalone: built on base.css + tokens only. No app.css dependency.
+   Scope class: .billing — consistent with .shop / .auth / .site precedent.
+   Money is always static markup (no Intl / no math); JS only flips state.
+   Several primitives below are scoped copies of the app.css originals
+   (.btn .badge .plan .tier .quota .stepper .banner) — each kit imports only
+   base.css, so it re-scopes what it needs rather than reach into app.css.
+   ============================================================================ */
+
+/* ---- scope root ---- */
+.billing{
+  font-family:var(--body);background:var(--bg);color:var(--text);
+  line-height:1.6;letter-spacing:var(--tracking-normal);-webkit-font-smoothing:var(--font-smooth);
+}
+.billing *{box-sizing:border-box}
+.billing ::selection{background:rgb(var(--primary-rgb) / .28);color:var(--text)}
+
+/* ---- buttons (scoped copy — .auth/.site/.shop precedent) ---- */
+.billing .btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--body);font-weight:600;
+  font-size:var(--text-base);line-height:1;border:0;cursor:pointer;text-decoration:none;
+  border-radius:var(--radius);padding:10px 20px;
+  transition:transform var(--dur-1) var(--ease),box-shadow var(--dur-2) var(--ease),background var(--dur-1) var(--ease)}
+.billing .btn-primary{background:var(--primary);color:var(--on-primary)}
+.billing .btn-primary:hover{background:var(--primary-bright);transform:translateY(-1px)}
+.billing .btn-secondary{background:var(--surface-2);color:var(--text);box-shadow:inset 0 0 0 1px var(--line-strong)}
+.billing .btn-secondary:hover{box-shadow:inset 0 0 0 1px rgb(var(--border-rgb) / .25)}
+.billing .btn-ghost{background:transparent;color:var(--text-2);box-shadow:inset 0 0 0 1px var(--line)}
+.billing .btn-ghost:hover{color:var(--text);box-shadow:inset 0 0 0 1px var(--line-strong)}
+.billing .btn-danger{background:var(--danger);color:var(--on-danger)}
+.billing .btn-danger:hover{filter:brightness(1.1)}
+.billing .btn-sm{padding:7px 14px;font-size:var(--text-sm)}
+.billing .btn-full{width:100%}
+@media (prefers-reduced-motion:reduce){.billing .btn:hover{transform:none}}
+
+/* ---- badges (scoped copy; status modifiers added by the invoices section) ---- */
+.billing .badge{
+  display:inline-flex;align-items:center;gap:5px;font-size:var(--text-xs);font-weight:600;
+  line-height:1;letter-spacing:.02em;padding:3px 8px;border-radius:var(--radius-pill);
+  white-space:nowrap;background:var(--surface-2);color:var(--text-2)}
+
+/* ---- tier badge (scoped copy of app.css .tier + variants) ---- */
+.billing .tier{font-family:var(--body);font-weight:700;font-size:var(--text-2xs);text-transform:uppercase;
+  letter-spacing:var(--tracking-wide);padding:3px 9px;border-radius:6px;border:1px solid}
+.billing .tier-free{color:var(--text-2);border-color:var(--line);background:var(--surface-2)}
+.billing .tier-pro{color:var(--accent);border-color:rgb(var(--accent-rgb) / .45);background:rgb(var(--accent-rgb) / .12)}
+.billing .tier-unlimited{color:var(--warning);border-color:rgb(var(--warning-rgb) / .4);background:rgb(var(--warning-rgb) / .1)}
+
+/* ============================================================================
+   CURRENT-PLAN SUMMARY  —  .bill-summary (+ .trial variant)
+   ============================================================================ */
+
+.billing .bill-summary{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-4);
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:20px 22px}
+.billing .bill-summary .bs-main{min-width:0}
+.billing .bill-summary .bs-plan{display:flex;align-items:center;gap:10px;font-weight:700;font-size:var(--text-lg)}
+.billing .bill-summary .bs-meta{color:var(--text-2);font-size:var(--text-md);margin-top:5px}
+.billing .bill-summary .bs-meta b{color:var(--text);font-weight:600}
+.billing .bill-summary .bs-actions{margin-inline-start:auto;display:flex;gap:var(--space-2);flex-wrap:wrap}
+/* trial state — informational tint, not alarming */
+.billing .bill-summary.trial{border-color:rgb(var(--info-rgb) / .4);background:rgb(var(--info-rgb) / .05)}
+.billing .bill-summary.trial .bs-days{color:var(--info);font-weight:700}
+
+/* ============================================================================
+   PLAN SWITCHER  —  .plan-switch + scoped .plan + cycle toggle + proration
+   ============================================================================ */
+
+/* billing/annual cycle toggle (segmented control; flips data-cycle on target) */
+.billing .cycle{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);
+  border-radius:var(--radius-pill);padding:3px}
+.billing .cycle button{font-family:var(--body);font-weight:600;font-size:var(--text-sm);border:0;
+  background:transparent;color:var(--text-2);cursor:pointer;padding:7px 16px;border-radius:var(--radius-pill);
+  display:inline-flex;align-items:center;gap:8px;transition:color var(--dur-1),background var(--dur-1)}
+.billing .cycle button:hover{color:var(--text)}
+.billing .cycle button.on{background:var(--surface);color:var(--text);box-shadow:var(--shadow-sm)}
+.billing .cycle button:focus-visible{outline:2px solid var(--primary-bright);outline-offset:2px}
+.billing .cycle .save{font-size:var(--text-2xs);font-weight:700;color:var(--primary-bright);
+  background:rgb(var(--primary-rgb) / .14);padding:2px 7px;border-radius:var(--radius-pill)}
+
+/* plan grid + scoped .plan copy (laid out as a column so the CTA sinks to the foot) */
+.billing .plan-switch{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));
+  gap:var(--space-4);align-items:stretch}
+.billing .plan{position:relative;display:flex;flex-direction:column;background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--radius-lg);padding:22px}
+.billing .plan.popular{border-color:rgb(var(--primary-rgb) / .45)}
+.billing .plan.current{border-color:rgb(var(--primary-rgb) / .55);box-shadow:0 0 0 1px rgb(var(--primary-rgb) / .25)}
+.billing .plan .pop{position:absolute;top:14px;inset-inline-end:14px}
+.billing .plan .pname{font-weight:700;font-size:var(--text-base)}
+.billing .plan .price{font-family:var(--body);font-weight:800;font-size:2rem;letter-spacing:var(--tracking-tighter);margin:8px 0 2px}
+.billing .plan .price small{font-family:var(--body);font-weight:500;font-size:var(--text-sm);color:var(--muted)}
+.billing .plan ul{list-style:none;margin:14px 0 18px;display:flex;flex-direction:column;gap:8px}
+.billing .plan li{font-size:var(--text-md);color:var(--text-2);display:flex;gap:8px}
+.billing .plan li::before{content:"\2713";color:var(--primary-bright)}
+.billing .plan .plan-foot{margin-top:auto}                 /* push CTA/switch to the bottom */
+.billing .plan .is-current{color:var(--muted);font-size:var(--text-sm);text-align:center;font-weight:600}
+
+/* price swap: both prices live in the markup; CSS shows the active cycle.
+   The named target region carries data-cycle (set by [data-billing-cycle]).
+   Pre-JS the markup ships data-cycle="month", so it degrades gracefully. */
+.billing [data-cycle] [data-cy]{display:none}
+.billing [data-cycle="month"] [data-cy="month"],
+.billing [data-cycle="year"] [data-cy="year"]{display:revert}
+.billing [data-cycle] .only-year{display:none}
+.billing [data-cycle="year"] .only-year{display:revert}
+
+/* proration — inline confirm panel (native <details>; no JS). Upgrade is the
+   frictionless path: the panel sits under the chosen plan, no modal. */
+.billing details.switch{margin-top:auto}
+.billing details.switch > summary{list-style:none;cursor:pointer}
+.billing details.switch > summary::-webkit-details-marker{display:none}
+.billing .proration{margin-top:var(--space-3);background:var(--surface-2);border:1px solid var(--line);
+  border-radius:var(--radius);padding:14px 16px;font-size:var(--text-md)}
+.billing .proration .pr-row{display:flex;justify-content:space-between;gap:var(--space-3);padding:5px 0;color:var(--text-2)}
+.billing .proration .pr-row .v{font-family:var(--mono)}
+.billing .proration .pr-row.total{border-top:1px solid var(--line);margin-top:6px;padding-top:10px;
+  color:var(--text);font-weight:700}
+.billing .proration .pr-note{font-size:var(--text-sm);color:var(--muted);margin:8px 0 12px}
+
+/* ============================================================================
+   INVOICE HISTORY  —  .invoices table + status badges
+   Status keys map to semantic tokens; Stripe `uncollectible` => .past-due.
+   ============================================================================ */
+
+.billing .invoices{width:100%;border-collapse:collapse;font-size:var(--text-md)}
+.billing .invoices th{text-align:start;font-size:var(--text-2xs);text-transform:uppercase;
+  letter-spacing:var(--tracking-wide);color:var(--muted);font-weight:600;padding:0 14px 10px;border-bottom:1px solid var(--line)}
+.billing .invoices td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+.billing .invoices tbody tr:last-child td{border-bottom:0}
+.billing .invoices tbody tr:hover{background:var(--surface)}
+.billing .invoices .inv-id{font-family:var(--mono);color:var(--text-2)}
+.billing .invoices .inv-amt{font-family:var(--mono);font-weight:600;font-variant-numeric:tabular-nums}
+.billing .invoices th.num,.billing .invoices td.num{text-align:end}
+.billing .invoices .inv-dl{color:var(--primary-bright);text-decoration:none;white-space:nowrap;font-weight:600}
+.billing .invoices .inv-dl:hover{text-decoration:underline}
+.billing .invoices .inv-dl[aria-disabled="true"]{color:var(--muted);pointer-events:none}
+
+/* status badges — modifiers on the scoped .badge */
+.billing .badge.paid{background:rgb(var(--primary-rgb) / .14);color:var(--primary-bright)}
+.billing .badge.open{background:rgb(var(--warning-rgb) / .14);color:var(--warning)}
+.billing .badge.past-due{background:rgb(var(--danger-rgb) / .14);color:var(--danger)}
+.billing .badge.refunded{background:rgb(var(--info-rgb) / .14);color:var(--info)}
+.billing .badge.void{background:rgb(var(--border-rgb) / .10);color:var(--muted)}
+
+/* ============================================================================
+   PAYMENT METHODS  —  saved-state cards (default = server state, not a radio)
+   ============================================================================ */
+
+.billing .pay-methods{display:flex;flex-direction:column;gap:var(--space-3);max-width:580px}
+.billing .pay-method{display:flex;align-items:center;gap:var(--space-4);background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--radius);padding:14px 16px}
+.billing .pay-method.default{border-color:rgb(var(--primary-rgb) / .4)}
+.billing .pay-method .brand{flex:0 0 auto;width:46px;height:32px;display:grid;place-items:center;
+  background:var(--surface-2);border:1px solid var(--line);border-radius:6px;font-size:1.3rem;color:var(--text-2)}
+.billing .pay-method .pm-info{min-width:0}
+.billing .pay-method .pm-num{font-weight:600;display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.billing .pay-method .pm-num .dots{font-family:var(--mono);color:var(--text-2);letter-spacing:.12em}
+.billing .pay-method .pm-exp{font-size:var(--text-sm);color:var(--muted);margin-top:2px}
+.billing .pay-method .pm-exp.expired{color:var(--danger)}
+.billing .pay-method .pm-actions{margin-inline-start:auto;display:flex;align-items:center;gap:var(--space-2);flex-shrink:0}
+/* add-method affordance (provider form/iframe lives in the consuming app) */
+.billing .pay-add{display:flex;align-items:center;justify-content:center;gap:9px;width:100%;max-width:580px;
+  padding:14px;border:1px dashed var(--line-strong);border-radius:var(--radius);background:transparent;
+  color:var(--text-2);font-family:var(--body);font-weight:600;font-size:var(--text-md);cursor:pointer;transition:.16s}
+.billing .pay-add:hover{border-color:var(--primary);color:var(--text)}
+
+/* ============================================================================
+   USAGE / METERED BILLING  —  scoped .quota copy + cost projection + nudge
+   ============================================================================ */
+
+.billing .quota .qh{display:flex;justify-content:space-between;font-size:var(--text-sm);margin-bottom:6px}
+.billing .quota .qh .qv{font-family:var(--mono);color:var(--text-2)}
+.billing .quota .qbar{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}
+.billing .quota .qbar i{display:block;height:100%;border-radius:99px;background:var(--primary)}
+.billing .quota.warn .qbar i{background:var(--warning)}.billing .quota.warn .qh .qv{color:var(--warning)}
+.billing .quota.crit .qbar i{background:var(--danger)}.billing .quota.crit .qh .qv{color:var(--danger)}
+
+.billing .usage{display:flex;flex-direction:column;gap:var(--space-5)}
+.billing .usage-row .ur-head{display:flex;align-items:baseline;justify-content:space-between;gap:var(--space-3);margin-bottom:8px}
+.billing .usage-row .ur-name{font-weight:600}
+.billing .usage-row .ur-cost{font-family:var(--mono);font-size:var(--text-sm);color:var(--text-2)}
+.billing .usage-row .ur-cost b{color:var(--text);font-weight:700}
+/* over-limit upgrade nudge — surfaces only when the meter is critical */
+.billing .usage-row .ur-nudge{display:none;margin-top:10px;align-items:center;gap:10px;font-size:var(--text-sm);
+  background:rgb(var(--danger-rgb) / .06);border:1px solid rgb(var(--danger-rgb) / .25);border-radius:var(--radius);padding:9px 12px}
+.billing .usage-row.crit .ur-nudge{display:flex}
+.billing .usage-row .ur-nudge .um{margin-inline-end:auto;color:var(--text-2)}
+
+/* ============================================================================
+   DUNNING / FAILED-PAYMENT BANNER  —  role=alert; static deadline (no timer)
+   ============================================================================ */
+
+.billing .bill-banner{display:flex;align-items:center;gap:14px;padding:13px 16px;border-radius:var(--radius);
+  font-size:var(--text-md);border:1px solid var(--line);background:var(--surface)}
+.billing .bill-banner .bb-icon{font-size:1.1rem;flex:0 0 auto}
+.billing .bill-banner .bb-text{min-width:0}
+.billing .bill-banner .bb-text b{font-weight:700}
+.billing .bill-banner .bb-actions{margin-inline-start:auto;display:flex;gap:var(--space-2);flex-shrink:0}
+/* severity: warn = in grace period, crit = suspended */
+.billing .bill-banner.warn{background:rgb(var(--warning-rgb) / .07);border-color:rgb(var(--warning-rgb) / .3)}
+.billing .bill-banner.warn .bb-icon{color:var(--warning)}
+.billing .bill-banner.crit{background:rgb(var(--danger-rgb) / .07);border-color:rgb(var(--danger-rgb) / .3)}
+.billing .bill-banner.crit .bb-icon{color:var(--danger)}
+
+/* ============================================================================
+   SEAT MANAGEMENT  —  .seat-row + scoped .stepper copy (reuses [data-stepper])
+   ============================================================================ */
+
+.billing .stepper{display:inline-flex;align-items:center;border:1px solid rgb(var(--border-rgb) / .14);
+  border-radius:var(--radius);overflow:hidden}
+.billing .stepper button{width:38px;height:38px;border:0;background:var(--surface-2);color:var(--text);
+  font-size:var(--text-lg);cursor:pointer;transition:.16s}
+.billing .stepper button:hover:not(:disabled){background:var(--primary);color:var(--on-primary)}
+.billing .stepper button:disabled{opacity:.45;cursor:not-allowed}
+.billing .stepper input{width:54px;height:38px;padding:0;text-align:center;border:0;
+  border-inline-start:1px solid var(--line);border-inline-end:1px solid var(--line);border-radius:0;
+  background:var(--surface);color:var(--text);font-family:var(--body);outline:0}
+.billing .stepper input:focus{box-shadow:none;background:var(--surface)}
+
+.billing .seat-row{display:flex;align-items:center;gap:var(--space-4);background:var(--surface);
+  border:1px solid var(--line);border-radius:var(--radius);padding:16px}
+.billing .seat-row .sr-info{min-width:0}
+.billing .seat-row .sr-info .srt{font-weight:600}
+.billing .seat-row .sr-info .srs{font-size:var(--text-sm);color:var(--text-2);margin-top:2px}
+.billing .seat-row .sr-ctl{margin-inline-start:auto;display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap;justify-content:flex-end}
+.billing .seat-row .sr-cost{font-family:var(--mono);font-weight:600;white-space:nowrap}
+
+/* ============================================================================
+   CANCEL / DOWNGRADE  —  scoped modal (reuses [data-modal-open]); retention.
+   Negative path gets friction by design: alternatives are prominent, the
+   confirm is the weakest action. Keyframes are local (app.css owns the
+   originals; this kit only imports base.css).
+   ============================================================================ */
+
+.billing .modal-scrim{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;
+  padding:24px;background:rgb(0 0 0 / .55);backdrop-filter:blur(4px)}
+.billing .modal-scrim.is-open{display:flex;animation:b-mscrim var(--dur-2) var(--ease)}
+.billing .modal-dialog{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);
+  max-width:460px;width:100%;overflow:hidden}
+.billing .modal-scrim.is-open .modal-dialog{animation:b-mpop var(--dur-2) var(--ease)}
+.billing .modal-dialog .mh{display:flex;align-items:center;gap:10px;padding:18px 20px;
+  border-bottom:1px solid var(--line);font-weight:700}
+.billing .modal-dialog .mclose{margin-inline-start:auto;background:none;border:0;color:var(--muted);
+  cursor:pointer;font-size:var(--text-base);padding:2px 4px}
+.billing .modal-dialog .mclose:hover{color:var(--text)}
+.billing .modal-dialog .mb{padding:18px 20px;color:var(--text-2);font-size:var(--text-md)}
+.billing .modal-dialog .mf{display:flex;align-items:center;flex-wrap:wrap;justify-content:space-between;
+  gap:9px;padding:14px 20px;border-top:1px solid var(--line)}
+@keyframes b-mscrim{from{opacity:0}to{opacity:1}}
+@keyframes b-mpop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.billing .modal-scrim.is-open,.billing .modal-scrim.is-open .modal-dialog{animation:none}}
+
+/* consequence framing — what ends and when */
+.billing .cancel-loss{display:flex;gap:10px;align-items:flex-start;background:rgb(var(--danger-rgb) / .06);
+  border:1px solid rgb(var(--danger-rgb) / .22);border-radius:var(--radius);padding:11px 13px;color:var(--text-2);font-size:var(--text-sm)}
+.billing .cancel-loss i{color:var(--danger);margin-top:2px}
+.billing .cancel-loss b{color:var(--text)}
+
+/* retention alternatives — the prominent path */
+.billing .keep{display:flex;flex-direction:column;gap:var(--space-2);margin-top:var(--space-4)}
+.billing .keep .opt{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:var(--radius);
+  padding:12px 14px;text-decoration:none;color:var(--text);transition:.16s}
+.billing .keep .opt:hover{border-color:var(--primary);background:var(--surface-2)}
+.billing .keep .opt > i{color:var(--primary-bright);font-size:1.1rem;flex:0 0 auto}
+.billing .keep .opt .ot{font-weight:600}
+.billing .keep .opt .od{font-size:var(--text-sm);color:var(--text-2)}
+.billing .keep .opt .chev{margin-inline-start:auto;color:var(--muted)}
+
+/* reason chips (static; consumer wires submission) */
+.billing .reasons{display:flex;flex-wrap:wrap;gap:8px;margin-top:var(--space-4)}
+.billing .reasons label{position:relative;font-size:var(--text-sm);border:1px solid var(--line);
+  border-radius:var(--radius-pill);padding:6px 13px;cursor:pointer;color:var(--text-2);transition:.16s}
+.billing .reasons label:hover{color:var(--text);border-color:var(--line-strong)}
+.billing .reasons input{position:absolute;opacity:0;width:0;height:0}
+.billing .reasons label:has(input:checked){border-color:var(--primary);color:var(--text);background:var(--surface-2)}
+.billing .reasons label:has(input:focus-visible){outline:2px solid var(--primary-bright);outline-offset:2px}
+
+/* de-emphasized confirm — friction by design for the destructive action */
+.billing .cancel-confirm{background:transparent;color:var(--danger);box-shadow:none;font-weight:600;padding:10px 8px}
+.billing .cancel-confirm:hover{text-decoration:underline;background:transparent;transform:none}
+
+} /* end @layer qazana */

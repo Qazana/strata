@@ -1,0 +1,81 @@
+---
+title: Billing kit
+description: In-product subscription surface — plans, cycle toggle, invoices, payment methods, usage, dunning and a retention-framed cancel flow.
+sidebar:
+  order: 8
+---
+
+import Demo from '../../../components/Demo.astro';
+
+The **Billing kit** (`@qazana/strata/billing`) is the **in-product** subscription surface — the
+"Billing & Plans" settings area every SaaS has. It's standalone on `base.css` and the token
+foundation: load `billing.css + qazana.js`, no `app.css` dependency. All components are scoped
+under `.billing`.
+
+It's deliberately distinct from two neighbours: `site.css .pricing` is **marketing** pricing
+(acquisition), and `commerce.css` is **one-time storefront** checkout. Billing is the recurring,
+logged-in surface. All money is **static markup** — no currency math, no `Intl.NumberFormat`.
+
+## Plans
+
+Current-plan summary, a monthly/annual cycle toggle (`[data-billing-cycle]`) that swaps
+pre-rendered prices, and an inline proration confirm panel on upgrade:
+
+<Demo src="billing/plans.html" title="Billing — plans" height={700} />
+
+## Overview
+
+Dunning banner, current plan, metered usage with an over-limit upgrade nudge, seat management,
+and the retention-framed cancel modal:
+
+<Demo src="billing/overview.html" title="Billing — overview" height={700} />
+
+## Payment methods
+
+Saved-state cards with a default (server state, not a radio selection), per-card actions, and a
+neutral brand slot:
+
+<Demo src="billing/methods.html" title="Billing — payment methods" height={520} />
+
+## Invoices
+
+History table with five status states and per-row receipt download:
+
+<Demo src="billing/invoices.html" title="Billing — invoices" height={520} />
+
+## What's inside
+
+| Component | Class / hook | Notes |
+|-----------|-------------|-------|
+| Current plan | `.bill-summary` (+ `.trial`) | plan + `.tier` badge, renewal, seats |
+| Cycle toggle | `[data-billing-cycle]` | radiogroup → flips `data-cycle` on a named target |
+| Price swap | `.price[data-cy]` · `.only-year` | CSS shows the active cycle; no math |
+| Plan card | `.plan.popular/.current` | scoped copy of the app `.plan` |
+| Proration | `<details class="switch">` + `.proration` | inline confirm, no modal |
+| Invoices | `.invoices` table | `th[scope]`, tabular-nums amounts |
+| Status badge | `.badge.paid/.open/.past-due/.refunded/.void` | semantic tokens only |
+| Payment method | `.pay-method` (+ `.default`) | saved state; `.brand` slot, `.pm-*` rows |
+| Add method | `.pay-add` | dashed affordance (provider form is app-side) |
+| Usage meter | `.usage-row` + `.quota.warn/.crit` | `.ur-cost` projection |
+| Upgrade nudge | `.usage-row.crit .ur-nudge` | surfaces only when over limit |
+| Dunning | `.bill-banner.warn/.crit` | `role="alert"`, static deadline |
+| Seats | `.seat-row` + `[data-stepper]` | per-seat quantity |
+| Cancel flow | `.modal-scrim#cancel` + `[data-modal-open]` | `.keep` alternatives, `.reasons` chips, muted `.cancel-confirm` |
+
+## Usage
+
+```html
+<!-- billing settings page -->
+<link rel="stylesheet" href="@qazana/strata/billing">
+<script type="module" src="@qazana/strata"></script>
+
+<body class="billing">
+  <!-- all billing components live inside .billing -->
+</body>
+```
+
+:::note
+The kit ships no payment processing, provider SDK/iframe, card validation, currency formatting,
+tax/VAT, or plan/feature copy — those are app concerns. `[data-billing-cycle]` only flips display
+state between pre-rendered prices; proration figures and money strings are filled by the consumer.
+:::
