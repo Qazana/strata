@@ -229,4 +229,58 @@
 .billing .seat-row .sr-ctl{margin-inline-start:auto;display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap;justify-content:flex-end}
 .billing .seat-row .sr-cost{font-family:var(--mono);font-weight:600;white-space:nowrap}
 
+/* ============================================================================
+   CANCEL / DOWNGRADE  —  scoped modal (reuses [data-modal-open]); retention.
+   Negative path gets friction by design: alternatives are prominent, the
+   confirm is the weakest action. Keyframes are local (app.css owns the
+   originals; this kit only imports base.css).
+   ============================================================================ */
+
+.billing .modal-scrim{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;
+  padding:24px;background:rgb(0 0 0 / .55);backdrop-filter:blur(4px)}
+.billing .modal-scrim.is-open{display:flex;animation:b-mscrim var(--dur-2) var(--ease)}
+.billing .modal-dialog{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);
+  max-width:460px;width:100%;overflow:hidden}
+.billing .modal-scrim.is-open .modal-dialog{animation:b-mpop var(--dur-2) var(--ease)}
+.billing .modal-dialog .mh{display:flex;align-items:center;gap:10px;padding:18px 20px;
+  border-bottom:1px solid var(--line);font-weight:700}
+.billing .modal-dialog .mclose{margin-inline-start:auto;background:none;border:0;color:var(--muted);
+  cursor:pointer;font-size:var(--text-base);padding:2px 4px}
+.billing .modal-dialog .mclose:hover{color:var(--text)}
+.billing .modal-dialog .mb{padding:18px 20px;color:var(--text-2);font-size:var(--text-md)}
+.billing .modal-dialog .mf{display:flex;align-items:center;flex-wrap:wrap;justify-content:space-between;
+  gap:9px;padding:14px 20px;border-top:1px solid var(--line)}
+@keyframes b-mscrim{from{opacity:0}to{opacity:1}}
+@keyframes b-mpop{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.billing .modal-scrim.is-open,.billing .modal-scrim.is-open .modal-dialog{animation:none}}
+
+/* consequence framing — what ends and when */
+.billing .cancel-loss{display:flex;gap:10px;align-items:flex-start;background:rgb(var(--danger-rgb) / .06);
+  border:1px solid rgb(var(--danger-rgb) / .22);border-radius:var(--radius);padding:11px 13px;color:var(--text-2);font-size:var(--text-sm)}
+.billing .cancel-loss i{color:var(--danger);margin-top:2px}
+.billing .cancel-loss b{color:var(--text)}
+
+/* retention alternatives — the prominent path */
+.billing .keep{display:flex;flex-direction:column;gap:var(--space-2);margin-top:var(--space-4)}
+.billing .keep .opt{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:var(--radius);
+  padding:12px 14px;text-decoration:none;color:var(--text);transition:.16s}
+.billing .keep .opt:hover{border-color:var(--primary);background:var(--surface-2)}
+.billing .keep .opt > i{color:var(--primary-bright);font-size:1.1rem;flex:0 0 auto}
+.billing .keep .opt .ot{font-weight:600}
+.billing .keep .opt .od{font-size:var(--text-sm);color:var(--text-2)}
+.billing .keep .opt .chev{margin-inline-start:auto;color:var(--muted)}
+
+/* reason chips (static; consumer wires submission) */
+.billing .reasons{display:flex;flex-wrap:wrap;gap:8px;margin-top:var(--space-4)}
+.billing .reasons label{position:relative;font-size:var(--text-sm);border:1px solid var(--line);
+  border-radius:var(--radius-pill);padding:6px 13px;cursor:pointer;color:var(--text-2);transition:.16s}
+.billing .reasons label:hover{color:var(--text);border-color:var(--line-strong)}
+.billing .reasons input{position:absolute;opacity:0;width:0;height:0}
+.billing .reasons label:has(input:checked){border-color:var(--primary);color:var(--text);background:var(--surface-2)}
+.billing .reasons label:has(input:focus-visible){outline:2px solid var(--primary-bright);outline-offset:2px}
+
+/* de-emphasized confirm — friction by design for the destructive action */
+.billing .cancel-confirm{background:transparent;color:var(--danger);box-shadow:none;font-weight:600;padding:10px 8px}
+.billing .cancel-confirm:hover{text-decoration:underline;background:transparent;transform:none}
+
 } /* end @layer qazana */

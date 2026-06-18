@@ -110,7 +110,59 @@
     </div>
   </div>
 
+  <!-- ---- Danger zone ---- -->
+  <h2 class="section-label">Cancel</h2>
+  <div class="card" style="display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap">
+    <div style="min-width:0">
+      <div style="font-weight:600">Cancel subscription</div>
+      <div style="color:var(--text-2);font-size:var(--text-sm);margin-top:2px">Your plan stays active until the end of the current period.</div>
+    </div>
+    <button type="button" class="btn btn-ghost btn-sm" data-modal-open="#cancel" style="margin-inline-start:auto">Cancel plan</button>
+  </div>
+
 </div><!-- /page-wrap -->
+
+<!-- ---- Cancel / downgrade modal (retention-framed) ---- -->
+<div class="modal-scrim" id="cancel" role="dialog" aria-modal="true" aria-labelledby="cancel-title">
+  <div class="modal-dialog">
+    <div class="mh">
+      <span id="cancel-title">Before you go</span>
+      <button class="mclose" data-modal-close aria-label="Close">
+        <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+      </button>
+    </div>
+    <div class="mb">
+      <div class="cancel-loss">
+        <i class="fa-solid fa-circle-info" aria-hidden="true"></i>
+        <span>Cancelling ends <b>Pro</b> on <b>Jun 25</b> — your team drops to 3 seats and loses priority support and audit logs.</span>
+      </div>
+
+      <div class="keep">
+        <a href="#" class="opt">
+          <i class="fa-solid fa-pause" aria-hidden="true"></i>
+          <span><span class="ot">Pause for 3 months</span><br><span class="od">Keep your data; resume anytime, billing paused.</span></span>
+          <i class="fa-solid fa-chevron-right chev" aria-hidden="true"></i>
+        </a>
+        <a href="plans.html" class="opt">
+          <i class="fa-solid fa-arrow-down-short-wide" aria-hidden="true"></i>
+          <span><span class="ot">Switch to a cheaper plan</span><br><span class="od">Move to Starter and keep 3 seats for free.</span></span>
+          <i class="fa-solid fa-chevron-right chev" aria-hidden="true"></i>
+        </a>
+      </div>
+
+      <div class="reasons" role="group" aria-label="Reason for leaving (optional)">
+        <label><input type="radio" name="reason"> Too expensive</label>
+        <label><input type="radio" name="reason"> Missing a feature</label>
+        <label><input type="radio" name="reason"> Not using it enough</label>
+        <label><input type="radio" name="reason"> Switching tools</label>
+      </div>
+    </div>
+    <div class="mf">
+      <button type="button" class="cancel-confirm">Cancel subscription</button>
+      <button type="button" class="btn btn-primary" data-modal-close>Keep my plan</button>
+    </div>
+  </div>
+</div>
 
 <script src="../../js/qazana.js" defer></script>
 </body>

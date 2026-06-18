@@ -70,10 +70,10 @@ scoped so they compose without collisions.
 | **Email** | ✅ shipped (`kits/email/`) | Transactional + newsletter email (table layout, inlined CSS); palette baked from Désert Dunes tokens (clients lack CSS vars) | all apps |
 | **Media** | ✅ shipped (`kits/media.css`) | Video player / responsive embed / video cards; audio player; social share, follow bar, profile card. Composes with Site/Content | all surfaces |
 | **Commerce** | ✅ shipped (`kits/commerce.css`) | Catalog → product → cart → checkout → order — product grid/card, price/badges/stock, star rating, filter rail, qty stepper, variant/swatch picker, PDP gallery, quick-view, cart lines, mini-cart, order summary, promo code, checkout steps, pay/ship options | storefronts |
+| **Billing** | ✅ shipped (`kits/billing.css`) | In-product subscription — current-plan summary, plan switcher with monthly/annual toggle + proration, invoice history, payment-method cards, usage→cost meters + upgrade nudge, dunning banner, seat management, retention-framed cancel flow | SaaS billing settings |
 
 > Situational kits we may add later: **Status/Changelog** (status page, changelog,
-> maintenance), **Print/PDF** (statements, invoices), **Docs** (sidebar
-> nav, API reference) if docs outgrow the Content kit.
+> maintenance), **Docs** (sidebar nav, API reference) if docs outgrow the Content kit.
 
 Each kit is exported from `package.json` so consumers import only what they need
 (e.g. `@qazana/strata/site`). A homepage loads `tokens + site`; a
@@ -94,6 +94,7 @@ kits/
   auth.css            Auth kit (sign-in/up/reset/2FA)
   media.css           Media kit (video, audio, social)
   commerce.css        Commerce kit (catalog → cart → checkout → order)
+  billing.css         Billing kit (plans, invoices, payment methods, usage)
 js/
   qazana.js           vanilla behaviours (data-attribute driven; theme switch)
 demo/
@@ -105,6 +106,7 @@ demo/
   email/              index · transactional · newsletter
   media/              index · video · social
   commerce/           products · product · cart · checkout · order
+  billing/            plans · overview · methods · invoices
 docs/
   components.md       component reference (the demo is the live spec)
 harness/
