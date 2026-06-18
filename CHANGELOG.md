@@ -3,6 +3,25 @@
 All notable changes to `@qazana/strata`. Semver: patch = fix, minor = additive
 component/token, major = rename/removal/breaking token change.
 
+## 0.1.0 — 2026-06-18
+
+Additive: a new **Billing kit** (`@qazana/strata/billing`, scope `.billing`) —
+the eighth kit. No breaking changes.
+
+- **Billing kit** — in-product subscription surfaces, themed by the same tokens:
+  current-plan summary (+ trial), plan switcher with a monthly/annual cycle
+  toggle and inline proration confirm, invoice history with five status states
+  (paid / open / past-due / refunded / void), saved-state payment-method cards,
+  metered usage → cost with an over-limit upgrade nudge, a dunning
+  (failed-payment) banner, seat management, and a retention-framed cancel modal.
+  Money is always static markup — no currency math or `Intl` in the kit.
+- **Behavior** — one new vanilla controller, `[data-billing-cycle]`: a
+  monthly/annual radiogroup that flips `data-cycle` on a named target so CSS
+  swaps the pre-rendered price spans. Cancel reuses `[data-modal-open]`; seats
+  reuse `[data-stepper]`.
+- **Boundary** — no payment processing, no provider SDK/iframe, no card
+  validation, no plan/feature copy; those stay in the consuming app.
+
 ## 0.0.1 — 2026-06-12
 
 Initial release.

@@ -1,6 +1,6 @@
 {
   "name": "@qazana/strata",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Qazana Strata — the shared, framework-agnostic design system — semantic design tokens + vanilla (data-attribute) component CSS/JS, themeable per product with a single :root override.",
   "license": "MIT",
   "repository": {
@@ -29,6 +29,7 @@
     "./tokens": "./tokens/qazana.tokens.css",
     "./tokens.json": "./tokens/tokens.json",
     "./commerce": "./kits/commerce.css",
+    "./billing": "./kits/billing.css",
     "./js": "./js/qazana.js"
   },
   "files": [

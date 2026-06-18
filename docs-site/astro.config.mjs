@@ -51,6 +51,8 @@ export default defineConfig({
             { label: 'Auth', link: '/kits/auth/' },
             { label: 'Email', link: '/kits/email/' },
             { label: 'Media', link: '/kits/media/' },
+            { label: 'Commerce', link: '/kits/commerce/' },
+            { label: 'Billing', link: '/kits/billing/' },
           ],
         },
         {

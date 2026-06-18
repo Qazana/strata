@@ -1081,3 +1081,40 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
+
+/* ---- billing: monthly/annual cycle toggle [data-billing-cycle="<selector>"] —
+   a radiogroup (arrow-key nav, like [data-variant]) that flips data-cycle on a
+   NAMED target region so CSS swaps the pre-rendered monthly/annual price spans.
+   No math: both prices live in the markup; JS only toggles state. ---- */
+(function () {
+  'use strict';
+  function setup(group) {
+    var target = document.querySelector(group.getAttribute('data-billing-cycle') || '__none__');
+    var opts = Array.prototype.slice.call(group.querySelectorAll('[role="radio"]'));
+    if (!target || !opts.length) return;
+    group.setAttribute('role', 'radiogroup');
+    function select(opt, fire) {
+      opts.forEach(function (o) { o.setAttribute('aria-checked', 'false'); o.classList.remove('on'); o.tabIndex = -1; });
+      opt.setAttribute('aria-checked', 'true'); opt.classList.add('on'); opt.tabIndex = 0;
+      target.setAttribute('data-cycle', opt.getAttribute('data-value'));
+      if (fire) group.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+    opts.forEach(function (opt, i) {
+      opt.tabIndex = (i === 0) ? 0 : -1;
+      opt.addEventListener('click', function () { select(opt, true); opt.focus(); });
+      opt.addEventListener('keydown', function (e) {
+        var idx = opts.indexOf(opt), n = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') n = opts[(idx + 1) % opts.length];
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') n = opts[(idx - 1 + opts.length) % opts.length];
+        else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); select(opt, true); return; }
+        else return;
+        e.preventDefault(); select(n, true); n.focus();
+      });
+    });
+    // sync to the initially-checked option (or the first), honouring server markup
+    var checked = opts.filter(function (o) { return o.getAttribute('aria-checked') === 'true'; })[0] || opts[0];
+    select(checked, false);
+  }
+  function init() { document.querySelectorAll('[data-billing-cycle]').forEach(setup); }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
