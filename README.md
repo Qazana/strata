@@ -71,6 +71,7 @@ scoped so they compose without collisions.
 | **Media** | ✅ shipped (`kits/media.css`) | Video player / responsive embed / video cards; audio player; social share, follow bar, profile card. Composes with Site/Content | all surfaces |
 | **Commerce** | ✅ shipped (`kits/commerce.css`) | Catalog → product → cart → checkout → order — product grid/card, price/badges/stock, star rating, filter rail, qty stepper, variant/swatch picker, PDP gallery, quick-view, cart lines, mini-cart, order summary, promo code, checkout steps, pay/ship options | storefronts |
 | **Billing** | ✅ shipped (`kits/billing.css`) | In-product subscription — current-plan summary, plan switcher with monthly/annual toggle + proration, invoice history, payment-method cards, usage→cost meters + upgrade nudge, dunning banner, seat management, retention-framed cancel flow | SaaS billing settings |
+| **Docs** | ✅ shipped (`kits/docs.css`) | Documentation — 3-column doc shell, collapsible sidebar nav, API reference blocks (verb badges, params, samples), version switcher, prev/next pager, help-center landing (search hero, categories, "was this helpful"). Pairs with Content kit | product docs, help centers |
 
 > Situational kits we may add later: **Status/Changelog** (status page, changelog,
 > maintenance), **Docs** (sidebar nav, API reference) if docs outgrow the Content kit.
@@ -95,6 +96,7 @@ kits/
   media.css           Media kit (video, audio, social)
   commerce.css        Commerce kit (catalog → cart → checkout → order)
   billing.css         Billing kit (plans, invoices, payment methods, usage)
+  docs.css            Docs kit (doc shell, API ref, help center; pairs w/ content)
 js/
   qazana.js           vanilla behaviours (data-attribute driven; theme switch)
 demo/
@@ -107,6 +109,7 @@ demo/
   media/              index · video · social
   commerce/           products · product · cart · checkout · order
   billing/            plans · overview · methods · invoices
+  docs/               guide · api · help · article
 docs/
   components.md       component reference (the demo is the live spec)
 harness/

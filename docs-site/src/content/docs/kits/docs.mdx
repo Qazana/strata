@@ -1,0 +1,85 @@
+---
+title: Docs kit
+description: Documentation surface — 3-column doc shell, collapsible sidebar nav, API reference blocks, version switcher, and a help-center landing. Pairs with the Content kit.
+sidebar:
+  order: 9
+---
+
+import Demo from '../../../components/Demo.astro';
+
+The **Docs kit** (`@qazana/strata/docs`) is the documentation and help-center surface. It **pairs
+with the Content kit** rather than duplicating it: load `content.css + docs.css + qazana.js`. The
+reading column reuses content.css's global `.prose`, `.toc`, callouts and code; docs.css adds only
+the chrome content lacks — a 3-column shell, a collapsible sidebar nav, API-reference blocks, a
+version switcher, and the help-center landing. Everything is scoped under `.docs`.
+
+No baked search modal: search is provider-supplied (Algolia DocSearch, Pagefind), so the kit ships
+the trigger/field as a hook. Sidebar nesting is native `<details>` — the correct ARIA for
+navigation, not a tree widget.
+
+## Documentation shell
+
+3-column shell: collapsible sidebar nav (native `<details>` groups), prose content, and a sticky
+TOC that reuses the `[data-toc]` scrollspy:
+
+<Demo src="docs/guide.html" title="Docs — guide" height={680} />
+
+## API reference
+
+Stacked, collapsible endpoint blocks with verb badges, params tables, and request/response samples,
+plus a version switcher:
+
+<Demo src="docs/api.html" title="Docs — API reference" height={680} />
+
+## Help center
+
+Search-first landing with a category grid and popular articles:
+
+<Demo src="docs/help.html" title="Docs — help center" height={620} />
+
+## Help article
+
+Breadcrumb, prose article, "was this helpful?" feedback, and related articles:
+
+<Demo src="docs/article.html" title="Docs — help article" height={620} />
+
+## What's inside
+
+| Component | Class / hook | Notes |
+|-----------|-------------|-------|
+| Doc shell | `.doc-shell` | sidebar \| prose \| TOC; responsive collapse |
+| Sidebar nav | `.doc-nav` + `<details>` | multi-level, `aria-current="page"` |
+| Search trigger | `.doc-search` | provider hook, not wired search |
+| Pager | `.doc-pager` | prev/next link cards |
+| API endpoint | `.api-ref` (`<details>`) | collapsible block |
+| Verb badge | `.api-method.get/.post/.put/.patch/.delete` | info/primary/warning/danger |
+| Params | `.api-params` | name/type/required/description |
+| Code sample | `.api-code` | request/response |
+| Version switcher | `.doc-version` | styled native `<select>` |
+| Help landing | `.help` + `.help-hero`/`.help-cats`/`.help-list` | search hero, categories, popular |
+| Breadcrumb | `.crumbs` | `a` + `.sep` |
+| Feedback | `.help-vote` | "was this helpful?" |
+| Related | `.help-related` | article cards |
+
+## Usage
+
+```html
+<!-- docs / help page -->
+<link rel="stylesheet" href="@qazana/strata/content">
+<link rel="stylesheet" href="@qazana/strata/docs">
+<script type="module" src="@qazana/strata"></script>
+
+<body class="docs">
+  <div class="doc-shell">
+    <nav class="doc-nav">…</nav>
+    <article class="prose">…</article>   <!-- prose comes from the Content kit -->
+    <nav class="toc" data-toc>…</nav>
+  </div>
+</body>
+```
+
+:::note
+The kit ships no search indexing, no content, and no two-panel scroll-sync. Search is a provider
+hook; the sidebar/TOC are markup the consumer fills. The reading column requires the Content kit
+for `.prose`.
+:::

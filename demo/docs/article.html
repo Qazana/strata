@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Docs — Help article · Qazana Strata</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../../kits/content.css" rel="stylesheet">
+<link href="../../kits/docs.css" rel="stylesheet">
+<style>
+  body{margin:0}
+  .demo-nav{display:flex;gap:var(--space-3);max-width:760px;margin:0 auto;padding:var(--space-5) 24px 0;flex-wrap:wrap}
+  .demo-nav a{font-size:var(--text-sm);color:var(--primary-bright);text-decoration:none;padding:4px 10px;border:1px solid var(--line);border-radius:var(--radius)}
+  .demo-nav a:hover{border-color:var(--primary);color:var(--primary)}
+  .demo-nav a.active{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+  .help-doc{max-width:760px;margin:0 auto;padding:0 24px 80px}
+</style>
+</head>
+<body class="docs" style="background:var(--bg);min-height:100vh">
+
+<nav class="demo-nav" aria-label="Docs demo pages">
+  <a href="../index.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> All demos</a>
+  <a href="guide.html">Guide</a>
+  <a href="api.html">API reference</a>
+  <a href="help.html">Help center</a>
+  <a href="article.html" class="active">Help article</a>
+</nav>
+
+<div class="help-doc">
+
+  <nav class="crumbs" aria-label="Breadcrumb">
+    <a href="help.html">Help center</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <a href="help.html">Billing &amp; plans</a>
+    <span class="sep" aria-hidden="true">/</span>
+    <span aria-current="page">Changing your plan</span>
+  </nav>
+
+  <article class="prose">
+    <h1>Changing your plan or billing cycle</h1>
+    <p class="lead">You can upgrade, downgrade, or switch between monthly and annual billing at any time
+    from your billing settings. Changes are prorated automatically.</p>
+
+    <h2 id="upgrade">Upgrading</h2>
+    <p>Open <strong>Settings → Billing</strong> and choose a plan. When you upgrade, you're charged a
+    prorated amount for the remainder of the current period, and the new rate applies going forward.</p>
+
+    <div class="callout tip"><b>Annual saves more</b>Switching to annual billing applies a discount equivalent to two months free on most plans.</div>
+
+    <h2 id="downgrade">Downgrading</h2>
+    <p>Downgrades take effect at the end of your current billing period, so you keep your current
+    features until then. Any unused credit is applied to future invoices.</p>
+
+    <h2 id="cycle">Switching billing cycle</h2>
+    <p>Use the monthly/annual toggle on the plan switcher. The proration preview shows exactly what
+    you'll be charged today before you confirm.</p>
+  </article>
+
+  <!-- was this helpful -->
+  <div class="help-vote">
+    <span class="hv-q">Was this article helpful?</span>
+    <div class="hv-btns">
+      <button type="button" class="btn btn-ghost"><i class="fa-regular fa-thumbs-up" aria-hidden="true"></i> Yes</button>
+      <button type="button" class="btn btn-ghost"><i class="fa-regular fa-thumbs-down" aria-hidden="true"></i> No</button>
+    </div>
+  </div>
+
+  <div class="help-sec">Related articles</div>
+  <div class="help-related">
+    <a href="article.html"><i class="fa-regular fa-file-lines" aria-hidden="true"></i> Updating your payment method</a>
+    <a href="article.html"><i class="fa-regular fa-file-lines" aria-hidden="true"></i> Understanding your invoice</a>
+    <a href="article.html"><i class="fa-regular fa-file-lines" aria-hidden="true"></i> Cancelling your subscription</a>
+  </div>
+
+</div>
+
+<script src="../../js/qazana.js" defer></script>
+</body>
+</html>
