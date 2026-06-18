@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Docs — Guide · Qazana Strata</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../../kits/content.css" rel="stylesheet">
+<link href="../../kits/docs.css" rel="stylesheet">
+<style>
+  body{margin:0}
+  .demo-nav{display:flex;gap:var(--space-3);max-width:1280px;margin:0 auto;padding:var(--space-5) 24px 0;flex-wrap:wrap}
+  .demo-nav a{font-size:var(--text-sm);color:var(--primary-bright);text-decoration:none;padding:4px 10px;border:1px solid var(--line);border-radius:var(--radius)}
+  .demo-nav a:hover{border-color:var(--primary);color:var(--primary)}
+  .demo-nav a.active{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+</style>
+</head>
+<body class="docs" style="background:var(--bg);min-height:100vh">
+
+<nav class="demo-nav" aria-label="Docs demo pages">
+  <a href="../index.html"><i class="fa-solid fa-arrow-left" aria-hidden="true"></i> All demos</a>
+  <a href="guide.html" class="active">Guide</a>
+  <a href="api.html">API reference</a>
+  <a href="help.html">Help center</a>
+  <a href="article.html">Help article</a>
+</nav>
+
+<div class="doc-shell">
+
+  <!-- ---- Sidebar: multi-level collapsible nav (native <details>) ---- -->
+  <nav class="doc-nav" aria-label="Documentation">
+    <button type="button" class="doc-search" aria-label="Search documentation">
+      <i class="fa-solid fa-magnifying-glass" aria-hidden="true"></i> Search docs…
+      <span class="dk" aria-hidden="true">⌘K</span>
+    </button>
+
+    <div class="dn-sec">Getting started</div>
+    <ul>
+      <li><a href="#" aria-current="page">Introduction</a></li>
+      <li><a href="#">Installation</a></li>
+      <li><a href="#">Quick start</a></li>
+    </ul>
+
+    <details open>
+      <summary>Guides <i class="fa-solid fa-chevron-right chev" aria-hidden="true"></i></summary>
+      <ul>
+        <li><a href="#">Authentication</a></li>
+        <li><a href="#">Webhooks</a></li>
+        <li><a href="#">Pagination</a></li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>Concepts <i class="fa-solid fa-chevron-right chev" aria-hidden="true"></i></summary>
+      <ul>
+        <li><a href="#">Resources</a></li>
+        <li><a href="#">Idempotency</a></li>
+        <li><a href="#">Rate limits</a></li>
+      </ul>
+    </details>
+
+    <details>
+      <summary>SDKs <i class="fa-solid fa-chevron-right chev" aria-hidden="true"></i></summary>
+      <ul>
+        <li><a href="#">JavaScript</a></li>
+        <li><a href="#">Python</a></li>
+        <li><a href="#">Ruby</a></li>
+      </ul>
+    </details>
+  </nav>
+
+  <!-- ---- Reading column: content.css .prose ---- -->
+  <article class="prose">
+    <p class="lead">Everything you need to integrate the platform — from your first request to production webhooks.</p>
+
+    <h2 id="intro">Introduction</h2>
+    <p>The API is organised around REST. It has predictable resource-oriented URLs, accepts
+    form-encoded request bodies, returns JSON-encoded responses, and uses standard HTTP response
+    codes, authentication, and verbs.</p>
+
+    <div class="callout note"><b>Base URL</b>All requests are made to <code>https://api.example.com/v1</code> over HTTPS. Calls made over plain HTTP will fail.</div>
+
+    <h2 id="auth">Authentication</h2>
+    <p>Authenticate with an API key in the <code>Authorization</code> header. Keep your keys secret —
+    do not embed them in client-side code or public repositories.</p>
+    <pre><code>curl https://api.example.com/v1/charges \
+  -H "Authorization: Bearer sk_live_…"</code></pre>
+
+    <div class="callout warn"><b>Keep keys server-side</b>A leaked secret key gives full account access. Rotate immediately if exposed.</div>
+
+    <h2 id="errors">Errors</h2>
+    <p>The API uses conventional HTTP status codes. Codes in the <code>2xx</code> range indicate success,
+    <code>4xx</code> indicate a client error, and <code>5xx</code> indicate a server error.</p>
+
+    <!-- prev / next -->
+    <div class="doc-pager">
+      <a href="#" class="prev"><span class="pl">Previous</span><span class="pt">Overview</span></a>
+      <a href="#" class="next"><span class="pl">Next</span><span class="pt">Installation</span></a>
+    </div>
+  </article>
+
+  <!-- ---- TOC: content.css .toc + [data-toc] scrollspy ---- -->
+  <nav class="toc" data-toc aria-label="On this page">
+    <div class="toc-h">On this page</div>
+    <a href="#intro">Introduction</a>
+    <a href="#auth">Authentication</a>
+    <a href="#errors">Errors</a>
+  </nav>
+
+</div>
+
+<script src="../../js/qazana.js" defer></script>
+</body>
+</html>
