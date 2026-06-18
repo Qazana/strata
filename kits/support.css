@@ -1,0 +1,147 @@
+@import "./base.css";
+
+@layer qazana {
+
+/* ============================================================================
+   Qazana Strata — SUPPORT KIT (contact form → ticket list → conversation).
+   Standalone on base.css (form controls + .form-field come from base). Scope
+   class: .support. Generic helpdesk UI only — no SLA timers, agent routing,
+   live send, or ticketing backend (those are per-product domain concerns).
+   ============================================================================ */
+
+/* ---- scope root ---- */
+.support{
+  font-family:var(--body);background:var(--bg);color:var(--text);
+  line-height:1.6;letter-spacing:var(--tracking-normal);-webkit-font-smoothing:var(--font-smooth);
+}
+.support *{box-sizing:border-box}
+.support ::selection{background:rgb(var(--primary-rgb) / .28);color:var(--text)}
+
+/* ---- buttons (minimal scoped copy) ---- */
+.support .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;font-family:var(--body);
+  font-weight:600;font-size:var(--text-base);line-height:1;border:0;cursor:pointer;text-decoration:none;
+  border-radius:var(--radius);padding:10px 18px;transition:transform var(--dur-1) var(--ease),background var(--dur-1) var(--ease),box-shadow var(--dur-2) var(--ease)}
+.support .btn-primary{background:var(--primary);color:var(--on-primary)}
+.support .btn-primary:hover{background:var(--primary-bright);transform:translateY(-1px)}
+.support .btn-secondary{background:var(--surface-2);color:var(--text);box-shadow:inset 0 0 0 1px var(--line-strong)}
+.support .btn-secondary:hover{box-shadow:inset 0 0 0 1px rgb(var(--border-rgb) / .25)}
+.support .btn-ghost{background:transparent;color:var(--text-2);box-shadow:inset 0 0 0 1px var(--line)}
+.support .btn-ghost:hover{color:var(--text);box-shadow:inset 0 0 0 1px var(--line-strong)}
+.support .btn-sm{padding:7px 13px;font-size:var(--text-sm)}
+@media (prefers-reduced-motion:reduce){.support .btn:hover{transform:none}}
+
+/* ---- status badge (scoped) + priority dot ---- */
+.support .badge{display:inline-flex;align-items:center;gap:5px;font-size:var(--text-xs);font-weight:600;
+  line-height:1;letter-spacing:.02em;padding:3px 9px;border-radius:var(--radius-pill);white-space:nowrap;
+  background:var(--surface-2);color:var(--text-2)}
+/* tinted chips mix text toward --text so contrast clears AA in both themes
+   (a soft tint of a mid-tone on a light bg otherwise lands just under 4.5:1) */
+.support .badge.open{background:rgb(var(--info-rgb) / .16);color:color-mix(in srgb, var(--info) 64%, var(--text))}
+.support .badge.pending{background:rgb(var(--warning-rgb) / .16);color:color-mix(in srgb, var(--warning) 60%, var(--text))}
+.support .badge.solved{background:rgb(var(--primary-rgb) / .16);color:color-mix(in srgb, var(--primary-bright) 76%, var(--text))}
+.support .badge.closed{background:rgb(var(--border-rgb) / .12);color:var(--text-2)}
+/* priority — leading dot + label */
+.support .prio{display:inline-flex;align-items:center;gap:7px;font-size:var(--text-sm);color:var(--text-2);white-space:nowrap}
+.support .prio::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--muted);flex:0 0 auto}
+.support .prio.normal::before{background:var(--info)}
+.support .prio.high::before{background:var(--warning)}
+.support .prio.urgent::before{background:var(--danger)}
+
+/* ============================================================================
+   CONTACT / TICKET FORM  —  reuses base .form-field + native controls
+   ============================================================================ */
+
+.support .support-form{max-width:580px;display:flex;flex-direction:column;gap:var(--space-4)}
+.support .support-form .row{display:grid;grid-template-columns:1fr 1fr;gap:var(--space-4)}
+@media (max-width:560px){.support .support-form .row{grid-template-columns:1fr}}
+.support .support-form textarea{min-height:140px;resize:vertical}
+.support .form-actions{display:flex;gap:var(--space-3);align-items:center;margin-top:var(--space-2)}
+/* attachment dropzone */
+.support .attach{display:flex;align-items:center;justify-content:center;gap:9px;border:1px dashed var(--line-strong);
+  border-radius:var(--radius);padding:18px;color:var(--text-2);font-size:var(--text-md);cursor:pointer;transition:.16s}
+.support .attach:hover{border-color:var(--primary);color:var(--text)}
+
+/* confirmation state */
+.support .support-sent{max-width:580px;text-align:center;border:1px solid var(--line);border-radius:var(--radius-lg);
+  padding:42px 28px;background:var(--surface)}
+.support .support-sent .ss-ic{width:54px;height:54px;border-radius:50%;background:var(--primary-soft);
+  color:var(--primary-bright);display:grid;place-items:center;font-size:1.5rem;margin:0 auto 16px}
+.support .support-sent h2{font-weight:700;font-size:var(--text-xl)}
+.support .support-sent p{color:var(--text-2);margin-top:8px}
+.support .support-sent .ref{font-family:var(--mono);color:var(--text);background:var(--surface-2);
+  border:1px solid var(--line);border-radius:6px;padding:3px 9px;display:inline-block;margin-top:16px}
+
+/* ============================================================================
+   TICKET LIST  —  table (row links to the ticket)
+   ============================================================================ */
+
+.support .ticket-list{width:100%;border-collapse:collapse;font-size:var(--text-md)}
+.support .ticket-list th{text-align:start;font-size:var(--text-2xs);text-transform:uppercase;
+  letter-spacing:var(--tracking-wide);color:var(--muted);font-weight:600;padding:0 14px 10px;border-bottom:1px solid var(--line)}
+.support .ticket-list td{padding:13px 14px;border-bottom:1px solid var(--line);vertical-align:middle}
+.support .ticket-list tbody tr:last-child td{border-bottom:0}
+.support .ticket-list tbody tr:hover{background:var(--surface)}
+.support .ticket-list .t-id{font-family:var(--mono);color:var(--text-2);white-space:nowrap}
+.support .ticket-list .t-subj{font-weight:600}
+.support .ticket-list .t-subj a{color:var(--text);text-decoration:none}
+.support .ticket-list .t-subj a:hover{color:var(--primary-bright)}
+.support .ticket-list .t-req{color:var(--text-2);font-size:var(--text-sm)}
+.support .ticket-list .t-time{color:var(--muted);font-family:var(--mono);font-size:var(--text-xs);white-space:nowrap}
+
+/* ============================================================================
+   TICKET DETAIL  —  header + conversation thread (stacked cards) + composer
+   ============================================================================ */
+
+.support .ticket-head{display:flex;align-items:flex-start;gap:var(--space-4);flex-wrap:wrap;
+  padding-bottom:var(--space-4);border-bottom:1px solid var(--line);margin-bottom:var(--space-5)}
+.support .ticket-head .th-main{min-width:0}
+.support .ticket-head h1{font-family:var(--display);font-weight:800;letter-spacing:-.02em;font-size:1.5rem;line-height:1.2}
+.support .ticket-head .th-meta{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:9px;color:var(--muted);font-size:var(--text-sm)}
+.support .ticket-head .th-id{font-family:var(--mono)}
+.support .ticket-head .th-actions{margin-inline-start:auto;display:flex;gap:var(--space-2);flex-wrap:wrap;align-items:center}
+
+/* conversation thread — stacked message cards (async ticket, not chat bubbles) */
+.support .thread{display:flex;flex-direction:column;gap:var(--space-4);max-width:780px}
+.support .msg{display:flex;gap:12px}
+.support .msg .av{width:38px;height:38px;flex:0 0 38px;border-radius:50%;background:var(--surface-3);
+  color:var(--text-2);display:grid;place-items:center;font-weight:800;font-size:var(--text-sm);font-family:var(--body)}
+.support .msg.agent .av{background:var(--primary);color:var(--on-primary)}
+.support .msg .bubble{flex:1;min-width:0;border:1px solid var(--line);border-radius:var(--radius-lg);
+  background:var(--surface);overflow:hidden}
+.support .msg .m-head{display:flex;align-items:center;gap:9px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:var(--text-sm)}
+.support .msg .m-author{font-weight:600;color:var(--text)}
+.support .msg .m-role{font-size:var(--text-2xs);text-transform:uppercase;letter-spacing:.04em;font-weight:700;
+  padding:2px 7px;border-radius:5px;background:var(--surface-2);color:var(--text-2)}
+.support .msg.agent .m-role{background:rgb(var(--primary-rgb) / .16);color:color-mix(in srgb, var(--primary-bright) 76%, var(--text))}
+.support .msg .m-time{margin-inline-start:auto;color:var(--muted);font-family:var(--mono);font-size:var(--text-xs)}
+.support .msg .m-body{padding:14px;color:var(--text);font-size:var(--text-md);line-height:1.65}
+.support .msg .m-body p + p{margin-top:.8em}
+/* internal note — visible to agents only; tinted, not a public reply */
+.support .msg.note .bubble{background:var(--warning-soft);border-color:rgb(var(--warning-rgb) / .3)}
+.support .msg.note .m-role{background:rgb(var(--warning-rgb) / .18);color:color-mix(in srgb, var(--warning) 58%, var(--text))}
+
+/* reply composer */
+.support .composer{margin-top:var(--space-5);max-width:780px;border:1px solid var(--line-strong);
+  border-radius:var(--radius-lg);background:var(--surface);overflow:hidden}
+.support .composer textarea{border:0;border-radius:0;background:transparent;min-height:110px;resize:vertical;padding:14px;width:100%}
+.support .composer textarea:focus-visible{box-shadow:none;background:transparent}
+.support .composer .c-bar{display:flex;align-items:center;gap:var(--space-3);padding:10px 12px;border-top:1px solid var(--line);flex-wrap:wrap}
+.support .composer .c-actions{margin-inline-start:auto;display:flex;gap:var(--space-2)}
+
+/* canned-reply / macro picker — native <details> dropdown (opens upward) */
+.support .macros{position:relative}
+.support .macros > summary{list-style:none;cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+  font-size:var(--text-sm);font-weight:600;color:var(--text-2);border:1px solid var(--line);
+  border-radius:var(--radius);padding:7px 12px;background:var(--surface-2)}
+.support .macros > summary::-webkit-details-marker{display:none}
+.support .macros > summary:hover{color:var(--text);border-color:var(--line-strong)}
+.support .macros .macro-menu{position:absolute;bottom:calc(100% + 6px);inset-inline-start:0;z-index:30;
+  min-width:288px;background:var(--surface-3);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow-lg);padding:6px;max-height:280px;overflow:auto}
+.support .macros .macro-menu button{display:block;width:100%;text-align:start;background:transparent;border:0;
+  cursor:pointer;border-radius:var(--radius-sm);padding:9px 11px;color:var(--text);font-family:var(--body)}
+.support .macros .macro-menu button:hover{background:var(--surface-2)}
+.support .macros .macro-menu .mm-t{font-weight:600;font-size:var(--text-md)}
+.support .macros .macro-menu .mm-d{font-size:var(--text-sm);color:var(--muted);margin-top:2px}
+
+} /* end @layer qazana */

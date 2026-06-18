@@ -81,6 +81,8 @@
 .prose{font-size:var(--text-lg);line-height:var(--leading-relaxed);color:var(--text);max-width:var(--measure)}
 .prose > * + *{margin-top:1.2em}
 .prose .lead{font-size:var(--text-xl);line-height:1.6;color:var(--text-2)}
+/* article title — display face, largest step; first child so no top margin */
+.prose h1{font-family:var(--display);font-weight:800;letter-spacing:var(--tracking-tight);font-size:clamp(1.9rem,3.2vw,2.4rem);line-height:1.08;margin-top:0}
 .prose h2{font-family:var(--body);font-weight:800;letter-spacing:var(--tracking-tighter);font-size:1.7rem;line-height:1.2;margin-top:1.9em}
 .prose h3{font-family:var(--body);font-weight:700;font-size:var(--text-xl);line-height:1.25;margin-top:1.6em}
 .prose h4{font-weight:700;font-size:var(--text-lg);margin-top:1.4em}
@@ -103,11 +105,16 @@
 .prose th,.prose td{text-align:start;padding:11px 14px;border-bottom:1px solid var(--line)}
 .prose th{font-weight:700;color:var(--text)}
 .prose td{color:var(--text-2)}
-/* callouts */
-.prose .callout{border:1px solid var(--line);border-inline-start-width:3px;border-radius:var(--radius);padding:16px 18px;background:var(--surface);font-size:var(--text-base)}
-.prose .callout.note{border-inline-start-color:var(--info);background:var(--info-soft)}
-.prose .callout.tip{border-inline-start-color:var(--primary);background:var(--primary-soft)}
-.prose .callout.warn{border-inline-start-color:var(--warning);background:var(--warning-soft)}
+/* callouts — full subtle tint + colored title; no left-accent stripe
+   (matches the app-kit alert philosophy: severity is carried by the heading,
+   not a coloured side border) */
+.prose .callout{border:1px solid var(--line);border-radius:var(--radius);padding:16px 18px;background:var(--surface);font-size:var(--text-base)}
+.prose .callout.note{border-color:rgb(var(--info-rgb) / .3);background:var(--info-soft)}
+.prose .callout.tip{border-color:rgb(var(--primary-rgb) / .3);background:var(--primary-soft)}
+.prose .callout.warn{border-color:rgb(var(--warning-rgb) / .3);background:var(--warning-soft)}
+.prose .callout.note b{color:color-mix(in srgb, var(--info) 64%, var(--text))}
+.prose .callout.tip b{color:color-mix(in srgb, var(--primary-bright) 76%, var(--text))}
+.prose .callout.warn b{color:color-mix(in srgb, var(--warning) 60%, var(--text))}
 .prose .callout b{display:block;margin-bottom:4px}
 
 /* article footer — tags, share, author bio */

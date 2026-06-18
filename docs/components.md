@@ -371,3 +371,72 @@ Single retention-framed modal: `.cancel-loss` (consequence + end date), `.keep` 
 alternatives (pause / switch — the prominent path), static `.reasons` chips
 (`:has(input:checked)`), and a **de-emphasized** `.cancel-confirm` (friction by design) beside the
 primary "Keep my plan". No discount offers baked in — that's per-product business logic.
+
+## Docs kit
+
+`kits/docs.css` — root scope `.docs`. **Pairs with the Content kit**: import
+`content.css + docs.css + qazana.js`. The reading column reuses content.css's global `.prose` /
+`.toc` / callouts / code; docs.css adds only the chrome content lacks. No baked search modal
+(search is provider-supplied — Algolia/Pagefind); sidebar nesting is native `<details>` (correct
+nav ARIA, not the app `[data-tree]` widget). Zero new behavior JS.
+
+### Doc shell
+`.doc-shell` — 3-column grid (sidebar `.doc-nav` | `<article class="prose">` | `.toc`). Collapses
+to 2 columns (TOC hidden) below 1120 px, single column below 860 px.
+
+### Sidebar nav (native `<details>`)
+`.doc-nav` → `.doc-search` trigger (with `.dk` ⌘K hint) + `.dn-sec` section labels + flat `<ul>`
+link lists + `<details><summary>` collapsible groups (chevron via `.chev`, rotates on `[open]`).
+Active page: `aria-current="page"` on the link. Mobile: the rail becomes a bordered block above
+the content (pure CSS, no drawer JS).
+
+### Prev / next pager
+`.doc-pager` — two link cards (`.prev` / `.next`), `.pl` label + `.pt` title.
+
+### API reference (stacked, collapsible)
+`<details class="api-ref">` per endpoint → `<summary>`: `.api-method` verb badge
+(`.get`→info · `.post`→primary · `.put`/`.patch`→warning · `.delete`→danger) + `.api-path` (mono) +
+`.api-summary`. Body: `.api-params` table (`.pn` name · `.pty` type · `.req` required flag · `.pd`
+desc) + `.api-code` request/response samples. No two-panel scroll-sync (that's a page composition).
+
+### Version / locale switcher
+`.doc-version` → styled native `<select>` (custom chevron via `::after`). No JS.
+
+### Help center landing
+`.help` → `.help-hero` (heading + `.help-search` field — a provider hook, not wired search) +
+`.help-cats` category-card grid (`.help-cat` → `.hc-ic` + `h3` + `p` + `.hc-n` count) +
+`.help-list` popular-articles rows.
+
+### Help article
+`.crumbs` breadcrumb (`a` + `.sep`) → `<article class="prose">` → `.help-vote` ("was this helpful?"
++ `.hv-btns`) → `.help-related` related-article cards.
+
+## Support kit
+
+`kits/support.css` — root scope `.support`. Standalone on base.css (form controls and `.form-field`
+come from base). Generic helpdesk UI only — no SLA timers, agent routing, live send, or ticketing
+backend (per-product/helpdesk concerns). Zero new behavior JS.
+
+### Contact / ticket form
+`.support-form` (flex column; `.row` for side-by-side fields) reuses base `.form-field` + native
+controls. `.attach` dashed dropzone. `.support-sent` confirmation state (`.ss-ic` + heading + `.ref`
+ticket-number badge).
+
+### Status & priority
+Scoped `.badge` status modifiers: `.open`→info · `.pending`→warning · `.solved`→primary ·
+`.closed`→muted. `.prio` priority label with a leading dot: `.low`→muted · `.normal`→info ·
+`.high`→warning · `.urgent`→danger.
+
+### Ticket list
+`.ticket-list` table → `.t-id` (mono) · `.t-subj` (link + `.t-req` requester/category) · status badge ·
+`.prio` · `.t-time` (mono). Rows link to the ticket.
+
+### Ticket detail + conversation thread
+`.ticket-head` (title + `.th-meta` id/status/priority + `.th-actions`). `.thread` > `.msg` stacked
+cards — `.av` avatar + `.bubble` (`.m-head`: `.m-author` + `.m-role` + `.m-time`; `.m-body` prose).
+Variants: `.msg.agent` (primary avatar/role) and `.msg.note` (internal note, warning-tinted).
+
+### Reply composer + macros
+`.composer` (textarea + `.c-bar` toolbar + `.c-actions`). `.macros` canned-reply picker is a native
+`<details>` dropdown (`.macro-menu` opens upward; `.mm-t` + `.mm-d` per entry). Selection/insertion
+is consumer-wired.
