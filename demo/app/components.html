@@ -272,6 +272,12 @@
       <div class="plan popular"><span class="badge green pop">Popular</span><div class="pname">Pro</div><div class="price">$14.99<small>/mo</small></div><ul><li>50 credits / month</li><li>Priority processing</li></ul><button class="btn btn-primary" style="width:100%">Upgrade</button></div>
       <div class="pack"><div class="pc">15</div><div class="pp">credits · $14.99</div><button class="btn btn-primary btn-sm" style="width:100%">Buy</button></div>
     </div>
+    <div class="sub">Bare stacked cards (no <code>.l-stack</code> wrapper) self-space</div>
+    <div style="max-width:520px">
+      <div class="card"><div class="card-h">First card</div><p>Sibling <code>.card</code>s with no layout wrapper no longer collapse together.</p></div>
+      <div class="card"><div class="card-h">Second card</div><p>A <code>.card + .card</code> rule adds the spacing; wrapping in <code>.l-stack</code>/<code>.l-grid</code> neutralizes it so you never double up.</p></div>
+      <div class="card"><div class="card-h">Third card</div><p>Prefer the layout primitives — this is just a safety net.</p></div>
+    </div>
     <div class="sub">Cost preview (before spending a credit)</div>
     <div class="cost-preview" style="max-width:520px">
       <div class="thumb" style="background:rgb(var(--primary-rgb) / .08);border:1px solid rgb(var(--primary-rgb) / .2);border-radius:var(--radius-sm);display:grid;place-items:center;color:var(--primary-bright)"><i class="fa-solid fa-play"></i></div>

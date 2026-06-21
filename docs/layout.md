@@ -44,3 +44,19 @@ never overflows a narrow viewport.
 
 Gaps map to the spacing scale (`.gap-1`→`--space-1` … `.gap-7`→`--space-7`), or
 set `--gap` directly. Keep gaps on the scale rather than hardcoding px.
+
+## Stacked cards
+
+Spacing belongs on the container, not the component — so card surfaces carry no
+margin. Wrapping a stack in `.l-stack` / `.l-grid` is the preferred path.
+
+As a safety net for hand- or AI-authored markup that emits bare sibling cards
+with no wrapper, **adjacent card surfaces self-space**: an owl rule adds
+`--space-4` of top margin (matching `.l-stack`'s default gap) between adjacent
+`.card`, `.feature-card`, `.plan`, and `.pack` (same-type or mixed). This margin
+is **neutralized** inside `.l-stack`, `.l-grid`, and `.l-row`, which already own
+spacing via `gap`, so wrapping never double-spaces.
+
+Caveat: the reset only covers Strata's own primitives. If you hand-roll a
+`display:grid;gap` (or flex) container with bare cards instead of `.l-grid`,
+zero the margin yourself, e.g. `your-grid > .card + .card{margin-block-start:0}`.

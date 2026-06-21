@@ -229,6 +229,12 @@ label.fld{display:block;font-size:var(--text-sm);color:var(--text-2);margin-bott
 /* ---- cards ---- */
 .card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:20px}
 .card > .card-h{display:flex;align-items:center;gap:10px;font-weight:700;margin-bottom:12px}
+/* stacked bare card surfaces self-space (matches .l-stack's default gap) so
+   AI-emitted sibling cards don't collapse together. Covers same-type and mixed
+   adjacency. Neutralized inside the layout primitives, which own spacing via
+   gap — prefer wrapping in .l-stack/.l-grid. */
+:is(.card,.feature-card,.plan,.pack) + :is(.card,.feature-card,.plan,.pack){margin-block-start:var(--space-4)}
+:is(.l-stack,.l-grid,.l-row) > :is(.card,.feature-card,.plan,.pack) + :is(.card,.feature-card,.plan,.pack){margin-block-start:0}
 .feature-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:22px;transition:transform .2s,border-color .2s}
 .feature-card:hover{transform:translateY(-3px);border-color:var(--primary-line)}
 .feature-card .fi{width:40px;height:40px;border-radius:var(--radius);display:grid;place-items:center;background:rgb(var(--primary-rgb) / .1);color:var(--primary-bright);margin-bottom:14px}
