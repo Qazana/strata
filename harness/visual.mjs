@@ -60,6 +60,7 @@ const PAGES = [
   'site/landing',           // site kit
   'app/components',         // app kit — components
   'app/admin',              // app kit — dashboard/admin
+  'app/survey',             // app kit — multi-step questionnaire (composed primitives)
   'auth/sign-in',           // auth kit
   'foundations/forms',      // foundations — form controls
   'content/blog',           // content kit

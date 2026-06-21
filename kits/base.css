@@ -105,7 +105,7 @@ input:disabled,textarea:disabled,select:disabled{opacity:.5;cursor:not-allowed}
    (site.css's `.site > *{position:relative}`) that would otherwise drop the pill
    into the page flow. Consumers still override freely — their CSS is unlayered
    and beats this layer at any specificity. ---- */
-a.skip-link{position:fixed;top:var(--space-4);left:50%;transform:translate(-50%,calc(-100% - 32px));z-index:9999;
+a.skip-link{position:fixed;top:16px;left:50%;transform:translate(-50%,calc(-100% - 32px));z-index:9999;
   background:var(--primary);color:var(--on-primary);font-weight:600;font-size:var(--text-base);
   text-decoration:none;white-space:nowrap;padding:var(--space-3_5) var(--space-5_5);border-radius:var(--radius-pill);
   box-shadow:var(--shadow-lg);transition:transform var(--dur-2) var(--ease)}

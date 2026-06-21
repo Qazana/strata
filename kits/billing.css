@@ -89,7 +89,7 @@
   border:1px solid var(--line);border-radius:var(--radius-lg);padding:var(--space-5)}
 .billing .plan.popular{border-color:rgb(var(--primary-rgb) / .45)}
 .billing .plan.current{border-color:rgb(var(--primary-rgb) / .55);box-shadow:0 0 0 1px rgb(var(--primary-rgb) / .25)}
-.billing .plan .pop{position:absolute;top:var(--space-3_5);inset-inline-end:var(--space-3_5)}
+.billing .plan .pop{position:absolute;top:14px;inset-inline-end:14px}
 .billing .plan .pname{font-weight:700;font-size:var(--text-base)}
 .billing .plan .price{font-family:var(--body);font-weight:800;font-size:2rem;letter-spacing:var(--tracking-tighter);margin:var(--space-2) 0 2px}
 .billing .plan .price small{font-family:var(--body);font-weight:500;font-size:var(--text-sm);color:var(--muted)}

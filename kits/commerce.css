@@ -519,7 +519,7 @@
 /* shipment timeline */
 .shop .timeline{display:flex;flex-direction:column;gap:0;position:relative}
 .shop .timeline::before{
-  content:"";position:absolute;inset-block:0;inset-inline-start:var(--space-3_5);
+  content:"";position:absolute;inset-block:0;inset-inline-start:13px;
   width:2px;background:var(--line)}
 .shop .tl-item{
   display:flex;gap:var(--space-4);align-items:flex-start;

@@ -53,6 +53,7 @@ const axeSource = fs.readFileSync(path.join(ROOT, 'node_modules/axe-core/axe.min
 const PAGES = [
   '/demo/site/landing.html',
   '/demo/app/components.html',
+  '/demo/app/survey.html',
   '/demo/auth/sign-in.html',
   '/demo/foundations/forms.html',
   '/demo/strata.html',

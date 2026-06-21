@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Qazana Strata — Survey / questionnaire</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="../../kits/app.css" rel="stylesheet">
+<style>
+  /* demo-only glue for questionnaire layout — tokens only, no new library CSS.
+     Resets the native fieldset chrome and styles the legend as a question label. */
+  .qgroup{border:0;margin:0;padding:0;min-width:0}
+  .qlabel{display:block;width:100%;font-weight:600;font-size:var(--text-base);color:var(--text);margin-bottom:var(--space-3);padding:0}
+  .qhint{font-weight:400;color:var(--muted);font-size:var(--text-sm)}
+  .scale{width:100%;justify-content:space-between;gap:var(--space-3)}
+  @media(max-width:560px){.scale{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+<div class="bg-layer"><div class="glow one"></div><div class="glow two"></div><div class="grid-overlay"></div></div>
+
+<div class="kit">
+  <header class="top">
+    <a class="logo" href="components.html">
+      <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--primary)"/><circle cx="14.5" cy="15" r="7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-opacity=".95"/><path d="M19 19.5 L24 24.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
+      <span class="word">Qazan<span class="brand-8">a</span></span>
+    </a>
+    <nav><a href="components.html">Overview</a><a href="admin.html">Admin</a><a href="survey.html">Survey</a><button class="btn-icon" data-density-toggle aria-label="Toggle density"><i class="fa-solid fa-compress"></i></button><button class="btn-icon" data-theme-toggle="dark-knight,desert-dunes" aria-label="Switch theme"><i class="fa-solid fa-sun"></i></button></nav>
+  </header>
+
+  <div class="kit-head">
+    <div><h1 class="title">Survey &amp; questionnaire</h1>
+      <p>Not a new component — a <strong>use case</strong>. A multi-step questionnaire built entirely by composing existing primitives: the <code>[data-wizard]</code> stepper drives the flow, and each step asks questions with <code>.choice</code> radios (single-select), <code>.choice</code> checkboxes (multi-select), an inline Likert scale, and a plain text field. Keyboard-operable, theme- and density-aware, zero survey-specific CSS.</p></div>
+  </div>
+
+  <section class="sec">
+    <div class="desc">Multi-step survey · <code>[data-wizard]</code> + <code>.choice</code> + <code>.check</code></div>
+
+    <div class="card" data-wizard style="max-width:640px;margin-inline:auto">
+      <div class="wsteps">
+        <div class="wstep active"><span class="wnum">1</span><span class="wlab">About you</span></div><span class="wline"></span>
+        <div class="wstep"><span class="wnum">2</span><span class="wlab">Usage</span></div><span class="wline"></span>
+        <div class="wstep"><span class="wnum">3</span><span class="wlab">Feedback</span></div><span class="wline"></span>
+        <div class="wstep"><span class="wnum">4</span><span class="wlab">Review</span></div>
+      </div>
+
+      <!-- Step 1 — single-select radios + a standalone checkbox -->
+      <div class="wpane">
+        <div class="l-stack gap-5">
+          <fieldset class="qgroup">
+            <legend class="qlabel">What best describes your role?</legend>
+            <div class="choice">
+              <label><input type="radio" name="role"> Product designer</label>
+              <label><input type="radio" name="role" checked> Frontend engineer</label>
+              <label><input type="radio" name="role"> Full-stack engineer</label>
+              <label><input type="radio" name="role"> Engineering manager</label>
+            </div>
+          </fieldset>
+
+          <fieldset class="qgroup">
+            <legend class="qlabel">How big is your team?</legend>
+            <div class="choice inline">
+              <label><input type="radio" name="team"> Just me</label>
+              <label><input type="radio" name="team" checked> 2–10</label>
+              <label><input type="radio" name="team"> 11–50</label>
+              <label><input type="radio" name="team"> 50+</label>
+            </div>
+          </fieldset>
+
+          <label class="check"><input type="checkbox" checked> Send me occasional product updates</label>
+        </div>
+      </div>
+
+      <!-- Step 2 — multi-select checkboxes + an inline radio -->
+      <div class="wpane" hidden>
+        <div class="l-stack gap-5">
+          <fieldset class="qgroup">
+            <legend class="qlabel">Which kits do you use? <span class="qhint">(select all that apply)</span></legend>
+            <div class="choice">
+              <label><input type="checkbox" checked> App</label>
+              <label><input type="checkbox" checked> Site</label>
+              <label><input type="checkbox"> Content</label>
+              <label><input type="checkbox" checked> Billing</label>
+              <label><input type="checkbox"> Commerce</label>
+              <label><input type="checkbox"> Docs &amp; Support</label>
+            </div>
+          </fieldset>
+
+          <fieldset class="qgroup">
+            <legend class="qlabel">How do you consume Strata?</legend>
+            <div class="choice inline">
+              <label><input type="radio" name="stack" checked> Vanilla</label>
+              <label><input type="radio" name="stack"> React + Tailwind</label>
+              <label><input type="radio" name="stack"> Ember</label>
+            </div>
+          </fieldset>
+        </div>
+      </div>
+
+      <!-- Step 3 — Likert scale (composed from .choice.inline radios) + open text -->
+      <div class="wpane" hidden>
+        <div class="l-stack gap-5">
+          <fieldset class="qgroup">
+            <legend class="qlabel">“Strata made our UI more consistent.”</legend>
+            <div class="choice inline scale" role="radiogroup">
+              <label><input type="radio" name="likert"> Strongly disagree</label>
+              <label><input type="radio" name="likert"> Disagree</label>
+              <label><input type="radio" name="likert"> Neutral</label>
+              <label><input type="radio" name="likert" checked> Agree</label>
+              <label><input type="radio" name="likert"> Strongly agree</label>
+            </div>
+          </fieldset>
+
+          <div class="field-row" style="align-self:stretch">
+            <label class="fld" for="sv-open">Anything you'd change? <span class="qhint">(optional)</span></label>
+            <textarea id="sv-open" rows="3" placeholder="Tell us what would make Strata better…"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <!-- Step 4 — review / submit -->
+      <div class="wpane" hidden>
+        <div class="l-stack gap-4">
+          <div class="banner"><i class="fa-solid fa-circle-check" style="color:var(--primary-bright)"></i> You're all set — review and submit your responses.</div>
+          <p style="color:var(--text-2)">In a real form a submit handler would serialize the answers; this demo just shows the composed flow. Use <em>Back</em> to change any answer.</p>
+        </div>
+      </div>
+
+      <div class="wnav l-row between" style="margin-top:var(--space-5)">
+        <button class="btn btn-ghost" data-wback>Back</button>
+        <button class="btn btn-primary" data-wnext>Next</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="foot">Qazana Strata · survey use case — composed from existing primitives</div>
+</div>
+<script src="../../js/qazana.js" defer></script>
+</body>
+</html>

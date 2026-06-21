@@ -50,9 +50,12 @@ The spacing scale is a 4px base with **half-steps** (`_5`, à la Tailwind's
 `--space-3` 12 · `--space-3_5` 14 · `--space-4` 16 · `--space-4_5` 20 ·
 `--space-5` 24 · `--space-5_5` 28 · `--space-6` 32 · `--space-6_5` 40 ·
 `--space-7` 48 · `--space-8` 56 · `--space-9` 64 · `--space-10` 80 (px). All
-component padding/margin/gap references a step — no raw px in spacing properties
-(the `.gap-N` helpers stay on the whole steps `1…7`). Sub-4px optical nudges
-(1–2px) are intentionally left as literals.
+component padding/margin/gap references a step — no raw px in those box-model
+spacing properties (the `.gap-N` helpers stay on the whole steps `1…7`). Two
+deliberate exceptions stay literal px: sub-4px optical nudges (1–2px), and
+**positioning offsets** (`top`/`right`/`bottom`/`left`/`inset*`) — those are
+placement/geometry, not rhythm, and tokenizing them would shift absolutely
+positioned glyphs (checkmarks, the `.resizer` bar, `.toast-host` corners).
 
 ## Stacked surfaces
 

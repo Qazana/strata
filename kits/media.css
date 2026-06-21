@@ -24,7 +24,7 @@
 .media .ptrack{flex:1;height:4px;border-radius:99px;background:rgb(255 255 255 / .3);position:relative}
 .media .ptrack i{position:absolute;inset-block:0;inset-inline-start:0;width:38%;background:var(--primary);border-radius:99px}
 .media .ptime{font-family:var(--mono);font-size:var(--text-xs);opacity:.9}
-.media .duration{position:absolute;bottom:var(--space-2);inset-inline-end:var(--space-2);z-index:2;background:rgb(0 0 0 / .72);color:#fff;
+.media .duration{position:absolute;bottom:8px;inset-inline-end:8px;z-index:2;background:rgb(0 0 0 / .72);color:#fff;
   font-family:var(--mono);font-size:var(--text-xs);padding:2px var(--space-2);border-radius:5px}
 
 /* responsive embed (drop an <iframe> in) */

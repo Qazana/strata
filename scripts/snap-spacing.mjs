@@ -34,15 +34,17 @@ function snap(px) {
   return SCALE.find(([v]) => v === best)[1];
 }
 
-// spacing properties, longest first so shorthands win the alternation
+// Spacing-RHYTHM properties only (box model), longest first so shorthands win.
+// Positioning offsets (top/right/bottom/left/inset*) are deliberately EXCLUDED:
+// those are placement/geometry, not rhythm — tokenizing them shifts absolutely
+// positioned glyphs (checkmarks, the resizer bar, toast-host corners) and
+// conflates placement with the spacing scale.
 const PROPS = [
   'padding-block-start', 'padding-block-end', 'padding-inline-start', 'padding-inline-end',
   'padding-block', 'padding-inline', 'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'padding',
   'margin-block-start', 'margin-block-end', 'margin-inline-start', 'margin-inline-end',
   'margin-block', 'margin-inline', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left', 'margin',
   'column-gap', 'row-gap', 'grid-gap', 'gap',
-  'inset-block-start', 'inset-block-end', 'inset-inline-start', 'inset-inline-end',
-  'inset-block', 'inset-inline', 'inset', 'top', 'right', 'bottom', 'left',
 ];
 // require a `:` right after the property, and no word-char/hyphen before it
 const declRe = new RegExp(`(?<![\\w-])(${PROPS.join('|')})(\\s*:\\s*)([^;{}]*)`, 'g');

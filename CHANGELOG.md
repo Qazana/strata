@@ -16,15 +16,40 @@ Additive — spacing scale densified + spacing fully tokenized:
   (6/10/14/20/28/40px) and `--space-8`/`9`/`10` (56/64/80px). Existing
   `--space-1…7` values are unchanged (non-breaking). Mirrored into
   `tokens.json` + regenerated the Figma export.
-- **Tokenized all spacing in `kits/*.css`** — ~1000 raw px values in
-  padding/margin/gap/inset/offsets now reference `--space-*` (script:
-  `scripts/snap-spacing.mjs`). ~680 were exact matches (no visual change); ~320
-  off-scale values (18/9/11/7/5/13/22/26…px) were **snapped to the nearest step,
-  ties rounding up**, a deliberate spacing-rhythm tightening. Borders,
-  box-shadows, transforms, dimensions, radii and 1–2px optical nudges were left
-  untouched. Net effect is a slightly roomier, on-scale rhythm (e.g. the
-  component gallery is ~6% taller); visual baselines recaptured. The intentional
-  control-density tokens (`--ctl/--btn/--row/--cell-pad`) are unchanged.
+- **Tokenized box-model spacing in `kits/*.css`** — raw px in
+  padding/margin/gap now references `--space-*` (script:
+  `scripts/snap-spacing.mjs`). Exact matches are unchanged visually; off-scale
+  values (18/9/11/7/5/13/22/26…px) were **snapped to the nearest step, ties
+  rounding up**, a deliberate spacing-rhythm tightening. Borders, box-shadows,
+  transforms, dimensions, radii and 1–2px optical nudges were left untouched.
+  Net effect is a slightly roomier, on-scale rhythm; visual baselines
+  recaptured. The intentional control-density tokens
+  (`--ctl/--btn/--row/--cell-pad`) are unchanged.
+- **Positioning offsets stay literal px.** `top`/`right`/`bottom`/`left`/`inset*`
+  are placement/geometry, not rhythm — an earlier pass tokenized them, which
+  shifted absolutely positioned glyphs (the checkbox checkmark, `.split .resizer`
+  bar, `.toast-host` corners). Reverted all 53 to their exact original px and
+  excluded these properties from the tokenizer.
+
+Fixes:
+
+- **Drawer header/body/footer were unstyled.** `.mh`/`.mb`/`.mf`/`.mclose` were
+  scoped to `.modal-dialog` only, so a `.drawer` reusing the same markup got no
+  padding/borders. Broadened to `:is(.modal-dialog,.drawer)`.
+- **`.split` resizer didn't size or drag.** `.split` was `display:grid` while the
+  `.resizer` sizes via `flex-basis` and the drag JS sets `flex` on the previous
+  pane — so the handle was ignored and the detail pane wrapped to a second row.
+  Switched `.split` to `display:flex` (`.split-list` `flex:0 0 240px`,
+  `.split-detail` `flex:1`; mobile stacks via `flex-direction:column`).
+
+Demos:
+
+- **Survey / questionnaire use case** (`demo/app/survey.html`) — a multi-step
+  questionnaire showing how to *compose* existing primitives (no new component):
+  the `[data-wizard]` stepper drives the flow; questions use `.choice` radios
+  (single-select), `.choice` checkboxes (multi-select), an inline Likert scale
+  built from `.choice.inline` radios, and a text field. Added to the demo index
+  and the a11y + visual-regression harnesses.
 
 Additive — three new kits since 0.0.1:
 

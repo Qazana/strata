@@ -46,7 +46,7 @@
 .docs .doc-shell .toc a.active{border-inline-start-color:var(--line)}
 
 /* ---- sidebar nav: multi-level via native <details>; active = aria-current ---- */
-.docs .doc-nav{position:sticky;top:var(--space-5);align-self:start;font-size:var(--text-md);
+.docs .doc-nav{position:sticky;top:24px;align-self:start;font-size:var(--text-md);
   max-height:calc(100vh - 48px);overflow:auto}
 .docs .doc-search{display:flex;align-items:center;gap:var(--space-2_5);width:100%;background:var(--surface-2);
   border:1px solid var(--line);border-radius:var(--radius);padding:var(--space-2) var(--space-3);color:var(--muted);
@@ -96,7 +96,7 @@
   font-family:var(--body);font-size:var(--text-md);cursor:pointer}
 .docs .doc-version select:hover{border-color:var(--line-strong)}
 .docs .doc-version select:focus-visible{outline:0;border-color:var(--primary-bright);box-shadow:0 0 0 3px var(--primary-ring)}
-.docs .doc-version::after{content:"";position:absolute;top:50%;inset-inline-end:var(--space-3_5);transform:translateY(-25%);
+.docs .doc-version::after{content:"";position:absolute;top:50%;inset-inline-end:13px;transform:translateY(-25%);
   pointer-events:none;border:5px solid transparent;border-top-color:var(--muted)}
 
 /* ============================================================================
