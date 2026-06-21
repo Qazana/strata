@@ -105,9 +105,11 @@
   --shadow:0 6px 18px -10px rgba(0,0,0,.4);
   --shadow-lg:0 12px 30px -16px rgba(0,0,0,.45);
 
-  /* ---- spacing scale ---- */
-  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
-  --space-5:24px; --space-6:32px; --space-7:48px;
+  /* ---- spacing scale (4px base; _5 = half-steps, à la Tailwind 2.5/3.5) ---- */
+  --space-1:4px;   --space-1_5:6px;  --space-2:8px;   --space-2_5:10px;
+  --space-3:12px;  --space-3_5:14px; --space-4:16px;  --space-4_5:20px;
+  --space-5:24px;  --space-5_5:28px; --space-6:32px;  --space-6_5:40px;
+  --space-7:48px;  --space-8:56px;   --space-9:64px;  --space-10:80px;
 
   /* ---- density (control sizing; orthogonal to color scheme) ---- */
   --ctl-font:var(--text-md);             /* base control text (inputs/selects/buttons) — 14px, on-scale */

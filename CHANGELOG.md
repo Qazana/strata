@@ -9,6 +9,23 @@ Accumulated since 0.0.1 and **not yet published** — the registry still has onl
 0.0.1. This will ship as one release: a **minor** (all additive kits plus fixes,
 no breaking changes). Versioned + dated when actually tagged and published.
 
+Additive — spacing scale densified + spacing fully tokenized:
+
+- **Densified the spacing scale** with half-steps (`_5`, à la Tailwind 2.5/3.5)
+  and three larger steps — added `--space-1_5`/`2_5`/`3_5`/`4_5`/`5_5`/`6_5`
+  (6/10/14/20/28/40px) and `--space-8`/`9`/`10` (56/64/80px). Existing
+  `--space-1…7` values are unchanged (non-breaking). Mirrored into
+  `tokens.json` + regenerated the Figma export.
+- **Tokenized all spacing in `kits/*.css`** — ~1000 raw px values in
+  padding/margin/gap/inset/offsets now reference `--space-*` (script:
+  `scripts/snap-spacing.mjs`). ~680 were exact matches (no visual change); ~320
+  off-scale values (18/9/11/7/5/13/22/26…px) were **snapped to the nearest step,
+  ties rounding up**, a deliberate spacing-rhythm tightening. Borders,
+  box-shadows, transforms, dimensions, radii and 1–2px optical nudges were left
+  untouched. Net effect is a slightly roomier, on-scale rhythm (e.g. the
+  component gallery is ~6% taller); visual baselines recaptured. The intentional
+  control-density tokens (`--ctl/--btn/--row/--cell-pad`) are unchanged.
+
 Additive — three new kits since 0.0.1:
 
 - **Billing kit** (`@qazana/strata/billing`, scope `.billing`) — in-product
@@ -59,7 +76,18 @@ Fixes / refinements (no API changes):
   card surfaces, neutralized inside `.l-stack`/`.l-grid`/`.l-row` so wrapping
   never double-spaces. `.l-stack`/`.l-grid` remain the preferred path; this is a
   safety net for hand- or AI-authored markup. See `docs/layout.md` → Stacked
-  cards.
+  surfaces.
+- Extended the same self-spacing safety net to the **notice/feedback block**
+  family — `.alert`, `.banner`, `.empty` (App kit) and `.bill-banner` (Billing
+  kit) — since these are emitted standalone and were collapsing when stacked
+  bare. Neutralized inside the layout primitives plus the `.demo` gallery
+  wrapper. Scoped to free-standing surfaces only: row/list families that ship
+  inside a dedicated gap container (`.upload-row`/`.upload-list`, `.msg`/
+  `.thread`, etc.) are intentionally excluded to avoid double-spacing, as are
+  `.prose .callout` (already spaced by `.prose > * + *`).
+- Tokenized a stray `margin-bottom:18px` literal on the auth `.form-msg` banner
+  (`auth.css`) to `var(--space-4)` — off-scale px snapped to the spacing scale,
+  per the tokens-are-the-source-of-truth rule.
 
 ## 0.0.1 — 2026-06-12
 

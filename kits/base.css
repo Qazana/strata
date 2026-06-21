@@ -38,7 +38,7 @@ textarea,select{
   transition:border-color .15s ease,box-shadow .15s ease,background-color .15s ease}
 select:not([multiple]){
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%238c8c8c' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5'/%3E%3C/svg%3E");
-  background-repeat:no-repeat;background-position:right 13px center;padding-inline-end:34px}
+  background-repeat:no-repeat;background-position:right 13px center;padding-inline-end:var(--space-6)}
 input::placeholder,textarea::placeholder{color:var(--muted)}
 input:hover:not(:focus),textarea:hover:not(:focus),select:hover:not(:focus){border-color:rgb(var(--border-rgb) / .22)}
 input:focus-visible,textarea:focus-visible,select:focus-visible{
@@ -54,9 +54,9 @@ input:disabled,textarea:disabled,select:disabled{opacity:.5;cursor:not-allowed}
 .form-field{display:flex;flex-direction:column;gap:var(--space-2)}
 .form-field > label,.form-field .field-label{font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--text)}
 .field-req{color:var(--danger);margin-inline-start:2px}
-.field-optional{color:var(--muted);font-weight:var(--weight-regular);font-size:var(--text-xs);margin-inline-start:6px}
+.field-optional{color:var(--muted);font-weight:var(--weight-regular);font-size:var(--text-xs);margin-inline-start:var(--space-1_5)}
 .field-help{font-size:var(--text-xs);color:var(--muted)}
-.field-error{font-size:var(--text-xs);color:var(--danger);display:flex;align-items:center;gap:5px}
+.field-error{font-size:var(--text-xs);color:var(--danger);display:flex;align-items:center;gap:var(--space-1_5)}
 .form-field.is-error :is(input,textarea,select){border-color:var(--danger);box-shadow:0 0 0 3px rgb(var(--danger-rgb) / .18)}
 .form-field.is-error > label,.form-field.is-error .field-label{color:var(--danger)}
 /* fieldset — group related fields under a legend */
@@ -105,9 +105,9 @@ input:disabled,textarea:disabled,select:disabled{opacity:.5;cursor:not-allowed}
    (site.css's `.site > *{position:relative}`) that would otherwise drop the pill
    into the page flow. Consumers still override freely — their CSS is unlayered
    and beats this layer at any specificity. ---- */
-a.skip-link{position:fixed;top:16px;left:50%;transform:translate(-50%,calc(-100% - 32px));z-index:9999;
+a.skip-link{position:fixed;top:var(--space-4);left:50%;transform:translate(-50%,calc(-100% - 32px));z-index:9999;
   background:var(--primary);color:var(--on-primary);font-weight:600;font-size:var(--text-base);
-  text-decoration:none;white-space:nowrap;padding:14px 28px;border-radius:var(--radius-pill);
+  text-decoration:none;white-space:nowrap;padding:var(--space-3_5) var(--space-5_5);border-radius:var(--radius-pill);
   box-shadow:var(--shadow-lg);transition:transform var(--dur-2) var(--ease)}
 a.skip-link:focus{transform:translate(-50%,0)}
 @media (prefers-reduced-motion:reduce){a.skip-link{transition:none}}

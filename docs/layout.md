@@ -45,18 +45,44 @@ never overflows a narrow viewport.
 Gaps map to the spacing scale (`.gap-1`→`--space-1` … `.gap-7`→`--space-7`), or
 set `--gap` directly. Keep gaps on the scale rather than hardcoding px.
 
-## Stacked cards
+The spacing scale is a 4px base with **half-steps** (`_5`, à la Tailwind's
+`2.5`/`3.5`): `--space-1` 4 · `--space-1_5` 6 · `--space-2` 8 · `--space-2_5` 10 ·
+`--space-3` 12 · `--space-3_5` 14 · `--space-4` 16 · `--space-4_5` 20 ·
+`--space-5` 24 · `--space-5_5` 28 · `--space-6` 32 · `--space-6_5` 40 ·
+`--space-7` 48 · `--space-8` 56 · `--space-9` 64 · `--space-10` 80 (px). All
+component padding/margin/gap references a step — no raw px in spacing properties
+(the `.gap-N` helpers stay on the whole steps `1…7`). Sub-4px optical nudges
+(1–2px) are intentionally left as literals.
 
-Spacing belongs on the container, not the component — so card surfaces carry no
-margin. Wrapping a stack in `.l-stack` / `.l-grid` is the preferred path.
+## Stacked surfaces
 
-As a safety net for hand- or AI-authored markup that emits bare sibling cards
-with no wrapper, **adjacent card surfaces self-space**: an owl rule adds
-`--space-4` of top margin (matching `.l-stack`'s default gap) between adjacent
-`.card`, `.feature-card`, `.plan`, and `.pack` (same-type or mixed). This margin
-is **neutralized** inside `.l-stack`, `.l-grid`, and `.l-row`, which already own
-spacing via `gap`, so wrapping never double-spaces.
+Spacing belongs on the container, not the component — so card and notice
+surfaces carry no margin. Wrapping a stack in `.l-stack` / `.l-grid` is the
+preferred path.
 
-Caveat: the reset only covers Strata's own primitives. If you hand-roll a
-`display:grid;gap` (or flex) container with bare cards instead of `.l-grid`,
-zero the margin yourself, e.g. `your-grid > .card + .card{margin-block-start:0}`.
+As a safety net for hand- or AI-authored markup that emits bare sibling surfaces
+with no wrapper, **adjacent surfaces self-space**: an owl rule adds `--space-4`
+of top margin (matching `.l-stack`'s default gap) between adjacent surfaces of
+the same family (same-type or mixed). Covered families:
+
+- **Cards** (App kit): `.card`, `.feature-card`, `.plan`, `.pack`.
+- **Notice/feedback blocks**: `.alert`, `.banner`, `.empty` (App kit) and
+  `.bill-banner` (Billing kit).
+
+The margin is **neutralized** inside `.l-stack`, `.l-grid`, and `.l-row` (and,
+for the notice blocks, the `.demo` gallery wrapper) — these own spacing via
+`gap`, so wrapping never double-spaces.
+
+The owl is scoped to *free-standing* surfaces only — components that ship inside
+a dedicated gap container (e.g. `.upload-row` in `.upload-list`, `.msg` in
+`.thread`, the message/list/row families) are deliberately left out, since their
+container already spaces them and an owl would double up. Stack those with
+`.l-stack`/`.l-grid` when composing your own layouts.
+
+In-article callouts (`.prose .callout`) need nothing here — `.prose > * + *`
+already spaces every prose child.
+
+Caveat: the reset only covers Strata's own primitives (plus `.demo`). If you
+hand-roll a `display:grid;gap` (or flex) container with bare surfaces instead of
+`.l-grid`, zero the margin yourself, e.g.
+`your-grid > .card + .card{margin-block-start:0}`.
