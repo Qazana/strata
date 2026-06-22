@@ -89,6 +89,14 @@ Demos:
   (single-select), `.choice` checkboxes (multi-select), an inline Likert scale
   built from `.choice.inline` radios, and a text field. Added to the demo index
   and the a11y + visual-regression harnesses.
+- **Unified demo navigation** (`demo/demo-nav.js`, demo-only — not in the
+  published package). Every demo page previously had its own ad-hoc header (no
+  consistent "home", brand pointing at different places, kits siloed). One
+  injected top bar now gives every page the same chrome — *All demos* (home),
+  a kit switcher, the current kit's pages, and a theme toggle — above each kit's
+  own header. Single-source (one script + manifest); self-styled with tokens;
+  spans grid/flex-bodied layouts (auth) and sits below kit overlays. Also fixed
+  a broken `content/blog.html` footer link (`site.html` → `../site/landing.html`).
 
 Additive — three new kits since 0.0.1:
 
