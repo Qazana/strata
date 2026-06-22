@@ -210,7 +210,7 @@ alpha tints stay themeable: `rgb(var(--primary-rgb) / .12)`.
 | Tints | `--primary-soft` `--primary-ring` `--primary-line` `--danger-soft` `--warning-soft` `--info-soft` |
 | Radius | `--radius-sm` `--radius` `--radius-lg` `--radius-pill` |
 | Elevation | `--shadow-sm` `--shadow` `--shadow-lg` |
-| Spacing | `--space-1` … `--space-7` (4·8·12·16·24·32·48) |
+| Spacing | `--space-1` … `--space-10` + `_5` half-steps (4·6·8·10·12·14·16·20·24·28·32·40·48·56·64·80) |
 | Type | `--display` (Figtree, large headings only) · `--body` (DM Sans) · `--mono` |
 | Motion | `--ease` · `--dur-1/-2/-3` |
 
