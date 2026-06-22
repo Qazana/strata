@@ -5,9 +5,13 @@ component/token, major = rename/removal/breaking token change.
 
 ## Unreleased
 
-Accumulated since 0.0.1 and **not yet published** — the registry still has only
-0.0.1. This will ship as one release: a **minor** (all additive kits plus fixes,
-no breaking changes). Versioned + dated when actually tagged and published.
+_Nothing yet._
+
+## 0.1.0 — 2026-06-22
+
+First tagged release since 0.0.1. **Minor** — additive (three new kits: Billing,
+Docs, Support; a densified spacing scale) plus fixes and internal refactors. No
+breaking token changes (no renames or removals).
 
 Internal (no API/output change):
 
