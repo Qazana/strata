@@ -14,6 +14,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
+import { makeServer } from './_serve.mjs';
+import { pagesFor } from './_pages.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -21,23 +23,7 @@ const OUT = path.join(__dirname, 'out');
 const PORT = Number(process.env.PORT || 4178);
 const BASE = `http://localhost:${PORT}`;
 
-const MIME = {
-  '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript',
-  '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png',
-  '.woff2': 'font/woff2', '.woff': 'font/woff',
-};
-
-// --- throwaway static server rooted at the repo (so ../css, ../tokens resolve) -
-const server = http.createServer((req, res) => {
-  const urlPath = decodeURIComponent(req.url.split('?')[0]);
-  const filePath = path.join(ROOT, urlPath);
-  if (!filePath.startsWith(ROOT)) { res.writeHead(403).end(); return; }
-  fs.readFile(filePath, (err, data) => {
-    if (err) { res.writeHead(404).end('not found'); return; }
-    res.writeHead(200, { 'content-type': MIME[path.extname(filePath)] || 'application/octet-stream' });
-    res.end(data);
-  });
-});
+const server = makeServer();
 await new Promise((r) => server.listen(PORT, r));
 
 // Runs in the page; returns the structural + computed facts both schemes share.
@@ -148,22 +134,7 @@ const SCHEMES = [
   { name: 'dark', apply: () => document.documentElement.setAttribute('data-theme', 'dark-knight'), bgMax: 0.3, textMin: 0.55 },
   { name: 'light', apply: () => document.documentElement.setAttribute('data-theme', 'desert-dunes'), bgMin: 0.85, textMax: 0.35 },
 ];
-const PAGES = [
-  'index',
-  'foundations/typography', 'foundations/layout', 'foundations/forms',
-  'app/components', 'app/admin', 'app/errors',
-  'site/landing', 'site/minimal', 'site/product', 'site/startup', 'site/app',
-  'site/event', 'site/agency', 'site/newsletter', 'site/coming-soon', 'site/waitlist',
-  'content/blog', 'content/blog-medium', 'content/article', 'content/article-plain', 'content/article-media',
-  'auth/sign-in', 'auth/sign-in-centered', 'auth/sign-up', 'auth/reset',
-  'auth/check-email', 'auth/new-password', 'auth/verify', 'auth/two-factor', 'auth/passwordless', 'auth/app-password',
-  'email/index', 'email/transactional', 'email/newsletter',
-  'media/index', 'media/video', 'media/audio', 'media/social',
-  'commerce/products', 'commerce/product', 'commerce/cart', 'commerce/checkout', 'commerce/order',
-  'billing/plans', 'billing/methods', 'billing/invoices', 'billing/overview',
-  'docs/guide', 'docs/api', 'docs/help', 'docs/article',
-  'support/contact', 'support/tickets', 'support/ticket',
-];
+const PAGES = pagesFor('shoot');
 const NEEDS_BG = new Set(['app/components', 'app/admin', 'app/errors']); // app demos use .bg-layer; others bring their own atmosphere
 
 fs.mkdirSync(OUT, { recursive: true });

@@ -18,6 +18,13 @@ Internal (no API/output change):
   keep only their own selection/header. Date maths is now unit-tested directly
   (`harness/behaviors-forms.mjs` → "month-grid (QZcal)") rather than only through
   DOM clicks; rendered output is unchanged.
+- **Shared harness runtime + page manifest.** The throwaway static server + MIME
+  map was copied verbatim across seven harness files; three `PAGES` lists had
+  diverged (which is how `app/survey` got into the a11y + visual gates but not
+  the screenshot sweep). Extracted `harness/_serve.mjs` (one `makeServer`) and
+  `harness/_pages.mjs` (one tagged manifest; `a11y`/`visual`/`shoot` derive their
+  lists via `pagesFor(tag)`). Adding a demo is now one tagged row. Verified the
+  derived lists reproduce all three originals exactly before switching over.
 
 Additive — spacing scale densified + spacing fully tokenized:
 
