@@ -74,7 +74,7 @@
     + '.demo-bar a:hover{color:var(--text);background:var(--surface)}'
     + '.demo-bar .db-home{font-weight:700;color:var(--text)}'
     + '.demo-bar .db-pages{display:flex;gap:2px;flex-wrap:wrap;border-inline-start:1px solid var(--line);padding-inline-start:var(--space-2)}'
-    + '.demo-bar .db-pages a[aria-current="page"]{color:var(--text);font-weight:600;box-shadow:inset 0 -2px 0 var(--primary-bright)}'
+    + '.demo-bar .db-pages a[aria-current="page"]{color:var(--text);font-weight:600}'
     + '.demo-bar .db-spacer{flex:1}'
     + '.demo-bar .db-kit{position:relative}'
     + '.demo-bar .db-kitbtn,.demo-bar .db-theme{font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--line);'
