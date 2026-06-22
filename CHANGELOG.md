@@ -95,6 +95,11 @@ Fixes:
 
 Demos:
 
+- **New example theme `cedar`** (`demo/themes/cedar.css`) — a fictional demo
+  brand deliberately designed *against* generated-UI tells: Bricolage Grotesque
+  display (not Inter/Roboto/Space Grotesk), a committed pine-green dominant + a
+  sharp brass accent (not violet gradients / SaaS-blue / mint / timid pastels),
+  on the warm cream scheme. One `:root` override; wired into the theme switcher.
 - **Survey / questionnaire use case** (`demo/app/survey.html`) — a multi-step
   questionnaire showing how to *compose* existing primitives (no new component):
   the `[data-wizard]` stepper drives the flow; questions use `.choice` radios
