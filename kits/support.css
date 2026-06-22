@@ -77,7 +77,7 @@
 
 .support .ticket-list{width:100%;border-collapse:collapse;font-size:var(--text-md)}
 .support .ticket-list th{text-align:start;font-size:var(--text-2xs);text-transform:uppercase;
-  letter-spacing:var(--tracking-wide);color:var(--muted);font-weight:600;padding:0 var(--space-3_5) var(--space-2_5);border-bottom:1px solid var(--line)}
+  letter-spacing:var(--tracking-wide);color:var(--muted);font-weight:600;padding:var(--space-2_5) var(--space-3_5);border-bottom:1px solid var(--line)}
 .support .ticket-list td{padding:var(--space-3_5) var(--space-3_5);border-bottom:1px solid var(--line);vertical-align:middle}
 .support .ticket-list tbody tr:last-child td{border-bottom:0}
 .support .ticket-list tbody tr:hover{background:var(--surface)}

@@ -61,6 +61,9 @@ Additive — spacing scale densified + spacing fully tokenized:
 
 Fixes:
 
+- **Support ticket-list header** (`.support .ticket-list th`) had `padding-top:0`,
+  so the column labels jammed against the top edge while rows had breathing room.
+  Gave the header symmetric padding (`var(--space-2_5)` top/bottom).
 - **Docs help-center search** (`.docs .help-search`) no longer recolors its
   border on focus — the focus ring alone carries it (visible focus preserved).
 - **Drawer header/body/footer were unstyled.** `.mh`/`.mb`/`.mf`/`.mclose` were
