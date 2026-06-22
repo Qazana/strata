@@ -66,9 +66,11 @@
 .auth .remember input:focus-visible{box-shadow:0 0 0 3px var(--primary-ring)}
 
 /* buttons */
-.auth .btn{display:flex;align-items:center;justify-content:center;gap:var(--space-2_5);width:100%;font-family:var(--body);
+.auth .btn{display:inline-flex;align-items:center;justify-content:center;gap:var(--space-2_5);font-family:var(--body);
   font-weight:600;font-size:var(--text-base);border:0;cursor:pointer;border-radius:var(--radius);padding:var(--space-3_5) var(--space-4_5);
   text-decoration:none;transition:background var(--dur-1),transform var(--dur-1),border-color var(--dur-1)}
+/* full-width is contextual (the narrow auth form + oauth grid), not a .btn default */
+.auth form .btn,.auth .oauth .btn{width:100%}
 .auth .btn-primary{background:var(--primary);color:var(--on-primary)}
 .auth .btn-primary:hover{background:var(--primary-bright)}
 .auth .btn-oauth{background:var(--surface);color:var(--text);border:1px solid var(--line-strong)}

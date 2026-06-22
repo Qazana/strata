@@ -61,6 +61,13 @@ Additive — spacing scale densified + spacing fully tokenized:
 
 Fixes:
 
+- **`.auth .btn` no longer defaults to full width.** It was the only `.btn` in
+  any kit that set `width:100%` by default; now it's `inline-flex` and full-width
+  is contextual (`.auth form .btn`, `.auth .oauth .btn` — the narrow form + the
+  OAuth grid), matching how every other kit treats full-width as opt-in. The
+  form/OAuth buttons render identically; a stray `.auth .btn` is now inline, and
+  the `.approw` action button's `margin-inline-start:auto` right-align finally
+  works (it was being stretched to 100%).
 - **Removed decorative gradients across the kits** (de-AI'd aesthetic). Dropped
   the radial "glow" atmosphere (app `.bg-layer`/`.glow` blobs; site body +
   hero/spotlight/CTA/work glows; auth split-panel glows; media player/thumb +
