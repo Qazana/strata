@@ -61,6 +61,8 @@ Additive — spacing scale densified + spacing fully tokenized:
 
 Fixes:
 
+- **Docs help-center search** (`.docs .help-search`) no longer recolors its
+  border on focus — the focus ring alone carries it (visible focus preserved).
 - **Drawer header/body/footer were unstyled.** `.mh`/`.mb`/`.mf`/`.mclose` were
   scoped to `.modal-dialog` only, so a `.drawer` reusing the same markup got no
   padding/borders. Broadened to `:is(.modal-dialog,.drawer)`.
