@@ -94,8 +94,13 @@
   // layout). A plain child would be laid out as a cell/item and stretched —
   // make the bar span the full width as a top row instead.
   var disp = getComputedStyle(document.body).display;
-  if (disp.indexOf('grid') >= 0) { nav.style.gridColumn = '1 / -1'; nav.style.justifySelf = 'stretch'; nav.style.alignSelf = 'start'; }
-  else if (disp.indexOf('flex') >= 0) { nav.style.flex = '0 0 100%'; nav.style.width = '100%'; document.body.style.flexWrap = 'wrap'; }
+  if (disp.indexOf('grid') >= 0) {
+    nav.style.gridColumn = '1 / -1'; nav.style.justifySelf = 'stretch'; nav.style.alignSelf = 'start';
+    // these layouts (e.g. auth) are designed as a single full-height row; adding
+    // the bar as a row makes the grid distribute leftover height as a gap. Pin
+    // the bar to an auto top row and let the original content fill the rest.
+    document.body.style.gridTemplateRows = 'auto 1fr';
+  } else if (disp.indexOf('flex') >= 0) { nav.style.flex = '0 0 100%'; nav.style.width = '100%'; document.body.style.flexWrap = 'wrap'; }
 
   // kit switcher open/close (click + Escape + click-away)
   var btn = nav.querySelector('.db-kitbtn'), menu = nav.querySelector('.db-kitmenu');
