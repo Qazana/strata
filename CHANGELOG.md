@@ -61,6 +61,11 @@ Additive — spacing scale densified + spacing fully tokenized:
 
 Fixes:
 
+- **Direction toggle icon now reflects state.** `[data-dir-toggle]` showed a
+  static, ambiguous swap glyph (`fa-right-left`); it now mirrors the theme
+  toggle's sun/moon pattern — `fa-align-left` in LTR, `fa-align-right` in RTL —
+  synced by the dir controller (guarded to only manage the align glyphs, so a
+  deliberately chosen icon is left alone). Demo updated to seed `fa-align-left`.
 - **Table headers jammed against the top edge.** The hand-authored list tables —
   `.support .ticket-list th` and `.billing .invoices th` — had `padding-top:0`
   (3-value shorthand) while their rows had 14px, so the column labels had no

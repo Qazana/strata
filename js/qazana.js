@@ -559,6 +559,11 @@ document.addEventListener('DOMContentLoaded', function () {
     var rtl = root.getAttribute('dir') === 'rtl';
     btn.setAttribute('aria-pressed', String(rtl));
     btn.setAttribute('aria-label', 'Switch text direction (current: ' + (rtl ? 'rtl' : 'ltr') + ')');
+    // icon reflects the current direction (align-left = ltr, align-right = rtl),
+    // mirroring the theme toggle's sun/moon. Only manage the align glyphs so a
+    // deliberately chosen icon is left alone.
+    var i = btn.querySelector('i');
+    if (i && /fa-align-(left|right)\b/.test(i.className)) i.className = 'fa-solid fa-align-' + (rtl ? 'right' : 'left');
   }
   function init() {
     document.querySelectorAll('[data-dir-toggle]').forEach(function (btn) {
