@@ -54,6 +54,7 @@ const PAGES = [
   '/demo/site/landing.html',
   '/demo/app/components.html',
   '/demo/app/survey.html',
+  '/demo/content/article.html',
   '/demo/auth/sign-in.html',
   '/demo/foundations/forms.html',
   '/demo/strata.html',

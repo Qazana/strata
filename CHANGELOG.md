@@ -42,6 +42,17 @@ Fixes:
   Switched `.split` to `display:flex` (`.split-list` `flex:0 0 240px`,
   `.split-detail` `flex:1`; mobile stacks via `flex-direction:column`).
 
+- **Article layout spine was misaligned.** `.doc-layout` (content kit) used a
+  `1fr 220px` grid, so the prose sat in the left column ~130px left-of-centre
+  while the article head, hero, and footer were all centred — the body jutted
+  out and lined up with nothing. Simplified `.doc-layout` to a single centred
+  reading column (740px) on the same spine as the head/footer, and **dropped the
+  TOC from the article** — a centred reading column plus a beside-the-body TOC
+  can't both fit under ~1250px, and articles are short. The scrollspy TOC rail
+  remains the docs kit's job (`.doc-shell`); `.toc` is unchanged there. Added
+  `demo/content/article.html` to the a11y + visual harnesses (it was uncovered,
+  which is why this slipped through).
+
 Demos:
 
 - **Survey / questionnaire use case** (`demo/app/survey.html`) — a multi-step

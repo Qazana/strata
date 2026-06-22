@@ -63,7 +63,8 @@ const PAGES = [
   'app/survey',             // app kit — multi-step questionnaire (composed primitives)
   'auth/sign-in',           // auth kit
   'foundations/forms',      // foundations — form controls
-  'content/blog',           // content kit
+  'content/blog',           // content kit — blog index
+  'content/article',        // content kit — article (centered spine + gutter TOC)
   'commerce/product',       // commerce kit
   'media/index',            // media kit
 ];
