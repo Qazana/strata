@@ -150,6 +150,10 @@
 .docs .help-search i{color:var(--muted)}
 .docs .help-search input{flex:1;background:transparent;border:0;outline:0;color:var(--text);
   font-family:var(--body);font-size:var(--text-base)}
+/* the wrapper owns the focus ring (:focus-within); kill the inner input's own
+   focus ring + surface so it doesn't show a second "inner glow" (base.css gives
+   every input:focus-visible a box-shadow + surface-active) */
+.docs .help-search input:is(:focus,:focus-visible){box-shadow:none;background:transparent}
 .docs .help-sec{font-size:var(--text-xs);font-weight:600;letter-spacing:.08em;text-transform:uppercase;
   color:var(--muted);margin:var(--space-7) 0 var(--space-4)}
 /* category grid */

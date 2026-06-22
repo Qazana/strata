@@ -64,8 +64,12 @@ Fixes:
 - **Support ticket-list header** (`.support .ticket-list th`) had `padding-top:0`,
   so the column labels jammed against the top edge while rows had breathing room.
   Gave the header symmetric padding (`var(--space-2_5)` top/bottom).
-- **Docs help-center search** (`.docs .help-search`) no longer recolors its
-  border on focus — the focus ring alone carries it (visible focus preserved).
+- **Docs help-center search** focus showed a doubled ring — the wrapper's
+  `:focus-within` ring *plus* the inner `<input>`'s own `:focus-visible` glow
+  (every input gets one from base.css), reading as a "blue inner border that
+  glows". The wrapper now owns the single ring: killed the inner input's
+  box-shadow + `surface-active` on focus (the App kit's `.input-group` pattern),
+  and dropped the wrapper's border recolor. Visible focus preserved.
 - **Drawer header/body/footer were unstyled.** `.mh`/`.mb`/`.mf`/`.mclose` were
   scoped to `.modal-dialog` only, so a `.drawer` reusing the same markup got no
   padding/borders. Broadened to `:is(.modal-dialog,.drawer)`.
