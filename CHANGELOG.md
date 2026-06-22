@@ -25,6 +25,13 @@ Internal (no API/output change):
   `harness/_pages.mjs` (one tagged manifest; `a11y`/`visual`/`shoot` derive their
   lists via `pagesFor(tag)`). Adding a demo is now one tagged row. Verified the
   derived lists reproduce all three originals exactly before switching over.
+- **Token drift guard extended to the space scale.** The contract test only
+  enforced colour-group sync between `qazana.tokens.css` and `tokens.json`, so
+  space/radius/type could drift silently (nine space tokens were recently
+  hand-added to both files unguarded). Added a `space-sync` check that mirrors
+  the scale by **name and value**, bidirectionally (incl. underscore half-steps
+  like `--space-1_5`). (Full single-source generation of `tokens.json` from the
+  CSS remains a larger follow-up — the value bridge is non-trivial.)
 
 Additive — spacing scale densified + spacing fully tokenized:
 
