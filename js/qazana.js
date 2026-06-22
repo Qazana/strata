@@ -1,6 +1,26 @@
 /* Qazana Strata — generic component behaviours (vanilla, data-attribute driven).
    No framework deps; attach via data-* hooks; reduced-motion aware.
    Reactive micro-interactions + subtle info reveals. */
+
+/* ---- shared month-grid model (pure; no DOM) ----------------------------------
+   One source for the calendar maths behind the date picker, the inline calendar,
+   and the date-range. The interface is the test surface: daysInMonth / firstWeekday
+   (Monday-first) / roll (normalise an over/underflowed month) / monthGrid (the cell
+   model). Behaviours render the cells and own their own selection + header. */
+var QZcal = {
+  MONTHS: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'],
+  DOW: ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'],
+  pad: function (n) { return (n < 10 ? '0' : '') + n; },
+  daysInMonth: function (y, m) { return new Date(y, m + 1, 0).getDate(); },
+  firstWeekday: function (y, m) { return (new Date(y, m, 1).getDay() + 6) % 7; },
+  roll: function (y, m) { while (m < 0) { m += 12; y--; } while (m > 11) { m -= 12; y++; } return { y: y, m: m }; },
+  monthGrid: function (y, m) {
+    var days = [], n = this.daysInMonth(y, m), d;
+    for (d = 1; d <= n; d++) days.push(d);
+    return { year: y, month: m, name: this.MONTHS[m], blanks: this.firstWeekday(y, m), days: days };
+  },
+};
+
 (function () {
   'use strict';
   var RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -152,30 +172,26 @@
 
   function setupPicker(pk){
     var inp=pk.querySelector('input'),cal=pk.querySelector('.cal');
-    var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
     var Y=2026,M=5,selY=2026,selM=5,selD=9; // M 0-based (June)
-    function pad(n){return (n<10?'0':'')+n;}
-    function dim(y,m){return new Date(y,m+1,0).getDate();}
-    function firstDow(y,m){return (new Date(y,m,1).getDay()+6)%7;} // Monday-first
     function days(){
       cal.innerHTML='';
+      var grid=QZcal.monthGrid(Y,M);
       var h=document.createElement('div');h.className='cal-h';
       h.innerHTML='<button type="button" data-y="-1" title="Previous year">«</button>'
         +'<button type="button" data-m="-1" title="Previous month">‹</button>'
-        +'<button type="button" class="cal-title">'+months[M]+' '+Y+'</button>'
+        +'<button type="button" class="cal-title">'+grid.name+' '+Y+'</button>'
         +'<button type="button" data-m="1" title="Next month">›</button>'
         +'<button type="button" data-y="1" title="Next year">»</button>';
       cal.appendChild(h);
-      var grid=document.createElement('div');grid.className='cal-grid';
-      ['Mo','Tu','We','Th','Fr','Sa','Su'].forEach(function(d){var e=document.createElement('div');e.className='dow';e.textContent=d;grid.appendChild(e);});
-      var off=firstDow(Y,M),n=dim(Y,M),i;
-      for(i=0;i<off;i++)grid.appendChild(document.createElement('div'));
-      for(var d=1;d<=n;d++){(function(d){var e=document.createElement('div');e.className='day';e.textContent=d;
+      var g=document.createElement('div');g.className='cal-grid';
+      QZcal.DOW.forEach(function(d){var e=document.createElement('div');e.className='dow';e.textContent=d;g.appendChild(e);});
+      var i;for(i=0;i<grid.blanks;i++)g.appendChild(document.createElement('div'));
+      grid.days.forEach(function(d){var e=document.createElement('div');e.className='day';e.textContent=d;
         if(Y===selY&&M===selM&&d===selD)e.classList.add('sel');
-        e.addEventListener('click',function(){selY=Y;selM=M;selD=d;inp.value=Y+'-'+pad(M+1)+'-'+pad(d);cal.hidden=true;});
-        grid.appendChild(e);})(d);}
-      cal.appendChild(grid);
-      h.querySelectorAll('[data-m]').forEach(function(b){b.addEventListener('click',function(){M+=+b.dataset.m;if(M<0){M=11;Y--;}if(M>11){M=0;Y++;}days();});});
+        e.addEventListener('click',function(){selY=Y;selM=M;selD=d;inp.value=Y+'-'+QZcal.pad(M+1)+'-'+QZcal.pad(d);cal.hidden=true;});
+        g.appendChild(e);});
+      cal.appendChild(g);
+      h.querySelectorAll('[data-m]').forEach(function(b){b.addEventListener('click',function(){var r=QZcal.roll(Y,M+(+b.dataset.m));Y=r.y;M=r.m;days();});});
       h.querySelectorAll('[data-y]').forEach(function(b){b.addEventListener('click',function(){Y+=+b.dataset.y;days();});});
       h.querySelector('.cal-title').addEventListener('click',monthsView);
     }
@@ -185,7 +201,7 @@
       h.innerHTML='<button type="button" data-y="-1" title="Previous year">«</button><button type="button" class="cal-title">'+Y+'</button><button type="button" data-y="1" title="Next year">»</button>';
       cal.appendChild(h);
       var grid=document.createElement('div');grid.className='cal-grid months';
-      months.forEach(function(mn,mi){var e=document.createElement('div');e.className='mcell';e.textContent=mn.slice(0,3);
+      QZcal.MONTHS.forEach(function(mn,mi){var e=document.createElement('div');e.className='mcell';e.textContent=mn.slice(0,3);
         if(mi===M)e.classList.add('sel');e.addEventListener('click',function(){M=mi;days();});grid.appendChild(e);});
       cal.appendChild(grid);
       h.querySelectorAll('[data-y]').forEach(function(b){b.addEventListener('click',function(){Y+=+b.dataset.y;monthsView();});});
@@ -260,22 +276,20 @@ document.addEventListener('DOMContentLoaded', function () {
 /* ---- inline calendar (standalone, month nav) ---- */
 document.addEventListener('DOMContentLoaded', function () {
   document.querySelectorAll('[data-calendar]').forEach(function (cal) {
-    var months=['January','February','March','April','May','June','July','August','September','October','November','December'];
     var Y=2026,M=5,selD=9;
-    function dim(y,m){return new Date(y,m+1,0).getDate();}
-    function fd(y,m){return (new Date(y,m,1).getDay()+6)%7;}
     function render(){
       cal.innerHTML='';
+      var grid=QZcal.monthGrid(Y,M);
       var h=document.createElement('div');h.className='cal-h';
-      h.innerHTML='<button type="button" data-d="-1" title="Previous month">‹</button><span class="cal-title">'+months[M]+' '+Y+'</span><button type="button" data-d="1" title="Next month">›</button>';
+      h.innerHTML='<button type="button" data-d="-1" title="Previous month">‹</button><span class="cal-title">'+grid.name+' '+Y+'</span><button type="button" data-d="1" title="Next month">›</button>';
       cal.appendChild(h);
       var g=document.createElement('div');g.className='cal-grid';
-      ['Mo','Tu','We','Th','Fr','Sa','Su'].forEach(function(d){var e=document.createElement('div');e.className='dow';e.textContent=d;g.appendChild(e);});
-      var off=fd(Y,M),n=dim(Y,M),i;for(i=0;i<off;i++)g.appendChild(document.createElement('div'));
-      for(var d=1;d<=n;d++){(function(d){var e=document.createElement('div');e.className='day';e.textContent=d;if(d===selD)e.classList.add('sel');
-        e.addEventListener('click',function(){selD=d;render();});g.appendChild(e);})(d);}
+      QZcal.DOW.forEach(function(d){var e=document.createElement('div');e.className='dow';e.textContent=d;g.appendChild(e);});
+      var i;for(i=0;i<grid.blanks;i++)g.appendChild(document.createElement('div'));
+      grid.days.forEach(function(d){var e=document.createElement('div');e.className='day';e.textContent=d;if(d===selD)e.classList.add('sel');
+        e.addEventListener('click',function(){selD=d;render();});g.appendChild(e);});
       cal.appendChild(g);
-      h.querySelectorAll('[data-d]').forEach(function(b){b.addEventListener('click',function(){M+=+b.dataset.d;if(M<0){M=11;Y--;}if(M>11){M=0;Y++;}render();});});
+      h.querySelectorAll('[data-d]').forEach(function(b){b.addEventListener('click',function(){var r=QZcal.roll(Y,M+(+b.dataset.d));Y=r.y;M=r.m;render();});});
     }
     render();
   });
@@ -446,38 +460,34 @@ document.addEventListener('DOMContentLoaded', function () {
 
   document.querySelectorAll('[data-daterange]').forEach(function (dr) {
     var cals = dr.querySelector('.dr-cals'), summary = dr.querySelector('.daterange-summary');
-    var mn = ['January','February','March','April','May','June','July','August','September','October','November','December'];
     var Y = 2026, M = 5, start = null, end = null;
-    function pad(n){return (n<10?'0':'')+n;}
-    function dim(y,m){return new Date(y,m+1,0).getDate();}
-    function fd(y,m){return (new Date(y,m,1).getDay()+6)%7;}
     function key(o){return o.y*372+o.m*31+o.d;}
     function eq(a,o){return a&&a.y===o.y&&a.m===o.m&&a.d===o.d;}
     function inRange(o){if(!start||!end)return false;var k=key(o);return k>key(start)&&k<key(end);}
-    function fmt(o){return o.y+'-'+pad(o.m+1)+'-'+pad(o.d);}
+    function fmt(o){return o.y+'-'+QZcal.pad(o.m+1)+'-'+QZcal.pad(o.d);}
     function buildMonth(y,m){
       var box=document.createElement('div');box.className='month';
       var h=document.createElement('div');h.className='cal-h';
-      h.innerHTML='<button type="button" data-nav="-1">‹</button><span class="cal-title">'+mn[m]+' '+y+'</span><button type="button" data-nav="1">›</button>';
+      h.innerHTML='<button type="button" data-nav="-1">‹</button><span class="cal-title">'+QZcal.MONTHS[m]+' '+y+'</span><button type="button" data-nav="1">›</button>';
       box.appendChild(h);
       var g=document.createElement('div');g.className='cal-grid';
-      ['Mo','Tu','We','Th','Fr','Sa','Su'].forEach(function(d){var e=document.createElement('div');e.className='dow';e.textContent=d;g.appendChild(e);});
-      var off=fd(y,m),n=dim(y,m),i;for(i=0;i<off;i++)g.appendChild(document.createElement('div'));
-      for(var d=1;d<=n;d++){(function(d){var o={y:y,m:m,d:d};var e=document.createElement('div');e.className='day';e.textContent=d;
+      QZcal.DOW.forEach(function(d){var e=document.createElement('div');e.className='dow';e.textContent=d;g.appendChild(e);});
+      var grid=QZcal.monthGrid(y,m),i;for(i=0;i<grid.blanks;i++)g.appendChild(document.createElement('div'));
+      grid.days.forEach(function(d){var o={y:y,m:m,d:d};var e=document.createElement('div');e.className='day';e.textContent=d;
         if(eq(start,o))e.classList.add('rstart','sel');else if(eq(end,o))e.classList.add('rend','sel');else if(inRange(o))e.classList.add('range');
         e.addEventListener('click',function(){
           if(!start||(start&&end)){start=o;end=null;}
           else{ if(key(o)<key(start)){end=start;start=o;}else end=o; }
           render();
         });
-        g.appendChild(e);})(d);}
+        g.appendChild(e);});
       box.appendChild(g);
-      h.querySelectorAll('[data-nav]').forEach(function(b){b.addEventListener('click',function(){M+=+b.dataset.nav;if(M<0){M=11;Y--;}if(M>11){M=0;Y++;}render();});});
+      h.querySelectorAll('[data-nav]').forEach(function(b){b.addEventListener('click',function(){var r=QZcal.roll(Y,M+(+b.dataset.nav));Y=r.y;M=r.m;render();});});
       cals.appendChild(box);
     }
     function render(){
       cals.innerHTML='';
-      [0,1].forEach(function(off){var y=Y,m=M+off;if(m>11){y++;m-=12;}buildMonth(y,m);});
+      [0,1].forEach(function(off){var r=QZcal.roll(Y,M+off);buildMonth(r.y,r.m);});
       summary.textContent = start&&end ? fmt(start)+'  →  '+fmt(end) : start ? fmt(start)+'  →  …' : 'Select a start and end date';
     }
     render();

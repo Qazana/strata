@@ -9,6 +9,16 @@ Accumulated since 0.0.1 and **not yet published** — the registry still has onl
 0.0.1. This will ship as one release: a **minor** (all additive kits plus fixes,
 no breaking changes). Versioned + dated when actually tagged and published.
 
+Internal (no API/output change):
+
+- **Shared month-grid model.** The date maths (days-in-month, Monday-first first
+  weekday, month roll, grid cells) was copied across the date picker, inline
+  calendar, and date-range behaviors in `js/qazana.js`. Extracted to one pure
+  `QZcal` model; the three behaviors are now adapters that render its cells and
+  keep only their own selection/header. Date maths is now unit-tested directly
+  (`harness/behaviors-forms.mjs` → "month-grid (QZcal)") rather than only through
+  DOM clicks; rendered output is unchanged.
+
 Additive — spacing scale densified + spacing fully tokenized:
 
 - **Densified the spacing scale** with half-steps (`_5`, à la Tailwind 2.5/3.5)

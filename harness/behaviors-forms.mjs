@@ -251,6 +251,46 @@ const CHECKS = [
       return fails;
     },
   },
+
+  // ---- month-grid model: the pure interface behind picker/calendar/daterange.
+  // Tested directly (no DOM clicks) — the interface is the test surface.
+  {
+    name: 'month-grid (QZcal)',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const r = await page.evaluate(() => {
+        const Q = window.QZcal;
+        if (!Q) return { present: false };
+        return {
+          present: true,
+          febLeap: Q.daysInMonth(2024, 1),     // 29
+          feb2025: Q.daysInMonth(2025, 1),     // 28
+          jun: Q.daysInMonth(2026, 5),         // 30
+          jan: Q.daysInMonth(2026, 0),         // 31
+          fwRange: Q.firstWeekday(2026, 5),    // 0..6
+          rollUnder: Q.roll(2026, -1),         // {2025,11}
+          rollOver: Q.roll(2026, 12),          // {2027,0}
+          rollNoop: Q.roll(2026, 5),           // {2026,5}
+          g: Q.monthGrid(2026, 5),             // June model
+        };
+      });
+      t(r.present, 'window.QZcal is exposed');
+      if (!r.present) return fails;
+      t(r.febLeap === 29, `daysInMonth(2024,Feb)=29 (got ${r.febLeap})`);
+      t(r.feb2025 === 28, `daysInMonth(2025,Feb)=28 (got ${r.feb2025})`);
+      t(r.jun === 30 && r.jan === 31, `daysInMonth Jun=30/Jan=31 (got ${r.jun}/${r.jan})`);
+      t(r.fwRange >= 0 && r.fwRange <= 6, `firstWeekday in 0..6 (got ${r.fwRange})`);
+      t(r.rollUnder.y === 2025 && r.rollUnder.m === 11, 'roll(-1) -> Dec prev year');
+      t(r.rollOver.y === 2027 && r.rollOver.m === 0, 'roll(12) -> Jan next year');
+      t(r.rollNoop.y === 2026 && r.rollNoop.m === 5, 'roll in-range is a no-op');
+      t(r.g.name === 'June' && r.g.days.length === 30, 'monthGrid(Jun): name+30 days');
+      t(r.g.blanks === r.fwRange, 'monthGrid blanks === firstWeekday');
+      t(r.g.days[0] === 1 && r.g.days[29] === 30, 'monthGrid days run 1..30');
+      return fails;
+    },
+  },
 ];
 
 await new Promise((r) => server.listen(PORT, r));
