@@ -80,6 +80,9 @@
     + '.demo-bar .db-kitbtn,.demo-bar .db-theme{font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--line);'
     + 'border-radius:var(--radius-sm);padding:var(--space-1_5) var(--space-2_5);cursor:pointer}'
     + '.demo-bar .db-kitbtn:hover,.demo-bar .db-theme:hover{border-color:var(--line-strong)}'
+    + '.demo-bar .db-brand{font:inherit;font-size:var(--text-sm);color:var(--text);background:var(--surface);border:1px solid var(--line);'
+    + 'border-radius:var(--radius-sm);padding:var(--space-1_5) var(--space-2);cursor:pointer;max-width:150px}'
+    + '.demo-bar .db-brand:hover{border-color:var(--line-strong)}'
     + '.demo-bar .db-kitmenu{position:absolute;top:calc(100% + 6px);inset-inline-start:0;z-index:600;display:flex;flex-direction:column;'
     + 'min-width:160px;background:var(--surface-3,var(--surface));border:1px solid var(--line);border-radius:var(--radius);'
     + 'box-shadow:var(--shadow-lg);padding:var(--space-1_5)}'
@@ -120,4 +123,33 @@
         : (matchMedia('(prefers-color-scheme: dark)').matches ? 'desert-dunes' : 'dark-knight');
     root.setAttribute('data-theme', next);
   });
+
+  // brand (product theme) picker — preview any example brand on ANY demo page by
+  // swapping the theme.css :root override (the same override a product ships).
+  // Skipped on themes/index.html, which has its own dedicated switcher (#theme-css).
+  if (!document.getElementById('theme-css')) {
+    var BRANDS = [['strata', 'Strata · default'], ['qazana', 'qazana'], ['aurora', 'aurora'], ['vermeil', 'vermeil'], ['nocturne', 'nocturne'], ['cedar', 'cedar']];
+    // each brand is designed for a scheme; applying it on pick shows it as intended
+    var BREC = { strata: 'dark-knight', qazana: 'desert-dunes', aurora: 'dark-knight', vermeil: 'desert-dunes', nocturne: 'dark-knight', cedar: 'desert-dunes' };
+    // display faces not self-hosted by the tokens (loaded lazily on first brand pick)
+    var FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700&display=swap';
+    var fontsLoaded = false;
+    function ensureFonts() { if (fontsLoaded) return; var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = FONTS; document.head.appendChild(l); fontsLoaded = true; }
+    function brandLink() { var el = document.getElementById('qz-brand'); if (!el) { el = document.createElement('link'); el.id = 'qz-brand'; el.rel = 'stylesheet'; document.head.appendChild(el); } return el; }
+    function applyBrand(name, withScheme) {
+      if (name === 'strata') { var e = document.getElementById('qz-brand'); if (e) e.removeAttribute('href'); }
+      else { ensureFonts(); brandLink().href = up + 'themes/' + name + '.css'; }   // appended last → unlayered :root override wins
+      if (withScheme) { var s = BREC[name] || 'dark-knight'; document.documentElement.setAttribute('data-theme', s); try { localStorage.setItem('qazana-theme', s); } catch (e) {} }
+      try { localStorage.setItem('qazana-demo-brand', name); } catch (e) {}
+    }
+    var sel = document.createElement('select');
+    sel.className = 'db-brand'; sel.setAttribute('aria-label', 'Brand theme');
+    BRANDS.forEach(function (b) { var o = document.createElement('option'); o.value = b[0]; o.textContent = b[1]; sel.appendChild(o); });
+    var saved; try { saved = localStorage.getItem('qazana-demo-brand'); } catch (e) {}
+    var initial = saved && BREC.hasOwnProperty(saved) ? saved : 'strata';
+    sel.value = initial;
+    nav.insertBefore(sel, nav.querySelector('.db-theme'));   // sits next to the scheme toggle
+    sel.addEventListener('change', function () { applyBrand(sel.value, true); });
+    if (initial !== 'strata') applyBrand(initial, false);    // restore persisted brand link (keep the user's scheme)
+  }
 })();

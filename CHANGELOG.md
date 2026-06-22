@@ -114,6 +114,10 @@ Demos:
   own header. Single-source (one script + manifest); self-styled with tokens;
   spans grid/flex-bodied layouts (auth) and sits below kit overlays. Also fixed
   a broken `content/blog.html` footer link (`site.html` → `../site/landing.html`).
+  The bar also carries a **brand-theme picker** — swap any example brand
+  (qazana/aurora/vermeil/nocturne/cedar) onto any demo page (swaps the `theme.css`
+  override, lazy-loads non-self-hosted display fonts, applies the brand's scheme,
+  persists across pages). Suppressed on `themes/index.html` (its own switcher).
 
 Additive — three new kits since 0.0.1:
 
