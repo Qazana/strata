@@ -17,13 +17,6 @@
 .site *{box-sizing:border-box}
 .site ::selection{background:rgb(var(--primary-rgb) / .28);color:var(--text)}
 
-/* atmosphere — soft brand glow at the top, fades into the page */
-.site::before{
-  content:"";position:fixed;inset:0 0 auto 0;height:90vh;z-index:0;pointer-events:none;
-  background:
-    radial-gradient(60% 50% at 18% 0%, rgb(var(--primary-rgb) / .14), transparent 70%),
-    radial-gradient(50% 45% at 92% 4%, rgb(var(--accent-rgb) / .10), transparent 70%);
-}
 .site > *{position:relative;z-index:1}
 
 .site .wrap{max-width:1140px;margin:0 auto;padding:0 var(--space-5)}
@@ -121,7 +114,6 @@
 /* hero art — a stylised product panel, pure CSS */
 .site .hero-art{position:relative;border-radius:var(--radius-lg);border:1px solid var(--line);
   background:var(--surface);box-shadow:var(--shadow-lg);padding:var(--space-4_5);aspect-ratio:4/3;overflow:hidden}
-.site .hero-art::before{content:"";position:absolute;inset:0;background:radial-gradient(120% 90% at 80% 10%,rgb(var(--primary-rgb) / .14),transparent 60%)}
 .site .ha-bar{display:flex;gap:var(--space-1_5);margin-bottom:var(--space-4)}
 .site .ha-bar i{width:10px;height:10px;border-radius:50%;background:var(--surface-2);display:block}
 .site .ha-row{height:12px;border-radius:var(--radius-pill);background:var(--surface-2);margin:var(--space-2_5) 0}
@@ -163,7 +155,6 @@
 .site .spot-list li::before{content:"\2713";color:var(--primary-bright);font-weight:700}
 .site .spot-media{border-radius:var(--radius-lg);border:1px solid var(--line);background:var(--surface);
   box-shadow:var(--shadow);aspect-ratio:5/4;display:grid;place-items:center;overflow:hidden;position:relative}
-.site .spot-media::after{content:"";position:absolute;inset:0;background:radial-gradient(100% 80% at 30% 20%,rgb(var(--accent-rgb) / .14),transparent 60%)}
 .site .spot-media .glyph{font-size:3rem;color:var(--primary-bright);opacity:.85}
 @media (max-width:880px){.site .spotlight{grid-template-columns:1fr;gap:var(--space-5_5)}.site .spotlight.reverse .spot-media{order:0}}
 
@@ -211,7 +202,6 @@
 /* ---- CTA band ---- */
 .site .cta{text-align:center;padding:var(--space-10) var(--space-6_5);border-radius:var(--radius-lg);position:relative;overflow:hidden;
   border:1px solid rgb(var(--primary-rgb) / .3);background:var(--surface)}
-.site .cta::before{content:"";position:absolute;inset:0;background:radial-gradient(80% 120% at 50% 0%,rgb(var(--primary-rgb) / .16),transparent 65%)}
 .site .cta h2{position:relative;font-family:var(--body);font-weight:800;letter-spacing:-.03em;font-size:clamp(1.9rem,3.4vw,2.7rem);margin-bottom:var(--space-3_5)}
 .site .cta p{position:relative;color:var(--text-2);max-width:48ch;margin:0 auto var(--space-5_5)}
 .site .cta .hero-actions{justify-content:center}
@@ -285,7 +275,6 @@
 .site .work{aspect-ratio:4/3;border-radius:var(--radius-lg);border:1px solid var(--line);background:var(--surface-2);
   position:relative;overflow:hidden;display:grid;place-items:center;color:var(--primary-bright);text-decoration:none;transition:transform var(--dur-2) var(--ease)}
 .site .work:hover{transform:translateY(-4px)}
-.site .work::after{content:"";position:absolute;inset:0;background:radial-gradient(80% 80% at 30% 20%,rgb(var(--primary-rgb) / .16),transparent 60%)}
 .site .work .glyph{font-size:2rem;position:relative}
 @media (max-width:760px){.site .work-grid{grid-template-columns:1fr 1fr}}
 

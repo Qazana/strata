@@ -16,7 +16,6 @@
   transition:transform var(--dur-2) var(--ease),border-color var(--dur-2)}
 .blog .post-card:hover{transform:translateY(-4px);border-color:rgb(var(--primary-rgb) / .35)}
 .blog .post-thumb{aspect-ratio:16/9;background:var(--surface-2);position:relative;overflow:hidden;display:grid;place-items:center;color:var(--primary-bright)}
-.blog .post-thumb::after{content:"";position:absolute;inset:0;background:radial-gradient(90% 80% at 30% 20%,rgb(var(--primary-rgb) / .16),transparent 60%)}
 .blog .post-thumb .glyph{font-size:1.8rem;opacity:.85;position:relative}
 .blog .post-body{padding:var(--space-4_5);display:flex;flex-direction:column;gap:var(--space-2_5);flex:1}
 .blog .post-card h3{font-family:var(--body);font-weight:700;letter-spacing:var(--tracking-tighter);font-size:var(--text-lg);line-height:1.25}
@@ -75,7 +74,6 @@
 .article-hero{max-width:980px;margin:var(--space-5) auto 0;padding:0 var(--space-5)}
 .article-hero .ph{aspect-ratio:21/9;border-radius:var(--radius-lg);border:1px solid var(--line);background:var(--surface-2);
   display:grid;place-items:center;color:var(--primary-bright);position:relative;overflow:hidden}
-.article-hero .ph::after{content:"";position:absolute;inset:0;background:radial-gradient(80% 90% at 70% 10%,rgb(var(--accent-rgb) / .16),transparent 60%)}
 
 /* prose typography — the reading column */
 .prose{font-size:var(--text-lg);line-height:var(--leading-relaxed);color:var(--text);max-width:var(--measure)}

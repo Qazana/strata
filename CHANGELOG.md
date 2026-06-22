@@ -61,6 +61,15 @@ Additive — spacing scale densified + spacing fully tokenized:
 
 Fixes:
 
+- **Removed decorative gradients across the kits** (de-AI'd aesthetic). Dropped
+  the radial "glow" atmosphere (app `.bg-layer`/`.glow` blobs; site body +
+  hero/spotlight/CTA/work glows; auth split-panel glows; media player/thumb +
+  album-art radial; content thumb/hero glows) and the soft fade overlays (the
+  `.divider` fade → solid rule, the `.log` bottom fade, the video scrim).
+  **Kept** gradients that *render a component or encode data* — they're not
+  decoration and break if removed: the conic progress ring, the volume-slider
+  fill, the swatch/sold-out diagonal, the `.grid-overlay` line texture, and the
+  skeleton-shimmer animation.
 - **Direction toggle icon now reflects state.** `[data-dir-toggle]` showed a
   static, ambiguous swap glyph (`fa-right-left`); it now mirrors the theme
   toggle's sun/moon pattern — `fa-align-left` in LTR, `fa-align-right` in RTL —
