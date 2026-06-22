@@ -61,9 +61,12 @@ Additive — spacing scale densified + spacing fully tokenized:
 
 Fixes:
 
-- **Support ticket-list header** (`.support .ticket-list th`) had `padding-top:0`,
-  so the column labels jammed against the top edge while rows had breathing room.
-  Gave the header symmetric padding (`var(--space-2_5)` top/bottom).
+- **Table headers jammed against the top edge.** The hand-authored list tables —
+  `.support .ticket-list th` and `.billing .invoices th` — had `padding-top:0`
+  (3-value shorthand) while their rows had 14px, so the column labels had no
+  breathing room above. Gave both headers symmetric padding (`var(--space-2_5)`
+  top/bottom). (The App-kit `table.tbl` already used the symmetric density
+  tokens; only these two copies had the bug.)
 - **Docs help-center search** focus showed a doubled ring — the wrapper's
   `:focus-within` ring *plus* the inner `<input>`'s own `:focus-visible` glow
   (every input gets one from base.css), reading as a "blue inner border that
