@@ -61,6 +61,13 @@ Additive — spacing scale densified + spacing fully tokenized:
 
 Fixes:
 
+- **Alerts/banners/empty-states no longer butt against neighbouring elements.**
+  The self-spacing rule only added margin between *consecutive* notices
+  (`.alert + .alert`), so a lone alert dropped next to a heading or paragraph
+  still collapsed against it. The notice blocks now carry their own
+  `margin-block` (margins collapse, so stacked notices still read as one gap),
+  neutralized inside the layout primitives + `.demo` wrapper so wrapping never
+  double-spaces.
 - **`.auth .btn` no longer defaults to full width.** It was the only `.btn` in
   any kit that set `width:100%` by default; now it's `inline-flex` and full-width
   is contextual (`.auth form .btn`, `.auth .oauth .btn` — the narrow form + the

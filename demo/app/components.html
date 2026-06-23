@@ -602,10 +602,10 @@
       <div class="session-bar">Your session expired. <a href="#">Reload to sign in again.</a></div>
       <div class="empty"><div class="ei"><i class="fa-solid fa-compact-disc"></i></div><h4>No analyses yet</h4><div>Paste a mix to get your first tracklist.</div></div>
     </div>
-    <div class="sub">Bare stacked alerts (no wrapper) self-space</div>
+    <div class="sub">Bare alerts (no wrapper) keep their own spacing</div>
     <div style="max-width:640px">
-      <div class="alert info"><div class="ah"><span class="sev">Info</span></div><div class="am">Sibling notice blocks with no layout wrapper no longer collapse together.</div></div>
-      <div class="alert warn"><div class="ah"><span class="sev">Warning</span></div><div class="am">Same owl as cards; wrapping in <code>.l-stack</code> neutralizes it.</div></div>
+      <div class="alert info"><div class="ah"><span class="sev">Info</span></div><div class="am">Notice blocks carry their own <code>margin-block</code>, so a bare one never butts against neighbouring elements.</div></div>
+      <div class="alert warn"><div class="ah"><span class="sev">Warning</span></div><div class="am">Margins collapse between siblings; wrapping in <code>.l-stack</code> neutralizes it.</div></div>
     </div>
   </section>
 

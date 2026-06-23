@@ -286,11 +286,13 @@ label.fld{display:block;font-size:var(--text-sm);color:var(--text-2);margin-bott
 .banner{display:flex;align-items:center;gap:var(--space-3_5);background:rgb(var(--primary-rgb) / .1);border:1px solid var(--primary-line);
   border-radius:var(--radius);padding:var(--space-3) var(--space-4);font-size:var(--text-md)}
 .banner .bx{margin-inline-start:auto;display:flex;gap:var(--space-2)}
-/* notice/feedback blocks self-space when stacked bare (same safety net as .card)
-   — neutralized inside gap-bearing containers: the layout primitives plus the
-   .demo gallery wrapper, so wrapping never double-spaces. */
-:is(.alert,.banner,.empty) + :is(.alert,.banner,.empty){margin-block-start:var(--space-4)}
-:is(.l-stack,.l-grid,.l-row,.demo) > :is(.alert,.banner,.empty) + :is(.alert,.banner,.empty){margin-block-start:0}
+/* notice/feedback blocks carry their own vertical margin so a bare one never
+   butts against ANY neighbour (a heading, paragraph, card — not just another
+   notice). Margins collapse, so stacked notices still read as one gap.
+   Neutralized inside gap-bearing containers (the layout primitives + the .demo
+   gallery wrapper), which own spacing via their own gap. */
+:is(.alert,.banner,.empty){margin-block:var(--space-4)}
+:is(.l-stack,.l-grid,.l-row,.demo) > :is(.alert,.banner,.empty){margin-block:0}
 .session-bar{background:var(--danger);color:var(--on-danger);padding:var(--space-2_5) var(--space-4);border-radius:var(--radius);font-size:var(--text-md);display:flex;gap:var(--space-3_5);align-items:center}
 .session-bar a{color:var(--on-danger);text-decoration:underline}
 
