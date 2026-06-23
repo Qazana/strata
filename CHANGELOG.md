@@ -116,6 +116,12 @@ Fixes:
 
 Demos:
 
+- **Logo wordmark de-gimmicked.** Dropped the accent-coloured last-letter span
+  (`Qazan<span class="mk|brand-8">a</span>` → `Qazana`) across all demo headers
+  and footers (46 wordmarks, 39 files) and the Strata wordmark on `strata.html`
+  — a uniform wordmark instead of the templated coloured-final-letter tell. Also
+  completed the admin sidebar logo's empty `.word-txt` (`azana`) so it reads
+  "Qazana" in HTML (collapsing to the "Q" monogram), no JS needed.
 - **New example theme `cedar`** (`demo/themes/cedar.css`) — a fictional demo
   brand deliberately designed *against* generated-UI tells: Bricolage Grotesque
   display (not Inter/Roboto/Space Grotesk), a committed pine-green dominant + a
