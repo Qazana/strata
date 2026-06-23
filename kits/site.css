@@ -159,7 +159,7 @@
 @media (max-width:880px){.site .spotlight{grid-template-columns:1fr;gap:var(--space-5_5)}.site .spotlight.reverse .spot-media{order:0}}
 
 /* ---- stat band ---- */
-.site .stat-band{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-4_5);text-align:center;
+.site .stat-band{display:grid;grid-template-columns:repeat(4,1fr);gap:var(--space-6_5);text-align:center;
   padding:var(--space-6_5);border-radius:var(--radius-lg);border:1px solid var(--line);background:var(--surface)}
 .site .stat-band .stat b{display:block;font-family:var(--body);font-weight:800;font-size:clamp(1.8rem,3vw,2.6rem);color:var(--primary-bright);letter-spacing:var(--tracking-tighter)}
 .site .stat-band .stat span{color:var(--muted);font-size:var(--text-md);text-transform:uppercase;letter-spacing:var(--tracking-wide)}

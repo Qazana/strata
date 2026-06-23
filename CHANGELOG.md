@@ -116,6 +116,13 @@ Fixes:
 
 Demos:
 
+- **`strata.html` kit gallery + stat-band.** The kit gallery reused the shared
+  square `.work` portfolio tile (`aspect-ratio:4/3` → too tall, ~270px); gave
+  strata a page-scoped compact tile instead (auto height ~123px, left-aligned
+  icon/title/sub, `auto-fit` grid) — the shared `.work` is left untouched for
+  the agency portfolio. Listed all **10 kits** (added Billing/Docs/Support; was
+  a stale 7) and fixed the stale "7 kits" stat → 10. Also widened the shared
+  `.stat-band` gap (`--space-4_5` → `--space-6_5`, 20→40px) to space the stats.
 - **Logo wordmark de-gimmicked.** Dropped the accent-coloured last-letter span
   (`Qazan<span class="mk|brand-8">a</span>` → `Qazana`) across all demo headers
   and footers (46 wordmarks, 39 files) and the Strata wordmark on `strata.html`
