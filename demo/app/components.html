@@ -14,7 +14,7 @@
   <header class="top">
     <a class="logo" href="components.html">
       <svg viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><rect width="32" height="32" rx="8" style="fill:var(--primary)"/><circle cx="14.5" cy="15" r="7.5" fill="none" stroke="#fff" stroke-width="2.4" stroke-opacity=".95"/><path d="M19 19.5 L24 24.5" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>
-      <span class="word">Qazan<span class="brand-8">a</span></span>
+      <span class="word">Qazana</span>
     </a>
     <nav><a href="components.html">Overview</a><a href="admin.html">Admin</a><a href="errors.html">Errors</a><a href="../site/landing.html">Site</a><button class="btn-icon" data-density-toggle aria-label="Toggle density"><i class="fa-solid fa-compress"></i></button><button class="btn-icon" data-theme-toggle="dark-knight,desert-dunes" aria-label="Switch theme"><i class="fa-solid fa-sun"></i></button></nav>
   </header>
@@ -271,6 +271,12 @@
       <div class="feature-card"><div class="fi"><i class="fa-solid fa-music"></i></div><h4>Every track, timestamped</h4><p>Paste a mix, get the full setlist with jump-to timecodes.</p></div>
       <div class="plan popular"><span class="badge green pop">Popular</span><div class="pname">Pro</div><div class="price">$14.99<small>/mo</small></div><ul><li>50 credits / month</li><li>Priority processing</li></ul><button class="btn btn-primary" style="width:100%">Upgrade</button></div>
       <div class="pack"><div class="pc">15</div><div class="pp">credits · $14.99</div><button class="btn btn-primary btn-sm" style="width:100%">Buy</button></div>
+    </div>
+    <div class="sub">Bare stacked cards (no <code>.l-stack</code> wrapper) self-space</div>
+    <div style="max-width:520px">
+      <div class="card"><div class="card-h">First card</div><p>Sibling <code>.card</code>s with no layout wrapper no longer collapse together.</p></div>
+      <div class="card"><div class="card-h">Second card</div><p>A <code>.card + .card</code> rule adds the spacing; wrapping in <code>.l-stack</code>/<code>.l-grid</code> neutralizes it so you never double up.</p></div>
+      <div class="card"><div class="card-h">Third card</div><p>Prefer the layout primitives — this is just a safety net.</p></div>
     </div>
     <div class="sub">Cost preview (before spending a credit)</div>
     <div class="cost-preview" style="max-width:520px">
@@ -595,6 +601,11 @@
       <div class="banner">A new version is available.<div class="bx"><button class="btn btn-primary btn-sm">Refresh</button><button class="btn btn-ghost btn-sm">Dismiss</button></div></div>
       <div class="session-bar">Your session expired. <a href="#">Reload to sign in again.</a></div>
       <div class="empty"><div class="ei"><i class="fa-solid fa-compact-disc"></i></div><h4>No analyses yet</h4><div>Paste a mix to get your first tracklist.</div></div>
+    </div>
+    <div class="sub">Bare alerts (no wrapper) keep their own spacing</div>
+    <div style="max-width:640px">
+      <div class="alert info"><div class="ah"><span class="sev">Info</span></div><div class="am">Notice blocks carry their own <code>margin-block</code>, so a bare one never butts against neighbouring elements.</div></div>
+      <div class="alert warn"><div class="ah"><span class="sev">Warning</span></div><div class="am">Margins collapse between siblings; wrapping in <code>.l-stack</code> neutralizes it.</div></div>
     </div>
   </section>
 
@@ -922,5 +933,6 @@
   <div class="foot">Qazana Strata · component library</div>
 </div>
 <script src="../../js/qazana.js" defer></script>
+<script src="../demo-nav.js" defer></script>
 </body>
 </html>

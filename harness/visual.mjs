@@ -24,6 +24,8 @@ import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
 import pixelmatch from 'pixelmatch';
 import { PNG } from 'pngjs';
+import { makeServer } from './_serve.mjs';
+import { pagesFor } from './_pages.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
@@ -34,38 +36,13 @@ const SAVE_BASELINE = process.env.HARNESS_BASELINE === '1';
 // Pixel-diff noise floor (fraction): ignore sub-0.1% jitter (AA on text/edges).
 const NOISE = Number(process.env.HARNESS_THRESHOLD || 0.001);
 
-const MIME = {
-  '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript',
-  '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png',
-  '.woff2': 'font/woff2', '.woff': 'font/woff',
-};
-
-// --- throwaway static server rooted at the repo (so ../css, ../tokens resolve) ---
-const server = http.createServer((req, res) => {
-  const urlPath = decodeURIComponent(req.url.split('?')[0]);
-  const filePath = path.join(ROOT, urlPath);
-  if (!filePath.startsWith(ROOT)) { res.writeHead(403).end(); return; }
-  fs.readFile(filePath, (err, data) => {
-    if (err) { res.writeHead(404).end('not found'); return; }
-    res.writeHead(200, { 'content-type': MIME[path.extname(filePath)] || 'application/octet-stream' });
-    res.end(data);
-  });
-});
+const server = makeServer();
 await new Promise((r) => server.listen(PORT, r));
 
 // A representative page per kit. Kept small and stable — this is a gate, not full
 // coverage (shoot.mjs walks every demo). Each is captured dark + light.
-const PAGES = [
-  'strata',                 // overview / kitchen sink
-  'site/landing',           // site kit
-  'app/components',         // app kit — components
-  'app/admin',              // app kit — dashboard/admin
-  'auth/sign-in',           // auth kit
-  'foundations/forms',      // foundations — form controls
-  'content/blog',           // content kit
-  'commerce/product',       // commerce kit
-  'media/index',            // media kit
-];
+// Membership lives in the shared manifest (harness/_pages.mjs, tag 'visual').
+const PAGES = pagesFor('visual');
 
 // dark is the canonical scheme; light is the manual data-theme="light" override.
 // We pin data-theme explicitly (rather than leaving it unset to follow the OS) so

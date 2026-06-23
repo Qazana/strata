@@ -69,7 +69,7 @@ single source of truth; Figma mirrors it.
 - **Cover / About** — version (pinned to the npm package version), how-to, the
   tint convention, the sync rule.
 - **Foundations** — color (modes), type scale, spacing, radius, elevation, motion.
-- **Components** — one page per kit (App, Site, Content, Auth, Media, Commerce).
+- **Components** — one page per kit (App, Site, Content, Auth, Email, Media, Commerce, Billing, Docs, Support).
 - **Patterns** — assembled demo screens, both schemes (v2).
 
 ## Phasing

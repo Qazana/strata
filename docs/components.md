@@ -12,7 +12,7 @@ it shows every variant/state. Reduced-motion is respected throughout.
 ## Foundations
 `tokens/qazana.tokens.css` — color (+ `-rgb` channels for tints), surfaces
 (`--surface{,-2,-3}`, `--surface-sunken`), `--border-rgb` (line/border channel),
-`--radius-{sm,,lg,pill}`, `--shadow{-sm,,-lg}`, `--space-1…7`, `--display/--body/--mono`,
+`--radius-{sm,,lg,pill}`, `--shadow{-sm,,-lg}`, `--space-1…10` (+ `_5` half-steps), `--display/--body/--mono`,
 `--ease`, `--dur-1…3`. Dark is canonical; light is opt-in via `html[data-theme="light"]`
 (or auto via `prefers-color-scheme`) — the tokens set `color-scheme` for you. Override
 brand tokens in a `themes/<app>.css`; a `[data-theme-toggle]` button flips the scheme.

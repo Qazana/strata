@@ -1,0 +1,27 @@
+/* "Cedar" — FICTIONAL example theme for the public demo. A deliberately
+   un-"AI-looking" brand: it researches the frontend tells of generated UI and
+   does the opposite.
+
+   AI-slop patterns avoided (the "AI tells"):
+   - Fonts: Inter / Roboto / Open Sans / system-ui, and the over-generated
+     "distinctive" pick Space Grotesk. → Cedar uses Bricolage Grotesque, a
+     characterful display grotesque, over the kit's DM Sans body.
+   - Colour: violet/indigo gradients (esp. on white), the default SaaS blue, and
+     bright mint/teal. → Cedar commits to a single dominant — deep pine green —
+     with one SHARP, unexpected accent (brass/ochre). A committed dominant + a
+     sharp accent reads designed; the timid, evenly-distributed pastel palette
+     reads generated.
+   - Surfaces: stark #fff with a purple glow. → Cedar pairs with the warm cream
+     scheme (Désert Dunes) — editorial / field-guide, not dashboard-default.
+   - Effects (handled by the kit, not overridden here): no glassmorphism blur
+     stacks, no neon box-shadow glows, no gradient-mesh blobs.
+
+   Made for the LIGHT scheme; --primary-bright reads darker so links/emphasis
+   clear AA on cream. One :root block — the same shape a product ships. */
+:root{
+  --primary:#1f5d44;        --primary-rgb:31 93 68;          /* deep pine */
+  --primary-bright:#1a6f4f; --primary-bright-rgb:26 111 79;  /* links/emphasis — AA on cream */
+  --on-primary:#fdfaf3;                                       /* warm off-white on the pine fill */
+  --accent:#b07d1c;         --accent-rgb:176 125 28;         /* brass — the sharp, warm counterpoint */
+  --display:'Bricolage Grotesque','Bricolage Grotesque Fallback',sans-serif;
+}
