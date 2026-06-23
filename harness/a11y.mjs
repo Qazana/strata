@@ -23,43 +23,21 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { chromium } from 'playwright';
+import { makeServer } from './_serve.mjs';
+import { pagesFor, urlFor } from './_pages.mjs';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const PORT = Number(process.env.PORT || 4188);
 const BASE = `http://localhost:${PORT}`;
-const MIME = {
-  '.html': 'text/html', '.css': 'text/css', '.js': 'text/javascript',
-  '.json': 'application/json', '.svg': 'image/svg+xml', '.png': 'image/png',
-  '.woff2': 'font/woff2', '.woff': 'font/woff',
-};
-
-// throwaway static server rooted at the repo (so /demo, /kits, /js, /tokens resolve)
-const server = http.createServer((req, res) => {
-  const urlPath = decodeURIComponent(req.url.split('?')[0]);
-  const filePath = path.join(ROOT, urlPath);
-  if (!filePath.startsWith(ROOT)) { res.writeHead(403).end(); return; }
-  fs.readFile(filePath, (err, data) => {
-    if (err) { res.writeHead(404).end('not found'); return; }
-    res.writeHead(200, { 'content-type': MIME[path.extname(filePath)] || 'application/octet-stream' });
-    res.end(data);
-  });
-});
+const server = makeServer();
 
 // axe-core source, read once, injected into each page via addScriptTag
 const axeSource = fs.readFileSync(path.join(ROOT, 'node_modules/axe-core/axe.min.js'), 'utf8');
 
-// representative pages: marketing, app surfaces, auth, forms, the kitchen-sink
-const PAGES = [
-  '/demo/site/landing.html',
-  '/demo/app/components.html',
-  '/demo/auth/sign-in.html',
-  '/demo/foundations/forms.html',
-  '/demo/strata.html',
-  '/demo/billing/overview.html',
-  '/demo/docs/guide.html',
-  '/demo/support/ticket.html',
-];
+// representative pages: marketing, app surfaces, auth, forms, the kitchen-sink.
+// Membership lives in the shared manifest (harness/_pages.mjs, tag 'a11y').
+const PAGES = pagesFor('a11y').map(urlFor);
 
 // dark = emulate prefers-color-scheme:dark, no theme attribute (canonical :root);
 // light = emulate light + explicit html[data-theme="light"]

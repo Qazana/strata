@@ -12,8 +12,14 @@
     width:100%;max-height:100%}  /* constrain to the .spot-media tile so overflow scrolls instead of clipping */
   .code .tok{color:var(--primary-bright)}
   .code .cm{color:var(--muted)}
-  .work b{position:relative;font-family:var(--body);font-weight:700;color:var(--text);margin-top:10px}
-  .work span.sub{position:relative;color:var(--muted);font-size:var(--text-sm)}
+  /* kit gallery: compact left-aligned tiles (overrides the shared square .work,
+     which agency uses as icon-only portfolio squares — scoped to this page) */
+  .site .work-grid{grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:var(--space-3_5)}
+  .site .work{aspect-ratio:auto;display:flex;flex-direction:column;align-items:flex-start;
+    gap:var(--space-1);padding:var(--space-4_5);background:var(--surface)}
+  .work .glyph{font-size:1.4rem}
+  .work b{font-family:var(--body);font-weight:700;color:var(--text);margin-top:var(--space-1)}
+  .work .sub{color:var(--muted);font-size:var(--text-sm)}
   .hero-art .row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:14px 0;position:relative}
   .hero-title{font-weight:900;font-size:clamp(2.25rem,1.75rem + 2vw,3.25rem)}  /* --display is Figtree (kit default) */
 </style>
@@ -29,7 +35,7 @@
       <path d="M16 11.5 29 18 16 24.5 3 18Z" style="fill:var(--primary)"></path>
       <path d="M16 20 29 26.5 16 33 3 26.5Z" style="fill:var(--info)" opacity=".85"></path>
     </svg>
-    Strat<span class="mk">a</span>
+    Strata
   </a>
   <nav class="nav-links">
     <a href="#foundation">Foundation</a>
@@ -55,7 +61,7 @@
         <path d="M16 11.5 29 18 16 24.5 3 18Z" style="fill:var(--primary)"></path>
         <path d="M16 20 29 26.5 16 33 3 26.5Z" style="fill:var(--info)" opacity=".85"></path>
       </svg>
-      Strat<span class="mk">a</span>
+      Strata
     </a>
     <button class="btn-icon" data-nav-drawer-toggle aria-label="Close menu"><i class="fa-solid fa-xmark"></i></button>
   </div>
@@ -111,7 +117,7 @@
 <!-- STAT BAND -->
 <section class="wrap section" style="padding-top:0">
   <div class="stat-band">
-    <div class="stat"><b data-count="7">7</b><span>kits</span></div>
+    <div class="stat"><b data-count="10">10</b><span>kits</span></div>
     <div class="stat"><b>2</b><span>schemes</span></div>
     <div class="stat"><b>0</b><span>dependencies</span></div>
     <div class="stat"><b data-count="100" data-suffix="%">100%</b><span>token-driven</span></div>
@@ -190,6 +196,9 @@
     <a class="work" href="content/blog.html"><i class="fa-solid fa-newspaper glyph"></i><b>Content</b><span class="sub">blogs &amp; articles</span></a>
     <a class="work" href="media/index.html"><i class="fa-solid fa-clapperboard glyph"></i><b>Media</b><span class="sub">video, audio, social</span></a>
     <a class="work" href="email/index.html"><i class="fa-solid fa-envelope-open-text glyph"></i><b>Email</b><span class="sub">newsletter, transactional</span></a>
+    <a class="work" href="billing/plans.html"><i class="fa-solid fa-credit-card glyph"></i><b>Billing</b><span class="sub">plans, invoices, usage</span></a>
+    <a class="work" href="docs/guide.html"><i class="fa-solid fa-book-open glyph"></i><b>Docs</b><span class="sub">guide, API, help center</span></a>
+    <a class="work" href="support/contact.html"><i class="fa-solid fa-headset glyph"></i><b>Support</b><span class="sub">contact, tickets, thread</span></a>
   </div>
 </section>
 
@@ -243,7 +252,7 @@
             <path d="M16 11.5 29 18 16 24.5 3 18Z" style="fill:var(--primary)"></path>
             <path d="M16 20 29 26.5 16 33 3 26.5Z" style="fill:var(--info)" opacity=".85"></path>
           </svg>
-          Strat<span class="mk">a</span>
+          Strata
         </a>
         <p>The shared, framework-agnostic design system behind every Qazana product.</p>
         <div class="foot-social">
@@ -285,4 +294,5 @@
 
 <script src="../js/qazana.js" defer></script>
 <script>(function(){var n=document.querySelector('[data-nav-scroll]');if(!n)return;var f=function(){n.classList.toggle('scrolled',scrollY>8);};f();addEventListener('scroll',f,{passive:true});})();</script>
+<script src="demo-nav.js" defer></script>
 </body></html>

@@ -126,6 +126,16 @@ app's own (unlayered) CSS overrides the kit without specificity battles. Focus
 rings use `:focus-visible` (no ring on mouse-click for non-text controls). Each
 semantic colour has an `--on-*` foreground token for text on a solid fill.
 
+**The flip side — broad unlayered selectors.** Because *anything* unlayered
+beats `@layer qazana`, a bare element selector in your app (`a{}`, `button{}`,
+`input{}`) also overrides the kit — including strata's own anchor/button
+components (`.tab`, `.side-item`, `.pager a.active`, `.btn` rendered as `<a>`).
+A global `a{color:var(--primary-bright)}` will paint an active tab's label
+coral-on-coral, unreadable, and no selector strata ships can win it back
+(layered always loses to unlayered, regardless of specificity). Scope app-wide
+element styles so they miss component nodes — `a:not([class]){…}` — or put them
+in a layer ordered ahead of the kit: `@layer app-base, qazana;`.
+
 **Layering:** `tokens` (foundation) → kits (`kits/app.css`, `kits/*`) →
 per-product theme overrides (each product ships its own theme.css). Components never hardcode values — they
 reference tokens, so one theme override re-skins everything.
@@ -210,7 +220,7 @@ alpha tints stay themeable: `rgb(var(--primary-rgb) / .12)`.
 | Tints | `--primary-soft` `--primary-ring` `--primary-line` `--danger-soft` `--warning-soft` `--info-soft` |
 | Radius | `--radius-sm` `--radius` `--radius-lg` `--radius-pill` |
 | Elevation | `--shadow-sm` `--shadow` `--shadow-lg` |
-| Spacing | `--space-1` … `--space-7` (4·8·12·16·24·32·48) |
+| Spacing | `--space-1` … `--space-10` + `_5` half-steps (4·6·8·10·12·14·16·20·24·28·32·40·48·56·64·80) |
 | Type | `--display` (Figtree, large headings only) · `--body` (DM Sans) · `--mono` |
 | Motion | `--ease` · `--dur-1/-2/-3` |
 

@@ -96,6 +96,37 @@ function checkTokensSync() {
 }
 
 // ---------------------------------------------------------------------------
+// 1b. SPACE-SCALE SYNC — the spacing scale maps 1:1 by NAME and VALUE between
+// the CSS (--space-<k>, incl. underscore half-steps like --space-1_5) and
+// tokens.json `space.<k>`. Unlike colour, both sides hold a literal px value, so
+// we check the value too. This is where drift bit before: nine space tokens
+// were hand-added to both files with no guard (only colour was enforced).
+// ---------------------------------------------------------------------------
+function checkSpaceSync() {
+  const cssText = read(TOKENS_CSS);
+  const json = JSON.parse(read(TOKENS_JSON));
+  const jsonSpace = json.space || {};
+  const rootMatch = cssText.match(/:root\s*\{([\s\S]*?)\n\s*\}/);
+  if (!rootMatch) { report('space-sync', `could not locate :root{} block in ${rel(TOKENS_CSS)}`); return; }
+  // note [_]: half-steps (--space-1_5) carry an underscore the colour regex omits
+  const decls = [...rootMatch[1].matchAll(/--([a-z0-9_-]+)\s*:\s*([^;]+);/gi)];
+  const cssSpace = {};
+  for (const m of decls) {
+    const mm = m[1].match(/^space-(.+)$/);
+    if (mm) cssSpace[mm[1]] = m[2].trim();
+  }
+  for (const [k, t] of Object.entries(jsonSpace)) {
+    const cv = cssSpace[k];
+    const jv = String(t.value).trim();
+    if (cv === undefined) report('space-sync', `tokens.json space.${k} has no --space-${k} in ${rel(TOKENS_CSS)} :root`);
+    else if (cv !== jv) report('space-sync', `--space-${k} = ${cv} but tokens.json space.${k} = ${jv}`);
+  }
+  for (const k of Object.keys(cssSpace)) {
+    if (!(k in jsonSpace)) report('space-sync', `${rel(TOKENS_CSS)} :root --space-${k} is missing from tokens.json "space"`);
+  }
+}
+
+// ---------------------------------------------------------------------------
 // 2. NO HARDCODED COLORS in kits/*.css
 //
 // Flags literal hex (#rgb/#rrggbb/#rrggbbaa) and rgb()/rgba()/hsl()/hsla()
@@ -188,11 +219,13 @@ function checkReducedMotion() {
 
 // ---------------------------------------------------------------------------
 checkTokensSync();
+checkSpaceSync();
 checkHardcodedColors();
 checkReducedMotion();
 
 const CHECKS = [
   ['tokens-sync', 'tokens.json mirrors qazana.tokens.css (color group)'],
+  ['space-sync', 'tokens.json space scale mirrors qazana.tokens.css (name + value)'],
   ['hardcoded-colors', 'kits/*.css use tokens, not literal colors'],
   ['reduced-motion', 'animating CSS ships a prefers-reduced-motion guard'],
 ];

@@ -51,6 +51,7 @@
     <button class="chip" data-pick="aurora">aurora</button>
     <button class="chip" data-pick="vermeil">vermeil</button>
     <button class="chip" data-pick="nocturne">nocturne</button>
+    <button class="chip" data-pick="cedar">cedar</button>
   </div>
   <div class="set" data-scheme-set>
     <b>Scheme</b>
@@ -145,7 +146,7 @@
      page. aurora/vermeil/nocturne are fictional demo brands; product themes are
      private and live with their products. qazana.js is intentionally not loaded
      here — its persisted data-theme-toggle choice would fight the picker. */
-  var REC = { strata:'dark', qazana:'light', aurora:'dark', vermeil:'light', nocturne:'dark' };
+  var REC = { strata:'dark', qazana:'light', aurora:'dark', vermeil:'light', nocturne:'dark', cedar:'light' };
   var link = document.getElementById('theme-css');
   var current = 'default';
 
@@ -187,4 +188,5 @@
   setTheme(q && REC.hasOwnProperty(q) ? q : 'strata');
 })();
 </script>
+<script src="../demo-nav.js" defer></script>
 </body></html>
