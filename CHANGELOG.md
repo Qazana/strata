@@ -5,6 +5,16 @@ component/token, major = rename/removal/breaking token change.
 
 ## Unreleased
 
+### Minor
+
+- **Tooltips unified + context-aware.** Both `[data-tip]` (text) and `.tip`/`.tip-pop`
+  (rich) now run through one engine in `js/qazana.js` that renders a single floating
+  node at `<body>` level (`position:fixed`) — so tooltips **escape `overflow:hidden`/
+  transformed ancestors** and **auto-flip/shift** near viewport edges. `data-tip-pos`
+  becomes the *preferred* side (backward compatible; default top). Pure-CSS rendering
+  is kept as the no-JS fallback, suppressed by `.qz-tip-js` on `<html>`. WCAG 1.4.13:
+  Escape-dismissible, `aria-describedby`, rich tips hoverable; respects reduced-motion.
+
 ### Demo
 
 - Added a fictional **Material** example theme (`demo/themes/material.css`)

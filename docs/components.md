@@ -135,11 +135,15 @@ and focus-trap are inherited, not re-implemented per component.
 - Command palette `.cmdk-scrim` > `.cmdk` (⌘K / Ctrl+K); `.cmd-item` in `.cmd-group`,
   type-to-filter, arrow-key nav, empty groups hide
 - Sheet `.sheet` (`.right`/`.bottom`) — extends the dialog
-- Tooltip `[data-tip="…"]` + `[data-tip-pos="top|bottom|left|right"]` (arrow points at
-  trigger; reveals on hover **and** keyboard focus). Add `[data-tip-card]` for the elevated,
-  multi-line card look (soft shadow, wraps at a max-width). For **rich content** use the
-  popover form: `.tip` > focusable trigger + `.tip-pop[role=tooltip]` panel (`data-tip-pos`
-  for direction) with `.tip-row` / `.tip-row.strong` / `.tip-divider` / `.tip-note` inside
+- Tooltip `[data-tip="…"]` + `[data-tip-pos="top|bottom|left|right"]` (reveals on hover
+  **and** keyboard focus). Add `[data-tip-card]` for the elevated, multi-line card look.
+  For **rich content** use the popover form: `.tip` > focusable trigger + `.tip-pop` panel
+  with `.tip-row` / `.tip-row.strong` / `.tip-divider` / `.tip-note` inside.
+  **Auto-positioning:** one engine (`js/qazana.js`) drives both forms — it renders a single
+  floating node at `<body>` level (`position:fixed`) so the tip **escapes `overflow:hidden`
+  / transformed ancestors**, treats `data-tip-pos` as the *preferred* side, and **flips +
+  shifts** to stay on screen near edges. The pure-CSS rendering is the no-JS fallback
+  (suppressed by `.qz-tip-js` on `<html>`). Escape-dismissible; rich tips are hoverable.
 - Menu `.menu` + `.menu-item` (+`.danger`, `.menu-sep`, `.menu-label`)
 - Context menu `.menu.ctx` + `data-ctx="#id"` (right-click target)
 - Tabs `.tabs` + `[data-tabs]` (switch `.tabpanel`) · accordion `.acc` > `<details>`

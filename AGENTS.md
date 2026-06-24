@@ -27,15 +27,18 @@ These rules govern how coding agents maintain it.
    `@media (prefers-reduced-motion: reduce)`.
 6. **Type discipline.** `--display` (signature face) is for large headings and
    brand only; everything else is `--body`; data/code is `--mono`.
-7. **Tooltip positioning is explicit and clip-safe.** CSS tooltips (`[data-tip]`,
-   `.tip-pop`) render via `::before`/`::after` and **cannot escape an ancestor's
-   `overflow:hidden`/`clip` or a `transform`/`filter` containing block** — so set
-   the position deliberately with `[data-tip-pos=top|bottom|left|right]` (default
-   is top) to point the tip toward open space, and never put a tooltip trigger
-   inside a scroll/overflow-clipped or transformed container where the bubble
-   would be cut off. Anchor near a viewport edge → flip the side (e.g. an
-   icon in a top bar uses `data-tip-pos=bottom`). Tip motion already respects
-   `prefers-reduced-motion`; keep it that way.
+7. **Tooltips are one engine, auto-positioned.** Both authoring forms —
+   `[data-tip="…"]` (text) and `.tip > .tip-pop` (rich markup) — are driven by a
+   single behavior in `js/qazana.js` that renders **one floating node in `<body>`
+   (`position:fixed`)**, so it escapes any `overflow:hidden`/`clip` or
+   `transform`/`filter` ancestor, and **auto-positions**: `data-tip-pos` is the
+   *preferred* side (default top); the engine flips to the opposite side when the
+   preferred one would clip the viewport and shifts along the cross axis to stay
+   in view. The pure-CSS `::before`/`::after` rendering is the **no-JS fallback**,
+   suppressed by `.qz-tip-js` on `<html>`. Keep both content forms going through
+   this engine — don't add a third tooltip mechanism. WCAG 1.4.13: rich tips are
+   hoverable, all are `Escape`-dismissible and wired via `aria-describedby`; motion
+   respects `prefers-reduced-motion`.
 
 ## When you change anything
 

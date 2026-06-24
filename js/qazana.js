@@ -1133,3 +1133,85 @@ document.addEventListener('DOMContentLoaded', function () {
   function init() { document.querySelectorAll('[data-billing-cycle]').forEach(setup); }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
+
+/* ---- tooltips: ONE engine for both [data-tip] (text) and .tip>.tip-pop (rich).
+   Renders a single floating node in <body> (position:fixed) so it escapes any
+   overflow:hidden / transformed ancestor, and auto-positions: honours
+   data-tip-pos as the PREFERRED side, flips when it would clip the viewport, and
+   shifts along the cross axis to stay in view. The pure-CSS [data-tip]/.tip-pop
+   rendering is the no-JS fallback, suppressed via .qz-tip-js on <html>.
+   WCAG 1.4.13: hoverable (rich), Esc-dismissible, aria-describedby. ---- */
+(function () {
+  var GAP = 8, EDGE = 8, HIDE_DELAY = 80;
+  var tip, arrow, body, cur = null, hideT = null, overTip = false;
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function opposite(s) { return { top: 'bottom', bottom: 'top', left: 'right', right: 'left' }[s] || 'bottom'; }
+  function triggerOf(el) { return (el && el.closest) ? el.closest('[data-tip],.tip') : null; }
+
+  function buildTip() {
+    tip = document.createElement('div');
+    tip.className = 'qz-tip'; tip.id = 'qz-tip';   /* role set only while shown (empty role=tooltip has no a11y name) */
+    arrow = document.createElement('span'); arrow.className = 'qz-arrow';
+    body = document.createElement('span'); body.className = 'qz-tip-body';
+    tip.appendChild(arrow); tip.appendChild(body);
+    document.body.appendChild(tip);
+    tip.addEventListener('pointerenter', function () { overTip = true; clearTimeout(hideT); });
+    tip.addEventListener('pointerleave', function () { overTip = false; scheduleHide(); });
+  }
+
+  function fill(trg) {
+    var pop = trg.matches('.tip') ? trg.querySelector('.tip-pop') : null;
+    var rich = !!pop || trg.hasAttribute('data-tip-card');
+    if (pop) { body.textContent = ''; body.appendChild(pop.cloneNode(true)); }
+    else { body.textContent = trg.getAttribute('data-tip') || ''; }
+    if (rich) tip.setAttribute('data-rich', ''); else tip.removeAttribute('data-rich');
+    var pos = (pop ? pop.getAttribute('data-tip-pos') : trg.getAttribute('data-tip-pos')) || 'top';
+    return { ok: !!pop || body.textContent !== '', pos: pos };
+  }
+
+  function place(rect, pref) {
+    var tw = tip.offsetWidth, th = tip.offsetHeight, vw = innerWidth, vh = innerHeight;
+    var space = { top: rect.top, bottom: vh - rect.bottom, left: rect.left, right: vw - rect.right };
+    var need = { top: th + GAP, bottom: th + GAP, left: tw + GAP, right: tw + GAP };
+    var order = [pref, opposite(pref), 'top', 'bottom', 'right', 'left'], side = null;
+    for (var i = 0; i < order.length; i++) { if (space[order[i]] >= need[order[i]]) { side = order[i]; break; } }
+    if (!side) side = (Math.max(space.top, space.bottom) >= Math.max(space.left, space.right))
+      ? (space.top > space.bottom ? 'top' : 'bottom') : (space.left > space.right ? 'left' : 'right');
+    var cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2, x, y;
+    if (side === 'top') { x = cx - tw / 2; y = rect.top - th - GAP; }
+    else if (side === 'bottom') { x = cx - tw / 2; y = rect.bottom + GAP; }
+    else if (side === 'left') { x = rect.left - tw - GAP; y = cy - th / 2; }
+    else { x = rect.right + GAP; y = cy - th / 2; }
+    var sx = clamp(x, EDGE, Math.max(EDGE, vw - tw - EDGE)), sy = clamp(y, EDGE, Math.max(EDGE, vh - th - EDGE));
+    tip.style.left = sx + 'px'; tip.style.top = sy + 'px'; tip.setAttribute('data-pos', side);
+    if (side === 'top' || side === 'bottom') { arrow.style.left = clamp(cx - sx, 12, tw - 12) + 'px'; arrow.style.top = ''; }
+    else { arrow.style.top = clamp(cy - sy, 12, th - 12) + 'px'; arrow.style.left = ''; }
+  }
+
+  function show(trg) {
+    clearTimeout(hideT);
+    if (cur && cur !== trg) cur.removeAttribute('aria-describedby');
+    cur = trg;
+    var c = fill(trg);
+    if (!c.ok) { hide(); return; }
+    place(trg.getBoundingClientRect(), c.pos);
+    tip.setAttribute('role', 'tooltip');
+    tip.classList.add('show');
+    trg.setAttribute('aria-describedby', 'qz-tip');
+  }
+  function hide() { tip.classList.remove('show'); tip.removeAttribute('role'); if (cur) cur.removeAttribute('aria-describedby'); cur = null; }
+  function scheduleHide() { clearTimeout(hideT); hideT = setTimeout(function () { if (!overTip) hide(); }, HIDE_DELAY); }
+
+  function init() {
+    document.documentElement.classList.add('qz-tip-js');
+    buildTip();
+    document.addEventListener('pointerover', function (e) { var t = triggerOf(e.target); if (t && t !== cur) show(t); });
+    document.addEventListener('pointerout', function (e) { var t = triggerOf(e.target); if (t && t === cur && triggerOf(e.relatedTarget) !== t) scheduleHide(); });
+    document.addEventListener('focusin', function (e) { var t = triggerOf(e.target); if (t) show(t); });
+    document.addEventListener('focusout', function (e) { if (triggerOf(e.target) === cur) scheduleHide(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && cur) hide(); });
+    addEventListener('scroll', function () { if (cur) hide(); }, true);
+    addEventListener('resize', function () { if (cur) hide(); });
+  }
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
