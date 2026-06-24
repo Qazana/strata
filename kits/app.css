@@ -73,13 +73,13 @@ kbd,.kbd{font-variant-numeric:slashed-zero}
   font-family:var(--body);font-weight:500;font-size:var(--text-xs);letter-spacing:var(--tracking-normal);white-space:nowrap;
   padding:var(--space-1_5) var(--space-2_5);border-radius:var(--radius-sm);border:1px solid var(--line);opacity:0;pointer-events:none;
   transition:opacity .18s,transform .18s;z-index:50}
-[data-tip]:is(:hover,:focus-visible)::after{opacity:1;transform:translateX(-50%) translateY(0)}
+html:not(.qz-tip-js) [data-tip]:is(:hover,:focus-visible)::after{opacity:1;transform:translateX(-50%) translateY(0)}
 /* directional arrow — a rotated square that merges with the bubble and points
    at the trigger. Default: top (bubble above → arrow points down). */
 [data-tip]::before{content:"";position:absolute;width:10px;height:10px;background:var(--surface-3);border:1px solid var(--line);
   left:50%;margin-left:-5px;bottom:calc(100% + 3px);border-top:0;border-left:0;
   transform:rotate(45deg);opacity:0;pointer-events:none;transition:opacity .18s;z-index:51}
-[data-tip]:is(:hover,:focus-visible)::before{opacity:1}
+html:not(.qz-tip-js) [data-tip]:is(:hover,:focus-visible)::before{opacity:1}
 
 /* card variant — opt-in elevated, multi-line popover look (stagetimer-style):
    bigger readable text, roomier padding, soft elevation, wraps at a max-width.
@@ -811,7 +811,7 @@ input[type=date],input[type=time]{font-family:var(--body)}
   border-radius:var(--radius);box-shadow:var(--shadow-lg);
   padding:var(--space-2) var(--space-3);font-family:var(--body);font-size:var(--text-sm);line-height:1.45;
   opacity:0;pointer-events:none;transition:opacity .18s,transform .18s}
-.tip:is(:hover,:focus-within)>.tip-pop{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+html:not(.qz-tip-js) .tip:is(:hover,:focus-within)>.tip-pop{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
 /* arrow (rotated square, merges with the panel edge) — default: panel above */
 .tip-pop::before{content:"";position:absolute;left:50%;margin-left:-5px;bottom:-5px;width:10px;height:10px;
   background:var(--surface-3);border:1px solid var(--line-strong);border-top:0;border-left:0;transform:rotate(45deg)}
@@ -826,6 +826,32 @@ input[type=date],input[type=time]{font-family:var(--body)}
 .tip-pop[data-tip-pos=left]::before{left:auto;right:-5px;top:50%;margin:-5px 0 0;border:1px solid var(--line-strong);border-bottom:0;border-left:0}
 /* content helpers */
 .tip-row{display:flex;justify-content:space-between;gap:var(--space-4);white-space:nowrap}
+
+/* ---- unified JS tooltip: ONE floating node the engine (js/qazana.js) renders at
+   body level (position:fixed) so it escapes overflow/clip ancestors and auto-flips.
+   The CSS [data-tip]/.tip-pop rendering above is the no-JS fallback (gated by
+   .qz-tip-js on <html>). data-pos is set by the engine to face the trigger. ---- */
+.qz-tip{position:fixed;left:0;top:0;z-index:1000;max-width:min(300px,80vw);
+  background:var(--surface-3);color:var(--text);border:1px solid var(--line);border-radius:var(--radius-sm);
+  box-shadow:var(--shadow-sm);padding:var(--space-1_5) var(--space-2_5);
+  font-family:var(--body);font-weight:500;font-size:var(--text-xs);line-height:1.45;white-space:nowrap;
+  opacity:0;pointer-events:none;transition:opacity var(--dur-2) var(--ease)}
+.qz-tip.show{opacity:1}
+.qz-tip[data-rich]{white-space:normal;text-align:start;font-size:var(--text-sm);
+  padding:var(--space-2) var(--space-3);border-radius:var(--radius);border-color:var(--line-strong);
+  box-shadow:var(--shadow-lg);pointer-events:auto}
+.qz-tip .qz-arrow{position:absolute;width:10px;height:10px;background:var(--surface-3);border:1px solid var(--line);transform:rotate(45deg)}
+.qz-tip[data-rich] .qz-arrow{border-color:var(--line-strong)}
+.qz-tip[data-pos=top] .qz-arrow{bottom:-5px;margin-left:-5px;border-top:0;border-left:0}
+.qz-tip[data-pos=bottom] .qz-arrow{top:-5px;margin-left:-5px;border-bottom:0;border-right:0}
+.qz-tip[data-pos=left] .qz-arrow{right:-5px;margin-top:-5px;border-bottom:0;border-left:0}
+.qz-tip[data-pos=right] .qz-arrow{left:-5px;margin-top:-5px;border-top:0;border-right:0}
+/* rich clone: the original .tip-pop carries its own chrome — neutralise it inside
+   the floating node (the .qz-tip provides bubble + arrow) but keep its content layout */
+.qz-tip .tip-pop{position:static;inset:auto;opacity:1;transform:none;border:0;background:transparent;
+  box-shadow:none;padding:0;margin:0;max-width:none;width:auto;pointer-events:auto}
+.qz-tip .tip-pop::before{display:none}
+@media (prefers-reduced-motion:reduce){.qz-tip{transition:none}}
 .tip-row+.tip-row{margin-top:2px}
 .tip-row.strong{font-weight:700}
 .tip-divider{height:1px;background:var(--line-strong);margin:var(--space-1) 0}
