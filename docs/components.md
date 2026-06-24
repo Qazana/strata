@@ -450,3 +450,15 @@ Variants: `.msg.agent` (primary avatar/role) and `.msg.note` (internal note, war
 `.composer` (textarea + `.c-bar` toolbar + `.c-actions`). `.macros` canned-reply picker is a native
 `<details>` dropdown (`.macro-menu` opens upward; `.mm-t` + `.mm-d` per entry). Selection/insertion
 is consumer-wired.
+
+## Media kit — gallery & lightbox
+
+- **Gallery** — `.media .gallery` (responsive `auto-fill` tile grid) > `.tile` (an `<a>`,
+  square, `object-fit:cover` image with a hover zoom). Add `.tile-cap` for a hover caption
+  and `.tile-badge` for a corner marker (e.g. a ▶ on video tiles).
+- **Lightbox** — add `data-lightbox` to the gallery container; the behavior in `js/qazana.js`
+  builds **one** full-screen viewer at `<body>` level and opens it on tile click. Each item's
+  media URL is the `href` (or `data-src`); a `.mp4/.webm/.mov/.m4v` URL or `data-type="video"`
+  renders a `<video controls>`, otherwise an `<img>`. `data-caption` feeds the caption.
+  Prev/next + counter, keyboard (←/→/`Esc`), focus trap + restore, background-scroll lock,
+  `role="dialog"`/`aria-modal`. Dark chrome uses the kit's intentional black/white constants.

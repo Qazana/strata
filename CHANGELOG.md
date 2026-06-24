@@ -7,6 +7,12 @@ component/token, major = rename/removal/breaking token change.
 
 ### Minor
 
+- **Gallery + lightbox** (Media kit). `.media .gallery` responsive tile grid (`.tile`,
+  `.tile-cap`, `.tile-badge`) and a `data-lightbox` behavior that builds one full-screen
+  viewer at `<body>` level — images **or** video (`data-type="video"` / `.mp4|.webm|.mov|.m4v`),
+  prev/next + counter, keyboard (←/→/Esc), focus trap + restore, scroll-lock, `role="dialog"`.
+  Re-authored generically from flickLoad's Flickr-specific PhotoGrid/ImageViewer (no domain
+  logic). Dark chrome uses the kit's intentional black/white constants.
 - **Tooltips unified + context-aware.** Both `[data-tip]` (text) and `.tip`/`.tip-pop`
   (rich) now run through one engine in `js/qazana.js` that renders a single floating
   node at `<body>` level (`position:fixed`) — so tooltips **escape `overflow:hidden`/
