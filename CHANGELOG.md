@@ -5,6 +5,14 @@ component/token, major = rename/removal/breaking token change.
 
 ## Unreleased
 
+### Demo
+
+- Added a fictional **Material** example theme (`demo/themes/material.css`)
+  modelling Material 3 — tonal-purple primary, mauve tertiary, Roboto, 12px
+  radius, dual-layer elevation shadows; light-oriented. Registered in the brand
+  picker (`demo-nav.js`) and the theme switcher. Demo-only; not shipped in the
+  package.
+
 ### Minor
 
 - **Checklist** (`.checklist`) — tickable to-do list in the App kit. Reuses the
@@ -17,6 +25,16 @@ component/token, major = rename/removal/breaking token change.
 
 ### Patch
 
+- Softened the focus ring: `--primary-ring` alpha .22 → .15 and the input/control
+  ring spread 3px → 2px (17 rules) so forms and focusable controls glow less.
+  Validation (`.is-error`/`.is-success`) rings unchanged.
+- `.alert` text (`.at`/`.am`) now wraps long unbreakable tokens (URLs, signatures):
+  `overflow-wrap:anywhere` + `min-width:0` on `.alert` so it also breaks when the
+  alert is a flex/grid item (where `min-width:auto` previously forced overflow).
+- Status dot (`.dot.ok/.warn/.down/.idle`) gains a trailing `margin-inline-end`
+  so an inline dot no longer butts its label; flex-gap rows (`.svc-row`,
+  `.jobrow`, `.split-item .si-name`) and the positioned avatar overlay reset it,
+  and the bare `.dot` separator is untouched.
 - Replaced `transition:all` (5 spots: `.remember input`, `.kit-nav a`, `.btn-icon`,
   `.blog .cat`, `.blog .pager a`) with explicit property lists so only the properties
   that actually change animate — no unintended transitions or extra repaints. Same

@@ -42,7 +42,7 @@ select:not([multiple]){
 input::placeholder,textarea::placeholder{color:var(--muted)}
 input:hover:not(:focus),textarea:hover:not(:focus),select:hover:not(:focus){border-color:rgb(var(--border-rgb) / .22)}
 input:focus-visible,textarea:focus-visible,select:focus-visible{
-  border-color:var(--primary-bright);background:var(--surface-active);box-shadow:0 0 0 3px var(--primary-ring);caret-color:var(--primary-bright)}
+  border-color:var(--primary-bright);background:var(--surface-active);box-shadow:0 0 0 2px var(--primary-ring);caret-color:var(--primary-bright)}
 input.invalid,input.is-error,textarea.is-error,select.is-error{border-color:var(--danger);box-shadow:0 0 0 3px rgb(var(--danger-rgb) / .18)}
 input.is-success,textarea.is-success,select.is-success{border-color:var(--primary);box-shadow:0 0 0 3px rgb(var(--primary-rgb) / .14)}
 input.is-error:focus,input.is-success:focus{box-shadow:0 0 0 3px rgb(var(--danger-rgb) / .22)}

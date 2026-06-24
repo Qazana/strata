@@ -88,7 +88,7 @@
 
   /* ---- derived tints (themeable via the channels above) ---- */
   --primary-soft:rgb(var(--primary-rgb) / .12);   /* soft fill */
-  --primary-ring:rgb(var(--primary-rgb) / .22);   /* focus ring */
+  --primary-ring:rgb(var(--primary-rgb) / .15);   /* focus ring — kept subtle */
   --primary-line:rgb(var(--primary-rgb) / .30);   /* brand border/accent */
   --danger-soft:rgb(var(--danger-rgb) / .12);
   --warning-soft:rgb(var(--warning-rgb) / .12);

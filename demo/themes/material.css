@@ -1,0 +1,55 @@
+/* "Material" — FICTIONAL example theme for the public demo, modelling Google's
+   Material 3 (Material You) as a recognisable design language.
+
+   Unlike Cedar (which researches AI tells and does the opposite), this theme
+   deliberately adopts a well-known system: tonal-purple primary, mauve tertiary
+   accent, Roboto, generous 12px corner radius, and Material's signature
+   dual-layer elevation shadows (a key light + an ambient light) — separation
+   comes from elevation, not heavy borders.
+
+   Made for the LIGHT scheme: a `:root` override beats both scheme blocks, so the
+   surfaces below pin it to Material's light neutrals regardless of the
+   light/dark toggle. Roboto + Roboto Flex are loaded lazily by the demo brand
+   picker (see demo-nav.js). One :root block — the same shape a product ships. */
+:root{
+  color-scheme:light;
+  --font-smooth:auto;
+
+  /* ---- Material 3 neutral surfaces (tonal, purple-tinted whites) ---- */
+  --bg:#fef7ff;             /* surface */
+  --surface:#ffffff;        /* container-lowest — cards float on --bg via elevation */
+  --surface-2:#f3edf7;      /* container — secondary fills / hover / code */
+  --surface-3:#ffffff;      /* menus / popovers (white, raised by shadow) */
+  --surface-sunken:#ece6f0; /* container-high — recessed panels */
+  --surface-active:#f7f2fa; /* container-low — field activation */
+  --skeleton:#e6e0e9;       /* container-highest */
+  --border-rgb:121 116 126; /* M3 outline (#79747E) — lines flip to a purple-grey */
+
+  --text:#1d1b20;           /* on-surface */
+  --text-2:#49454f;         /* on-surface-variant */
+  --muted:#79747e;          /* outline */
+
+  /* ---- brand + semantic (Material 3 baseline) ---- */
+  --primary:#6750a4;        --primary-rgb:103 80 164;        /* tonal purple — white passes AA on it */
+  --primary-bright:#5b4a92; --primary-bright-rgb:91 74 146;  /* deepened for link/emphasis AA on light */
+  --on-primary:#ffffff;
+  --accent:#7d5260;         --accent-rgb:125 82 96;          /* tertiary mauve — the sharp counterpoint */
+  --danger:#b3261e;         --danger-rgb:179 38 30;          /* M3 error */
+  --warning:#9a6700;        --warning-rgb:154 103 0;
+  --info:#1565c0;           --info-rgb:21 101 192;           /* Material blue 800 */
+
+  /* light scheme: white ink on every solid semantic fill */
+  --on-danger:#fff; --on-warning:#fff; --on-info:#fff; --on-accent:#fff;
+
+  /* ---- radius: M3 medium (12px), buttons/cards read rounded ---- */
+  --radius:12px;
+
+  /* ---- elevation: Material dual-layer (key + ambient light) ---- */
+  --shadow-sm:0 1px 2px 0 rgb(0 0 0 / .30), 0 1px 3px 1px rgb(0 0 0 / .15);
+  --shadow:0 1px 2px 0 rgb(0 0 0 / .30), 0 2px 6px 2px rgb(0 0 0 / .15);
+  --shadow-lg:0 4px 8px 3px rgb(0 0 0 / .15), 0 1px 3px 0 rgb(0 0 0 / .30);
+
+  /* ---- type: Roboto everywhere; Roboto Flex carries display ---- */
+  --display:'Roboto Flex','Roboto','Arial',sans-serif;
+  --body:'Roboto','Arial',sans-serif;
+}
