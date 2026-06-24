@@ -9,7 +9,9 @@
 //
 // Covered: data-cmdk-open (command palette), data-ctx (context menu),
 // data-picker (date popover), data-calendar (inline calendar),
-// data-daterange (range calendar), data-colorpicker (swatch picker).
+// data-daterange (range calendar), data-colorpicker (swatch picker),
+// [data-tip]/.tip-pop tooltip engine (body-level, role/aria, Esc),
+// data-lightbox (gallery viewer: open, img/video, keyboard nav, focus restore).
 //
 // Add a behavior: push a { name, url, viewport, run(page) } onto CHECKS. `run`
 // drives the interaction and returns an array of failure strings ([] = pass).
@@ -263,6 +265,104 @@ const CHECKS = [
         'clicking a swatch marks it active (.on)');
       t(await cp.evaluate((el, i) => !el.querySelectorAll('.sw')[i].classList.contains('on'), startActive),
         'the previously-active swatch is deactivated');
+      return fails;
+    },
+  },
+  {
+    // Unified tooltip engine: hovering a [data-tip] shows ONE floating node that
+    // lives at <body> level (position:fixed, so it escapes overflow/clip), carries
+    // role=tooltip + the attr text, wires aria-describedby, and Esc-dismisses
+    // (role stripped when hidden — the empty role=tooltip a11y fix).
+    name: 'tooltip',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      t(await page.evaluate(() => document.documentElement.classList.contains('qz-tip-js')),
+        'engine marks <html> with .qz-tip-js (gates the CSS fallback off)');
+      const trg = page.locator('[data-tip]').first();
+      if (!(await trg.count())) return ['no [data-tip] trigger in fixture'];
+      const expected = (await trg.getAttribute('data-tip')).trim();
+
+      await trg.focus();   // focus-reveal is part of the contract and is deterministic headless
+      await page.waitForSelector('.qz-tip.show', { timeout: 1000 });
+      // snapshot the shown state in ONE evaluate (the hide-delay timer must not race
+      // a multi-await assertion window)
+      const snap = await page.evaluate(() => {
+        const e = document.querySelector('.qz-tip');
+        const a = document.activeElement;
+        return {
+          count: document.querySelectorAll('.qz-tip').length,
+          bodyLevel: !!e && e.parentElement === document.body,
+          fixed: !!e && getComputedStyle(e).position === 'fixed',
+          role: e && e.getAttribute('role'),
+          text: e && e.textContent.trim(),
+          describedby: a && a.getAttribute('aria-describedby'),
+        };
+      });
+      t(snap.count === 1, 'exactly one floating tooltip node exists (no double render)');
+      t(snap.bodyLevel, 'tooltip is a direct child of <body> (escapes overflow/clip ancestors)');
+      t(snap.fixed, 'tooltip is position:fixed');
+      t(snap.role === 'tooltip', 'shown tooltip carries role=tooltip');
+      t(snap.text === expected, 'tooltip text matches the data-tip attribute');
+      t(snap.describedby === 'qz-tip', 'focused trigger gets aria-describedby=qz-tip while shown');
+
+      await page.keyboard.press('Escape');
+      t(await page.evaluate(() => !document.querySelector('.qz-tip').classList.contains('show')),
+        'Escape hides the tooltip');
+      t(await page.evaluate(() => document.querySelector('.qz-tip').getAttribute('role') === null),
+        'role is stripped when hidden (empty role=tooltip would fail axe)');
+      return fails;
+    },
+  },
+  {
+    // Gallery lightbox: clicking a [data-lightbox] tile opens a body-level viewer
+    // with an <img> + "1 / n" counter; ArrowRight advances; the video item renders
+    // a <video>; Esc closes and restores focus to the opening tile.
+    name: 'lightbox',
+    url: '/demo/media/index.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const gal = page.locator('[data-lightbox]').first();
+      if (!(await gal.count())) return ['no [data-lightbox] gallery in fixture'];
+      const tiles = gal.locator('a[href], [data-lightbox-item]');
+      const n = await tiles.count();
+      if (n < 2) return ['gallery needs >=2 items to test'];
+
+      t(await page.locator('.qz-lightbox.open').count() === 0, 'lightbox starts closed');
+
+      await tiles.first().click();
+      await page.waitForSelector('.qz-lightbox.open', { timeout: 1000 });
+      t(await page.locator('.qz-lightbox .lb-stage img').count() === 1, 'first item renders an <img>');
+      t(await page.evaluate(() => document.querySelector('.qz-lightbox .lb-count').textContent.trim().startsWith('1 /')),
+        'counter shows item 1 of n');
+
+      await page.keyboard.press('ArrowRight');
+      t(await page.evaluate(() => document.querySelector('.qz-lightbox .lb-count').textContent.trim().startsWith('2 /')),
+        'ArrowRight advances to item 2');
+
+      const vidIdx = await gal.evaluate((el) => {
+        const items = el.querySelectorAll('a[href], [data-lightbox-item]');
+        for (let i = 0; i < items.length; i++) {
+          const src = items[i].getAttribute('data-src') || items[i].getAttribute('href') || '';
+          if (items[i].getAttribute('data-type') === 'video' || /\.(mp4|webm|mov|m4v)(\?|#|$)/i.test(src)) return i;
+        }
+        return -1;
+      });
+      if (vidIdx >= 0) {
+        for (let k = 0; k <= n; k++) {
+          const cur = await page.evaluate(() => parseInt(document.querySelector('.qz-lightbox .lb-count').textContent, 10) - 1);
+          if (cur === vidIdx) break;
+          await page.keyboard.press('ArrowRight');
+        }
+        t(await page.locator('.qz-lightbox .lb-stage video').count() === 1, 'video item renders a <video>');
+      }
+
+      await page.keyboard.press('Escape');
+      t(await page.locator('.qz-lightbox.open').count() === 0, 'Escape closes the lightbox');
+      t(await tiles.first().evaluate((el) => el === document.activeElement),
+        'focus returns to the opening tile on close');
       return fails;
     },
   },
