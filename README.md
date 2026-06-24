@@ -117,6 +117,7 @@ docs/
   components.md       component reference (the demo is the live spec)
 harness/
   shoot.mjs           Playwright render harness (screenshots + probes)
+DESIGN.md             design system: thesis, type, colour, motion, anti-slop principles
 CLAUDE.md             maintenance contract (token discipline, no domain code, a11y)
 HANDOFF.md            design → dev handoff notes
 ```
