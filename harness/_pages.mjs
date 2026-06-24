@@ -43,7 +43,7 @@ export const PAGES = [
   { name: 'email/index', tags: ['shoot'] },
   { name: 'email/transactional', tags: ['shoot'] },
   { name: 'email/newsletter', tags: ['shoot'] },
-  { name: 'media/index', tags: ['shoot', 'visual'] },
+  { name: 'media/index', tags: ['shoot', 'visual', 'a11y'] },
   { name: 'media/video', tags: ['shoot'] },
   { name: 'media/audio', tags: ['shoot'] },
   { name: 'media/social', tags: ['shoot'] },

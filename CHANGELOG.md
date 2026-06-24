@@ -41,6 +41,11 @@ component/token, major = rename/removal/breaking token change.
 
 ### Patch
 
+- Video player a11y: `.pcontrols` gained a dark scrim gradient so the white control
+  chrome (`.ptime`, icons) keeps AA contrast over a light theme / any video (it was
+  failing color-contrast on light), and the audio `.atrack` progressbars got an
+  `aria-label` (were failing `aria-progressbar-name`). Surfaced by gating `media/index`
+  in the a11y harness.
 - Softened the focus ring: `--primary-ring` alpha .22 → .15 and the input/control
   ring spread 3px → 2px (17 rules) so forms and focusable controls glow less.
   Validation (`.is-error`/`.is-success`) rings unchanged.
