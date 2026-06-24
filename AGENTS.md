@@ -27,6 +27,15 @@ These rules govern how coding agents maintain it.
    `@media (prefers-reduced-motion: reduce)`.
 6. **Type discipline.** `--display` (signature face) is for large headings and
    brand only; everything else is `--body`; data/code is `--mono`.
+7. **Tooltip positioning is explicit and clip-safe.** CSS tooltips (`[data-tip]`,
+   `.tip-pop`) render via `::before`/`::after` and **cannot escape an ancestor's
+   `overflow:hidden`/`clip` or a `transform`/`filter` containing block** — so set
+   the position deliberately with `[data-tip-pos=top|bottom|left|right]` (default
+   is top) to point the tip toward open space, and never put a tooltip trigger
+   inside a scroll/overflow-clipped or transformed container where the bubble
+   would be cut off. Anchor near a viewport edge → flip the side (e.g. an
+   icon in a top bar uses `data-tip-pos=bottom`). Tip motion already respects
+   `prefers-reduced-motion`; keep it that way.
 
 ## When you change anything
 

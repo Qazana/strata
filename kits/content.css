@@ -36,11 +36,11 @@
 
 /* category chips + pagination */
 .blog .cats{display:flex;flex-wrap:wrap;gap:var(--space-2_5);justify-content:center;margin-bottom:var(--space-6_5)}
-.blog .cat{font-size:var(--text-md);color:var(--text-2);text-decoration:none;border:1px solid var(--line);border-radius:var(--radius-pill);padding:var(--space-2) var(--space-4);transition:all var(--dur-1)}
+.blog .cat{font-size:var(--text-md);color:var(--text-2);text-decoration:none;border:1px solid var(--line);border-radius:var(--radius-pill);padding:var(--space-2) var(--space-4);transition:color var(--dur-1),background var(--dur-1),border-color var(--dur-1)}
 .blog .cat:hover{color:var(--text);border-color:var(--line-strong)}
 .blog .cat.on{color:var(--on-primary);background:var(--primary);border-color:var(--primary)}
 .blog .pager{display:flex;justify-content:center;gap:var(--space-1_5);margin-top:var(--space-7)}
-.blog .pager a{min-width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--line);border-radius:var(--radius);color:var(--text-2);text-decoration:none;font-size:var(--text-md);transition:all var(--dur-1)}
+.blog .pager a{min-width:40px;height:40px;display:grid;place-items:center;border:1px solid var(--line);border-radius:var(--radius);color:var(--text-2);text-decoration:none;font-size:var(--text-md);transition:color var(--dur-1),background var(--dur-1),border-color var(--dur-1)}
 .blog .pager a:hover{color:var(--text);border-color:var(--line-strong)}
 .blog .pager a.on{color:var(--on-primary);background:var(--primary);border-color:var(--primary)}
 
@@ -51,7 +51,7 @@
 .blog .news-form{display:flex;gap:var(--space-2_5);max-width:440px;margin:0 auto}
 .blog .news-form input{flex:1;background:var(--bg);border:1px solid var(--line-strong);border-radius:var(--radius-pill);
   padding:var(--space-3_5) var(--space-4_5);color:var(--text);font-family:var(--body);font-size:var(--text-base);outline:0;transition:border-color var(--dur-1),box-shadow var(--dur-1)}
-.blog .news-form input:focus{border-color:var(--primary-bright);box-shadow:0 0 0 3px var(--primary-ring)}
+.blog .news-form input:focus{border-color:var(--primary-bright);box-shadow:0 0 0 2px var(--primary-ring)}
 @media (max-width:560px){.blog .news-form{flex-direction:column}}
 
 /* ---- text-only post list (no thumbnails, Medium-style reading list) ------ */

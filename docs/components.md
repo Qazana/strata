@@ -112,6 +112,12 @@ skeletons `.skel` (`.skel-line`) · section `.loading-block` · activity log `.l
   (a `.step.done` tints the following `.sline`). Horizontal, token-driven.
 - **Upload list** — `.upload-list` > `.upload-row` (`.done`) with `.uicon` / `.uinfo`
   (`.uname` / `.umeta` / `.ubar` > `i`) + `.urm` remove button.
+- **Checklist** — `.checklist` > `li` > `label.check` (reuses the `.check` checkbox);
+  the done state is pure CSS — `input:checked + span` strikes/dims the label, no JS.
+- **Setup card** — `.setup-card` (onboarding/setup): `.setup-head` (title + "N of M"
+  + `.setup-prog` > `i` progress bar, `role="progressbar"`) over `.setup-list` > `li`
+  (`.done`) with `.sc-ic` (filled check when done) / `.sc-body` (`b` + `span`) and a
+  trailing `.btn` action. Progress width/count are author-set markup (no JS).
 
 ## Feedback
 - Toast `.toast` (`.ok/.err/.warn/.info`) + icon chip; undo via `.undo`; **live**

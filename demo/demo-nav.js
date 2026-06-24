@@ -128,11 +128,11 @@
   // swapping the theme.css :root override (the same override a product ships).
   // Skipped on themes/index.html, which has its own dedicated switcher (#theme-css).
   if (!document.getElementById('theme-css')) {
-    var BRANDS = [['strata', 'Strata · default'], ['qazana', 'qazana'], ['aurora', 'aurora'], ['vermeil', 'vermeil'], ['nocturne', 'nocturne'], ['cedar', 'cedar']];
+    var BRANDS = [['strata', 'Strata · default'], ['qazana', 'qazana'], ['aurora', 'aurora'], ['vermeil', 'vermeil'], ['nocturne', 'nocturne'], ['cedar', 'cedar'], ['material', 'material']];
     // each brand is designed for a scheme; applying it on pick shows it as intended
-    var BREC = { strata: 'dark-knight', qazana: 'desert-dunes', aurora: 'dark-knight', vermeil: 'desert-dunes', nocturne: 'dark-knight', cedar: 'desert-dunes' };
+    var BREC = { strata: 'dark-knight', qazana: 'desert-dunes', aurora: 'dark-knight', vermeil: 'desert-dunes', nocturne: 'dark-knight', cedar: 'desert-dunes', material: 'desert-dunes' };
     // display faces not self-hosted by the tokens (loaded lazily on first brand pick)
-    var FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700&display=swap';
+    var FONTS = 'https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700&family=Space+Grotesk:wght@400;500;700&family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,700&family=Roboto:wght@400;500;700&family=Roboto+Flex:opsz,wght@8..144,400;8..144,700&display=swap';
     var fontsLoaded = false;
     function ensureFonts() { if (fontsLoaded) return; var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = FONTS; document.head.appendChild(l); fontsLoaded = true; }
     function brandLink() { var el = document.getElementById('qz-brand'); if (!el) { el = document.createElement('link'); el.id = 'qz-brand'; el.rel = 'stylesheet'; document.head.appendChild(el); } return el; }
