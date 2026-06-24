@@ -11,7 +11,8 @@
 // data-picker (date popover), data-calendar (inline calendar),
 // data-daterange (range calendar), data-colorpicker (swatch picker),
 // [data-tip]/.tip-pop tooltip engine (body-level, role/aria, Esc),
-// data-lightbox (gallery viewer: open, img/video, keyboard nav, focus restore).
+// data-lightbox (gallery viewer: open, img/video, keyboard nav, focus restore),
+// data-tabs (activate/show/hide + roving focus), data-table-sort (asc/desc toggle).
 //
 // Add a behavior: push a { name, url, viewport, run(page) } onto CHECKS. `run`
 // drives the interaction and returns an array of failure strings ([] = pass).
@@ -363,6 +364,64 @@ const CHECKS = [
       t(await page.locator('.qz-lightbox.open').count() === 0, 'Escape closes the lightbox');
       t(await tiles.first().evaluate((el) => el === document.activeElement),
         'focus returns to the opening tile on close');
+      return fails;
+    },
+  },
+  {
+    // Tabs: clicking a .tab activates it (+aria-selected), shows its .tabpanel and
+    // hides the rest; ArrowRight moves+focuses to the next tab (roving tabindex).
+    name: 'tabs',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const grp = page.locator('[data-tabs]').first();
+      if (!(await grp.count())) return ['no [data-tabs] in fixture'];
+      const tabs = grp.locator('.tab'), panels = grp.locator('.tabpanel');
+      const nt = await tabs.count();
+      if (nt < 2 || (await panels.count()) < 2) return ['tabs needs >=2 tabs + panels'];
+
+      t(await grp.locator('.tab.active').count() === 1, 'exactly one tab active initially');
+      t(await tabs.first().getAttribute('role') === 'tab', 'tabs get role=tab');
+      t(await panels.nth(1).evaluate((el) => el.hidden), 'a non-active panel starts hidden');
+
+      await tabs.nth(1).click();
+      t(await tabs.nth(1).evaluate((el) => el.classList.contains('active') && el.getAttribute('aria-selected') === 'true'),
+        'clicked tab becomes active + aria-selected=true');
+      t(await panels.nth(1).evaluate((el) => !el.hidden), "clicked tab's panel is shown");
+      t(await panels.first().evaluate((el) => el.hidden), 'the previously-open panel is hidden');
+
+      await tabs.nth(1).focus();
+      await page.keyboard.press('ArrowRight');
+      const ni = (1 + 1) % nt;
+      t(await tabs.nth(ni).evaluate((el) => el.classList.contains('active') && el === document.activeElement),
+        'ArrowRight activates + focuses the next tab');
+      return fails;
+    },
+  },
+  {
+    // Table sort: clicking a th.sortable toggles asc -> desc; sorting another column
+    // clears the previous indicator (visual sort state, single active column).
+    name: 'table-sort',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const tbl = page.locator('[data-table-sort]').first();
+      if (!(await tbl.count())) return ['no [data-table-sort] in fixture'];
+      const ths = tbl.locator('th.sortable');
+      if ((await ths.count()) < 2) return ['needs >=2 sortable columns'];
+
+      const dir = (loc) => loc.evaluate((el) => el.classList.contains('asc') ? 'asc' : el.classList.contains('desc') ? 'desc' : 'none');
+      await ths.first().click();
+      const s1 = await dir(ths.first());
+      t(s1 !== 'none', 'clicking a sortable header sets a sort direction');
+      await ths.first().click();
+      const s2 = await dir(ths.first());
+      t((s1 === 'asc' && s2 === 'desc') || (s1 === 'desc' && s2 === 'asc'), 'a second click toggles the direction (asc<->desc)');
+      await ths.nth(1).click();
+      t((await dir(ths.nth(1))) !== 'none', 'sorting another column sets a direction on it');
+      t((await dir(ths.first())) === 'none', 'the previously-sorted column clears its indicator');
       return fails;
     },
   },
