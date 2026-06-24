@@ -25,7 +25,7 @@
   </div>
   <nav class="kit-nav">
     <a href="#color" class="on">Foundations</a><a href="#type">Type</a><a href="#icons">Icons</a>
-    <a href="#buttons">Buttons</a><a href="#forms">Forms</a>
+    <a href="#buttons">Buttons</a><a href="#forms">Forms</a><a href="#checklist">Checklist</a>
     <a href="#badges">Badges</a><a href="#avatars">Avatars</a><a href="#cards">Cards</a><a href="#charts">Charts</a><a href="#stats">Stats</a>
     <a href="#carousel">Carousel</a><a href="#datatable">Data table</a><a href="#ctxmenu">Menu</a>
     
@@ -237,6 +237,35 @@
         <div class="field-row full"><label class="fld">Bio</label><textarea rows="2" placeholder="A line about you…"></textarea></div>
       </div>
       <div class="form-actions"><button class="btn btn-ghost btn-sm">Cancel</button><button class="btn btn-primary btn-sm">Save changes</button></div>
+    </div>
+  </section>
+
+  <!-- CHECKLIST -->
+  <section class="sec" id="checklist">
+    <h2>Checklist &amp; setup</h2>
+    <div class="sub">Tickable checklist — pure-CSS done state, reuses <code>.check</code></div>
+    <div class="demo">
+      <ul class="checklist" style="max-width:420px">
+        <li><label class="check"><input type="checkbox" checked><span>Connect your repository</span></label></li>
+        <li><label class="check"><input type="checkbox" checked><span>Add a billing method</span></label></li>
+        <li><label class="check"><input type="checkbox"><span>Invite a teammate</span></label></li>
+        <li><label class="check"><input type="checkbox"><span>Deploy your first project</span></label></li>
+      </ul>
+    </div>
+    <div class="sub">Setup card — progress + per-row actions</div>
+    <div class="demo">
+      <section class="setup-card" style="max-width:480px">
+        <header class="setup-head">
+          <div><h3>Finish setting up</h3><p>2 of 4 complete</p></div>
+          <div class="setup-prog" role="progressbar" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100" aria-label="Setup progress"><i style="width:50%"></i></div>
+        </header>
+        <ul class="setup-list">
+          <li class="done"><span class="sc-ic"></span><div class="sc-body"><b>Create your account</b><span>All set.</span></div></li>
+          <li class="done"><span class="sc-ic"></span><div class="sc-body"><b>Verify your email</b><span>All set.</span></div></li>
+          <li><span class="sc-ic"></span><div class="sc-body"><b>Invite your team</b><span>Add teammates to collaborate.</span></div><a class="btn btn-primary btn-sm" href="#">Invite</a></li>
+          <li><span class="sc-ic"></span><div class="sc-body"><b>Connect a data source</b><span>Sync from an existing tool.</span></div><a class="btn btn-ghost btn-sm" href="#">Connect</a></li>
+        </ul>
+      </section>
     </div>
   </section>
 

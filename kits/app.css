@@ -135,7 +135,7 @@ html{color-scheme:dark}
 .kit-head p{color:var(--text-2);font-size:var(--text-base);margin-top:var(--space-2);max-width:60ch}
 .kit-nav{display:flex;gap:var(--space-2);flex-wrap:wrap;margin:var(--space-4_5) 0 var(--space-1_5)}
 .kit-nav a{font-size:var(--text-sm);color:var(--text-2);text-decoration:none;border:1px solid var(--line);
-  border-radius:99px;padding:var(--space-1_5) var(--space-3_5);transition:all .18s}
+  border-radius:99px;padding:var(--space-1_5) var(--space-3_5);transition:color var(--dur-2),background var(--dur-2),border-color var(--dur-2)}
 .kit-nav a:hover{color:var(--text);border-color:rgb(var(--border-rgb) / .2)}
 .kit-nav a.on{color:var(--primary-bright);border-color:rgb(var(--primary-rgb) / .4);background:rgb(var(--primary-rgb) / .07)}
 
@@ -184,6 +184,11 @@ html{color-scheme:dark}
 .dot.warn{background:var(--warning);box-shadow:0 0 8px rgb(var(--warning-rgb) / .5)}
 .dot.down{background:var(--danger);box-shadow:0 0 8px rgb(var(--danger-rgb) / .5)}
 .dot.idle{background:var(--muted)}
+/* trailing gap so an inline status dot doesn't butt its label; flex-gap rows
+   and the positioned avatar overlay reset it (their parent owns spacing).
+   bare .dot (e.g. the post-meta separator) is intentionally left untouched. */
+.dot.ok,.dot.warn,.dot.down,.dot.idle{margin-inline-end:var(--space-2)}
+.svc-row .dot,.jobrow .dot,.split-item .si-name .dot,.avatar-wrap .dot{margin-inline-end:0}
 
 /* ---- toggle + checkbox + slider ---- */
 .switch{position:relative;display:inline-flex;width:42px;height:24px;flex-shrink:0}
@@ -192,7 +197,7 @@ html{color-scheme:dark}
 .switch .track::after{content:"";position:absolute;width:18px;height:18px;border-radius:50%;background:var(--text-2);top:2px;inset-inline-start:2px;transition:.2s}
 .switch input:checked + .track{background:rgb(var(--primary-rgb) / .25);border-color:var(--primary)}
 .switch input:checked + .track::after{transform:translateX(18px);background:var(--primary-bright)}
-.switch input:focus-visible + .track{box-shadow:0 0 0 3px var(--primary-ring)}
+.switch input:focus-visible + .track{box-shadow:0 0 0 2px var(--primary-ring)}
 .check{display:inline-flex;align-items:center;gap:var(--space-2_5);cursor:pointer;font-size:var(--text-md)}
 .check input{width:18px;height:18px;accent-color:var(--primary);cursor:pointer}
 input[type=range].slider{-webkit-appearance:none;appearance:none;height:5px;border-radius:99px;background:var(--surface-2);width:100%;outline:none}
@@ -202,13 +207,13 @@ input[type=range].slider::-moz-range-thumb{width:18px;height:18px;border:0;borde
 /* ---- generic input group (paste/search with leading icon) ---- */
 .input-group{display:flex;align-items:center;gap:var(--space-2_5);background:var(--surface);border:1px solid rgb(var(--border-rgb) / .14);
   border-radius:var(--radius);padding:0 var(--space-2) 0 var(--space-3_5);transition:border-color .15s,box-shadow .15s,background-color .15s}
-.input-group:focus-within{border-color:var(--primary-bright);background:var(--surface-active);box-shadow:0 0 0 3px var(--primary-ring)}
+.input-group:focus-within{border-color:var(--primary-bright);background:var(--surface-active);box-shadow:0 0 0 2px var(--primary-ring)}
 .input-group svg{flex-shrink:0;opacity:.5}
 .input-group input{flex:1;min-width:0;background:transparent;border:0;outline:0;box-shadow:none;-webkit-appearance:none;
   color:var(--text);font-family:var(--body);font-size:var(--ctl-font);padding:var(--ctl-pad-y) 0;caret-color:var(--primary-bright)}
 .input-group input:focus{background:transparent;border:0;box-shadow:none}
 .btn-icon{width:38px;height:38px;border-radius:var(--radius-sm);border:0;background:var(--surface-2);color:var(--text-2);
-  display:grid;place-items:center;cursor:pointer;transition:all .18s}
+  display:grid;place-items:center;cursor:pointer;transition:background var(--dur-2),color var(--dur-2),border-color var(--dur-2)}
 .btn-icon:hover{background:var(--primary);color:var(--on-primary)}
 label.fld{display:block;font-size:var(--text-sm);color:var(--text-2);margin-bottom:var(--space-2);font-weight:500}
 
@@ -271,12 +276,12 @@ label.fld{display:block;font-size:var(--text-sm);color:var(--text-2);margin-bott
 .toast.err .ic{color:var(--danger);background:rgb(var(--danger-rgb) / .15)}
 .toast.warn .ic{color:var(--warning);background:rgb(var(--warning-rgb) / .15)}
 .toast.info .ic{color:var(--info);background:rgb(var(--info-rgb) / .15)}
-.alert{border:1px solid var(--line);border-radius:var(--radius);padding:var(--space-3_5) var(--space-4);background:var(--surface)}
+.alert{border:1px solid var(--line);border-radius:var(--radius);padding:var(--space-3_5) var(--space-4);background:var(--surface);min-width:0}
 .alert .ah{display:flex;align-items:center;gap:var(--space-2_5);justify-content:space-between;font-size:var(--text-xs);color:var(--muted);margin-bottom:var(--space-1_5)}
 /* severity carried by a leading dot + a subtle full tint — no left-accent stripe */
 .alert .sev{font-family:var(--body);font-weight:700;letter-spacing:var(--tracking-wide);text-transform:uppercase;display:inline-flex;align-items:center;gap:var(--space-2)}
 .alert .sev::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
-.alert .at{font-weight:600;font-size:var(--text-md)}.alert .am{color:var(--text-2);font-size:var(--text-sm);margin-top:var(--space-1)}
+.alert .at{font-weight:600;font-size:var(--text-md);overflow-wrap:anywhere}.alert .am{color:var(--text-2);font-size:var(--text-sm);margin-top:var(--space-1);overflow-wrap:anywhere}
 .alert.crit{background:rgb(var(--danger-rgb) / .05);border-color:rgb(var(--danger-rgb) / .25)}.alert.crit .sev{color:var(--danger)}
 .alert.warn{background:rgb(var(--warning-rgb) / .05);border-color:rgb(var(--warning-rgb) / .22)}.alert.warn .sev{color:var(--warning)}
 .alert.info{background:rgb(var(--info-rgb) / .05);border-color:rgb(var(--info-rgb) / .22)}.alert.info .sev{color:var(--info)}
@@ -616,7 +621,7 @@ table.tbl td b{color:var(--text);font-weight:600}
   color:var(--text);font-family:var(--body);font-size:var(--ctl-font);padding:var(--ctl-pad-y) var(--ctl-pad-x);cursor:pointer;
   transition:border-color .15s,box-shadow .15s,background-color .15s}
 .combo-btn:hover{border-color:rgb(var(--border-rgb) / .22)}
-.combo-btn[aria-expanded=true]{border-color:var(--primary-bright);background:var(--surface-active);box-shadow:0 0 0 3px var(--primary-ring)}
+.combo-btn[aria-expanded=true]{border-color:var(--primary-bright);background:var(--surface-active);box-shadow:0 0 0 2px var(--primary-ring)}
 .combo-caret{color:var(--muted);font-size:var(--text-2xs);transition:transform .18s}
 .combo-btn[aria-expanded=true] .combo-caret{transform:rotate(180deg)}
 .combo-pop{position:absolute;top:calc(100% + 6px);inset-inline-start:0;inset-inline-end:0;z-index:60;background:var(--surface-3);border:1px solid var(--line);
@@ -659,7 +664,7 @@ input[type=date],input[type=time]{font-family:var(--body)}
 /* input add-ons (prefix/suffix) */
 .addon-group{display:flex;align-items:stretch;border:1px solid rgb(var(--border-rgb) / .14);border-radius:var(--radius);
   overflow:hidden;background:var(--surface);transition:border-color .15s,box-shadow .15s,background-color .15s}
-.addon-group:focus-within{border-color:var(--primary-bright);background:var(--surface-active);box-shadow:0 0 0 3px var(--primary-ring)}
+.addon-group:focus-within{border-color:var(--primary-bright);background:var(--surface-active);box-shadow:0 0 0 2px var(--primary-ring)}
 .addon-group input{border:0;border-radius:0;background:transparent;flex:1;min-width:0;box-shadow:none;
   color:var(--text);font-family:var(--body);font-size:var(--text-md);padding:var(--space-3) var(--space-3);outline:0;-webkit-appearance:none}
 .addon-group input::placeholder{color:var(--muted)}
@@ -694,9 +699,40 @@ input[type=date],input[type=time]{font-family:var(--body)}
 .choice input[type=checkbox]:checked,.check input:checked{background:var(--primary);border-color:var(--primary)}
 .choice input[type=checkbox]:checked::after,.check input:checked::after{content:"";position:absolute;inset-inline-start:5px;top:1px;
   width:5px;height:9px;border:solid var(--on-primary);border-width:0 2px 2px 0;transform:rotate(45deg)}
-.choice input:focus-visible,.check input:focus-visible{outline:0;box-shadow:0 0 0 3px var(--primary-ring)}
+.choice input:focus-visible,.check input:focus-visible{outline:0;box-shadow:0 0 0 2px var(--primary-ring)}
 .choice input:disabled,.check input:disabled{opacity:.45;cursor:not-allowed}
 .choice label.disabled{opacity:.5;cursor:not-allowed}
+
+/* ---- checklist (tickable list; reuses the .check checkbox, done state is pure CSS) ---- */
+.checklist{list-style:none;display:flex;flex-direction:column}
+.checklist li{border-bottom:1px solid var(--line)}
+.checklist li:last-child{border-bottom:0}
+.checklist .check{display:flex;align-items:center;gap:var(--space-3);width:100%;cursor:pointer;
+  padding:var(--space-2_5) var(--space-2);border-radius:var(--radius-sm);transition:background var(--dur-1) var(--ease)}
+.checklist .check:hover{background:var(--surface-2)}
+.checklist .check span{font-size:var(--text-md);color:var(--text);transition:color var(--dur-1) var(--ease)}
+.checklist .check input:checked + span{color:var(--muted);text-decoration:line-through}
+@media (prefers-reduced-motion:reduce){.checklist .check{transition:none}}
+
+/* ---- setup / onboarding checklist card (progress + per-row actions; .done is class-driven) ---- */
+.setup-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:var(--space-5);box-shadow:var(--shadow-sm)}
+.setup-head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-4);margin-bottom:var(--space-4)}
+.setup-head h3{font-size:var(--text-lg);font-weight:700;letter-spacing:var(--tracking-tight)}
+.setup-head p{font-size:var(--text-sm);color:var(--muted);margin-top:var(--space-1)}
+.setup-prog{flex:0 0 120px;height:6px;border-radius:var(--radius-pill);background:var(--surface-2);overflow:hidden;margin-top:var(--space-2)}
+.setup-prog i{display:block;height:100%;background:var(--primary);border-radius:var(--radius-pill);transition:width var(--dur-2) var(--ease)}
+.setup-list{list-style:none;display:flex;flex-direction:column;gap:var(--space-1)}
+.setup-list li{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-2);border-radius:var(--radius);transition:background var(--dur-1) var(--ease)}
+.setup-list li:hover{background:var(--surface-2)}
+.setup-list .sc-ic{flex:0 0 22px;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line-strong);display:grid;place-items:center;position:relative}
+.setup-list li.done .sc-ic{background:var(--primary);border-color:var(--primary)}
+.setup-list li.done .sc-ic::after{content:"";width:5px;height:9px;border:solid var(--on-primary);border-width:0 2px 2px 0;transform:rotate(45deg);margin-top:-2px}
+.setup-list .sc-body{display:flex;flex-direction:column;flex:1;min-width:0}
+.setup-list .sc-body b{font-size:var(--text-md);font-weight:600;color:var(--text)}
+.setup-list .sc-body span{font-size:var(--text-sm);color:var(--muted)}
+.setup-list li.done .sc-body b{color:var(--text-2)}
+.setup-list .btn{flex:0 0 auto}
+@media (prefers-reduced-motion:reduce){.setup-list li,.setup-prog i{transition:none}}
 
 /* segmented control */
 .segmented{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);padding:3px;gap:2px}
@@ -716,7 +752,7 @@ input[type=date],input[type=time]{font-family:var(--body)}
 /* tags input */
 .tagsinput{display:flex;flex-wrap:wrap;gap:var(--space-2);align-items:center;background:var(--surface);border:1px solid rgb(var(--border-rgb) / .14);
   border-radius:var(--radius);padding:var(--ctl-pad-y) var(--ctl-pad-x);transition:border-color .15s,box-shadow .15s}
-.tagsinput:focus-within{border-color:var(--primary-bright);box-shadow:0 0 0 3px var(--primary-ring)}
+.tagsinput:focus-within{border-color:var(--primary-bright);box-shadow:0 0 0 2px var(--primary-ring)}
 .tagchip{display:inline-flex;align-items:center;gap:var(--space-1_5);background:var(--surface-2);border:1px solid var(--line);
   border-radius:99px;padding-block:3px;padding-inline:var(--space-3) var(--space-1_5);font-size:var(--text-sm)}
 .tagchip button{border:0;background:transparent;color:var(--muted);cursor:pointer;width:18px;height:18px;border-radius:50%;line-height:1;font-size:var(--text-sm)}
@@ -728,7 +764,7 @@ input[type=date],input[type=time]{font-family:var(--body)}
 .otp{display:flex;gap:var(--space-2)}
 .otp input{width:44px;height:50px;text-align:center;font-family:var(--mono);font-size:var(--text-xl);padding:0;color:var(--text);
   background:var(--surface);border:1px solid rgb(var(--border-rgb) / .14);border-radius:var(--radius-sm);outline:0;caret-color:var(--primary-bright)}
-.otp input:focus{border-color:var(--primary-bright);box-shadow:0 0 0 3px var(--primary-ring)}
+.otp input:focus{border-color:var(--primary-bright);box-shadow:0 0 0 2px var(--primary-ring)}
 
 /* file dropzone */
 .dropzone{border:1.5px dashed rgb(var(--border-rgb) / .18);border-radius:var(--radius-lg);padding:var(--space-5_5);text-align:center;
@@ -1062,7 +1098,7 @@ table.tbl input[type=checkbox]{-webkit-appearance:none;appearance:none;width:17p
 table.tbl input[type=checkbox]:hover{border-color:rgb(var(--border-rgb) / .42)}
 table.tbl input[type=checkbox]:checked{background:var(--primary);border-color:var(--primary)}
 table.tbl input[type=checkbox]:checked::after{content:"";position:absolute;inset-inline-start:5px;top:1px;width:4px;height:8px;border:solid var(--on-primary);border-width:0 2px 2px 0;transform:rotate(45deg)}
-table.tbl input[type=checkbox]:focus-visible{outline:0;box-shadow:0 0 0 3px var(--primary-ring)}
+table.tbl input[type=checkbox]:focus-visible{outline:0;box-shadow:0 0 0 2px var(--primary-ring)}
 
 /* ============================================================
    Sheet — side / bottom drawer (extends the dialog)
@@ -1137,7 +1173,7 @@ table.tbl input[type=checkbox]:focus-visible{outline:0;box-shadow:0 0 0 3px var(
 /* amount / currency input */
 .amount-field{display:flex;align-items:stretch;border:1px solid rgb(var(--border-rgb) / .14);border-radius:var(--radius);overflow:hidden;
   background:var(--surface);max-width:280px;transition:border-color .15s,box-shadow .15s}
-.amount-field:focus-within{border-color:var(--primary-bright);box-shadow:0 0 0 3px var(--primary-ring)}
+.amount-field:focus-within{border-color:var(--primary-bright);box-shadow:0 0 0 2px var(--primary-ring)}
 .amount-field .cur{display:flex;align-items:center;padding:0 var(--space-3);background:var(--surface-2);color:var(--text-2);font-family:var(--mono);font-size:var(--text-md);border-inline-end:1px solid var(--line)}
 .amount-field input{flex:1;min-width:0;border:0;background:transparent;outline:0;color:var(--text);font-family:var(--mono);font-size:var(--text-base);text-align:end;padding:var(--ctl-pad-y) var(--ctl-pad-x)}
 .amount-field.pos input{color:var(--primary-bright)}.amount-field.neg input{color:var(--danger)}
