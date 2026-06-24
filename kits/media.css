@@ -17,7 +17,8 @@
   transition:transform var(--dur-1) var(--ease)}
 .media .play-btn:hover{transform:scale(1.06)}
 @media (prefers-reduced-motion: reduce){.media .play-btn:hover{transform:none}}
-.media .pcontrols{position:absolute;inset-inline-start:0;inset-inline-end:0;bottom:0;z-index:2;display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-3_5);color:#fff}
+.media .pcontrols{position:absolute;inset-inline-start:0;inset-inline-end:0;bottom:0;z-index:2;display:flex;align-items:center;gap:var(--space-3);padding:var(--space-5) var(--space-3_5) var(--space-3);color:#fff;
+  background:linear-gradient(to top,rgb(0 0 0 / .72),rgb(0 0 0 / 0))}   /* scrim: white chrome stays legible over any video / theme */
 .media .pcontrols .ico{opacity:.9}
 .media .ptrack{flex:1;height:4px;border-radius:99px;background:rgb(255 255 255 / .3);position:relative}
 .media .ptrack i{position:absolute;inset-block:0;inset-inline-start:0;width:38%;background:var(--primary);border-radius:99px}
