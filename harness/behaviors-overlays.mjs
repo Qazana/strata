@@ -285,34 +285,37 @@ const CHECKS = [
       if (!(await trg.count())) return ['no [data-tip] trigger in fixture'];
       const expected = (await trg.getAttribute('data-tip')).trim();
 
-      await trg.focus();   // focus-reveal is part of the contract and is deterministic headless
-      await page.waitForSelector('.qz-tip.show', { timeout: 1000 });
-      // snapshot the shown state in ONE evaluate (the hide-delay timer must not race
-      // a multi-await assertion window)
-      const snap = await page.evaluate(() => {
+      // Dispatch pointerover and read the shown state in the SAME synchronous
+      // execution context, so the 80ms hide-delay timer can't race the assertions
+      // (a multi-await window did, intermittently — green locally, red on slower CI).
+      const snap = await trg.evaluate((el) => {
+        el.dispatchEvent(new PointerEvent('pointerover', { bubbles: true }));
         const e = document.querySelector('.qz-tip');
-        const a = document.activeElement;
         return {
+          shown: !!e && e.classList.contains('show'),
           count: document.querySelectorAll('.qz-tip').length,
           bodyLevel: !!e && e.parentElement === document.body,
           fixed: !!e && getComputedStyle(e).position === 'fixed',
           role: e && e.getAttribute('role'),
           text: e && e.textContent.trim(),
-          describedby: a && a.getAttribute('aria-describedby'),
+          describedby: el.getAttribute('aria-describedby'),
         };
       });
+      t(snap.shown, 'pointerover shows the floating tooltip');
       t(snap.count === 1, 'exactly one floating tooltip node exists (no double render)');
       t(snap.bodyLevel, 'tooltip is a direct child of <body> (escapes overflow/clip ancestors)');
       t(snap.fixed, 'tooltip is position:fixed');
       t(snap.role === 'tooltip', 'shown tooltip carries role=tooltip');
       t(snap.text === expected, 'tooltip text matches the data-tip attribute');
-      t(snap.describedby === 'qz-tip', 'focused trigger gets aria-describedby=qz-tip while shown');
+      t(snap.describedby === 'qz-tip', 'trigger gets aria-describedby=qz-tip while shown');
 
       await page.keyboard.press('Escape');
-      t(await page.evaluate(() => !document.querySelector('.qz-tip').classList.contains('show')),
-        'Escape hides the tooltip');
-      t(await page.evaluate(() => document.querySelector('.qz-tip').getAttribute('role') === null),
-        'role is stripped when hidden (empty role=tooltip would fail axe)');
+      const after = await page.evaluate(() => {
+        const e = document.querySelector('.qz-tip');
+        return { shown: e.classList.contains('show'), role: e.getAttribute('role') };
+      });
+      t(!after.shown, 'Escape hides the tooltip');
+      t(after.role === null, 'role is stripped when hidden (empty role=tooltip would fail axe)');
       return fails;
     },
   },
