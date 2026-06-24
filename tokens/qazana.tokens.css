@@ -141,7 +141,7 @@
   --text-6xl:clamp(3.25rem,2.893rem + 1.786vw,4.5rem);   /* 52→72 */
 
   /* leading — unitless; tightens as size grows */
-  --leading-none:1; --leading-tight:1.1; --leading-snug:1.3;
+  --leading-none:1; --leading-tight:1.05; --leading-snug:1.3;
   --leading-normal:1.5; --leading-relaxed:1.7;
 
   /* tracking — crossover: positive on small text, negative on display */

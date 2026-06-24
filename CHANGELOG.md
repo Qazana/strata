@@ -5,7 +5,26 @@ component/token, major = rename/removal/breaking token change.
 
 ## Unreleased
 
-_Nothing yet._
+### Minor
+
+- **Checklist** (`.checklist`) — tickable to-do list in the App kit. Reuses the
+  existing `.check` checkbox; the done state (dim + strike-through) is pure CSS off
+  `input:checked`, no new behaviour JS.
+- **Setup card** (`.setup-card`) — onboarding/setup checklist card: header with a
+  progress bar (`.setup-prog`, `role="progressbar"`) and `.setup-list` task rows
+  (`.done` state, `.sc-ic` check, `.sc-body`, trailing `.btn` action). Progress is
+  author-set markup. No new tokens.
+
+### Patch
+
+- Replaced `transition:all` (5 spots: `.remember input`, `.kit-nav a`, `.btn-icon`,
+  `.blog .cat`, `.blog .pager a`) with explicit property lists so only the properties
+  that actually change animate — no unintended transitions or extra repaints. Same
+  visible behaviour and durations; tokenized two stray `.18s` → `var(--dur-2)`.
+- Tightened `--leading-tight` 1.1 → 1.05 so large headings (`.t-display`, `.t-h1`,
+  `.t-h2`) sit closer; loose line-height read as too airy at display sizes. Token
+  value tweak (no rename/removal) — synced `tokens.json`, regenerated the Figma
+  export, and updated the typography demo swatch label.
 
 ## 0.1.0 — 2026-06-22
 

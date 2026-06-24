@@ -135,7 +135,7 @@ html{color-scheme:dark}
 .kit-head p{color:var(--text-2);font-size:var(--text-base);margin-top:var(--space-2);max-width:60ch}
 .kit-nav{display:flex;gap:var(--space-2);flex-wrap:wrap;margin:var(--space-4_5) 0 var(--space-1_5)}
 .kit-nav a{font-size:var(--text-sm);color:var(--text-2);text-decoration:none;border:1px solid var(--line);
-  border-radius:99px;padding:var(--space-1_5) var(--space-3_5);transition:all .18s}
+  border-radius:99px;padding:var(--space-1_5) var(--space-3_5);transition:color var(--dur-2),background var(--dur-2),border-color var(--dur-2)}
 .kit-nav a:hover{color:var(--text);border-color:rgb(var(--border-rgb) / .2)}
 .kit-nav a.on{color:var(--primary-bright);border-color:rgb(var(--primary-rgb) / .4);background:rgb(var(--primary-rgb) / .07)}
 
@@ -208,7 +208,7 @@ input[type=range].slider::-moz-range-thumb{width:18px;height:18px;border:0;borde
   color:var(--text);font-family:var(--body);font-size:var(--ctl-font);padding:var(--ctl-pad-y) 0;caret-color:var(--primary-bright)}
 .input-group input:focus{background:transparent;border:0;box-shadow:none}
 .btn-icon{width:38px;height:38px;border-radius:var(--radius-sm);border:0;background:var(--surface-2);color:var(--text-2);
-  display:grid;place-items:center;cursor:pointer;transition:all .18s}
+  display:grid;place-items:center;cursor:pointer;transition:background var(--dur-2),color var(--dur-2),border-color var(--dur-2)}
 .btn-icon:hover{background:var(--primary);color:var(--on-primary)}
 label.fld{display:block;font-size:var(--text-sm);color:var(--text-2);margin-bottom:var(--space-2);font-weight:500}
 
@@ -697,6 +697,37 @@ input[type=date],input[type=time]{font-family:var(--body)}
 .choice input:focus-visible,.check input:focus-visible{outline:0;box-shadow:0 0 0 3px var(--primary-ring)}
 .choice input:disabled,.check input:disabled{opacity:.45;cursor:not-allowed}
 .choice label.disabled{opacity:.5;cursor:not-allowed}
+
+/* ---- checklist (tickable list; reuses the .check checkbox, done state is pure CSS) ---- */
+.checklist{list-style:none;display:flex;flex-direction:column}
+.checklist li{border-bottom:1px solid var(--line)}
+.checklist li:last-child{border-bottom:0}
+.checklist .check{display:flex;align-items:center;gap:var(--space-3);width:100%;cursor:pointer;
+  padding:var(--space-2_5) var(--space-2);border-radius:var(--radius-sm);transition:background var(--dur-1) var(--ease)}
+.checklist .check:hover{background:var(--surface-2)}
+.checklist .check span{font-size:var(--text-md);color:var(--text);transition:color var(--dur-1) var(--ease)}
+.checklist .check input:checked + span{color:var(--muted);text-decoration:line-through}
+@media (prefers-reduced-motion:reduce){.checklist .check{transition:none}}
+
+/* ---- setup / onboarding checklist card (progress + per-row actions; .done is class-driven) ---- */
+.setup-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:var(--space-5);box-shadow:var(--shadow-sm)}
+.setup-head{display:flex;align-items:flex-start;justify-content:space-between;gap:var(--space-4);margin-bottom:var(--space-4)}
+.setup-head h3{font-size:var(--text-lg);font-weight:700;letter-spacing:var(--tracking-tight)}
+.setup-head p{font-size:var(--text-sm);color:var(--muted);margin-top:var(--space-1)}
+.setup-prog{flex:0 0 120px;height:6px;border-radius:var(--radius-pill);background:var(--surface-2);overflow:hidden;margin-top:var(--space-2)}
+.setup-prog i{display:block;height:100%;background:var(--primary);border-radius:var(--radius-pill);transition:width var(--dur-2) var(--ease)}
+.setup-list{list-style:none;display:flex;flex-direction:column;gap:var(--space-1)}
+.setup-list li{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-2);border-radius:var(--radius);transition:background var(--dur-1) var(--ease)}
+.setup-list li:hover{background:var(--surface-2)}
+.setup-list .sc-ic{flex:0 0 22px;width:22px;height:22px;border-radius:50%;border:1.5px solid var(--line-strong);display:grid;place-items:center;position:relative}
+.setup-list li.done .sc-ic{background:var(--primary);border-color:var(--primary)}
+.setup-list li.done .sc-ic::after{content:"";width:5px;height:9px;border:solid var(--on-primary);border-width:0 2px 2px 0;transform:rotate(45deg);margin-top:-2px}
+.setup-list .sc-body{display:flex;flex-direction:column;flex:1;min-width:0}
+.setup-list .sc-body b{font-size:var(--text-md);font-weight:600;color:var(--text)}
+.setup-list .sc-body span{font-size:var(--text-sm);color:var(--muted)}
+.setup-list li.done .sc-body b{color:var(--text-2)}
+.setup-list .btn{flex:0 0 auto}
+@media (prefers-reduced-motion:reduce){.setup-list li,.setup-prog i{transition:none}}
 
 /* segmented control */
 .segmented{display:inline-flex;background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius);padding:3px;gap:2px}
