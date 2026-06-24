@@ -1208,7 +1208,7 @@ document.addEventListener('DOMContentLoaded', function () {
     document.addEventListener('pointerover', function (e) { var t = triggerOf(e.target); if (t && t !== cur) show(t); });
     document.addEventListener('pointerout', function (e) { var t = triggerOf(e.target); if (t && t === cur && triggerOf(e.relatedTarget) !== t) scheduleHide(); });
     document.addEventListener('focusin', function (e) { var t = triggerOf(e.target); if (t) show(t); });
-    document.addEventListener('focusout', function (e) { if (triggerOf(e.target) === cur) scheduleHide(); });
+    document.addEventListener('focusout', function (e) { if (cur && triggerOf(e.target) === cur) scheduleHide(); });
     document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && cur) hide(); });
     addEventListener('scroll', function () { if (cur) hide(); }, true);
     addEventListener('resize', function () { if (cur) hide(); });
