@@ -4,7 +4,7 @@ All notable changes to `@qazana/strata`. Semver: patch = fix, minor = additive
 component/token/kit/behavior, major = rename/removal/breaking public contract
 change.
 
-## Unreleased
+## 1.0.0-rc.1 — 2026-06-26
 
 ### Documentation
 
