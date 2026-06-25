@@ -5,6 +5,12 @@ It ships **semantic design tokens** + **vanilla, data-attribute-driven component
 CSS/JS**. Each product themes it and adds its own **domain** components on top.
 These rules govern how coding agents maintain it.
 
+This repo is consumed across Qazana products and released publicly. The public
+API contract lives in `docs/API_CONTRACT.md`: exported kits, documented tokens,
+documented classes, documented DOM anatomy, and documented `data-*` hooks are
+stable unless explicitly labeled otherwise. Read that contract before adding,
+renaming, deprecating, or removing public surface area.
+
 ## Non-negotiables
 
 1. **Tokens are the single source of truth.** Never hardcode a color, radius,
@@ -53,9 +59,10 @@ These rules govern how coding agents maintain it.
   becomes the new version heading. This keeps the version honest: it always
   matches what's on the registry (gaps from unreleased churn are the bug we're
   avoiding). Classify the entry by semver (patch = fix, minor = additive
-  component/token, major = rename/removal/breaking token change) so the release
-  bump is obvious. Renaming or removing a token is a **breaking** change — note
-  it in the commit.
+  component/token/kit/behavior, major = rename/removal/breaking public contract
+  change) so the release bump is obvious. Renaming or removing a token, class,
+  kit export, required markup pattern, or documented behavior hook is a
+  **breaking** change — note it in the commit.
 - A new generic element appearing in a consuming app should be **added here
   first**, then consumed — never forked into the app.
 

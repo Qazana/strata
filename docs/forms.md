@@ -6,6 +6,18 @@ The form **control base** (inputs/select/textarea), **validation states**, the
 **`.form-field`** group, and `.fieldset` live in `kits/base.css` — universal, so
 every kit's forms match.
 
+## Contract status
+
+`.form-field` is the canonical stable vocabulary for new product forms. The
+legacy `.field-row` / `.fld` / `.ferr` family remains supported for existing
+consumers, and scoped auth-flow `.field` / `.err` usage remains supported inside
+`auth.css` patterns.
+
+New product code, docs, and demos should use the canonical vocabulary unless
+they are intentionally demonstrating legacy compatibility. Legacy aliases must
+not be removed before a documented major release. See
+[`API_CONTRACT.md`](API_CONTRACT.md) for the stability and deprecation policy.
+
 ## Field group — `.form-field`
 ```html
 <div class="form-field">
@@ -44,8 +56,9 @@ Compose with the layout primitives (`.l-stack`, `.l-row`, `.l-grid`) for form
 layouts — e.g. a two-up city/postcode row with `.l-row`.
 
 > Note: `auth.css` keeps its scoped `.field` *wrapper* + `.err` for the standalone
-> auth flows; `.form-field` is the canonical vocabulary going forward. (`.field`
-> is no longer a control style-class — that was removed to resolve the conflict.)
+> auth flows; `.form-field` is the canonical vocabulary for new product forms.
+> (`.field` is no longer a control style-class — that was removed to resolve the
+> conflict.)
 
 ## Validation — `[data-validate]`
 Put `data-validate` on a `<form>` and the engine validates it through the **native
@@ -79,7 +92,7 @@ no rule DSL. Declare rules with standard HTML attributes:
 | Timing | validates on submit, on **blur** after a field is touched, then live-clears once fixed |
 | Positive feedback | a valid **non-empty** field gains `.is-success` (empty optional fields stay neutral) |
 | a11y | sets `aria-invalid`, wires the error via `aria-describedby`, focuses the first invalid field, adds `novalidate` so we own the UX |
-| Vocabulary | drives `.form-field`/`.field-error`/`.is-error` (and the legacy `.field-row`/`.ferr`) — resolves whichever wraps the control |
+| Vocabulary | drives canonical `.form-field`/`.field-error`/`.is-error` and legacy-compatible `.field-row`/`.ferr` — resolves whichever wraps the control |
 | Valid submit | submits normally if the form has an `action`. An **action-less** form stays put (no reload), and shows the inline `.form-msg.ok` only when opted in with `data-validate="confirm"` — so a JS-handled form never gets an uninvited success banner |
 
 ### Localizing copy

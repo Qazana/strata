@@ -25,6 +25,7 @@ dark scheme and a warm-cream "Désert Dunes" light scheme.
 - [Architecture & layout](#architecture--layout)
 - [Theming & schemes](#theming--schemes)
 - [Tokens](#tokens)
+- [Public contract](#public-contract)
 - [Consuming per stack](#consuming-per-stack)
 - [Demos](#demos)
 - [Render harness](#render-harness)
@@ -61,25 +62,28 @@ no extra setup.
 Every kit is built on the same tokens and is themeable out of the box. Kits are
 scoped so they compose without collisions.
 
-| Kit | Status | What it covers | Consumers |
-|-----|--------|----------------|-----------|
-| **App** | ✅ shipped (`kits/app.css`) | In-product UI — buttons, forms (full coverage), tables, charts, modals, toasts, tabs, admin shell, error pages | product apps |
-| **Site** | ✅ shipped (`kits/site.css`) | Landing/marketing — nav, hero, feature grid, spotlight rows, pricing, testimonials, FAQ, CTA band, footer | product homepages |
-| **Content** | ✅ shipped (`kits/content.css`) | Long-form — blog list + cards, article/prose typography, callouts, code blocks, author bio | product blogs, help/docs |
-| **Auth** | ✅ shipped (`kits/auth.css`) | Login / signup / reset, OAuth buttons, split auth layout, error states | all apps |
-| **Email** | ✅ shipped (`kits/email/`) | Transactional + newsletter email (table layout, inlined CSS); palette baked from Désert Dunes tokens (clients lack CSS vars) | all apps |
-| **Media** | ✅ shipped (`kits/media.css`) | Video player / responsive embed / video cards; audio player; social share, follow bar, profile card. Composes with Site/Content | all surfaces |
-| **Commerce** | ✅ shipped (`kits/commerce.css`) | Catalog → product → cart → checkout → order — product grid/card, price/badges/stock, star rating, filter rail, qty stepper, variant/swatch picker, PDP gallery, quick-view, cart lines, mini-cart, order summary, promo code, checkout steps, pay/ship options | storefronts |
-| **Billing** | ✅ shipped (`kits/billing.css`) | In-product subscription — current-plan summary, plan switcher with monthly/annual toggle + proration, invoice history, payment-method cards, usage→cost meters + upgrade nudge, dunning banner, seat management, retention-framed cancel flow | SaaS billing settings |
-| **Docs** | ✅ shipped (`kits/docs.css`) | Documentation — 3-column doc shell, collapsible sidebar nav, API reference blocks (verb badges, params, samples), version switcher, prev/next pager, help-center landing (search hero, categories, "was this helpful"). Pairs with Content kit | product docs, help centers |
-| **Support** | ✅ shipped (`kits/support.css`) | Helpdesk — contact/ticket form + confirmation, ticket-list table with status/priority, ticket detail with a conversation thread (customer/agent/internal-note cards), reply composer, canned-reply picker | support centers, helpdesks |
+| Kit | Status | Contract | What it covers | Consumers |
+|-----|--------|----------|----------------|-----------|
+| **App** | shipped (`kits/app.css`) | stable | In-product UI — buttons, forms (full coverage), tables, charts, modals, toasts, tabs, admin shell, error pages | product apps |
+| **Site** | shipped (`kits/site.css`) | stable | Landing/marketing — nav, hero, feature grid, spotlight rows, pricing, testimonials, FAQ, CTA band, footer | product homepages |
+| **Content** | shipped (`kits/content.css`) | stable | Long-form — blog list + cards, article/prose typography, callouts, code blocks, author bio | product blogs, help/docs |
+| **Auth** | shipped (`kits/auth.css`) | stable | Login / signup / reset, OAuth buttons, split auth layout, error states | all apps |
+| **Email** | shipped (`kits/email/`) | stable | Transactional + newsletter email (table layout, inlined CSS); palette baked from Désert Dunes tokens (clients lack CSS vars) | all apps |
+| **Media** | shipped (`kits/media.css`) | stable | Video player / responsive embed / video cards; audio player; social share, follow bar, profile card. Composes with Site/Content | all surfaces |
+| **Commerce** | shipped (`kits/commerce.css`) | stable | Catalog → product → cart → checkout → order — product grid/card, price/badges/stock, star rating, filter rail, qty stepper, variant/swatch picker, PDP gallery, quick-view, cart lines, mini-cart, order summary, promo code, checkout steps, pay/ship options | storefronts |
+| **Billing** | shipped (`kits/billing.css`) | stable | In-product subscription — current-plan summary, plan switcher with monthly/annual toggle + proration, invoice history, payment-method cards, usage→cost meters + upgrade nudge, dunning banner, seat management, retention-framed cancel flow | SaaS billing settings |
+| **Docs** | shipped (`kits/docs.css`) | stable | Documentation — 3-column doc shell, collapsible sidebar nav, API reference blocks (verb badges, params, samples), version switcher, prev/next pager, help-center landing (search hero, categories, "was this helpful"). Pairs with Content kit | product docs, help centers |
+| **Support** | shipped (`kits/support.css`) | stable | Helpdesk — contact/ticket form + confirmation, ticket-list table with status/priority, ticket detail with a conversation thread (customer/agent/internal-note cards), reply composer, canned-reply picker | support centers, helpdesks |
 
 > Situational kits we may add later: **Status/Changelog** (status page, changelog,
-> maintenance), **Docs** (sidebar nav, API reference) if docs outgrow the Content kit.
+> maintenance).
 
 Each kit is exported from `package.json` so consumers import only what they need
 (e.g. `@qazana/strata/site`). A homepage loads `tokens + site`; a
 blog adds `content`; an app loads the App kit.
+
+Exported and documented kits are public API. Stability tiers, deprecation rules,
+and breaking-change rules live in [docs/API_CONTRACT.md](docs/API_CONTRACT.md).
 
 ---
 
@@ -230,6 +234,22 @@ alpha tints stay themeable: `rgb(var(--primary-rgb) / .12)`.
 
 ---
 
+## Public contract
+
+Strata is consumed across Qazana products and is released publicly. Treat it like
+a versioned API, not a bundle of copyable snippets.
+
+- Public package exports, documented kit entrypoints, documented classes,
+  documented DOM anatomy, documented tokens, and documented `data-*` hooks are
+  stable unless explicitly labeled otherwise.
+- Legacy aliases remain supported until a documented major release removes them.
+- Demo-only helpers and harness internals are not public API.
+- Removing, renaming, or changing the meaning of a stable token, class, kit
+  export, DOM requirement, or behavior hook is a breaking change.
+
+See [docs/API_CONTRACT.md](docs/API_CONTRACT.md) before adding, renaming,
+deprecating, or removing any public surface.
+
 ## Consuming per stack
 
 ### Vanilla / any stack
@@ -239,6 +259,20 @@ alpha tints stay themeable: `rgb(var(--primary-rgb) / .12)`.
 <link rel="stylesheet" href="@qazana/strata/app">
 <script type="module" src="@qazana/strata"></script>
 ```
+
+### Consumer checklist
+
+- Pin the Strata version in each app.
+- Load `tokens` first, the product theme second, and kits after the theme.
+- Load only the kits the page needs.
+- Keep product-specific components in the product repo.
+- Use documented classes, DOM anatomy, tokens, and `data-*` hooks only.
+- Do not copy demo-only helpers or harness internals into products.
+- Avoid broad unlayered global selectors such as `a {}` or `button {}` that can
+  override kit components. Prefer scoped selectors such as
+  `.product-shell a:not([class])`.
+- For forms, use `.form-field` and the canonical field vocabulary for new code;
+  legacy aliases remain compatibility surfaces, not preferred authoring syntax.
 
 ### React + Tailwind
 Load the CSS/tokens globally, then map tokens in `tailwind.config.js`:
@@ -323,7 +357,11 @@ Add it to the harness `SCHEMES` list so it's screenshot + contrast-checked too.
 ## Versioning & maintaining
 
 - **Semver:** patch = fix · minor = additive component/token/kit · major =
-  rename/removal/breaking token change. Renaming/removing a token is breaking.
+  rename/removal/breaking token, class, kit export, required markup, or behavior
+  change. Renaming/removing a token is breaking.
+- Contract changes follow [docs/API_CONTRACT.md](docs/API_CONTRACT.md). Changelog
+  entries should call out whether a stable contract is added, preserved,
+  deprecated, or broken.
 - Keep `tokens/tokens.json` in sync with `tokens/qazana.tokens.css`.
 - Update the relevant `demo/` and `docs/` when you change a component.
 - **`CLAUDE.md`** is the maintenance contract (token discipline, semantic naming,

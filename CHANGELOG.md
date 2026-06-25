@@ -1,9 +1,27 @@
 # Changelog
 
 All notable changes to `@qazana/strata`. Semver: patch = fix, minor = additive
-component/token, major = rename/removal/breaking token change.
+component/token/kit/behavior, major = rename/removal/breaking public contract
+change.
 
 ## Unreleased
+
+### Documentation
+
+- **Public API contract.** Added `docs/API_CONTRACT.md` to define Strata's
+  stability tiers, semver-protected surfaces, deprecation policy, behavior
+  contract, token contract, and consumer responsibilities. Contract: stable
+  governance addition.
+- **Kit stability labels.** The README now marks every exported, documented kit as
+  a stable public entrypoint and links contract changes to the API contract.
+  Contract: stable behavior preserved.
+- **Form vocabulary policy.** Clarified that `.form-field` is canonical for new
+  forms while `.field-row`/`.fld`/`.ferr` and scoped auth `.field`/`.err` remain
+  legacy-compatible until a documented major release. Contract: legacy aliases
+  preserved.
+- **Consumer integration checklist.** Added load-order, version-pinning,
+  cascade-safety, and public-surface guidance for downstream apps. Contract:
+  stable guidance addition.
 
 ### Minor
 
