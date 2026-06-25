@@ -63,6 +63,48 @@ input:disabled,textarea:disabled,select:disabled{opacity:.5;cursor:not-allowed}
 .fieldset{border:1px solid var(--line);border-radius:var(--radius);padding:var(--space-4);margin:0;min-width:0;display:flex;flex-direction:column;gap:var(--space-4)}
 .fieldset > legend{padding:0 var(--space-2);margin-inline-start:calc(var(--space-2) * -1);font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--text-2)}
 
+/* ---- character counter ([data-char-count]) — quiet by default, warns near the
+   limit. Mirrors .field-help; .counter (legacy app vocabulary) is styled in app.css. ---- */
+.char-count{font-size:var(--text-xs);color:var(--muted);text-align:end;font-family:var(--mono)}
+.char-count.is-near{color:var(--warning)}
+/* ---- auto-grow textarea ([data-autosize]) — JS sets the height; kill the manual
+   handle + inner scrollbar so they don't fight it. ---- */
+textarea[data-autosize]{resize:none;overflow:hidden}
+/* ---- submit lock ([data-submit-lock]) — a self-contained spinner glyph rendered
+   before the locked submit button (no inner element needed). SCOPED to
+   [data-submit-lock] so it can't collide with app.css's .btn.is-loading .spin
+   convention on buttons elsewhere. Own keyframe name for the same reason. ---- */
+@keyframes qz-spin{to{transform:rotate(360deg)}}
+[data-submit-lock] button.is-loading{pointer-events:none}
+[data-submit-lock] button.is-loading::before{content:"";display:inline-block;width:1em;height:1em;margin-inline-end:.45em;vertical-align:-2px;
+  border:2px solid currentColor;border-inline-end-color:transparent;border-radius:50%;animation:qz-spin .7s linear infinite}
+@media (prefers-reduced-motion:reduce){[data-submit-lock] button.is-loading::before{animation-duration:1.6s}}
+
+/* ---- read-more ([data-clamp]) — clamp to N lines + a text toggle. line-clamp is
+   the standardised alias; -webkit-line-clamp stays for engines that still need it. ---- */
+.is-clamped{display:-webkit-box;-webkit-box-orient:vertical;-webkit-line-clamp:var(--clamp-lines,3);line-clamp:var(--clamp-lines,3);overflow:hidden}
+.clamp-toggle{display:inline-block;margin-top:var(--space-1_5);padding:0;border:0;background:none;font:inherit;
+  font-size:var(--text-sm);font-weight:var(--weight-semibold);color:var(--primary-bright);cursor:pointer}
+.clamp-toggle:hover{text-decoration:underline}
+
+/* ---- confirm dialog ([data-qz-confirm]) — the accessible replacement for native
+   confirm(); one node built at <body> level. Sits above modals/lightboxes. ---- */
+.qz-confirm{position:fixed;inset:0;z-index:500;display:none;place-items:center;padding:var(--space-5);
+  background:rgb(0 0 0 / .55);backdrop-filter:blur(4px)}
+.qz-confirm.is-open{display:grid;animation:qz-cfade var(--dur-2,.18s) var(--ease,ease)}
+@keyframes qz-cfade{from{opacity:0}to{opacity:1}}
+.qz-confirm-box{width:min(28rem,100%);background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
+  box-shadow:var(--shadow-lg);padding:var(--space-5);display:flex;flex-direction:column;gap:var(--space-4)}
+.qz-confirm-msg{margin:0;color:var(--text);font-size:var(--text-md)}
+.qz-confirm-actions{display:flex;justify-content:flex-end;gap:var(--space-2_5)}
+.qz-confirm-actions button{font-family:var(--body);font-weight:var(--weight-semibold);font-size:var(--ctl-font);
+  padding:var(--ctl-pad-y) var(--space-4);border-radius:var(--radius);cursor:pointer;border:1px solid transparent}
+.qz-confirm-cancel{background:var(--surface-2);border-color:var(--line);color:var(--text)}
+.qz-confirm-ok{background:var(--primary);color:var(--on-primary)}
+.qz-confirm-ok.danger{background:var(--danger)}
+.qz-confirm-actions button:focus-visible{outline:none;box-shadow:0 0 0 2px var(--primary-ring)}
+@media (prefers-reduced-motion:reduce){.qz-confirm.is-open{animation:none}}
+
 /* ---- layout primitives — composable building blocks. Gap is var-driven
    (`--gap`, default per primitive); set it inline or with a .gap-N helper.
    Prefixed .l-* so they never collide with consumer (Tailwind/Bootstrap/Ember)

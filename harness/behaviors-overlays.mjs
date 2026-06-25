@@ -341,10 +341,13 @@ const CHECKS = [
       t(await page.locator('.qz-lightbox .lb-stage img').count() === 1, 'first item renders an <img>');
       t(await page.evaluate(() => document.querySelector('.qz-lightbox .lb-count').textContent.trim().startsWith('1 /')),
         'counter shows item 1 of n');
+      // deep-link: opening writes #lightbox=<group-id>/<index> to the URL
+      t(await page.evaluate(() => location.hash) === '#lightbox=shots/0', 'opening writes the deep-link hash');
 
       await page.keyboard.press('ArrowRight');
       t(await page.evaluate(() => document.querySelector('.qz-lightbox .lb-count').textContent.trim().startsWith('2 /')),
         'ArrowRight advances to item 2');
+      t(await page.evaluate(() => location.hash) === '#lightbox=shots/1', 'navigating updates the deep-link hash');
 
       const vidIdx = await gal.evaluate((el) => {
         const items = el.querySelectorAll('a[href], [data-lightbox-item]');
@@ -367,6 +370,115 @@ const CHECKS = [
       t(await page.locator('.qz-lightbox.open').count() === 0, 'Escape closes the lightbox');
       t(await tiles.first().evaluate((el) => el === document.activeElement),
         'focus returns to the opening tile on close');
+      t(await page.evaluate(() => location.hash) === '', 'closing clears the deep-link hash');
+
+      // cold load from a shared deep link opens the viewer at that index
+      await page.goto(BASE + '/demo/media/index.html#lightbox=shots/1', { waitUntil: 'load' });
+      await page.waitForSelector('.qz-lightbox.open', { timeout: 1000 });
+      t(await page.evaluate(() => document.querySelector('.qz-lightbox .lb-count').textContent.trim().startsWith('2 /')),
+        'a shared #lightbox link opens the viewer at the linked item');
+      return fails;
+    },
+  },
+  {
+    // [data-qz-confirm]: clicking the trigger opens an accessible body-level dialog
+    // (not native confirm); Cancel/Esc dismiss with no action; Confirm re-activates
+    // the trigger (here an anchor -> the href hash navigation runs).
+    name: 'confirm',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const trig = page.locator('#confirmDemo');
+      if (!(await trig.count())) return ['no [data-qz-confirm] trigger in fixture'];
+
+      // click opens the dialog; the action has NOT run yet
+      await trig.click();
+      t(await page.locator('.qz-confirm.is-open').count() === 1, 'clicking the trigger opens the confirm dialog');
+      t(await page.evaluate(() => document.querySelector('.qz-confirm-box').getAttribute('role')) === 'alertdialog',
+        'dialog is role=alertdialog');
+      t(await page.evaluate(() => location.hash) !== '#confirmed', 'the action has not run yet');
+
+      // Esc dismisses without acting
+      await page.keyboard.press('Escape');
+      t(await page.locator('.qz-confirm.is-open').count() === 0, 'Escape dismisses the dialog');
+      t(await page.evaluate(() => location.hash) !== '#confirmed', 'Escape does NOT run the action');
+
+      // re-open, Cancel dismisses without acting
+      await trig.click();
+      await page.locator('.qz-confirm-cancel').click();
+      t(await page.locator('.qz-confirm.is-open').count() === 0, 'Cancel dismisses the dialog');
+      t(await page.evaluate(() => location.hash) !== '#confirmed', 'Cancel does NOT run the action');
+
+      // re-open, Confirm runs the action (anchor navigates to its href hash)
+      await trig.click();
+      await page.locator('.qz-confirm-ok').click();
+      t(await page.locator('.qz-confirm.is-open').count() === 0, 'Confirm closes the dialog');
+      t(await page.evaluate(() => location.hash) === '#confirmed', 'Confirm re-activates the trigger (action runs)');
+      return fails;
+    },
+  },
+  {
+    // [data-clamp]: content is clamped to N lines with a toggle; clicking expands
+    // (removes .is-clamped) and flips aria-expanded, clicking again re-collapses.
+    name: 'clamp',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const el = page.locator('#clampDemo');
+      if (!(await el.count())) return ['no [data-clamp] element in fixture'];
+      t(await el.evaluate((e) => e.classList.contains('is-clamped')), 'content starts clamped');
+      const toggle = page.locator('#clampDemo + .clamp-toggle');
+      if (!(await toggle.count())) return ['no .clamp-toggle was added (content may not overflow)'];
+      t(await toggle.getAttribute('aria-expanded') === 'false', 'toggle starts aria-expanded=false');
+
+      await toggle.click();
+      t(!(await el.evaluate((e) => e.classList.contains('is-clamped'))), 'clicking expands (un-clamps)');
+      t(await toggle.getAttribute('aria-expanded') === 'true', 'toggle aria-expanded=true when expanded');
+
+      await toggle.click();
+      t(await el.evaluate((e) => e.classList.contains('is-clamped')), 'clicking again re-clamps');
+      t(await toggle.getAttribute('aria-expanded') === 'false', 'toggle aria-expanded=false when collapsed');
+      return fails;
+    },
+  },
+  {
+    // [data-qz-dismiss]: clicking hides the target and remembers it (keyed) so it stays
+    // hidden after a reload.
+    name: 'dismiss',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const alert = page.locator('#dismissDemo');
+      const btn = alert.locator('[data-qz-dismiss]');
+      if (!(await btn.count())) return ['no [data-qz-dismiss] control in fixture'];
+      t(!(await alert.evaluate((el) => el.hidden)), 'target starts visible');
+
+      await btn.click();
+      t(await alert.evaluate((el) => el.hidden), 'clicking dismiss hides the target');
+
+      await page.reload({ waitUntil: 'load' });
+      await page.waitForTimeout(150);
+      t(await page.locator('#dismissDemo').evaluate((el) => el.hidden), 'stays dismissed after a reload (remembered)');
+      return fails;
+    },
+  },
+  {
+    // [data-relative-time]: renders a human phrase ("… ago" / "in …" / "just now")
+    // from the datetime, not the raw ISO string, and keeps an absolute title.
+    name: 'relative-time',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const el = page.locator('#reltimeDemo');
+      if (!(await el.count())) return ['no [data-relative-time] element in fixture'];
+      const txt = (await el.textContent()).trim();
+      t(/\b(ago|just now)\b|^in /.test(txt), `renders a relative phrase (got "${txt}")`);
+      t(!/\d{4}-\d{2}-\d{2}T/.test(txt), 'does not show the raw ISO datetime');
+      t(!!(await el.getAttribute('title')), 'keeps the absolute time as a title');
       return fails;
     },
   },

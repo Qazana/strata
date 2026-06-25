@@ -235,6 +235,156 @@ const CHECKS = [
     },
   },
 
+  {
+    // [data-validate]: native-constraint rules drive .is-error + aria-invalid +
+    // aria-describedby, cross-field data-match, focus the first invalid field, and a
+    // valid submit on an action-less form shows the inline .form-msg.ok.
+    name: 'validate',
+    url: '/demo/foundations/forms.html',
+    viewport: { width: 720, height: 1100 },
+    async run(page) {
+      const { t, fails } = checker();
+      const form = page.locator('#signupDemo');
+      if (!(await form.count())) return ['no #signupDemo [data-validate] in fixture'];
+      const email = page.locator('#vEmail');
+      const submit = form.locator('button[type=submit]');
+
+      // submit empty -> required errors painted, summary shown, first field focused
+      await submit.click();
+      t(await email.getAttribute('aria-invalid') === 'true', 'empty required email gets aria-invalid');
+      t(await email.evaluate((el) => el.classList.contains('is-error')), 'empty required email gets .is-error');
+      t((await form.locator('.form-msg.error').count()) > 0, 'invalid submit shows the error summary');
+      const desc = await email.getAttribute('aria-describedby');
+      t(!!desc && (await page.locator('#' + desc.split(' ').pop()).count()) > 0,
+        'invalid field is wired to its error node via aria-describedby');
+      t((await page.evaluate(() => document.activeElement && document.activeElement.id)) === 'vName',
+        'first invalid field (name) receives focus on a failed submit');
+
+      // malformed email errors on blur (type mismatch)
+      await page.locator('#vName').fill('Ada');
+      await email.fill('not-an-email');
+      await email.blur();
+      t(await email.evaluate((el) => el.classList.contains('is-error')), 'malformed email errors on blur');
+
+      // fix everything incl. matching passwords -> valid submit shows the ok summary
+      await email.fill('ada@lovelace.io');
+      await page.locator('#vPw').fill('hunter2hunter2');
+      await page.locator('#vPw2').fill('hunter2hunter2');
+      await submit.click();
+      t((await form.locator('.form-msg.ok').count()) > 0, 'valid submit on a data-validate="confirm" action-less form shows the ok summary');
+      t(await email.evaluate((el) => !el.classList.contains('is-error')), 'fixed email clears its error');
+      t(await email.evaluate((el) => el.classList.contains('is-success')), 'a valid non-empty field gains .is-success (inline positive feedback)');
+
+      // mismatched confirm -> data-match error
+      await page.locator('#vPw2').fill('different');
+      await page.locator('#vPw2').blur();
+      t(await page.locator('#vPw2').evaluate((el) => el.classList.contains('is-error')), 'mismatched confirm errors via data-match');
+      return fails;
+    },
+  },
+  {
+    // [data-persist]: non-sensitive fields are snapshotted to storage on input and
+    // restored after a reload; password fields are never persisted.
+    name: 'persist',
+    url: '/demo/foundations/forms.html',
+    viewport: { width: 720, height: 1100 },
+    async run(page) {
+      const { t, fails } = checker();
+      if (!(await page.locator('#signupDemo[data-persist]').count())) return ['no [data-persist] form in fixture'];
+      await page.locator('#vName').fill('Grace Hopper');
+      await page.locator('#vEmail').fill('grace@navy.mil');
+      await page.locator('#vPw').fill('supersecretpw');         // sensitive: must NOT persist
+      await page.waitForTimeout(60);                            // let the input snapshot land
+      await page.reload({ waitUntil: 'load' });
+      await page.waitForTimeout(200);
+      t((await page.locator('#vName').inputValue()) === 'Grace Hopper', 'text field restored after reload');
+      t((await page.locator('#vEmail').inputValue()) === 'grace@navy.mil', 'email field restored after reload');
+      t((await page.locator('#vPw').inputValue()) === '', 'password field is NOT persisted');
+      return fails;
+    },
+  },
+  {
+    // [data-autosize]: a textarea grows in height to fit its content (no inner scroll).
+    name: 'autosize',
+    url: '/demo/foundations/forms.html',
+    viewport: { width: 720, height: 1100 },
+    async run(page) {
+      const { t, fails } = checker();
+      const ta = page.locator('#vBio');
+      if (!(await ta.count())) return ['no [data-autosize] textarea in fixture'];
+      const h0 = await ta.evaluate((el) => el.clientHeight);
+      await ta.fill('one\ntwo\nthree\nfour\nfive\nsix');
+      const h1 = await ta.evaluate((el) => el.clientHeight);
+      t(h1 > h0, `textarea grows with content (${h0}px -> ${h1}px)`);
+      t(await ta.evaluate((el) => Math.abs(el.scrollHeight - el.clientHeight) <= 2), 'no inner scrollbar (height fits content)');
+      return fails;
+    },
+  },
+  {
+    // [data-char-count]: the counter reflects length / maxlength and warns near the limit.
+    name: 'char-count',
+    url: '/demo/foundations/forms.html',
+    viewport: { width: 720, height: 1100 },
+    async run(page) {
+      const { t, fails } = checker();
+      const ta = page.locator('#vBio');
+      if (!(await ta.evaluate((el) => el.hasAttribute('data-char-count')).catch(() => false))) return ['#vBio is not [data-char-count]'];
+      const c = page.locator('.form-field', { has: page.locator('#vBio') }).locator('.char-count, .counter');
+      if (!(await c.count())) return ['no counter rendered for [data-char-count]'];
+      t((await c.textContent()).trim() === '0 / 160', `counter starts at 0 / 160 (got "${(await c.textContent()).trim()}")`);
+      await ta.fill('hello');
+      t((await c.textContent()).trim() === '5 / 160', 'counter updates as you type');
+      await ta.fill('x'.repeat(155));
+      t(await c.evaluate((el) => el.classList.contains('is-near')), 'counter gains .is-near approaching the limit');
+      return fails;
+    },
+  },
+  {
+    // [data-submit-lock]: a valid submit disables + .is-loading the submit button to
+    // block double-submits; the numeric value auto-unlocks after that many ms.
+    name: 'submit-lock',
+    url: '/demo/foundations/forms.html',
+    viewport: { width: 720, height: 1100 },
+    async run(page) {
+      const { t, fails } = checker();
+      const form = page.locator('#signupDemo[data-submit-lock]');
+      if (!(await form.count())) return ['no [data-submit-lock] form in fixture'];
+      const submit = form.locator('button[type=submit]');
+      await page.locator('#vName').fill('Ada');
+      await page.locator('#vEmail').fill('ada@lovelace.io');
+      await page.locator('#vPw').fill('hunter2hunter2');
+      await page.locator('#vPw2').fill('hunter2hunter2');
+      await submit.click();
+      t(await submit.isDisabled(), 'submit button disabled on a valid submit');
+      t(await submit.evaluate((el) => el.classList.contains('is-loading')), 'submit button marked .is-loading');
+      t(await submit.getAttribute('aria-busy') === 'true', 'submit button aria-busy=true while locked');
+      await page.waitForTimeout(1700);
+      t(!(await submit.isDisabled()), 'submit re-enabled after the auto-unlock window');
+      return fails;
+    },
+  },
+  {
+    // i18n seam: setting window.QZi18n before load rethemes the built-in validate
+    // strings (proves non-English consumers can override without forking the engine).
+    name: 'i18n-override',
+    url: '/demo/foundations/forms.html',
+    viewport: { width: 720, height: 1100 },
+    initScript: () => { window.QZi18n = { validate: { required: 'CUSTOM-REQUIRED-MSG' } }; },
+    async run(page) {
+      const { t, fails } = checker();
+      // sanity: the merged table + fmt are exposed
+      t(await page.evaluate(() => !!(window.QZi18n && typeof window.QZi18n.fmt === 'function')), 'QZi18n table + fmt are exposed');
+      t(await page.evaluate(() => window.QZi18n.fmt('a {x} b', { x: 'Z' })) === 'a Z b', 'QZi18n.fmt fills {placeholders}');
+      // the override replaces the built-in required message
+      const submit = page.locator('#signupDemo button[type=submit]');
+      if (!(await submit.count())) return ['no #signupDemo in fixture'];
+      await submit.click();
+      const err = page.locator('#signupDemo .form-field', { has: page.locator('#vName') }).locator('.field-error');
+      t((await err.textContent()).trim() === 'CUSTOM-REQUIRED-MSG', 'window.QZi18n override replaces the built-in required message');
+      return fails;
+    },
+  },
+
   // ---- month-grid model: the pure interface behind picker/calendar/daterange.
   // Tested directly (no DOM clicks) — the interface is the test surface.
   {
@@ -294,6 +444,8 @@ for (const c of CHECKS) {
 
   let fails = [];
   try {
+    // optional: inject globals (e.g. window.QZi18n overrides) BEFORE the page script runs
+    if (c.initScript) await page.addInitScript(c.initScript);
     await page.goto(BASE + c.url, { waitUntil: 'load', timeout: 30000 });
     await page.waitForTimeout(150);
     fails = await c.run(page);

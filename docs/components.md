@@ -123,6 +123,11 @@ skeletons `.skel` (`.skel-line`) · section `.loading-block` · activity log `.l
 - Toast `.toast` (`.ok/.err/.warn/.info`) + icon chip; undo via `.undo`; **live**
   trigger `data-toast="msg"` `data-toast-type` (slides into a `.toast-host`)
 - `.alert` (`.crit/.warn/.info`) · `.banner` · `.session-bar` · empty `.empty`
+- **Dismissible** `[data-qz-dismiss]` — a control that hides its target (the attribute's
+  selector, else its closest `.alert`/`.banner`/`[data-dismissible]`). If the target has
+  an `id` (or `data-qz-dismiss-key`) the dismissal is remembered in storage
+  (`data-qz-dismiss-scope="local"|"session"`) so it stays gone on reload. (Namespaced
+  `data-qz-*` so it never collides with Bootstrap's `data-dismiss`.)
 
 ## Overlays
 All dismissable layers share one behaviour primitive: Esc, outside-click, scroll-lock
@@ -144,6 +149,13 @@ and focus-trap are inherited, not re-implemented per component.
   / transformed ancestors**, treats `data-tip-pos` as the *preferred* side, and **flips +
   shifts** to stay on screen near edges. The pure-CSS rendering is the no-JS fallback
   (suppressed by `.qz-tip-js` on `<html>`). Escape-dismissible; rich tips are hoverable.
+- **Confirm** `[data-qz-confirm="message"]` — intercepts a click on a link/button and asks
+  in an accessible body-level dialog (`role="alertdialog"`, focus-trap, Esc/Cancel/backdrop
+  dismiss, focus restore) instead of the blocking native `confirm()`. On Confirm the original
+  element is re-activated (submit buttons via `form.requestSubmit()` to preserve submitter/
+  formaction; links/others by replaying the click). Relabel with
+  `data-qz-confirm-ok`/`data-qz-confirm-cancel`; `data-qz-confirm-danger` tints the confirm
+  button. (Namespaced `data-qz-*` so it never collides with Rails UJS's `data-confirm`.)
 - Menu `.menu` + `.menu-item` (+`.danger`, `.menu-sep`, `.menu-label`)
 - Context menu `.menu.ctx` + `data-ctx="#id"` (right-click target)
 - Tabs `.tabs` + `[data-tabs]` (switch `.tabpanel`) · accordion `.acc` > `<details>`
@@ -199,7 +211,11 @@ On phones (≤640) the `.sidebar` becomes an **off-canvas drawer**: put a
 QR `.qr` · pairing code `.paircode` · color picker `.colorpicker` + `data-colorpicker` ·
 drag-reorder `.reorder` + `data-reorder` · currency picker (`.combo`) ·
 separator `.separator` (+`.labeled`, `.sep-v`) · `.kbd` · notification bell `.bell` +
-`.nbadge` · wizard `.wsteps`/`.wstep` + `[data-wizard]` · `.divider`
+`.nbadge` · wizard `.wsteps`/`.wstep` + `[data-wizard]` · `.divider` ·
+**read-more** `[data-clamp="N"]` (clamps to N lines + a `.clamp-toggle`; `data-clamp-more`/
+`data-clamp-less` relabel it; omitted when content already fits) ·
+**relative time** `[data-relative-time]` on a `<time datetime>` (renders "3h ago"/"in 2 days",
+refreshes each minute, keeps the absolute time as `title`)
 
 ## Error pages
 `.errpage` (+`.code.amber/.coral`) · grid `.err-grid` > `.errcard`
@@ -462,3 +478,6 @@ is consumer-wired.
   renders a `<video controls>`, otherwise an `<img>`. `data-caption` feeds the caption.
   Prev/next + counter, keyboard (←/→/`Esc`), focus trap + restore, background-scroll lock,
   `role="dialog"`/`aria-modal`. Dark chrome uses the kit's intentional black/white constants.
+  **Deep-linkable** — give the gallery an `id` and the open item writes
+  `#lightbox=<id>/<index>` to the URL, so a viewer can be shared and reopened; a shared link
+  opens it on load, navigating updates the hash, and the browser Back button closes it.

@@ -87,6 +87,35 @@
     </div>
   </section>
 
+  <section class="sec">
+    <h2>Validation &amp; autosave <span class="spec-lbl" style="display:inline">data-validate · data-persist · data-autosize · data-char-count · data-submit-lock</span></h2>
+    <form id="signupDemo" class="l-stack" data-validate="confirm" data-persist="forms-demo" data-submit-lock="1400" style="max-width:var(--measure)">
+      <div class="form-field">
+        <label for="vName">Name <span class="field-req">*</span></label>
+        <input id="vName" name="name" type="text" required minlength="2" autocomplete="name">
+      </div>
+      <div class="form-field">
+        <label for="vEmail">Email <span class="field-req">*</span></label>
+        <input id="vEmail" name="email" type="email" required autocomplete="email">
+        <span class="field-help">Rules are declared with native HTML attributes — required, type, minlength — not a bespoke DSL.</span>
+      </div>
+      <div class="form-field">
+        <label for="vPw">Password <span class="field-req">*</span></label>
+        <input id="vPw" name="password" type="password" required minlength="8" autocomplete="new-password">
+      </div>
+      <div class="form-field">
+        <label for="vPw2">Confirm password <span class="field-req">*</span></label>
+        <input id="vPw2" name="confirm" type="password" required data-match="#vPw">
+      </div>
+      <div class="form-field">
+        <label for="vBio">Bio</label>
+        <textarea id="vBio" name="bio" rows="2" maxlength="160" data-autosize data-char-count placeholder="Grows as you type; counts down to 160."></textarea>
+      </div>
+      <button type="submit" class="btn">Create account</button>
+    </form>
+    <p class="field-help" style="max-width:var(--measure);margin-top:var(--space-3)">Type into the non-sensitive fields, then reload — they're restored from storage. Password fields are never persisted.</p>
+  </section>
+
   <div class="foot">Qazana Strata · forms</div>
 </div>
 <script src="../../js/qazana.js" defer></script>

@@ -7,6 +7,47 @@ component/token, major = rename/removal/breaking token change.
 
 ### Minor
 
+- **Form behaviors** (base). Four generic, opt-in, data-attribute behaviors in
+  `js/qazana.js` driving new universal classes in `base.css`:
+  `data-persist` (autosave/restore non-sensitive fields across reload — password/file
+  inputs and `pass|card|cvv|cvc|ssn|secret|token|otp|pin` names are never stored; backed
+  by a shared namespaced `QZstore` helper, local|session scope), `data-autosize`
+  (textarea grow-to-fit), `data-char-count` (live `n / max` counter, `.char-count` /
+  `.is-near`), and `data-submit-lock` (disable + `.is-loading` spinner + `aria-busy` on a
+  valid submit to block double-submits; numeric value auto-unlocks).
+- **`[data-validate]` rebuilt on the native Constraint Validation API.** Now supports
+  `required` / `type=email|url` / `minlength` / `maxlength` / `pattern` / `min`/`max`/`step`
+  plus cross-field `data-match`, friendly messages (`data-msg` / `data-msg-match`), blur
+  validation after touch with live-clear, inline positive feedback (`.is-success` on a valid
+  non-empty field), an async/remote seam via `setCustomValidity`, and proper `aria-invalid` +
+  `aria-describedby` wiring. A valid submit submits normally; an action-less form stays put
+  and only shows the inline `.form-msg.ok` when opted in with `data-validate="confirm"` (so a
+  JS-handled form never gets an uninvited success banner). **Fix:** the engine had drifted from
+  the documented canonical vocabulary — it now drives `.form-field`/`.field-error`/`.is-error`
+  while still resolving the legacy `.field-row`/`.ferr`.
+- **i18n seam for the JS behaviors.** All built-in UI strings (`validate` messages, `confirm`
+  button/title defaults, `relative-time` units/phrases) read from a shared `QZi18n` table;
+  setting `window.QZi18n` before the script loads deep-merges overrides, so non-English
+  consumers retheme copy without forking the engine. Per-element `data-*` overrides still win.
+- **`[data-qz-confirm]`** (base). Accessible replacement for the blocking native `confirm()`:
+  intercepts a link/button click and asks in a body-level `role="alertdialog"` (focus-trap,
+  Esc/Cancel/backdrop dismiss, focus restore), re-activating the original element on Confirm
+  (submit buttons via `form.requestSubmit()`). `data-qz-confirm-ok`/`-cancel`/`-danger`. New
+  `.qz-confirm*` classes. Namespaced `data-qz-*` to avoid colliding with Rails UJS's
+  `data-confirm`.
+- **`[data-clamp]`** (base). Read-more line clamp to N lines with an accessible
+  `.clamp-toggle` (`aria-expanded`), omitted when content already fits; measured after
+  `document.fonts.ready` and re-measured when first revealed (IntersectionObserver).
+- **`[data-qz-dismiss]`** (base). Dismisses (and optionally remembers, keyed, via `QZstore`) an
+  `.alert`/`.banner`/`[data-dismissible]` or the attribute's target. Namespaced `data-qz-*`
+  to avoid colliding with Bootstrap's `data-dismiss`.
+- **`[data-relative-time]`** (base). Renders "3h ago" / "in 2 days" from a `<time datetime>`
+  via `Intl.RelativeTimeFormat` (true localization; QZi18n fallback on older engines),
+  refreshing each minute, keeping the absolute time as `title`.
+- **Lightbox deep-linking** (Media kit). A `[data-lightbox]` gallery with an `id` now writes
+  `#lightbox=<id>/<index>` to the URL, so the viewer is shareable: a shared link opens it on
+  load, navigating updates the hash, and the browser Back button closes it. Hash-based to stay
+  router-agnostic.
 - **Gallery + lightbox** (Media kit). `.media .gallery` responsive tile grid (`.tile`,
   `.tile-cap`, `.tile-badge`) and a `data-lightbox` behavior that builds one full-screen
   viewer at `<body>` level — images **or** video (`data-type="video"` / `.mp4|.webm|.mov|.m4v`),
@@ -41,6 +82,12 @@ component/token, major = rename/removal/breaking token change.
 
 ### Patch
 
+- **Scroll-lock unified + clobber fixed.** Modal, command palette, nav-drawer, lightbox,
+  and confirm now share one ref-counted `QZscroll` body-scroll lock instead of each
+  blindly setting `overflow`/`padding-right` and resetting to `''` on close. Fixes two
+  bugs: stacked overlays (a confirm over a modal) no longer restore each other's scroll
+  state prematurely, and a consumer's pre-existing inline body `overflow`/`padding-right`
+  is captured and restored rather than wiped. Surfaced by the dual-voice plan review.
 - Video player a11y: `.pcontrols` gained a dark scrim gradient so the white control
   chrome (`.ptime`, icons) keeps AA contrast over a light theme / any video (it was
   failing color-contrast on light), and the audio `.atrack` progressbars got an

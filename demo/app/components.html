@@ -529,7 +529,7 @@
       </div>
       <div>
         <div class="sub">Validated form (submit to check)</div>
-        <form data-validate class="card" style="max-width:420px">
+        <form data-validate="confirm" class="card" style="max-width:420px">
           <div class="field-row"><label class="fld">Email <span class="req">*</span></label><input type="email" required placeholder="you@example.com"></div>
           <div class="field-row"><label class="fld">Password <span class="req">*</span></label><input id="vpw" type="password" required minlength="8" placeholder="At least 8 characters"></div>
           <div class="field-row"><label class="fld">Confirm <span class="req">*</span></label><input type="password" required data-match="#vpw" placeholder="Re-enter password"></div>
@@ -635,6 +635,29 @@
     <div style="max-width:640px">
       <div class="alert info"><div class="ah"><span class="sev">Info</span></div><div class="am">Notice blocks carry their own <code>margin-block</code>, so a bare one never butts against neighbouring elements.</div></div>
       <div class="alert warn"><div class="ah"><span class="sev">Warning</span></div><div class="am">Margins collapse between siblings; wrapping in <code>.l-stack</code> neutralizes it.</div></div>
+    </div>
+  </section>
+
+  <!-- BEHAVIORS: confirm · read-more · dismiss · relative time -->
+  <section class="sec" id="behaviors">
+    <h2>Behaviors</h2>
+    <div class="sub">Confirm before action · read-more clamp · dismissible (remembered) · relative time</div>
+    <div class="demo col" style="max-width:640px;gap:18px">
+      <div class="l-row gap-3">
+        <a class="btn btn-danger" id="confirmDemo" href="#confirmed" data-qz-confirm="Delete this analysis? This can't be undone." data-qz-confirm-ok="Delete" data-qz-confirm-danger><i class="fa-solid fa-trash"></i> Delete analysis</a>
+        <span style="color:var(--muted)">Routed through an accessible dialog, not the blocking native <code>confirm()</code>.</span>
+      </div>
+
+      <p id="clampDemo" data-clamp="2" style="max-width:60ch;margin:0">Strata ships framework-agnostic, data-attribute-driven behaviors so the same vanilla markup works in any stack. This paragraph is clamped to two lines; the toggle below expands it. Read-more keeps long descriptions, changelog notes, and review excerpts compact without hiding anything from assistive tech, since the full text stays in the DOM and only the visual height is capped.</p>
+
+      <div class="alert info" id="dismissDemo">
+        <div class="ah"><span class="sev">Info</span>
+          <button class="btn-icon" data-qz-dismiss data-qz-dismiss-key="components-tip" aria-label="Dismiss this notice"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div class="am">Dismiss me — I'll stay gone on reload (remembered in storage by key).</div>
+      </div>
+
+      <p style="color:var(--muted);margin:0">Last analysed <time id="reltimeDemo" datetime="2026-06-20T09:30:00Z" data-relative-time></time>.</p>
     </div>
   </section>
 

@@ -674,9 +674,7 @@ document.addEventListener('DOMContentLoaded', function () {
     lastFocus = document.activeElement;
     scrim.removeAttribute('hidden');
     scrim.classList.add('is-open');
-    var sbw = window.innerWidth - document.documentElement.clientWidth;
-    document.body.style.overflow = 'hidden';
-    if (sbw > 0) document.body.style.paddingRight = sbw + 'px';
+    QZscroll.lock();
     openEl = scrim;
     var f = focusables(scrim);
     (f[0] || scrim).focus();
@@ -684,8 +682,7 @@ document.addEventListener('DOMContentLoaded', function () {
   function close() {
     if (!openEl) return;
     openEl.classList.remove('is-open');
-    document.body.style.overflow = '';
-    document.body.style.paddingRight = '';
+    QZscroll.unlock();
     if (lastFocus && lastFocus.focus) lastFocus.focus();
     openEl = null;
   }
@@ -754,13 +751,12 @@ document.addEventListener('DOMContentLoaded', function () {
   function open() {
     var s = panel(); if (!s) return;
     lastFocus = document.activeElement; scrim = s; s.removeAttribute('hidden'); s.classList.add('is-open');
-    var sbw = window.innerWidth - document.documentElement.clientWidth;
-    document.body.style.overflow = 'hidden'; if (sbw > 0) document.body.style.paddingRight = sbw + 'px';
+    QZscroll.lock();
     var inp = s.querySelector('.cmdk-search input'); if (inp) { inp.value = ''; filter(s, ''); inp.focus(); }
   }
   function close() {
     if (!scrim) return;
-    scrim.classList.remove('is-open'); document.body.style.overflow = ''; document.body.style.paddingRight = '';
+    scrim.classList.remove('is-open'); QZscroll.unlock();
     if (lastFocus && lastFocus.focus) lastFocus.focus(); scrim = null;
   }
   document.addEventListener('keydown', function (e) {
@@ -815,45 +811,109 @@ document.addEventListener('DOMContentLoaded', function () {
   document.addEventListener('DOMContentLoaded', function () { document.querySelectorAll('[data-tree]').forEach(setup); });
 })();
 
-/* ---- form validation: [data-validate] — required / email / minlength / data-match ---- */
+/* ---- form validation: [data-validate] — declarative rules through the native
+   Constraint Validation API (required, type=email/url/number, minlength, maxlength,
+   pattern, min/max/step) plus cross-field data-match. Drives the canonical
+   .form-field / .field-error / .is-error vocabulary (and the legacy .field-row /
+   .ferr it predates — the engine resolves either), wires aria-invalid +
+   aria-describedby, and validates on submit, on blur after a field is touched, then
+   live-clears a field once it's fixed ("reward early, punish late"). Async / remote
+   rules plug into the SAME pipeline via the native setCustomValidity seam: set a
+   custom validity on the control and this engine renders inp.validationMessage
+   through the field's error node. On a VALID submit the form submits normally; a
+   form with no action (or action="#") instead shows an inline .form-msg.ok and
+   stays put — for demos and forms whose submit is handled in JS. ---- */
 (function () {
   'use strict';
-  function fieldOf(inp) { return inp.closest('.field-row, .field') || inp.parentElement; }
+  var uid = 0;
+  function fieldOf(inp) { return inp.closest('.form-field, .field-row, .field') || inp.parentElement; }
+  function errNode(inp, make) {
+    var f = fieldOf(inp), err = f.querySelector('.field-error, .ferr, .err');
+    if (!err && make) { err = document.createElement('span'); err.className = 'field-error'; f.appendChild(err); }
+    if (err && !err.id) err.id = 'qz-err-' + (++uid);
+    return err;
+  }
+  // Friendly message for the control's current validity (native strings are clunky).
+  // Cross-field match is layered on first — it isn't a native constraint — then the
+  // native validity flags, then customError (the async seam) via validationMessage.
+  function messageFor(inp) {
+    var T = QZi18n.validate;
+    var sel = inp.getAttribute('data-match');
+    if (sel) { var other = QZq(sel); if (other && inp.value !== other.value) return inp.getAttribute('data-msg-match') || T.match; }
+    // Manual minlength check: validity.tooShort only fires for user-edited (dirty)
+    // values, so a persist-restored too-short draft would otherwise read as valid.
+    var ml = parseInt(inp.getAttribute('minlength'), 10);
+    if (ml > 0 && inp.value && inp.value.length < ml) return inp.getAttribute('data-msg') || QZi18n.fmt(T.minlength, { min: ml });
+    if (inp.validity.valid) return null;
+    if (inp.getAttribute('data-msg')) return inp.getAttribute('data-msg');
+    var v = inp.validity;
+    if (v.valueMissing) return T.required;
+    if (v.typeMismatch) return inp.type === 'email' ? T.email : inp.type === 'url' ? T.url : T.value;
+    if (v.tooShort) return QZi18n.fmt(T.minlength, { min: inp.getAttribute('minlength') });
+    if (v.tooLong) return QZi18n.fmt(T.maxlength, { max: inp.getAttribute('maxlength') });
+    if (v.rangeUnderflow) return QZi18n.fmt(T.min, { min: inp.getAttribute('min') });
+    if (v.rangeOverflow) return QZi18n.fmt(T.max, { max: inp.getAttribute('max') });
+    if (v.stepMismatch) return T.step;
+    if (v.patternMismatch) return inp.getAttribute('title') || T.pattern;
+    return inp.validationMessage || T.generic;
+  }
   function setError(inp, msg) {
-    inp.classList.add('is-error'); inp.setAttribute('aria-invalid', 'true');
-    var f = fieldOf(inp), err = f.querySelector('.ferr');
-    if (!err) { err = document.createElement('span'); err.className = 'ferr'; f.appendChild(err); }
+    var f = fieldOf(inp), err = errNode(inp, true);
+    inp.classList.add('is-error'); inp.classList.remove('is-success'); inp.setAttribute('aria-invalid', 'true');
+    if (f.classList.contains('form-field')) f.classList.add('is-error');
     err.textContent = msg; err.style.display = '';
+    var d = (inp.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+    if (d.indexOf(err.id) < 0) { d.push(err.id); inp.setAttribute('aria-describedby', d.join(' ')); }
   }
   function clearError(inp) {
+    var f = fieldOf(inp), err = errNode(inp, false);
     inp.classList.remove('is-error'); inp.removeAttribute('aria-invalid');
-    var err = fieldOf(inp).querySelector('.ferr'); if (err && err.dataset.auto !== '0') err.style.display = 'none';
+    if (f.classList.contains('form-field')) f.classList.remove('is-error');
+    if (err && err.dataset.auto !== '0') err.style.display = 'none';   // leave author-written sticky errors alone
   }
-  function validateField(inp) {
-    var v = (inp.value || '').trim();
-    if (inp.hasAttribute('required') && !v) return 'This field is required.';
-    if (v && inp.type === 'email' && !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v)) return 'Enter a valid email.';
-    var min = inp.getAttribute('minlength'); if (v && min && v.length < +min) return 'Must be at least ' + min + ' characters.';
-    var match = inp.getAttribute('data-match'); if (match) { var other = document.querySelector(match); if (other && v !== other.value) return "Doesn't match."; }
+  // valid + non-empty → positive feedback (.is-success) for text-like controls only;
+  // never checkbox/radio (value is "on" regardless of checked) or selects, and never
+  // an empty optional field.
+  function check(inp) {
+    var msg = messageFor(inp);
+    if (msg) { setError(inp, msg); return msg; }
+    clearError(inp);
+    var textLike = inp.tagName !== 'SELECT' && inp.type !== 'checkbox' && inp.type !== 'radio';
+    inp.classList.toggle('is-success', textLike && (inp.value || '').trim() !== '');
     return null;
   }
+  function realAction(form) { var a = (form.getAttribute('action') || '').trim(); return !!a && a !== '#'; }
   function setup(form) {
-    var fields = Array.prototype.slice.call(form.querySelectorAll('input, textarea, select')).filter(function (i) { return i.type !== 'submit' && i.type !== 'button'; });
-    form.setAttribute('novalidate', '');
-    fields.forEach(function (inp) { inp.addEventListener('input', function () { clearError(inp); }); });
+    var fields = Array.prototype.slice.call(form.querySelectorAll('input, textarea, select'))
+      .filter(function (i) { return i.type !== 'submit' && i.type !== 'button' && i.type !== 'hidden' && !i.disabled; });
+    form.setAttribute('novalidate', '');                                   // we own the UX, not the native bubbles
+    fields.forEach(function (inp) {
+      inp.addEventListener('blur', function () { check(inp); });            // punish late: only after the field is touched
+      inp.addEventListener('input', function () { if (inp.classList.contains('is-error')) check(inp); }); // reward early
+    });
     form.addEventListener('submit', function (e) {
       var bad = 0, first = null;
-      fields.forEach(function (inp) { var m = validateField(inp); if (m) { bad++; setError(inp, m); if (!first) first = inp; } else clearError(inp); });
+      fields.forEach(function (inp) { if (check(inp)) { bad++; if (!first) first = inp; } });
       var msg = form.querySelector('.form-msg');
       if (bad) {
         e.preventDefault();
-        if (!msg) { msg = document.createElement('div'); msg.className = 'form-msg'; form.insertBefore(msg, form.firstChild); }
-        msg.className = 'form-msg error'; msg.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> Please fix ' + bad + ' field' + (bad > 1 ? 's' : '') + ' below.';
-        if (first) first.focus();
-      } else {
-        e.preventDefault();   // demo: don't actually navigate
         if (!msg) { msg = document.createElement('div'); form.insertBefore(msg, form.firstChild); }
-        msg.className = 'form-msg ok'; msg.innerHTML = '<i class="fa-solid fa-check"></i> Looks good — submitted.';
+        msg.className = 'form-msg error';
+        msg.innerHTML = '<i class="fa-solid fa-circle-exclamation"></i> ';
+        msg.appendChild(document.createTextNode(QZi18n.fmt(QZi18n.validate.fix, { n: bad, s: bad > 1 ? QZi18n.time.plural : '' })));
+        if (first) first.focus();
+        return;
+      }
+      // valid: a real action submits normally; an action-less form stays put (no reload
+      // to nowhere). The inline "submitted" banner is OPT-IN via data-validate="confirm"
+      // so we never inject an uninvited success message into a JS-handled form.
+      if (realAction(form)) return;
+      e.preventDefault();
+      if (form.getAttribute('data-validate') === 'confirm') {
+        if (!msg) { msg = document.createElement('div'); form.insertBefore(msg, form.firstChild); }
+        msg.className = 'form-msg ok';
+        msg.innerHTML = '<i class="fa-solid fa-check"></i> ';
+        msg.appendChild(document.createTextNode(QZi18n.validate.ok));
       }
     });
   }
@@ -1035,7 +1095,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!drawer) return;
     drawer.classList.add('open');
     if (overlay) overlay.classList.add('open');
-    document.body.style.overflow = 'hidden';
+    QZscroll.lock();
     syncToggles(true);
     var f = focusables(drawer);
     (f[0] || drawer).focus();
@@ -1045,7 +1105,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!overlay) overlay = document.querySelector('.nav-drawer-overlay');
     if (drawer) drawer.classList.remove('open');
     if (overlay) overlay.classList.remove('open');
-    document.body.style.overflow = '';
+    QZscroll.unlock();
     syncToggles(false);
     if (trigger && trigger.focus) trigger.focus();
     trigger = null;
@@ -1222,7 +1282,19 @@ document.addEventListener('DOMContentLoaded', function () {
    + caption; keyboard (←/→/Esc), focus trap, focus restore, background-scroll lock. ---- */
 (function () {
   var lb, stage, capEl, countEl, prevB, nextB, items = [], idx = 0, opener = null;
+  var curGid = null, syncing = false, prevHash = '';
   var VIDEO = /\.(mp4|webm|mov|m4v)(\?|#|$)/i;
+
+  // Deep-link state lives in the hash as #lightbox=<group-id>/<index>, so a viewer
+  // can be shared and reopened. Hash-based to stay router-agnostic (no pushState
+  // route collision); a group needs an id to be deep-linkable.
+  function hashFor(gid, i) { return '#lightbox=' + encodeURIComponent(gid) + '/' + i; }
+  function parseHash() { var m = /^#lightbox=([^/]+)\/(\d+)$/.exec(location.hash); return m ? { gid: decodeURIComponent(m[1]), idx: +m[2] } : null; }
+  function writeHash(mode) {                 // mode: 'push' | 'replace' | null (opened from the hash already)
+    if (!curGid || !history.replaceState || mode === null) return;
+    var h = hashFor(curGid, idx); if (location.hash === h) return;
+    syncing = true; history[mode === 'push' ? 'pushState' : 'replaceState'](null, '', h); syncing = false;
+  }
 
   function build() {
     lb = document.createElement('div');
@@ -1253,21 +1325,31 @@ document.addEventListener('DOMContentLoaded', function () {
     var multi = items.length > 1;
     prevB.style.display = nextB.style.display = multi ? '' : 'none';
   }
-  function go(d) { idx = (idx + d + items.length) % items.length; render(); }
+  function go(d) { idx = (idx + d + items.length) % items.length; render(); writeHash('replace'); }
 
-  function open(list, i, trigger) {
-    items = list; idx = i; opener = trigger || null;
+  function open(list, i, trigger, gid, mode) {
+    items = list; idx = i; opener = trigger || null; curGid = gid || null;
     if (!lb) build();
+    if (mode === 'push') prevHash = location.hash;     // remember the page's pre-open hash to restore on close
     render(); lb.classList.add('open');
-    document.documentElement.style.overflow = 'hidden';
+    QZscroll.lock();
     document.addEventListener('keydown', onKey);
     lb.querySelector('.lb-close').focus();
+    writeHash(mode);
   }
-  function close() {
+  function openGroup(group, i, trigger, mode) {
+    var list = collect(group); if (!list.length) return;
+    open(list, Math.max(0, Math.min(list.length - 1, i || 0)), trigger, group.id || null, mode);
+  }
+  function close(fromHash) {
     if (!lb) return;
     lb.classList.remove('open'); stage.textContent = '';
-    document.documentElement.style.overflow = '';
+    QZscroll.unlock();
     document.removeEventListener('keydown', onKey);
+    if (!fromHash && curGid && history.replaceState && parseHash()) {   // user-closed → restore the pre-open hash, not a bare path
+      syncing = true; history.replaceState(null, '', location.pathname + location.search + (prevHash || '')); syncing = false;
+    }
+    curGid = null; prevHash = '';
     if (opener && opener.focus) opener.focus();
   }
   function onKey(e) {
@@ -1290,6 +1372,13 @@ document.addEventListener('DOMContentLoaded', function () {
       return { src: src, type: type, cap: el.getAttribute('data-caption') || '', poster: el.getAttribute('data-poster') || (thumb ? thumb.src : ''), el: el };
     });
   }
+  function fromHash(trigger) {
+    var p = parseHash(); if (!p) return false;
+    var g = document.getElementById(p.gid);
+    if (!g || !g.matches('[data-lightbox]')) return false;
+    openGroup(g, p.idx, trigger, null);                  // already in the hash → don't re-write history
+    return true;
+  }
   function init() {
     document.addEventListener('click', function (e) {
       var item = e.target.closest('[data-lightbox] [data-lightbox-item], [data-lightbox] a[href]');
@@ -1298,8 +1387,400 @@ document.addEventListener('DOMContentLoaded', function () {
       e.preventDefault();
       var list = collect(group), i = 0;
       for (var k = 0; k < list.length; k++) { if (list[k].el === item) { i = k; break; } }
-      open(list, i, item);
+      open(list, i, item, group.id || null, 'push');     // push a history entry so Back closes the viewer
     });
+    window.addEventListener('hashchange', function () {
+      if (syncing) return;
+      if (!fromHash(null) && lb && lb.classList.contains('open')) close(true);   // hash cleared (e.g. Back) → close
+    });
+    fromHash(null);                                        // cold load: open directly from a shared link
   }
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+})();
+
+/* ---- shared storage helper: namespaced ("qz:"), scope-aware (local | session),
+   try/catch-wrapped so private mode / disabled storage degrade silently to no-ops.
+   One place to set the namespacing + sensitive-data policy; backs [data-persist]
+   and [data-qz-dismiss]. (The older toggle behaviors keep their own bespoke keys.) ---- */
+var QZstore = (function () {
+  'use strict';
+  var NS = 'qz:';
+  function area(scope) { try { return scope === 'session' ? window.sessionStorage : window.localStorage; } catch (e) { return null; } }
+  return {
+    get: function (key, scope) { var a = area(scope); try { return a ? a.getItem(NS + key) : null; } catch (e) { return null; } },
+    set: function (key, val, scope) { var a = area(scope); try { if (a) a.setItem(NS + key, val); } catch (e) {} },
+    remove: function (key, scope) { var a = area(scope); try { if (a) a.removeItem(NS + key); } catch (e) {} },
+  };
+})();
+
+/* ---- shared i18n: default UI strings for the JS behaviors, overridable by setting
+   window.QZi18n (deep-merged) BEFORE this script loads — so non-English consumers can
+   retheme validate / confirm / relative-time copy without forking the engine. Per-element
+   data-* overrides (data-msg, data-qz-confirm-ok, …) still win over these global defaults.
+   `{token}` placeholders are filled by QZi18n.fmt. ---- */
+var QZi18n = (function () {
+  'use strict';
+  var defaults = {
+    validate: {
+      required: 'This field is required.', email: 'Enter a valid email address.', url: 'Enter a valid URL.',
+      value: 'Enter a valid value.', minlength: 'Must be at least {min} characters.', maxlength: 'Must be at most {max} characters.',
+      min: 'Must be {min} or more.', max: 'Must be {max} or less.', step: 'Enter a valid increment.',
+      pattern: "Doesn't match the required format.", match: "Doesn't match.",
+      fix: 'Please fix {n} field{s} below.', ok: 'Looks good — submitted.', generic: 'Please correct this field.'
+    },
+    confirm: { title: 'Are you sure?', ok: 'Confirm', cancel: 'Cancel' },
+    time: {
+      units: { year: 'year', month: 'month', week: 'week', day: 'day', hour: 'hour', minute: 'minute', second: 'second' },
+      now: 'just now', ago: '{v} ago', in: 'in {v}', plural: 's'
+    }
+  };
+  var user = (typeof window !== 'undefined' && window.QZi18n) || {};
+  function merge(d, u) {
+    var out = {}, k;
+    for (k in d) out[k] = (d[k] && typeof d[k] === 'object' && !(d[k] instanceof Array)) ? merge(d[k], (u && u[k]) || {}) : ((u && k in u) ? u[k] : d[k]);
+    for (k in u) if (!(k in out)) out[k] = u[k];
+    return out;
+  }
+  var I = merge(defaults, user);
+  I.fmt = function (s, vars) { return String(s).replace(/\{(\w+)\}/g, function (m, k) { return (vars && k in vars) ? vars[k] : m; }); };
+  return I;
+})();
+
+/* ---- shared scroll-lock: ref-counted body scroll lock so stacked overlays (a confirm
+   over a modal, a lightbox, …) can't clobber each other's restore. The original inline
+   overflow + a scrollbar-gap padding are captured on the FIRST lock and restored on the
+   LAST unlock; the gap is added on top of any existing body padding, not overwritten. ---- */
+var QZscroll = (function () {
+  'use strict';
+  var depth = 0, prevOverflow = '', prevPad = '';
+  return {
+    lock: function () {
+      if (depth === 0) {
+        prevOverflow = document.body.style.overflow;
+        prevPad = document.body.style.paddingRight;
+        var sbw = window.innerWidth - document.documentElement.clientWidth;
+        document.body.style.overflow = 'hidden';
+        if (sbw > 0) document.body.style.paddingRight = ((parseFloat(getComputedStyle(document.body).paddingRight) || 0) + sbw) + 'px';
+      }
+      depth++;
+    },
+    unlock: function () {
+      if (depth === 0) return;
+      if (--depth === 0) { document.body.style.overflow = prevOverflow; document.body.style.paddingRight = prevPad; }
+    },
+  };
+})();
+
+/* ---- shared helpers: a safe querySelector (a malformed author selector must not
+   throw and abort a whole init pass) and a ready() that also fires when the script is
+   injected AFTER load (SPA / dynamic import), not just on DOMContentLoaded. ---- */
+function QZq(sel, root) { try { return sel ? (root || document).querySelector(sel) : null; } catch (e) { return null; } }
+function QZready(fn) { if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', fn); else fn(); }
+
+/* ---- form autosave: [data-persist] snapshots its fields to storage on input and
+   restores them on load, so a refresh / accidental nav doesn't lose typing. Opt-in
+   per form; storage key is the attribute's value or the form id, scope is
+   data-persist-scope ("local" default | "session"), optional data-persist-ttl="<ms>"
+   expires the draft. SENSITIVE fields are never written — password & file inputs,
+   [data-no-persist], or a name/id matching pass|card|cvv|cvc|ssn|secret|token|otp|pin —
+   so PII/credentials don't land in storage. The blob is version-stamped so a schema
+   change invalidates old drafts. Cleared on a real (non-prevented) submit. ---- */
+(function () {
+  'use strict';
+  var VERSION = 1;
+  // Match sensitive field NAMES on whole tokens (split on separators + camelCase), not
+  // substrings — so "shipping" / "passenger" / "discard" aren't false-positived by
+  // pin / pass / card and silently dropped from the snapshot.
+  var SENSITIVE = { password: 1, passwd: 1, pass: 1, card: 1, cardnumber: 1, ccnumber: 1, cc: 1, cvv: 1, cvc: 1, csc: 1, ssn: 1, sin: 1, secret: 1, token: 1, otp: 1, pin: 1, iban: 1, routing: 1 };
+  function keyOf(el) { return el.name || el.id || ''; }
+  function isSensitive(el) {
+    var tokens = keyOf(el).replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase().split(/[^a-z0-9]+/);
+    for (var i = 0; i < tokens.length; i++) if (SENSITIVE[tokens[i]]) return true;
+    return false;
+  }
+  function persistable(form) {
+    return Array.prototype.slice.call(form.querySelectorAll('input, textarea, select')).filter(function (el) {
+      if (/^(password|file|submit|button|hidden|image|reset)$/.test(el.type)) return false;
+      if (el.hasAttribute('data-no-persist')) return false;
+      if (isSensitive(el)) return false;
+      return !!keyOf(el);
+    });
+  }
+  function setup(form) {
+    var key = form.getAttribute('data-persist') || form.id;
+    if (!key) return;
+    var scope = form.getAttribute('data-persist-scope') === 'session' ? 'session' : 'local';
+    var ttl = parseInt(form.getAttribute('data-persist-ttl'), 10);     // optional ms; NaN/0 = no expiry
+    var storeKey = 'persist:' + key, fields = persistable(form);
+
+    var raw = QZstore.get(storeKey, scope), blob = null;
+    if (raw) { try { blob = JSON.parse(raw); } catch (e) {} }
+    // version + TTL gate: drop a foreign-schema or expired draft rather than restoring it
+    var fresh = blob && blob.v === VERSION && (!blob.exp || blob.exp > Date.now());
+    if (blob && !fresh) QZstore.remove(storeKey, scope);
+    var saved = fresh ? blob.d : null;
+    if (saved) fields.forEach(function (el) {
+      var k = keyOf(el); if (!(k in saved)) return;
+      if (el.type === 'checkbox') el.checked = !!saved[k];
+      else if (el.type === 'radio') el.checked = el.value === saved[k];
+      else el.value = saved[k];
+      el.dispatchEvent(new Event('input', { bubbles: true }));   // let dependent behaviors (char-count, validate) re-sync
+    });
+
+    function snapshot() {
+      var data = {};
+      fields.forEach(function (el) {
+        var k = keyOf(el);
+        if (el.type === 'checkbox') data[k] = el.checked;
+        else if (el.type === 'radio') { if (el.checked) data[k] = el.value; }
+        else data[k] = el.value;
+      });
+      var rec = { v: VERSION, d: data };
+      if (ttl > 0) rec.exp = Date.now() + ttl;
+      QZstore.set(storeKey, JSON.stringify(rec), scope);
+    }
+    form.addEventListener('input', snapshot);
+    form.addEventListener('change', snapshot);
+    // Defer the clear so a consumer's submit handler registered AFTER us (the common
+    // AJAX case) can preventDefault first — otherwise we'd wipe the draft of a submit
+    // that never actually navigated.
+    form.addEventListener('submit', function (e) {
+      setTimeout(function () { if (!e.defaultPrevented) QZstore.remove(storeKey, scope); }, 0);
+    });
+  }
+  QZready(function () { document.querySelectorAll('[data-persist]').forEach(setup); });
+})();
+
+/* ---- textarea auto-grow: [data-autosize] resizes a <textarea> to fit its content
+   (no inner scrollbar). A max-height in CSS still caps it (scroll returns past it).
+   Re-measures on focus so a textarea hidden at load (closed tab/accordion) sizes
+   correctly once shown. ---- */
+(function () {
+  'use strict';
+  function fit(t) { var prev = t.style.height; t.style.height = 'auto'; var h = t.scrollHeight; t.style.height = h ? h + 'px' : prev; }  // h===0 → hidden; leave as-is
+  function setup(t) {
+    t.addEventListener('input', function () { fit(t); });
+    t.addEventListener('focus', function () { fit(t); });
+    fit(t);
+  }
+  QZready(function () { document.querySelectorAll('textarea[data-autosize]').forEach(setup); });
+})();
+
+/* ---- character counter: [data-char-count] on a maxlength'd control keeps a counter
+   in sync ("n / max"). The counter is the element matching the attribute's selector
+   (when set), else a .char-count / .counter in the same field, else one is created.
+   Near the limit it gains .is-near and becomes aria-live polite — so the count is NOT
+   announced on every keystroke, only as the limit approaches. ---- */
+(function () {
+  'use strict';
+  function counterFor(el) {
+    var t = QZq(el.getAttribute('data-char-count')); if (t) return t;
+    var field = el.closest('.form-field, .field-row, .field') || el.parentElement;
+    var c = field.querySelector('.char-count, .counter');
+    if (!c) { c = document.createElement('span'); c.className = 'char-count'; field.appendChild(c); }
+    return c;
+  }
+  function setup(el) {
+    var max = parseInt(el.getAttribute('maxlength'), 10);
+    if (!(max > 0)) return;
+    var c = counterFor(el), near = Math.max(5, Math.round(max * 0.1));
+    function upd() {
+      var n = el.value.length, isNear = max - n <= near;
+      c.textContent = n + ' / ' + max; c.classList.toggle('is-near', isNear);
+      if (isNear) c.setAttribute('aria-live', 'polite'); else c.removeAttribute('aria-live');
+    }
+    el.addEventListener('input', upd); upd();
+  }
+  QZready(function () { document.querySelectorAll('[data-char-count]').forEach(setup); });
+})();
+
+/* ---- submit lock: a form [data-submit-lock] disables its submit button and marks it
+   .is-loading + aria-busy once a submit passes validation, so a slow round-trip can't
+   be double-submitted. Gated on the form being valid (no .is-error painted by
+   [data-validate], and native checkValidity). Unlock seams so a JS-handled submit that
+   never navigates can't stay locked forever: a numeric value (data-submit-lock="1200")
+   auto-unlocks after that many ms; the form also unlocks on a `qz:unlock` event it can
+   dispatch, on the next edit to the form, and on a bfcache back-nav (pageshow). ---- */
+(function () {
+  'use strict';
+  function setup(form) {
+    var btn = form.querySelector('button[type=submit], input[type=submit], button:not([type])');
+    if (!btn) return;
+    function unlock() { btn.disabled = false; btn.classList.remove('is-loading'); btn.removeAttribute('aria-busy'); }
+    form.addEventListener('submit', function () {
+      if (form.querySelector('.is-error') || !form.checkValidity()) return;     // validation will block this submit
+      btn.disabled = true; btn.classList.add('is-loading'); btn.setAttribute('aria-busy', 'true');
+      var ms = parseInt(form.getAttribute('data-submit-lock'), 10);
+      if (ms > 0) setTimeout(unlock, ms);
+    });
+    form.addEventListener('qz:unlock', unlock);                                  // explicit seam for JS handlers
+    form.addEventListener('input', function () { if (btn.disabled) unlock(); }); // editing after a lock frees it
+    window.addEventListener('pageshow', unlock);
+  }
+  QZready(function () { document.querySelectorAll('[data-submit-lock]').forEach(setup); });
+})();
+
+/* ---- confirm-before-action: [data-qz-confirm="message"] intercepts a click on a
+   link/button and asks for confirmation in an accessible body-level dialog
+   (role=alertdialog, focus trap, Esc / Cancel / backdrop dismiss, focus restore)
+   instead of the blocking native confirm(). On Confirm the original element is
+   re-activated — a submit button via form.requestSubmit() to preserve submitter /
+   formaction semantics, anything else by replaying its click. data-qz-confirm-ok /
+   data-qz-confirm-cancel relabel the buttons, data-qz-confirm-danger tints the confirm
+   button destructive. (Namespaced data-qz-* to avoid colliding with Rails UJS's
+   data-confirm.) ---- */
+(function () {
+  'use strict';
+  var dlg, msgEl, okB, cancelB, pending = null, lastFocus = null;
+  function build() {
+    dlg = document.createElement('div'); dlg.className = 'qz-confirm'; dlg.hidden = true;
+    dlg.innerHTML =
+      '<div class="qz-confirm-box" role="alertdialog" aria-modal="true" aria-labelledby="qz-confirm-msg">' +
+      '<p class="qz-confirm-msg" id="qz-confirm-msg"></p>' +
+      '<div class="qz-confirm-actions">' +
+      '<button type="button" class="qz-confirm-cancel"></button>' +
+      '<button type="button" class="qz-confirm-ok"></button>' +
+      '</div></div>';
+    document.body.appendChild(dlg);
+    msgEl = dlg.querySelector('.qz-confirm-msg');
+    okB = dlg.querySelector('.qz-confirm-ok'); cancelB = dlg.querySelector('.qz-confirm-cancel');
+    okB.addEventListener('click', accept);
+    cancelB.addEventListener('click', dismiss);
+    dlg.addEventListener('click', function (e) { if (e.target === dlg) dismiss(); });
+  }
+  function open(trig) {
+    if (!dlg) build();
+    pending = trig; lastFocus = document.activeElement;
+    msgEl.textContent = trig.getAttribute('data-qz-confirm') || QZi18n.confirm.title;
+    okB.textContent = trig.getAttribute('data-qz-confirm-ok') || QZi18n.confirm.ok;
+    cancelB.textContent = trig.getAttribute('data-qz-confirm-cancel') || QZi18n.confirm.cancel;
+    okB.classList.toggle('danger', trig.hasAttribute('data-qz-confirm-danger'));
+    dlg.hidden = false; dlg.classList.add('is-open');
+    QZscroll.lock();
+    cancelB.focus();                                   // default focus on the safe choice
+  }
+  function teardown() {
+    dlg.classList.remove('is-open'); dlg.hidden = true; QZscroll.unlock();
+    if (lastFocus && lastFocus.focus) lastFocus.focus();
+  }
+  function dismiss() { if (!pending) return; pending = null; teardown(); }
+  function accept() {
+    var trig = pending; pending = null; teardown();
+    if (!trig) return;
+    var isSubmit = (trig.tagName === 'BUTTON' && trig.type !== 'button' && trig.type !== 'reset') || (trig.tagName === 'INPUT' && trig.type === 'submit');
+    if (isSubmit && trig.form && trig.form.requestSubmit) {           // preserve submitter + formaction
+      try { trig.form.requestSubmit(trig); return; } catch (e) {}
+    }
+    trig.dataset.qzConfirmed = '1'; trig.click(); delete trig.dataset.qzConfirmed;   // let the re-activation through
+  }
+  document.addEventListener('click', function (e) {
+    var trig = e.target.closest('[data-qz-confirm]');
+    if (!trig || trig.dataset.qzConfirmed) return;
+    e.preventDefault(); e.stopPropagation();
+    open(trig);
+  }, true);                                            // capture: beat the element's own handlers until confirmed
+  document.addEventListener('keydown', function (e) {
+    if (!pending) return;
+    if (e.key === 'Escape') { dismiss(); return; }
+    if (e.key === 'Tab') {
+      var first = cancelB, last = okB;
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    }
+  });
+})();
+
+/* ---- read-more: [data-clamp="3"] clamps its content to N lines, adding an
+   accessible toggle (aria-expanded) to expand/collapse. The toggle is omitted when the
+   content already fits — measured after web fonts settle, and re-measured the first
+   time the element becomes visible (so a clamp inside a hidden tab/accordion is sized
+   correctly). data-clamp-more / data-clamp-less relabel it. ---- */
+(function () {
+  'use strict';
+  function setup(el) {
+    var lines = parseInt(el.getAttribute('data-clamp'), 10) || 3;
+    el.style.setProperty('--clamp-lines', lines);
+    el.classList.add('is-clamped');
+    var more = el.getAttribute('data-clamp-more') || 'Read more', less = el.getAttribute('data-clamp-less') || 'Show less';
+    function measure() {
+      if (!el.clientHeight) return;                                              // hidden — decide once visible
+      if (el.scrollHeight <= el.clientHeight + 1) { el.classList.remove('is-clamped'); return; }  // fits → no toggle
+      if (el.nextElementSibling && el.nextElementSibling.classList.contains('clamp-toggle')) return;  // already wired
+      var btn = document.createElement('button');
+      btn.type = 'button'; btn.className = 'clamp-toggle'; btn.textContent = more; btn.setAttribute('aria-expanded', 'false');
+      el.insertAdjacentElement('afterend', btn);
+      btn.addEventListener('click', function () {
+        var expanded = el.classList.toggle('is-clamped') === false;
+        btn.setAttribute('aria-expanded', expanded ? 'true' : 'false');
+        btn.textContent = expanded ? less : more;
+      });
+    }
+    measure();
+    if (document.fonts && document.fonts.ready && document.fonts.ready.then) document.fonts.ready.then(measure);
+    if ('IntersectionObserver' in window && !el.clientHeight) {
+      var io = new IntersectionObserver(function (ents) { ents.forEach(function (en) { if (en.isIntersecting) { measure(); io.disconnect(); } }); });
+      io.observe(el);
+    }
+  }
+  QZready(function () { document.querySelectorAll('[data-clamp]').forEach(setup); });
+})();
+
+/* ---- dismissible: a [data-qz-dismiss] control hides its target — the selector in the
+   attribute, else its closest .alert / .banner / [data-dismissible]. When that target
+   has an id (or data-qz-dismiss-key) the dismissal is remembered in storage (scope via
+   data-qz-dismiss-scope) so it stays gone on reload. (Namespaced data-qz-* to avoid
+   colliding with Bootstrap's data-dismiss.) ---- */
+(function () {
+  'use strict';
+  function targetOf(btn) {
+    return QZq(btn.getAttribute('data-qz-dismiss')) || btn.closest('.alert, .banner, [data-dismissible]') || btn.parentElement;
+  }
+  QZready(function () {
+    document.querySelectorAll('[data-qz-dismiss]').forEach(function (btn) {
+      var el = targetOf(btn);
+      var key = btn.getAttribute('data-qz-dismiss-key') || (el && el.id) || '';
+      var scope = btn.getAttribute('data-qz-dismiss-scope') === 'session' ? 'session' : 'local';
+      if (el && key && QZstore.get('dismiss:' + key, scope)) { el.hidden = true; return; }
+      btn.addEventListener('click', function () {
+        if (!el) return;
+        el.hidden = true;
+        if (key) QZstore.set('dismiss:' + key, '1', scope);
+      });
+    });
+  });
+})();
+
+/* ---- relative time: [data-relative-time] renders "3h ago" / "in 2 days" from its
+   datetime (the datetime attribute on a <time>, else the attribute's value), refreshing
+   once a minute. Uses Intl.RelativeTimeFormat (true localization, no morphology hacks)
+   when available, falling back to the QZi18n.time strings on older engines; locale via
+   QZi18n.locale. Skips detached nodes on each tick; absolute time kept as title. ---- */
+(function () {
+  'use strict';
+  var DIV = [['year', 31536000], ['month', 2592000], ['week', 604800], ['day', 86400], ['hour', 3600], ['minute', 60], ['second', 1]];
+  var RTF = (typeof Intl !== 'undefined' && Intl.RelativeTimeFormat)
+    ? new Intl.RelativeTimeFormat(QZi18n.locale || undefined, { numeric: 'always' }) : null;
+  function phrase(then) {
+    var diff = (then - Date.now()) / 1000, abs = Math.abs(diff);
+    if (abs < 45) return QZi18n.time.now;
+    for (var i = 0; i < DIV.length; i++) {
+      if (abs >= DIV[i][1] || DIV[i][0] === 'second') {
+        if (RTF) return RTF.format(Math.round(diff / DIV[i][1]), DIV[i][0]);
+        var T = QZi18n.time, n = Math.round(abs / DIV[i][1]), label = n + ' ' + T.units[DIV[i][0]] + (n !== 1 ? T.plural : '');
+        return QZi18n.fmt(diff < 0 ? T.ago : T.in, { v: label });
+      }
+    }
+  }
+  function setup(el) {
+    var then = Date.parse(el.getAttribute('datetime') || el.getAttribute('data-relative-time'));
+    if (isNaN(then)) return null;
+    if (!el.title) el.title = new Date(then).toLocaleString();
+    return function () { el.textContent = phrase(then); };
+  }
+  QZready(function () {
+    var pairs = [];
+    Array.prototype.forEach.call(document.querySelectorAll('[data-relative-time]'), function (el) { var f = setup(el); if (f) pairs.push({ el: el, f: f }); });
+    pairs.forEach(function (p) { p.f(); });
+    if (pairs.length) setInterval(function () { pairs.forEach(function (p) { if (p.el.isConnected) p.f(); }); }, 60000);
+  });
 })();
