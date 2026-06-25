@@ -4,6 +4,7 @@ import starlight from '@astrojs/starlight';
 // Per-product docs subdomain (GitHub Pages; Cloudflare CNAME strata.docs -> qazana.github.io)
 const SITE = 'https://strata.docs.qazana.net';
 const BASE = '/';
+const GA_MEASUREMENT_ID = 'G-MBB3JL4ZXM';
 
 export default defineConfig({
   site: SITE,
@@ -13,6 +14,24 @@ export default defineConfig({
       title: 'Qazana Strata',
       description:
         'Framework-agnostic, token-driven design system — vanilla CSS + data-attribute behaviours, themeable per product.',
+      head: [
+        {
+          tag: 'script',
+          attrs: {
+            async: true,
+            src: `https://www.googletagmanager.com/gtag/js?id=${GA_MEASUREMENT_ID}`,
+          },
+        },
+        {
+          tag: 'script',
+          content: `
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${GA_MEASUREMENT_ID}');
+          `.trim(),
+        },
+      ],
       tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 3 },
       social: [
         { icon: 'github', label: 'GitHub', href: 'https://github.com/Qazana/strata' },
