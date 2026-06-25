@@ -22,6 +22,9 @@ change.
 - **Consumer integration checklist.** Added load-order, version-pinning,
   cascade-safety, and public-surface guidance for downstream apps. Contract:
   stable guidance addition.
+- **Upgrade guide.** Added `docs/UPGRADING.md` with the `1.0.0-rc.1` install
+  path, vendored static-site flow, stack notes, compatibility notes, verification
+  checklist, and rollback instructions. Contract: stable guidance addition.
 
 ### Minor
 

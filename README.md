@@ -26,6 +26,7 @@ dark scheme and a warm-cream "Désert Dunes" light scheme.
 - [Theming & schemes](#theming--schemes)
 - [Tokens](#tokens)
 - [Public contract](#public-contract)
+- [Upgrading existing apps](#upgrading-existing-apps)
 - [Consuming per stack](#consuming-per-stack)
 - [Demos](#demos)
 - [Render harness](#render-harness)
@@ -249,6 +250,24 @@ a versioned API, not a bundle of copyable snippets.
 
 See [docs/API_CONTRACT.md](docs/API_CONTRACT.md) before adding, renaming,
 deprecating, or removing any public surface.
+
+## Upgrading existing apps
+
+Existing consumers should use the upgrade guide:
+[docs/UPGRADING.md](docs/UPGRADING.md).
+
+For the `1.0.0-rc.1` release candidate:
+
+```bash
+npm install @qazana/strata@1.0.0-rc.1
+```
+
+Vendored static sites should refresh their checked-in copy after upgrading:
+
+```bash
+npm install
+npm run sync-strata
+```
 
 ## Consuming per stack
 

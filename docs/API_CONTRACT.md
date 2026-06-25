@@ -211,6 +211,7 @@ it. New product code should use the canonical vocabulary.
 Consumers must:
 
 - pin the Strata version they ship
+- follow [`UPGRADING.md`](UPGRADING.md) when moving between releases
 - load tokens before kits
 - load product theme overrides before kits when overriding root tokens
 - load only the kits they use
