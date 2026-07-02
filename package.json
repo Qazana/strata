@@ -48,7 +48,8 @@
     "tokens",
     "kits",
     "js",
-    "fonts"
+    "fonts",
+    "docs"
   ],
   "scripts": {
     "demo": "python3 -m http.server 4178 --bind 127.0.0.1",

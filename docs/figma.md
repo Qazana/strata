@@ -111,8 +111,9 @@ single source of truth; Figma mirrors it.
 
 ## Sync / anti-drift
 
-- **Tokens** — regenerate `tokens.figma.json` from the code, re-import via Tokens
-  Studio. One-way, code-source-of-truth. (Add to AGENTS.md checklist.)
+- **Tokens** — regenerate `tokens.figma.json` from the code
+  (`node scripts/figma-tokens.mjs`), re-import via Tokens Studio. One-way,
+  code-source-of-truth. (Add to AGENTS.md checklist.)
 - **Components** — curated mirror; per-release review checklist. (Code Connect
   would automate the code mapping — revisit if Figma goes Org/Enterprise.)
 - **Versioning** — Figma library version tracks `package.json` version.

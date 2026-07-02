@@ -53,6 +53,9 @@ A vanilla page — load the tokens, a kit, and the behaviour layer:
 ```
 
 Markup uses plain classes + `data-*` hooks; `qazana.js` auto-initialises on load.
+Markup rendered *after* load (a React/Ember mount, an HTMX swap) gets behavior by
+calling `QZ.init(subtree)` — or `QZ.init()` for the whole document. Init is
+idempotent, so calling it again never double-binds.
 The tokens set `color-scheme` per theme, so native controls match automatically —
 no extra setup.
 
@@ -124,7 +127,6 @@ harness/
   shoot.mjs           Playwright render harness (screenshots + probes)
 DESIGN.md             design system: thesis, type, colour, motion, anti-slop principles
 CLAUDE.md             maintenance contract (token discipline, no domain code, a11y)
-HANDOFF.md            design → dev handoff notes
 ```
 
 **Cascade:** each kit's rules are wrapped in `@layer qazana`, so a consuming
@@ -384,5 +386,4 @@ Add it to the harness `SCHEMES` list so it's screenshot + contrast-checked too.
 - Keep `tokens/tokens.json` in sync with `tokens/qazana.tokens.css`.
 - Update the relevant `demo/` and `docs/` when you change a component.
 - **`CLAUDE.md`** is the maintenance contract (token discipline, semantic naming,
-  no domain-specific components, accessibility + reduced-motion). **`HANDOFF.md`**
-  covers design → dev.
+  no domain-specific components, accessibility + reduced-motion).
