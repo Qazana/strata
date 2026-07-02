@@ -21,6 +21,69 @@ var QZcal = {
   },
 };
 
+/* ---- behavior registry + public re-init -----------------------------------
+   Every setup-style behavior below registers itself here instead of wiring its
+   own DOMContentLoaded pass. QZ.init(root) walks the registry and binds any
+   matching element that isn't bound yet — so markup rendered AFTER load (React/
+   Vue/Ember mounts, HTMX swaps, dynamic imports) gets behavior by calling
+   QZ.init(newSubtree) (or QZ.init() for the whole document). Idempotent: an
+   element is bound to a given behavior once, no matter how often init runs.
+   Delegated behaviors (modal, popover, tooltips, …) listen on document and need
+   no re-init. ---- */
+var QZ = (function () {
+  'use strict';
+  var behaviors = [];
+  function bind(el, b) {
+    var bound = el.__qzBound || (el.__qzBound = {});
+    if (bound[b.name]) return;
+    bound[b.name] = true;
+    try { b.setup(el); }
+    catch (e) { if (window.console && console.error) console.error('QZ behavior "' + b.name + '" failed on', el, e); }
+  }
+  return {
+    behavior: function (name, selector, setup) { behaviors.push({ name: name, selector: selector, setup: setup }); },
+    init: function (root) {
+      root = root || document;
+      behaviors.forEach(function (b) {
+        if (root.matches && root.matches(b.selector)) bind(root, b);
+        if (root.querySelectorAll) Array.prototype.forEach.call(root.querySelectorAll(b.selector), function (el) { bind(el, b); });
+      });
+      return root;
+    },
+  };
+})();
+
+/* internal: make a rendered .cal-grid keyboard-operable — day cells become
+   focusable button-role controls with a roving tabindex, arrow-key movement
+   (←/→ one day, ↑/↓ one week), Home/End, and Enter/Space activation. Re-run
+   after every render (the grids rebuild their cells). label(dayText) builds
+   the accessible name. Shared by the date picker, the inline calendar and the
+   date-range. */
+function QZdayNav(grid, label) {
+  var days = Array.prototype.slice.call(grid.querySelectorAll('.day'));
+  if (!days.length) return;
+  var start = grid.querySelector('.day.sel') || days[0];
+  days.forEach(function (d) {
+    d.setAttribute('role', 'button');
+    d.setAttribute('aria-label', label(d.textContent));
+    if (d.classList.contains('sel')) d.setAttribute('aria-pressed', 'true');
+    d.tabIndex = d === start ? 0 : -1;
+    d.addEventListener('keydown', function (e) {
+      var i = days.indexOf(d), n = null;
+      if (e.key === 'ArrowRight') n = days[i + 1];
+      else if (e.key === 'ArrowLeft') n = days[i - 1];
+      else if (e.key === 'ArrowDown') n = days[i + 7];
+      else if (e.key === 'ArrowUp') n = days[i - 7];
+      else if (e.key === 'Home') n = days[0];
+      else if (e.key === 'End') n = days[days.length - 1];
+      else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); d.click(); return; }
+      else return;
+      e.preventDefault();
+      if (n) { days.forEach(function (x) { x.tabIndex = -1; }); n.tabIndex = 0; n.focus(); }
+    });
+  });
+}
+
 (function () {
   'use strict';
   var RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -51,43 +114,38 @@ var QZcal = {
     });
   }, { threshold: 0.25 }) : null;
 
-  document.addEventListener('DOMContentLoaded', function () {
-    // prep confidence bars to animate from 0 → target
-    document.querySelectorAll('.conf .bar i').forEach(function (b) {
-      b.dataset.w = b.style.width || '0%';
-      if (!RM) b.style.width = '0';
+  // prep confidence bars to animate from 0 → target (final state straight away without IO)
+  QZ.behavior('conf-bar', '.conf .bar i', function (b) {
+    b.dataset.w = b.style.width || '0%';
+    if (io && !RM) b.style.width = '0'; else b.style.width = b.dataset.w;
+  });
+  QZ.behavior('reveal', '[data-count], .row, .gap-row', function (el) {
+    if (io) io.observe(el);
+    else if (el.dataset.count !== undefined) countUp(el);
+  });
+
+  // copy-to-clipboard with feedback (preserves icon buttons)
+  QZ.behavior('copy', '[data-copy]', function (btn) {
+    btn.addEventListener('click', function () {
+      var text = btn.dataset.copy || location.href;
+      if (navigator.clipboard) navigator.clipboard.writeText(text);
+      var icon = !!btn.querySelector('i');
+      var old = btn.dataset.html || btn.innerHTML;
+      btn.dataset.html = old;
+      btn.innerHTML = icon ? '<i class="fa-solid fa-check"></i>' : 'Copied ✓';  // static markup, no user input
+      btn.classList.add('copied');
+      setTimeout(function () { btn.innerHTML = btn.dataset.html; btn.classList.remove('copied'); }, 1400);
     });
-
-    if (io) {
-      document.querySelectorAll('[data-count], .row, .gap-row').forEach(function (el) { io.observe(el); });
-    } else {
-      // no IO: just show final state
-      document.querySelectorAll('.conf .bar i').forEach(function (b) { b.style.width = b.dataset.w; });
-      document.querySelectorAll('[data-count]').forEach(countUp);
-    }
-
-    // expandable track rows (ignore clicks on inner links/buttons)
-
-    // copy-to-clipboard with feedback (preserves icon buttons)
-    document.querySelectorAll('[data-copy]').forEach(function (btn) {
-      btn.addEventListener('click', function () {
-        var text = btn.dataset.copy || location.href;
-        if (navigator.clipboard) navigator.clipboard.writeText(text);
-        var icon = !!btn.querySelector('i');
-        var old = btn.dataset.html || btn.innerHTML;
-        btn.dataset.html = old;
-        btn.innerHTML = icon ? '<i class="fa-solid fa-check"></i>' : 'Copied ✓';  // static markup, no user input
-        btn.classList.add('copied');
-        setTimeout(function () { btn.innerHTML = btn.dataset.html; btn.classList.remove('copied'); }, 1400);
-      });
-    });
-
   });
 })();
 
 /* ---- searchable select (combobox) + paste-from-clipboard ---- */
 (function () {
   'use strict';
+
+  var openCombo = null;   // the close() of the currently-open combo — one shared outside-click/Esc listener, not one per instance
+  document.addEventListener('click', function () { if (openCombo) openCombo(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && openCombo) openCombo(); });
 
   function setupCombo(combo) {
     var btn = combo.querySelector('.combo-btn');
@@ -108,10 +166,12 @@ var QZcal = {
       vis[active].scrollIntoView({ block: 'nearest' });
     }
     function open() {
+      if (openCombo && openCombo !== close) openCombo();
       pop.hidden = false; btn.setAttribute('aria-expanded', 'true'); active = -1;
+      openCombo = close;
       if (search) { search.value = ''; filter(''); search.focus(); }
     }
-    function close() { pop.hidden = true; btn.setAttribute('aria-expanded', 'false'); }
+    function close() { pop.hidden = true; btn.setAttribute('aria-expanded', 'false'); if (openCombo === close) openCombo = null; }
     function filter(q) {
       q = q.toLowerCase(); var any = false;
       opts.forEach(function (o) { var m = o.textContent.toLowerCase().indexOf(q) > -1; o.hidden = !m; if (m) any = true; o.classList.remove('active'); });
@@ -138,8 +198,6 @@ var QZcal = {
     }
     opts.forEach(function (o) { o.addEventListener('click', function () { choose(o); }); });
     combo.addEventListener('click', function (e) { e.stopPropagation(); });
-    document.addEventListener('click', close);
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
   }
 
   // paste-from-clipboard into a target input (e.g. the URL field)
@@ -159,10 +217,8 @@ var QZcal = {
     });
   }
 
-  document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('[data-combo]').forEach(setupCombo);
-    document.querySelectorAll('[data-paste]').forEach(setupPaste);
-  });
+  QZ.behavior('combo', '[data-combo]', setupCombo);
+  QZ.behavior('paste', '[data-paste]', setupPaste);
 })();
 
 /* ---- audio player · date picker · dual range · wizard · toast-undo ---- */
@@ -170,9 +226,18 @@ var QZcal = {
   'use strict';
   var RM = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  var closePicker=null;   // the close() of the open picker — one shared outside-click/Esc listener, not one per instance
+  document.addEventListener('click',function(){if(closePicker)closePicker();});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&closePicker)closePicker(true);});
+
   function setupPicker(pk){
     var inp=pk.querySelector('input'),cal=pk.querySelector('.cal');
-    var Y=2026,M=5,selY=2026,selM=5,selD=9; // M 0-based (June)
+    if(!inp||!cal)return;
+    // default to today; an existing YYYY-MM-DD value becomes the selection
+    var now=new Date(),Y=now.getFullYear(),M=now.getMonth(),selY=null,selM=null,selD=null;
+    var pre=/^(\d{4})-(\d{1,2})-(\d{1,2})$/.exec(inp.value||'');
+    if(pre){selY=+pre[1];selM=+pre[2]-1;selD=+pre[3];Y=selY;M=selM;}
+    function refocus(sel){var b=cal.querySelector(sel);if(b)b.focus();}
     function days(){
       cal.innerHTML='';
       var grid=QZcal.monthGrid(Y,M);
@@ -188,12 +253,13 @@ var QZcal = {
       var i;for(i=0;i<grid.blanks;i++)g.appendChild(document.createElement('div'));
       grid.days.forEach(function(d){var e=document.createElement('div');e.className='day';e.textContent=d;
         if(Y===selY&&M===selM&&d===selD)e.classList.add('sel');
-        e.addEventListener('click',function(){selY=Y;selM=M;selD=d;inp.value=Y+'-'+QZcal.pad(M+1)+'-'+QZcal.pad(d);cal.hidden=true;});
+        e.addEventListener('click',function(){selY=Y;selM=M;selD=d;inp.value=Y+'-'+QZcal.pad(M+1)+'-'+QZcal.pad(d);close(true);});
         g.appendChild(e);});
       cal.appendChild(g);
-      h.querySelectorAll('[data-m]').forEach(function(b){b.addEventListener('click',function(){var r=QZcal.roll(Y,M+(+b.dataset.m));Y=r.y;M=r.m;days();});});
-      h.querySelectorAll('[data-y]').forEach(function(b){b.addEventListener('click',function(){Y+=+b.dataset.y;days();});});
-      h.querySelector('.cal-title').addEventListener('click',monthsView);
+      QZdayNav(g,function(d){return d+' '+grid.name+' '+Y;});
+      h.querySelectorAll('[data-m]').forEach(function(b){b.addEventListener('click',function(){var r=QZcal.roll(Y,M+(+b.dataset.m));Y=r.y;M=r.m;days();refocus('[data-m="'+b.dataset.m+'"]');});});
+      h.querySelectorAll('[data-y]').forEach(function(b){b.addEventListener('click',function(){Y+=+b.dataset.y;days();refocus('[data-y="'+b.dataset.y+'"]');});});
+      h.querySelector('.cal-title').addEventListener('click',function(){monthsView();refocus('.cal-title');});
     }
     function monthsView(){
       cal.innerHTML='';
@@ -202,15 +268,29 @@ var QZcal = {
       cal.appendChild(h);
       var grid=document.createElement('div');grid.className='cal-grid months';
       QZcal.MONTHS.forEach(function(mn,mi){var e=document.createElement('div');e.className='mcell';e.textContent=mn.slice(0,3);
-        if(mi===M)e.classList.add('sel');e.addEventListener('click',function(){M=mi;days();});grid.appendChild(e);});
+        e.setAttribute('role','button');e.tabIndex=0;e.setAttribute('aria-label',mn+' '+Y);
+        if(mi===M)e.classList.add('sel');
+        function pick(){M=mi;days();refocus('.day[tabindex="0"]');}
+        e.addEventListener('click',pick);
+        e.addEventListener('keydown',function(ev){if(ev.key==='Enter'||ev.key===' '){ev.preventDefault();pick();}});
+        grid.appendChild(e);});
       cal.appendChild(grid);
-      h.querySelectorAll('[data-y]').forEach(function(b){b.addEventListener('click',function(){Y+=+b.dataset.y;monthsView();});});
+      h.querySelectorAll('[data-y]').forEach(function(b){b.addEventListener('click',function(){Y+=+b.dataset.y;monthsView();refocus('[data-y="'+b.dataset.y+'"]');});});
     }
-    function open(){cal.hidden=false;days();}
+    var suppress=false;   // refocusing the input after close must not re-open it
+    function open(){
+      if(suppress||cal.hidden===false)return;
+      if(closePicker&&closePicker!==close)closePicker();
+      cal.hidden=false;days();closePicker=close;
+    }
+    function close(refocusInput){
+      cal.hidden=true;
+      if(closePicker===close)closePicker=null;
+      if(refocusInput){suppress=true;inp.focus();setTimeout(function(){suppress=false;},0);}
+    }
     inp.addEventListener('focus',open);
     inp.addEventListener('click',open);
     pk.addEventListener('click',function(e){e.stopPropagation();});
-    document.addEventListener('click',function(){cal.hidden=true;});
   }
 
   function setupDual(d){
@@ -237,19 +317,19 @@ var QZcal = {
     show();
   }
 
-  document.addEventListener('DOMContentLoaded',function(){
-    document.querySelectorAll('[data-picker]').forEach(setupPicker);
-    document.querySelectorAll('[data-dual]').forEach(setupDual);
-    document.querySelectorAll('[data-wizard]').forEach(setupWizard);
-    document.querySelectorAll('.toast .undo button').forEach(function(b){
-      b.addEventListener('click',function(){var t=b.closest('.toast');if(t)t.style.opacity=t.style.opacity==='0.4'?'1':'0.4';});
-    });
+  QZ.behavior('picker','[data-picker]',setupPicker);
+  QZ.behavior('dual','[data-dual]',setupDual);
+  QZ.behavior('wizard','[data-wizard]',setupWizard);
+  QZ.behavior('toast-undo','.toast .undo button',function(b){
+    b.addEventListener('click',function(){var t=b.closest('.toast');if(t)t.style.opacity=t.style.opacity==='0.4'?'1':'0.4';});
   });
 })();
 
 /* ---- tabs (switch panels) ---- */
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('[data-tabs]').forEach(function (group) {
+(function () {
+  'use strict';
+  var uid = 0;
+  QZ.behavior('tabs', '[data-tabs]', function (group) {
     var tabs = Array.prototype.slice.call(group.querySelectorAll('.tab'));
     var panels = group.querySelectorAll('.tabpanel');
     var bar = tabs[0] && tabs[0].parentElement; if (bar) bar.setAttribute('role', 'tablist');
@@ -259,6 +339,14 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     tabs.forEach(function (t, i) {
       t.setAttribute('role', 'tab'); t.tabIndex = t.classList.contains('active') ? 0 : -1;
+      var p = panels[i];
+      if (p) {   // pair tab ↔ panel so AT can follow the relationship
+        if (!t.id) t.id = 'qz-tab-' + (++uid);
+        if (!p.id) p.id = 'qz-tabpanel-' + (++uid);
+        t.setAttribute('aria-controls', p.id);
+        p.setAttribute('role', 'tabpanel'); p.setAttribute('aria-labelledby', t.id);
+        if (!p.hasAttribute('tabindex')) p.tabIndex = 0;
+      }
       t.addEventListener('click', function () { select(i); });
       t.addEventListener('keydown', function (e) {
         var n;
@@ -271,13 +359,15 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
   });
-});
+})();
 
 /* ---- inline calendar (standalone, month nav) ---- */
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('[data-calendar]').forEach(function (cal) {
-    var Y=2026,M=5,selD=9;
-    function render(){
+(function () {
+  'use strict';
+  QZ.behavior('calendar', '[data-calendar]', function (cal) {
+    // defaults to today (selected); month nav + full day-cell keyboard operation
+    var now=new Date(),Y=now.getFullYear(),M=now.getMonth(),selY=Y,selM=M,selD=now.getDate();
+    function render(focusDay){
       cal.innerHTML='';
       var grid=QZcal.monthGrid(Y,M);
       var h=document.createElement('div');h.className='cal-h';
@@ -286,46 +376,52 @@ document.addEventListener('DOMContentLoaded', function () {
       var g=document.createElement('div');g.className='cal-grid';
       QZcal.DOW.forEach(function(d){var e=document.createElement('div');e.className='dow';e.textContent=d;g.appendChild(e);});
       var i;for(i=0;i<grid.blanks;i++)g.appendChild(document.createElement('div'));
-      grid.days.forEach(function(d){var e=document.createElement('div');e.className='day';e.textContent=d;if(d===selD)e.classList.add('sel');
-        e.addEventListener('click',function(){selD=d;render();});g.appendChild(e);});
+      grid.days.forEach(function(d){var e=document.createElement('div');e.className='day';e.textContent=d;
+        if(Y===selY&&M===selM&&d===selD)e.classList.add('sel');
+        e.addEventListener('click',function(){selY=Y;selM=M;selD=d;render(d);});g.appendChild(e);});
       cal.appendChild(g);
-      h.querySelectorAll('[data-d]').forEach(function(b){b.addEventListener('click',function(){var r=QZcal.roll(Y,M+(+b.dataset.d));Y=r.y;M=r.m;render();});});
+      QZdayNav(g,function(d){return d+' '+grid.name+' '+Y;});
+      if(focusDay){var f=g.querySelectorAll('.day')[focusDay-1];if(f){g.querySelectorAll('.day').forEach(function(x){x.tabIndex=-1;});f.tabIndex=0;f.focus();}}
+      h.querySelectorAll('[data-d]').forEach(function(b){b.addEventListener('click',function(){var r=QZcal.roll(Y,M+(+b.dataset.d));Y=r.y;M=r.m;render();var nb=cal.querySelector('[data-d="'+b.dataset.d+'"]');if(nb)nb.focus();});});
     }
     render();
   });
-});
+})();
 
 /* ---- context menu (right-click) + data table sort/select ---- */
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('[data-ctx]').forEach(function (zone) {
+(function () {
+  'use strict';
+  var openMenu = null;   // one shared outside-click closer for whichever ctx menu is open
+  document.addEventListener('click', function () { if (openMenu) { openMenu.style.display = 'none'; openMenu = null; } });
+  QZ.behavior('ctx', '[data-ctx]', function (zone) {
     var menu = document.querySelector(zone.dataset.ctx); if (!menu) return;
     zone.addEventListener('contextmenu', function (e) {
       e.preventDefault();
-      menu.style.display = 'block';
+      if (openMenu && openMenu !== menu) openMenu.style.display = 'none';
+      menu.style.display = 'block'; openMenu = menu;
       menu.style.left = Math.min(e.clientX, window.innerWidth - 230) + 'px';
       menu.style.top = e.clientY + 'px';
     });
-    document.addEventListener('click', function () { menu.style.display = 'none'; });
-    menu.addEventListener('click', function (e) { e.stopPropagation(); menu.style.display = 'none'; });
+    menu.addEventListener('click', function (e) { e.stopPropagation(); menu.style.display = 'none'; if (openMenu === menu) openMenu = null; });
   });
   // Horizontally-scrollable table wrappers must be keyboard-reachable so the
   // content can be scrolled without a pointer (WCAG 2.1.1). For any .tbl-wrap
   // whose content overflows, expose it as a focusable, labelled region.
-  document.querySelectorAll('.tbl-wrap').forEach(function (wrap) {
+  QZ.behavior('tbl-wrap', '.tbl-wrap', function (wrap) {
     if (wrap.scrollWidth > wrap.clientWidth) {
       if (!wrap.hasAttribute('tabindex')) wrap.setAttribute('tabindex', '0');
       if (!wrap.hasAttribute('role')) wrap.setAttribute('role', 'region');
       if (!wrap.hasAttribute('aria-label')) wrap.setAttribute('aria-label', 'Table, scrollable');
     }
   });
-  document.querySelectorAll('[data-table-sort] th.sortable').forEach(function (th) {
+  QZ.behavior('table-sort', '[data-table-sort] th.sortable', function (th) {
     th.addEventListener('click', function () {
       var asc = th.classList.contains('asc');
       th.parentNode.querySelectorAll('th').forEach(function (x) { x.classList.remove('asc', 'desc'); });
       th.classList.add(asc ? 'desc' : 'asc');
     });
   });
-  document.querySelectorAll('[data-select-all]').forEach(function (cb) {
+  QZ.behavior('select-all', '[data-select-all]', function (cb) {
     cb.addEventListener('change', function () {
       // the controlled table: the one this checkbox lives in, or — when it sits
       // in a toolbar/header beside the table — the nearest ancestor that has one
@@ -333,27 +429,55 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!table) { var p = cb.parentElement; while (p && !(table = p.querySelector('table'))) p = p.parentElement; }
       if (!table) return;
       table.querySelectorAll('tbody input[type=checkbox]').forEach(function (x) {
-        x.checked = cb.checked; x.closest('tr').classList.toggle('selected', cb.checked);
+        x.checked = cb.checked;
+        var tr = x.closest('tr'); if (tr) tr.classList.toggle('selected', cb.checked);
       });
     });
   });
-});
+})();
 
 /* ---- toggle group · rating · live toast ---- */
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('.toggle-group button').forEach(function (b) {
-    b.addEventListener('click', function () { b.classList.toggle('on'); });
+(function () {
+  'use strict';
+  QZ.behavior('toggle-group', '.toggle-group button', function (b) {
+    b.setAttribute('aria-pressed', b.classList.contains('on') ? 'true' : 'false');
+    b.addEventListener('click', function () { b.setAttribute('aria-pressed', b.classList.toggle('on') ? 'true' : 'false'); });
   });
-  document.querySelectorAll('.rating:not(.ro)').forEach(function (r) {
-    var stars = r.querySelectorAll('i'), val = r.parentNode.querySelector('.rating-val');
+  // rating: a radiogroup — stars are keyboard-focusable radios (arrows move+set,
+  // Enter/Space sets), hover preview stays pointer-only
+  QZ.behavior('rating', '.rating:not(.ro)', function (r) {
+    var stars = Array.prototype.slice.call(r.querySelectorAll('i')), val = r.parentNode.querySelector('.rating-val');
+    if (!stars.length) return;
+    r.setAttribute('role', 'radiogroup');
+    if (!r.hasAttribute('aria-label')) r.setAttribute('aria-label', 'Rating');
+    function current() { var n = -1; stars.forEach(function (x, j) { if (x.classList.contains('on')) n = j; }); return n; }
+    function select(i) {
+      stars.forEach(function (x, j) {
+        x.classList.toggle('on', j <= i);
+        x.setAttribute('aria-checked', j === i ? 'true' : 'false');
+        x.tabIndex = j === i ? 0 : -1;
+      });
+      if (val) val.textContent = (i + 1) + '/' + stars.length;
+    }
     stars.forEach(function (s, i) {
-      s.addEventListener('click', function () {
-        stars.forEach(function (x, j) { x.classList.toggle('on', j <= i); });
-        if (val) val.textContent = (i + 1) + '/5';
+      s.setAttribute('role', 'radio');
+      s.setAttribute('aria-label', (i + 1) + ' of ' + stars.length);
+      s.setAttribute('aria-checked', 'false');
+      s.tabIndex = -1;
+      s.addEventListener('click', function () { select(i); });
+      s.addEventListener('keydown', function (e) {
+        var n = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowUp') n = Math.min(stars.length - 1, i + 1);
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') n = Math.max(0, i - 1);
+        else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); select(i); return; }
+        else return;
+        e.preventDefault(); select(n); stars[n].focus();
       });
       s.addEventListener('mouseenter', function () { stars.forEach(function (x, j) { x.style.color = j <= i ? 'var(--warning)' : ''; }); });
     });
     r.addEventListener('mouseleave', function () { stars.forEach(function (x) { x.style.color = ''; }); });
+    var c = current();
+    if (c > -1) select(c); else stars[0].tabIndex = 0;   // roving stop even before a first pick
   });
   var hosts = {};
   function hostFor(pos) {                               // pos: tr (default) | tl | bl | br
@@ -363,7 +487,7 @@ document.addEventListener('DOMContentLoaded', function () {
     h.className = 'toast-host' + (key !== 'tr' ? ' ' + key : '');
     document.body.appendChild(h); hosts[key] = h; return h;
   }
-  document.querySelectorAll('[data-toast]').forEach(function (btn) {
+  QZ.behavior('toast', '[data-toast]', function (btn) {
     btn.addEventListener('click', function () {
       var host = hostFor(btn.dataset.toastPos);
       var t = document.createElement('div'); t.className = 'toast ' + (btn.dataset.toastType || 'ok');
@@ -374,11 +498,12 @@ document.addEventListener('DOMContentLoaded', function () {
       setTimeout(function () { t.classList.add('out'); setTimeout(function () { t.remove(); }, 300); }, 2600);
     });
   });
-});
+})();
 
 /* ---- shared: drag-reorder · color picker · amount format ---- */
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('[data-reorder]').forEach(function (list) {
+(function () {
+  'use strict';
+  QZ.behavior('reorder', '[data-reorder]', function (list) {
     var dragEl = null;
     // a11y: keyboard reordering announces moves through a polite live region
     var live = document.createElement('div');
@@ -402,7 +527,7 @@ document.addEventListener('DOMContentLoaded', function () {
       it.addEventListener('drop', function (e) {
         e.preventDefault(); it.classList.remove('over');
         if (!dragEl || it === dragEl) return;
-        var items = Array.prototype.slice.call(list.children);
+        var items = siblings();   // only .reorder-item — the injected live region must not skew the index math
         if (items.indexOf(dragEl) < items.indexOf(it)) it.after(dragEl); else it.before(dragEl);
       });
       // keyboard reorder: Alt+ArrowUp / Alt+ArrowDown move the focused item
@@ -414,13 +539,35 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
   });
-  document.querySelectorAll('[data-colorpicker]').forEach(function (cp) {
-    cp.querySelectorAll('.sw').forEach(function (sw) {
+  // color swatches: a radiogroup — keyboard-focusable radios with arrow-key roving
+  QZ.behavior('colorpicker', '[data-colorpicker]', function (cp) {
+    var sws = Array.prototype.slice.call(cp.querySelectorAll('.sw'));
+    if (!sws.length) return;
+    cp.setAttribute('role', 'radiogroup');
+    if (!cp.hasAttribute('aria-label')) cp.setAttribute('aria-label', 'Color');
+    function select(sw) {
+      sws.forEach(function (x) { x.classList.remove('on'); x.setAttribute('aria-checked', 'false'); x.tabIndex = -1; });
+      sw.classList.add('on'); sw.setAttribute('aria-checked', 'true'); sw.tabIndex = 0;
+    }
+    sws.forEach(function (sw, i) {
       sw.style.color = sw.dataset.c; sw.style.background = sw.dataset.c;
-      sw.addEventListener('click', function () { cp.querySelectorAll('.sw').forEach(function (x) { x.classList.remove('on'); }); sw.classList.add('on'); });
+      sw.setAttribute('role', 'radio');
+      sw.setAttribute('aria-label', sw.dataset.c || 'Color ' + (i + 1));
+      sw.setAttribute('aria-checked', 'false'); sw.tabIndex = -1;
+      sw.addEventListener('click', function () { select(sw); });
+      sw.addEventListener('keydown', function (e) {
+        var n = null;
+        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') n = sws[(i + 1) % sws.length];
+        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') n = sws[(i - 1 + sws.length) % sws.length];
+        else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); select(sw); return; }
+        else return;
+        e.preventDefault(); select(n); n.focus();
+      });
     });
+    var on = cp.querySelector('.sw.on');
+    if (on) select(on); else sws[0].tabIndex = 0;
   });
-  document.querySelectorAll('.amount-field input').forEach(function (inp) {
+  QZ.behavior('amount', '.amount-field input', function (inp) {
     inp.addEventListener('blur', function () {
       var n = parseFloat(inp.value.replace(/[, ]/g, ''));
       if (isNaN(n)) return;
@@ -428,11 +575,12 @@ document.addEventListener('DOMContentLoaded', function () {
       var f = inp.closest('.amount-field'); f.classList.toggle('pos', n > 0); f.classList.toggle('neg', n < 0);
     });
   });
-});
+})();
 
 /* ---- admin: split-pane · bulk bar · faceted filters · date range ---- */
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('[data-split]').forEach(function (sp) {
+(function () {
+  'use strict';
+  QZ.behavior('split', '[data-split]', function (sp) {
     var items = sp.querySelectorAll('.split-item'), panes = sp.querySelectorAll('.sd-pane');
     items.forEach(function (it) {
       it.addEventListener('click', function () {
@@ -442,7 +590,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   });
 
-  document.querySelectorAll('[data-bulk]').forEach(function (t) {
+  QZ.behavior('bulk', '[data-bulk]', function (t) {
     var bar = document.querySelector('[data-bulkbar]');
     function upd() {
       var n = t.querySelectorAll('tbody input[type=checkbox]:checked').length;
@@ -453,14 +601,14 @@ document.addEventListener('DOMContentLoaded', function () {
     upd();
   });
 
-  document.querySelectorAll('[data-fchip]').forEach(function (b) { b.addEventListener('click', function () { var c = b.closest('.fchip'); if (c) c.remove(); }); });
-  document.querySelectorAll('[data-fclear]').forEach(function (b) {
+  QZ.behavior('fchip', '[data-fchip]', function (b) { b.addEventListener('click', function () { var c = b.closest('.fchip'); if (c) c.remove(); }); });
+  QZ.behavior('fclear', '[data-fclear]', function (b) {
     b.addEventListener('click', function () { var f = b.closest('.facets'); if (f) f.querySelectorAll('.fchip').forEach(function (c) { c.remove(); }); });
   });
 
-  document.querySelectorAll('[data-daterange]').forEach(function (dr) {
+  QZ.behavior('daterange', '[data-daterange]', function (dr) {
     var cals = dr.querySelector('.dr-cals'), summary = dr.querySelector('.daterange-summary');
-    var Y = 2026, M = 5, start = null, end = null;
+    var now = new Date(), Y = now.getFullYear(), M = now.getMonth(), start = null, end = null;
     function key(o){return o.y*372+o.m*31+o.d;}
     function eq(a,o){return a&&a.y===o.y&&a.m===o.m&&a.d===o.d;}
     function inRange(o){if(!start||!end)return false;var k=key(o);return k>key(start)&&k<key(end);}
@@ -482,7 +630,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
         g.appendChild(e);});
       box.appendChild(g);
-      h.querySelectorAll('[data-nav]').forEach(function(b){b.addEventListener('click',function(){var r=QZcal.roll(Y,M+(+b.dataset.nav));Y=r.y;M=r.m;render();});});
+      QZdayNav(g,function(d){return d+' '+QZcal.MONTHS[m]+' '+y;});
+      h.querySelectorAll('[data-nav]').forEach(function(b){b.addEventListener('click',function(){
+        var bi=Array.prototype.indexOf.call(cals.children,box);   // same month box after the rebuild
+        var r=QZcal.roll(Y,M+(+b.dataset.nav));Y=r.y;M=r.m;render();
+        var nb=cals.querySelectorAll('[data-nav="'+b.dataset.nav+'"]')[bi];if(nb)nb.focus();
+      });});
       cals.appendChild(box);
     }
     function render(){
@@ -492,22 +645,23 @@ document.addEventListener('DOMContentLoaded', function () {
     }
     render();
   });
-});
+})();
 
 /* ---- heatmap fill ---- */
-document.addEventListener('DOMContentLoaded', function () {
-  document.querySelectorAll('[data-heatmap]').forEach(function (hm) {
+(function () {
+  'use strict';
+  QZ.behavior('heatmap', '[data-heatmap]', function (hm) {
     var cols = parseInt(hm.dataset.cols || '14', 10), rows = parseInt(hm.dataset.rows || '5', 10);
     hm.style.setProperty('--cols', cols);
     for (var i = 0; i < cols * rows; i++) {
       var cell = document.createElement('i');
-      var v = (Math.sin(i * 0.7) + Math.sin(i * 0.23) + 2) / 4;   // 0..1 deterministic-ish
-      v = Math.max(0, Math.min(1, v * (0.5 + Math.random() * 0.7)));
+      var v = (Math.sin(i * 0.7) + Math.sin(i * 0.23) + 2) / 4;                 // 0..1 deterministic
+      v = Math.max(0, Math.min(1, v * (0.5 + 0.35 * (Math.sin(i * 5.13) + 1)))); // stable per index — no per-render jitter
       cell.style.background = v < 0.08 ? 'var(--surface-2)' : 'rgb(var(--primary-rgb) / ' + (0.15 + v * 0.75).toFixed(2) + ')';
       hm.appendChild(cell);
     }
   });
-});
+})();
 
 /* ---- theme switcher: [data-theme-toggle] cycles html[data-theme] through a
    list of named schemes and persists the choice. The list is the attribute's
@@ -529,20 +683,17 @@ document.addEventListener('DOMContentLoaded', function () {
     // a visible text label is the accessible name; only label icon-only buttons
     if (!btn.textContent.trim()) btn.setAttribute('aria-label', 'Switch theme (current: ' + (root.getAttribute('data-theme') || 'auto') + ')');
   }
-  function init() {
-    document.querySelectorAll('[data-theme-toggle]').forEach(function (btn) {
-      var list = (btn.getAttribute('data-theme-toggle') || 'dark-knight,desert-dunes')
-        .split(',').map(function (s) { return s.trim(); }).filter(Boolean);
-      sync(btn);
-      btn.addEventListener('click', function () {
-        var next = list[(list.indexOf(root.getAttribute('data-theme')) + 1) % list.length];
-        root.setAttribute('data-theme', next);
-        try { localStorage.setItem(KEY, next); } catch (e) {}
-        document.querySelectorAll('[data-theme-toggle]').forEach(sync);
-      });
+  QZ.behavior('theme-toggle', '[data-theme-toggle]', function (btn) {
+    var list = (btn.getAttribute('data-theme-toggle') || 'dark-knight,desert-dunes')
+      .split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+    sync(btn);
+    btn.addEventListener('click', function () {
+      var next = list[(list.indexOf(root.getAttribute('data-theme')) + 1) % list.length];
+      root.setAttribute('data-theme', next);
+      try { localStorage.setItem(KEY, next); } catch (e) {}
+      document.querySelectorAll('[data-theme-toggle]').forEach(sync);
     });
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  });
 })();
 
 /* ---- direction switcher: [data-dir-toggle] flips html[dir] between ltr and
@@ -565,18 +716,15 @@ document.addEventListener('DOMContentLoaded', function () {
     var i = btn.querySelector('i');
     if (i && /fa-align-(left|right)\b/.test(i.className)) i.className = 'fa-solid fa-align-' + (rtl ? 'right' : 'left');
   }
-  function init() {
-    document.querySelectorAll('[data-dir-toggle]').forEach(function (btn) {
-      sync(btn);
-      btn.addEventListener('click', function () {
-        var next = root.getAttribute('dir') === 'rtl' ? 'ltr' : 'rtl';
-        root.setAttribute('dir', next);
-        try { localStorage.setItem(KEY, next); } catch (e) {}
-        document.querySelectorAll('[data-dir-toggle]').forEach(sync);
-      });
+  QZ.behavior('dir-toggle', '[data-dir-toggle]', function (btn) {
+    sync(btn);
+    btn.addEventListener('click', function () {
+      var next = root.getAttribute('dir') === 'rtl' ? 'ltr' : 'rtl';
+      root.setAttribute('dir', next);
+      try { localStorage.setItem(KEY, next); } catch (e) {}
+      document.querySelectorAll('[data-dir-toggle]').forEach(sync);
     });
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  });
 })();
 
 /* ---- auth helpers: password show/hide, strength meter, OTP auto-advance ---- */
@@ -608,7 +756,7 @@ document.addEventListener('DOMContentLoaded', function () {
   }
   var SLABEL = ['Too short', 'Weak', 'Fair', 'Good', 'Strong'];
   var SCLASS = ['', 'weak', 'fair', 'good', 'strong'];
-  document.querySelectorAll('[data-pw-strength]').forEach(function (inp) {
+  QZ.behavior('pw-strength', '[data-pw-strength]', function (inp) {
     var field = inp.closest('.field') || inp.parentElement;
     var bar = field && field.querySelector('.pwbar i');
     var hint = field && field.querySelector('.pwhint');
@@ -620,7 +768,7 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // OTP: [data-otp] container of single-char inputs — auto-advance + backspace
-  document.querySelectorAll('[data-otp]').forEach(function (box) {
+  QZ.behavior('otp', '[data-otp]', function (box) {
     var ins = Array.prototype.slice.call(box.querySelectorAll('input'));
     ins.forEach(function (inp, i) {
       inp.addEventListener('input', function () {
@@ -647,17 +795,14 @@ document.addEventListener('DOMContentLoaded', function () {
     btn.setAttribute('aria-pressed', compact() ? 'true' : 'false');
     btn.setAttribute('title', compact() ? 'Switch to comfortable density' : 'Switch to compact density');
   }
-  function init() {
-    document.querySelectorAll('[data-density-toggle]').forEach(function (btn) {
-      sync(btn);
-      btn.addEventListener('click', function () {
-        root.setAttribute('data-density', compact() ? 'comfortable' : 'compact');
-        try { localStorage.setItem(KEY, compact() ? 'compact' : 'comfortable'); } catch (e) {}
-        document.querySelectorAll('[data-density-toggle]').forEach(sync);
-      });
+  QZ.behavior('density-toggle', '[data-density-toggle]', function (btn) {
+    sync(btn);
+    btn.addEventListener('click', function () {
+      root.setAttribute('data-density', compact() ? 'comfortable' : 'compact');
+      try { localStorage.setItem(KEY, compact() ? 'compact' : 'comfortable'); } catch (e) {}
+      document.querySelectorAll('[data-density-toggle]').forEach(sync);
     });
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  });
 })();
 
 /* ---- modal a11y: [data-modal-open="#id"] opens a .modal-scrim dialog with
@@ -677,6 +822,7 @@ document.addEventListener('DOMContentLoaded', function () {
     QZscroll.lock();
     openEl = scrim;
     var f = focusables(scrim);
+    if (!scrim.hasAttribute('tabindex')) scrim.tabIndex = -1;   // make the fallback focus() actually take
     (f[0] || scrim).focus();
   }
   function close() {
@@ -698,6 +844,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (e.key === 'Tab') {
       var f = focusables(openEl); if (!f.length) { e.preventDefault(); return; }
       var first = f[0], last = f[f.length - 1];
+      if (!openEl.contains(document.activeElement)) { e.preventDefault(); first.focus(); return; }   // recapture escaped focus
       if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
       else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
     }
@@ -705,11 +852,17 @@ document.addEventListener('DOMContentLoaded', function () {
 })();
 
 /* ---- popover / popconfirm: [data-popover] toggles a .popover (sibling, or the
-   selector in the attribute); outside-click / Esc / [data-popover-close] close ---- */
+   selector in the attribute); outside-click / Esc / [data-popover-close] close;
+   Esc and the close button hand focus back to the trigger ---- */
 (function () {
   'use strict';
-  var open = null;
-  function close() { if (open) { open.classList.remove('is-open'); open = null; } }
+  var open = null, opener = null;
+  function close(restore) {
+    if (!open) return;
+    open.classList.remove('is-open'); open = null;
+    if (restore && opener && opener.focus) opener.focus();
+    opener = null;
+  }
   document.addEventListener('click', function (e) {
     var trig = e.target.closest('[data-popover]');
     if (trig) {
@@ -717,15 +870,15 @@ document.addEventListener('DOMContentLoaded', function () {
       var sel = trig.getAttribute('data-popover');
       var pop = sel ? document.querySelector(sel) : (trig.closest('.popover-wrap') || trig.parentElement).querySelector('.popover');
       if (!pop) return;
-      if (pop === open) { close(); return; }
-      close(); pop.classList.add('is-open'); open = pop;
+      if (pop === open) { close(true); return; }
+      close(); pop.classList.add('is-open'); open = pop; opener = trig;
       var f = pop.querySelector('button,a[href],input,select,textarea'); if (f) f.focus();
       return;
     }
-    if (e.target.closest('[data-popover-close]')) { close(); return; }
-    if (open && !e.target.closest('.popover')) close();   // click outside the panel
+    if (e.target.closest('[data-popover-close]')) { close(true); return; }
+    if (open && !e.target.closest('.popover')) close();   // click outside the panel — focus follows the click
   });
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') close(true); });
 })();
 
 /* ---- command palette (⌘K / Ctrl+K) — search, group, keyboard nav ---- */
@@ -763,6 +916,17 @@ document.addEventListener('DOMContentLoaded', function () {
     if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); scrim ? close() : open(); return; }
     if (!scrim) return;
     if (e.key === 'Escape') { close(); return; }
+    if (e.key === 'Tab') {   // contain focus in the palette while it's open
+      var f = Array.prototype.slice.call(scrim.querySelectorAll(
+        'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'
+      )).filter(function (el) { return el.offsetParent !== null; });
+      if (!f.length) { e.preventDefault(); return; }
+      var first = f[0], last = f[f.length - 1];
+      if (!scrim.contains(document.activeElement)) { e.preventDefault(); first.focus(); return; }
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      return;
+    }
     if (e.key === 'ArrowDown') { e.preventDefault(); setActive(scrim, activeIndex(scrim) + 1); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(scrim, activeIndex(scrim) - 1); }
     else if (e.key === 'Enter') { var vis = visible(scrim), i = activeIndex(scrim); if (vis[i]) { e.preventDefault(); vis[i].click(); } }
@@ -786,12 +950,21 @@ document.addEventListener('DOMContentLoaded', function () {
   function expanded(row) { return item(row).getAttribute('aria-expanded') === 'true'; }
   function setExpanded(row, v) { if (hasChildren(row)) item(row).setAttribute('aria-expanded', v ? 'true' : 'false'); }
   function setup(tree) {
-    tree.setAttribute('role', 'tree');
+    // fill in any missing tree semantics — authored markup (role=treeitem on
+    // .tree-item, role=group on .tree-children) is respected, minimal markup
+    // gets the same model added. The treeitem is the .tree-item; the row is
+    // its visual, focusable label.
+    if (!tree.hasAttribute('role')) tree.setAttribute('role', 'tree');
+    Array.prototype.forEach.call(tree.querySelectorAll('.tree-children'), function (c) { if (!c.hasAttribute('role')) c.setAttribute('role', 'group'); });
+    Array.prototype.forEach.call(tree.querySelectorAll('.tree-item'), function (it) {
+      if (!it.hasAttribute('role')) it.setAttribute('role', 'treeitem');
+      it.setAttribute('aria-selected', it.querySelector('.tree-row') && it.querySelector('.tree-row').classList.contains('sel') ? 'true' : 'false');
+    });
     rows(tree).forEach(function (r, i) {
       r.tabIndex = i === 0 ? 0 : -1;
       r.addEventListener('click', function () {
-        rows(tree).forEach(function (x) { x.classList.remove('sel'); x.tabIndex = -1; });
-        r.classList.add('sel'); r.tabIndex = 0;
+        rows(tree).forEach(function (x) { x.classList.remove('sel'); x.tabIndex = -1; item(x).setAttribute('aria-selected', 'false'); });
+        r.classList.add('sel'); r.tabIndex = 0; item(r).setAttribute('aria-selected', 'true');
         if (hasChildren(r)) setExpanded(r, !expanded(r));
       });
       r.addEventListener('keydown', function (e) {
@@ -808,7 +981,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
   }
-  document.addEventListener('DOMContentLoaded', function () { document.querySelectorAll('[data-tree]').forEach(setup); });
+  QZ.behavior('tree', '[data-tree]', setup);
 })();
 
 /* ---- form validation: [data-validate] — declarative rules through the native
@@ -917,7 +1090,7 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     });
   }
-  document.addEventListener('DOMContentLoaded', function () { document.querySelectorAll('[data-validate]').forEach(setup); });
+  QZ.behavior('validate', '[data-validate]', setup);
 })();
 
 /* ---- table: expandable rows [data-row-toggle] · global filter [data-table-filter="#id"] ---- */
@@ -928,15 +1101,13 @@ document.addEventListener('DOMContentLoaded', function () {
     var tr = t.closest('tr'), detail = tr.nextElementSibling;
     if (detail && detail.classList.contains('row-detail')) { var open = tr.classList.toggle('is-open'); detail.hidden = !open; t.setAttribute('aria-expanded', open ? 'true' : 'false'); }
   });
-  document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('[data-table-filter]').forEach(function (inp) {
-      var table = document.querySelector(inp.getAttribute('data-table-filter')); if (!table) return;
-      inp.addEventListener('input', function () {
-        var q = inp.value.trim().toLowerCase();
-        table.querySelectorAll('tbody tr:not(.row-detail)').forEach(function (tr) {
-          var hit = tr.textContent.toLowerCase().indexOf(q) > -1; tr.hidden = q && !hit;
-          var d = tr.nextElementSibling; if (d && d.classList.contains('row-detail')) d.hidden = true, tr.classList.remove('is-open');
-        });
+  QZ.behavior('table-filter', '[data-table-filter]', function (inp) {
+    var table = document.querySelector(inp.getAttribute('data-table-filter')); if (!table) return;
+    inp.addEventListener('input', function () {
+      var q = inp.value.trim().toLowerCase();
+      table.querySelectorAll('tbody tr:not(.row-detail)').forEach(function (tr) {
+        var hit = tr.textContent.toLowerCase().indexOf(q) > -1; tr.hidden = q && !hit;
+        var d = tr.nextElementSibling; if (d && d.classList.contains('row-detail')) d.hidden = true, tr.classList.remove('is-open');
       });
     });
   });
@@ -945,8 +1116,7 @@ document.addEventListener('DOMContentLoaded', function () {
 /* ---- resizable split: a .resizer between panes drags the previous pane's width ---- */
 (function () {
   'use strict';
-  document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.split .resizer').forEach(function (rz) {
+  QZ.behavior('resizer', '.split .resizer', function (rz) {
       var prev = rz.previousElementSibling, split = rz.closest('.split');
       if (!prev || !split) return;
       rz.addEventListener('pointerdown', function (e) {
@@ -959,27 +1129,24 @@ document.addEventListener('DOMContentLoaded', function () {
         function up(ev) { rz.classList.remove('dragging'); rz.releasePointerCapture(e.pointerId); rz.removeEventListener('pointermove', move); rz.removeEventListener('pointerup', up); }
         rz.addEventListener('pointermove', move); rz.addEventListener('pointerup', up);
       });
-    });
   });
 })();
 
 /* ---- TOC scrollspy: [data-toc] links highlight the section in view ---- */
 (function () {
   'use strict';
-  document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('[data-toc]').forEach(function (toc) {
-      var links = Array.prototype.slice.call(toc.querySelectorAll('a[href^="#"]'));
-      var map = {};
-      links.forEach(function (a) { var t = document.getElementById(a.getAttribute('href').slice(1)); if (t) map[a.getAttribute('href')] = t; });
-      if (!('IntersectionObserver' in window)) return;
-      var io = new IntersectionObserver(function (entries) {
-        entries.forEach(function (en) {
-          if (!en.isIntersecting) return;
-          links.forEach(function (a) { a.classList.toggle('active', map[a.getAttribute('href')] === en.target); });
-        });
-      }, { rootMargin: '0px 0px -70% 0px', threshold: 0 });
-      Object.keys(map).forEach(function (h) { io.observe(map[h]); });
-    });
+  QZ.behavior('toc', '[data-toc]', function (toc) {
+    var links = Array.prototype.slice.call(toc.querySelectorAll('a[href^="#"]'));
+    var map = {};
+    links.forEach(function (a) { var t = document.getElementById(a.getAttribute('href').slice(1)); if (t) map[a.getAttribute('href')] = t; });
+    if (!('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        links.forEach(function (a) { a.classList.toggle('active', map[a.getAttribute('href')] === en.target); });
+      });
+    }, { rootMargin: '0px 0px -70% 0px', threshold: 0 });
+    Object.keys(map).forEach(function (h) { io.observe(map[h]); });
   });
 })();
 
@@ -988,29 +1155,29 @@ document.addEventListener('DOMContentLoaded', function () {
    the source of truth. ---- */
 (function () {
   'use strict';
+  function num(v, fallback) { var n = parseFloat(v); return isNaN(n) ? fallback : n; }   // 0 is a legal bound — no ||-defaulting
   function setupStepper(root) {
     var inp = root.querySelector('input[type=number]');
     if (!inp) return;
     var dec = root.querySelector('[data-dec]');
     var inc = root.querySelector('[data-inc]');
-    var min = parseFloat(inp.min) || 1;
-    var max = parseFloat(inp.max) || 999;
-    var step = parseFloat(inp.step) || 1;
+    var min = num(inp.min, 1);
+    var max = num(inp.max, 999);
+    var step = num(inp.step, 1) || 1;
+    function val() { return num(inp.value, min); }
     function upd() {
-      var v = Math.max(min, Math.min(max, parseFloat(inp.value) || min));
+      var v = Math.max(min, Math.min(max, val()));
       inp.value = v;
       if (dec) dec.disabled = v <= min;
       if (inc) inc.disabled = v >= max;
     }
-    if (dec) dec.addEventListener('click', function () { inp.value = Math.max(min, (parseFloat(inp.value) || min) - step); upd(); inp.dispatchEvent(new Event('change', { bubbles: true })); });
-    if (inc) inc.addEventListener('click', function () { inp.value = Math.min(max, (parseFloat(inp.value) || min) + step); upd(); inp.dispatchEvent(new Event('change', { bubbles: true })); });
+    if (dec) dec.addEventListener('click', function () { inp.value = Math.max(min, val() - step); upd(); inp.dispatchEvent(new Event('change', { bubbles: true })); });
+    if (inc) inc.addEventListener('click', function () { inp.value = Math.min(max, val() + step); upd(); inp.dispatchEvent(new Event('change', { bubbles: true })); });
     inp.addEventListener('change', upd);
     inp.addEventListener('blur', upd);
     upd();
   }
-  document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('[data-stepper]').forEach(setupStepper);
-  });
+  QZ.behavior('stepper', '[data-stepper]', setupStepper);
 })();
 
 /* ---- commerce: variant/swatch picker [data-variant] — radiogroup with arrow
@@ -1043,9 +1210,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
     var first = focusable()[0]; if (first && first.getAttribute('aria-checked') !== 'true') select(first);
   }
-  document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('[data-variant]').forEach(setupVariant);
-  });
+  QZ.behavior('variant', '[data-variant]', setupVariant);
 })();
 
 /* ---- off-canvas admin sidebar: [data-sidebar-toggle] flips .nav-open on the
@@ -1056,18 +1221,21 @@ document.addEventListener('DOMContentLoaded', function () {
     var sel = btn.getAttribute('data-sidebar-toggle');
     return (sel && document.querySelector(sel)) || btn.closest('.adminframe') || document.querySelector('.adminframe');
   }
+  function syncBtns(on) {
+    document.querySelectorAll('[data-sidebar-toggle]').forEach(function (b) { b.setAttribute('aria-expanded', on ? 'true' : 'false'); });
+  }
   document.addEventListener('click', function (e) {
     var btn = e.target.closest('[data-sidebar-toggle]');
-    if (btn) { var f = frameFor(btn); if (f) f.classList.toggle('nav-open'); return; }
+    if (btn) { var f = frameFor(btn); if (f) syncBtns(f.classList.toggle('nav-open')); return; }
     var open = document.querySelector('.adminframe.nav-open');
     if (!open) return;
     // a tap on the scrim (the .adminframe itself, outside the sidebar) or on a nav item closes
-    if (!e.target.closest('.sidebar') || e.target.closest('.side-item')) open.classList.remove('nav-open');
+    if (!e.target.closest('.sidebar') || e.target.closest('.side-item')) { open.classList.remove('nav-open'); syncBtns(false); }
   });
   document.addEventListener('keydown', function (e) {
     if (e.key !== 'Escape') return;
     var open = document.querySelector('.adminframe.nav-open');
-    if (open) open.classList.remove('nav-open');
+    if (open) { open.classList.remove('nav-open'); syncBtns(false); }
   });
 })();
 
@@ -1147,14 +1315,11 @@ document.addEventListener('DOMContentLoaded', function () {
   // data-vol: keep the range track's fill (--vol) in sync with its value
   function syncVol(r) { r.style.setProperty('--vol', r.value + '%'); }
 
-  function init() {
-    document.querySelectorAll('[data-wave]').forEach(renderWave);
-    document.querySelectorAll('input[data-vol]').forEach(function (r) {
-      syncVol(r);
-      r.addEventListener('input', function () { syncVol(r); });
-    });
-  }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  QZ.behavior('wave', '[data-wave]', renderWave);
+  QZ.behavior('vol', 'input[data-vol]', function (r) {
+    syncVol(r);
+    r.addEventListener('input', function () { syncVol(r); });
+  });
 })();
 
 /* ---- billing: monthly/annual cycle toggle [data-billing-cycle="<selector>"] —
@@ -1190,8 +1355,7 @@ document.addEventListener('DOMContentLoaded', function () {
     var checked = opts.filter(function (o) { return o.getAttribute('aria-checked') === 'true'; })[0] || opts[0];
     select(checked, false);
   }
-  function init() { document.querySelectorAll('[data-billing-cycle]').forEach(setup); }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  QZ.behavior('billing-cycle', '[data-billing-cycle]', setup);
 })();
 
 /* ---- tooltips: ONE engine for both [data-tip] (text) and .tip>.tip-pop (rich).
@@ -1248,18 +1412,28 @@ document.addEventListener('DOMContentLoaded', function () {
     else { arrow.style.top = clamp(cy - sy, 12, th - 12) + 'px'; arrow.style.left = ''; }
   }
 
+  // append/remove our id as a TOKEN — a trigger's own aria-describedby (hints,
+  // validation errors) must survive the tooltip's lifecycle
+  function addDesc(el) {
+    var d = (el.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+    if (d.indexOf('qz-tip') < 0) { d.push('qz-tip'); el.setAttribute('aria-describedby', d.join(' ')); }
+  }
+  function dropDesc(el) {
+    var d = (el.getAttribute('aria-describedby') || '').split(/\s+/).filter(function (t) { return t && t !== 'qz-tip'; });
+    if (d.length) el.setAttribute('aria-describedby', d.join(' ')); else el.removeAttribute('aria-describedby');
+  }
   function show(trg) {
     clearTimeout(hideT);
-    if (cur && cur !== trg) cur.removeAttribute('aria-describedby');
+    if (cur && cur !== trg) dropDesc(cur);
     cur = trg;
     var c = fill(trg);
     if (!c.ok) { hide(); return; }
     place(trg.getBoundingClientRect(), c.pos);
     tip.setAttribute('role', 'tooltip');
     tip.classList.add('show');
-    trg.setAttribute('aria-describedby', 'qz-tip');
+    addDesc(trg);
   }
-  function hide() { tip.classList.remove('show'); tip.removeAttribute('role'); if (cur) cur.removeAttribute('aria-describedby'); cur = null; }
+  function hide() { tip.classList.remove('show'); tip.removeAttribute('role'); if (cur) dropDesc(cur); cur = null; }
   function scheduleHide() { clearTimeout(hideT); hideT = setTimeout(function () { if (!overTip) hide(); }, HIDE_DELAY); }
 
   function init() {
@@ -1490,10 +1664,15 @@ function QZready(fn) { if (document.readyState === 'loading') document.addEventL
   var VERSION = 1;
   // Match sensitive field NAMES on whole tokens (split on separators + camelCase), not
   // substrings — so "shipping" / "passenger" / "discard" aren't false-positived by
-  // pin / pass / card and silently dropped from the snapshot.
-  var SENSITIVE = { password: 1, passwd: 1, pass: 1, card: 1, cardnumber: 1, ccnumber: 1, cc: 1, cvv: 1, cvc: 1, csc: 1, ssn: 1, sin: 1, secret: 1, token: 1, otp: 1, pin: 1, iban: 1, routing: 1 };
+  // pin / pass / card and silently dropped from the snapshot. Unambiguous longer terms
+  // are ALSO matched as substrings, so concatenated lowercase names ("creditcard",
+  // "mypassword", "ssntaxid") can't slip a card number or password into storage.
+  var SENSITIVE = { password: 1, passwd: 1, pass: 1, card: 1, cardnumber: 1, cardno: 1, ccnumber: 1, cc: 1, cvv: 1, cvc: 1, csc: 1, ssn: 1, sin: 1, secret: 1, token: 1, otp: 1, pin: 1, iban: 1, routing: 1 };
+  var SENSITIVE_SUB = /password|passwd|passphrase|passcode|creditcard|debitcard|cardnumber|cardno|cvv|cvc|ssn|secret|iban|taxid/;
   function keyOf(el) { return el.name || el.id || ''; }
   function isSensitive(el) {
+    var k = keyOf(el).toLowerCase();
+    if (SENSITIVE_SUB.test(k)) return true;
     var tokens = keyOf(el).replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase().split(/[^a-z0-9]+/);
     for (var i = 0; i < tokens.length; i++) if (SENSITIVE[tokens[i]]) return true;
     return false;
@@ -1548,7 +1727,7 @@ function QZready(fn) { if (document.readyState === 'loading') document.addEventL
       setTimeout(function () { if (!e.defaultPrevented) QZstore.remove(storeKey, scope); }, 0);
     });
   }
-  QZready(function () { document.querySelectorAll('[data-persist]').forEach(setup); });
+  QZ.behavior('persist', '[data-persist]', setup);
 })();
 
 /* ---- textarea auto-grow: [data-autosize] resizes a <textarea> to fit its content
@@ -1563,7 +1742,7 @@ function QZready(fn) { if (document.readyState === 'loading') document.addEventL
     t.addEventListener('focus', function () { fit(t); });
     fit(t);
   }
-  QZready(function () { document.querySelectorAll('textarea[data-autosize]').forEach(setup); });
+  QZ.behavior('autosize', 'textarea[data-autosize]', setup);
 })();
 
 /* ---- character counter: [data-char-count] on a maxlength'd control keeps a counter
@@ -1591,7 +1770,7 @@ function QZready(fn) { if (document.readyState === 'loading') document.addEventL
     }
     el.addEventListener('input', upd); upd();
   }
-  QZready(function () { document.querySelectorAll('[data-char-count]').forEach(setup); });
+  QZ.behavior('char-count', '[data-char-count]', setup);
 })();
 
 /* ---- submit lock: a form [data-submit-lock] disables its submit button and marks it
@@ -1617,7 +1796,7 @@ function QZready(fn) { if (document.readyState === 'loading') document.addEventL
     form.addEventListener('input', function () { if (btn.disabled) unlock(); }); // editing after a lock frees it
     window.addEventListener('pageshow', unlock);
   }
-  QZready(function () { document.querySelectorAll('[data-submit-lock]').forEach(setup); });
+  QZ.behavior('submit-lock', '[data-submit-lock]', setup);
 })();
 
 /* ---- confirm-before-action: [data-qz-confirm="message"] intercepts a click on a
@@ -1722,7 +1901,7 @@ function QZready(fn) { if (document.readyState === 'loading') document.addEventL
       io.observe(el);
     }
   }
-  QZready(function () { document.querySelectorAll('[data-clamp]').forEach(setup); });
+  QZ.behavior('clamp', '[data-clamp]', setup);
 })();
 
 /* ---- dismissible: a [data-qz-dismiss] control hides its target — the selector in the
@@ -1735,17 +1914,15 @@ function QZready(fn) { if (document.readyState === 'loading') document.addEventL
   function targetOf(btn) {
     return QZq(btn.getAttribute('data-qz-dismiss')) || btn.closest('.alert, .banner, [data-dismissible]') || btn.parentElement;
   }
-  QZready(function () {
-    document.querySelectorAll('[data-qz-dismiss]').forEach(function (btn) {
-      var el = targetOf(btn);
-      var key = btn.getAttribute('data-qz-dismiss-key') || (el && el.id) || '';
-      var scope = btn.getAttribute('data-qz-dismiss-scope') === 'session' ? 'session' : 'local';
-      if (el && key && QZstore.get('dismiss:' + key, scope)) { el.hidden = true; return; }
-      btn.addEventListener('click', function () {
-        if (!el) return;
-        el.hidden = true;
-        if (key) QZstore.set('dismiss:' + key, '1', scope);
-      });
+  QZ.behavior('dismiss', '[data-qz-dismiss]', function (btn) {
+    var el = targetOf(btn);
+    var key = btn.getAttribute('data-qz-dismiss-key') || (el && el.id) || '';
+    var scope = btn.getAttribute('data-qz-dismiss-scope') === 'session' ? 'session' : 'local';
+    if (el && key && QZstore.get('dismiss:' + key, scope)) { el.hidden = true; return; }
+    btn.addEventListener('click', function () {
+      if (!el) return;
+      el.hidden = true;
+      if (key) QZstore.set('dismiss:' + key, '1', scope);
     });
   });
 })();
@@ -1777,10 +1954,27 @@ function QZready(fn) { if (document.readyState === 'loading') document.addEventL
     if (!el.title) el.title = new Date(then).toLocaleString();
     return function () { el.textContent = phrase(then); };
   }
-  QZready(function () {
-    var pairs = [];
-    Array.prototype.forEach.call(document.querySelectorAll('[data-relative-time]'), function (el) { var f = setup(el); if (f) pairs.push({ el: el, f: f }); });
+  var pairs = [], timer = null;
+  function tick() {
+    pairs = pairs.filter(function (p) { return p.el.isConnected; });   // drop detached nodes for good
+    if (!pairs.length) { clearInterval(timer); timer = null; return; } // idle: stop; the next bind restarts it
     pairs.forEach(function (p) { p.f(); });
-    if (pairs.length) setInterval(function () { pairs.forEach(function (p) { if (p.el.isConnected) p.f(); }); }, 60000);
+  }
+  QZ.behavior('relative-time', '[data-relative-time]', function (el) {
+    var f = setup(el); if (!f) return;
+    f(); pairs.push({ el: el, f: f });
+    if (!timer) timer = setInterval(tick, 60000);
   });
 })();
+
+/* ---- public namespace + boot --------------------------------------------------
+   window.QZ is the supported surface for framework integration:
+     QZ.init(root?)  re-scan a subtree (or the whole document) and bind behaviors
+                     to any matching element that isn't bound yet — call it after
+                     rendering new markup (React effect, Ember didInsert, HTMX swap).
+     QZ.store / QZ.i18n / QZ.scroll / QZ.q / QZ.ready / QZ.cal
+                     aliases of the shared helpers (QZstore, QZi18n, …), which stay
+                     available under their historical names too. ---- */
+QZ.cal = QZcal; QZ.store = QZstore; QZ.i18n = QZi18n; QZ.scroll = QZscroll; QZ.q = QZq; QZ.ready = QZready;
+window.QZ = QZ;
+QZready(function () { QZ.init(); });

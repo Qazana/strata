@@ -92,6 +92,9 @@ const ctx = await browser.newContext({
 
 for (const name of PAGES) {
   const page = await ctx.newPage();
+  // Freeze the clock: calendars/pickers default to "today", so an unfrozen date
+  // would drift the baseline every day. Any fixed date works; keep it stable.
+  await page.clock.setFixedTime(new Date('2026-06-09T12:00:00'));
   await page.goto(`${BASE}/demo/${name}.html`, { waitUntil: 'networkidle', timeout: 60000 }).catch(() => {});
   await page.waitForTimeout(400);
   for (const scheme of SCHEMES) {
