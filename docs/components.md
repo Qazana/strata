@@ -88,7 +88,7 @@ mirrors. The rules, in order of preference:
 
 ## Cards
 `.card` · `.feature-card` · `.plan` (+`.popular`/`.pop`) · `.pack` · `.rcard` ·
-`.cost-preview` · album art `.albumart` (`.xs/.sm/.md/.lg/.xl`)
+`.cost-preview` · cover thumbnail `.cover` (`.xs/.sm/.md/.lg/.xl`)
 
 ## Charts (SVG, dependency-free)
 - Line / area (polyline + gradient polygon) · multi-series

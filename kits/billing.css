@@ -46,7 +46,7 @@
 
 /* ---- tier badge (scoped copy of app.css .tier + variants) ---- */
 .billing .tier{font-family:var(--body);font-weight:700;font-size:var(--text-2xs);text-transform:uppercase;
-  letter-spacing:var(--tracking-wide);padding:3px var(--space-2_5);border-radius:6px;border:1px solid}
+  letter-spacing:var(--tracking-wide);padding:3px var(--space-2_5);border-radius:var(--radius-sm);border:1px solid}
 .billing .tier-free{color:var(--text-2);border-color:var(--line);background:var(--surface-2)}
 .billing .tier-pro{color:var(--accent);border-color:rgb(var(--accent-rgb) / .45);background:rgb(var(--accent-rgb) / .12)}
 .billing .tier-unlimited{color:var(--warning);border-color:rgb(var(--warning-rgb) / .4);background:rgb(var(--warning-rgb) / .1)}
@@ -155,7 +155,7 @@
   border:1px solid var(--line);border-radius:var(--radius);padding:var(--space-3_5) var(--space-4)}
 .billing .pay-method.default{border-color:rgb(var(--primary-rgb) / .4)}
 .billing .pay-method .brand{flex:0 0 auto;width:46px;height:32px;display:grid;place-items:center;
-  background:var(--surface-2);border:1px solid var(--line);border-radius:6px;font-size:1.3rem;color:var(--text-2)}
+  background:var(--surface-2);border:1px solid var(--line);border-radius:var(--radius-sm);font-size:var(--text-xl);color:var(--text-2)}
 .billing .pay-method .pm-info{min-width:0}
 .billing .pay-method .pm-num{font-weight:600;display:flex;align-items:center;gap:var(--space-2_5);flex-wrap:wrap}
 .billing .pay-method .pm-num .dots{font-family:var(--mono);color:var(--text-2);letter-spacing:.12em}
@@ -174,8 +174,8 @@
 
 .billing .quota .qh{display:flex;justify-content:space-between;font-size:var(--text-sm);margin-bottom:var(--space-1_5)}
 .billing .quota .qh .qv{font-family:var(--mono);color:var(--text-2)}
-.billing .quota .qbar{height:8px;border-radius:99px;background:var(--surface-2);overflow:hidden}
-.billing .quota .qbar i{display:block;height:100%;border-radius:99px;background:var(--primary)}
+.billing .quota .qbar{height:8px;border-radius:var(--radius-pill);background:var(--surface-2);overflow:hidden}
+.billing .quota .qbar i{display:block;height:100%;border-radius:var(--radius-pill);background:var(--primary)}
 .billing .quota.warn .qbar i{background:var(--warning)}.billing .quota.warn .qh .qv{color:var(--warning)}
 .billing .quota.crit .qbar i{background:var(--danger)}.billing .quota.crit .qh .qv{color:var(--danger)}
 
@@ -196,7 +196,7 @@
 
 .billing .bill-banner{display:flex;align-items:center;gap:var(--space-3_5);padding:var(--space-3_5) var(--space-4);border-radius:var(--radius);
   font-size:var(--text-md);border:1px solid var(--line);background:var(--surface)}
-.billing .bill-banner .bb-icon{font-size:1.1rem;flex:0 0 auto}
+.billing .bill-banner .bb-icon{font-size:var(--text-lg);flex:0 0 auto}
 .billing .bill-banner .bb-text{min-width:0}
 .billing .bill-banner .bb-text b{font-weight:700}
 .billing .bill-banner .bb-actions{margin-inline-start:auto;display:flex;gap:var(--space-2);flex-shrink:0}
@@ -268,7 +268,7 @@
 .billing .keep .opt{display:flex;align-items:center;gap:var(--space-3);border:1px solid var(--line);border-radius:var(--radius);
   padding:var(--space-3) var(--space-3_5);text-decoration:none;color:var(--text);transition:.16s}
 .billing .keep .opt:hover{border-color:var(--primary);background:var(--surface-2)}
-.billing .keep .opt > i{color:var(--primary-bright);font-size:1.1rem;flex:0 0 auto}
+.billing .keep .opt > i{color:var(--primary-bright);font-size:var(--text-lg);flex:0 0 auto}
 .billing .keep .opt .ot{font-weight:600}
 .billing .keep .opt .od{font-size:var(--text-sm);color:var(--text-2)}
 .billing .keep .opt .chev{margin-inline-start:auto;color:var(--muted)}

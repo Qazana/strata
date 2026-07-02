@@ -111,7 +111,7 @@
 .docs .api-ref > summary:hover{background:var(--surface-2)}
 .docs .api-ref[open] > summary{border-bottom:1px solid var(--line)}
 .docs .api-method{font-family:var(--mono);font-weight:700;font-size:var(--text-2xs);text-transform:uppercase;
-  letter-spacing:.04em;padding:var(--space-1) var(--space-2_5);border-radius:6px;flex:0 0 auto}
+  letter-spacing:var(--tracking-wide);padding:var(--space-1) var(--space-2_5);border-radius:var(--radius-sm);flex:0 0 auto}
 .docs .api-method.get{background:rgb(var(--info-rgb) / .14);color:var(--info)}
 .docs .api-method.post{background:rgb(var(--primary-rgb) / .14);color:var(--primary-bright)}
 .docs .api-method.put,.docs .api-method.patch{background:rgb(var(--warning-rgb) / .14);color:var(--warning)}
@@ -129,7 +129,7 @@
 .docs .api-params tbody tr:last-child td{border-bottom:0}
 .docs .api-params .pn{font-family:var(--mono);font-weight:600;color:var(--text)}
 .docs .api-params .pty{font-family:var(--mono);font-size:var(--text-sm);color:var(--info)}
-.docs .api-params .req{font-size:var(--text-2xs);color:var(--danger);font-weight:600;text-transform:uppercase;letter-spacing:.04em}
+.docs .api-params .req{font-size:var(--text-2xs);color:var(--danger);font-weight:600;text-transform:uppercase;letter-spacing:var(--tracking-wide)}
 .docs .api-params .pd{color:var(--text-2)}
 /* request / response code sample (self-sufficient — not prose-wrapped) */
 .docs .api-code{background:var(--surface-sunken);border:1px solid var(--line);border-radius:var(--radius);
