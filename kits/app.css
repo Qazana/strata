@@ -81,7 +81,7 @@ html:not(.qz-tip-js) [data-tip]:is(:hover,:focus-visible)::after{opacity:1;trans
   transform:rotate(45deg);opacity:0;pointer-events:none;transition:opacity .18s;z-index:51}
 html:not(.qz-tip-js) [data-tip]:is(:hover,:focus-visible)::before{opacity:1}
 
-/* card variant — opt-in elevated, multi-line popover look (the source product-style):
+/* card variant — opt-in elevated, multi-line popover look:
    bigger readable text, roomier padding, soft elevation, wraps at a max-width.
    Reuses the [data-tip-pos] positioning + arrow below. Tokens keep it
    theme-aware (light card in the light theme, dark card in the dark theme). */

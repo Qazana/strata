@@ -1,8 +1,8 @@
-/* "Stage" — example theme for the public demo, recreating the design
-   language of a stage-timer SaaS (sampled from the live site's compiled CSS +
-   computed styles across the home and pricing pages, 2026-07). A theming-range
-   study: how far one :root token block pushes Strata toward an existing
-   product's look, and exactly where component overrides have to take over.
+/* "Stage" — example theme for the public demo, modelled on the design
+   language of a real production stage-timer SaaS (studied from its public
+   marketing pages, 2026-07). A theming-range study: how far one :root token
+   block pushes Strata toward an existing product's look, and exactly where
+   component overrides have to take over.
 
    The look: pure-white page, Tailwind *neutral* ink ramp, emerald-600 product
    buttons (#059669 — every pricing CTA; the home hero's darker #047857 serves
@@ -13,17 +13,17 @@
    Inter is normally an AI-tell we avoid (see cedar.css) — here it IS the
    brand being recreated.
 
-   AA note: white-on-#059669 is ~3.6:1 — the source product's own pairing, kept for
+   AA note: white-on-#059669 is ~3.6:1 — the source brand's own pairing, kept for
    fidelity since this is a recreation study. A real product would darken the
    fill or the ink; don't copy this pairing into an accessibility-gated page.
 
    Made for the LIGHT scheme: a `:root` override beats both scheme blocks, so
-   the surfaces below pin the source product's stark white regardless of the toggle.
+   the surfaces below pin the brand's stark white regardless of the toggle.
    Inter + IBM Plex Mono load via the demo's Google Fonts link; a consuming
    product should self-host WOFF2 with metric fallbacks like the tokens file.
 
    DEEPER THAN TOKENS — what the token block could NOT reach:
-   1. .btn hardcodes font-weight:600; the source product buttons are 500. Re-declared
+   1. .btn hardcodes font-weight:600; the source buttons are 500. Re-declared
       below (this file is unlayered, so it beats the kits' @layer qazana).
    2. Their h1 is 600 but their h2 is 700 — Strata drives both from
       --weight-black, so one of the two needs a component line (.t-h2 below);
@@ -34,8 +34,9 @@
    4. Decorative marketing flourishes — the hero's mint→orange gradient wash,
       the green title underline, the tilted photo collage — are per-section
       art a consuming site adds itself; no design token expresses them.
-   5. The fullscreen timer (giant mono digits) is the source product DOMAIN territory
-      — that component belongs in the consuming product, never in Strata. */
+   5. The fullscreen timer (giant mono digits) is the product's DOMAIN
+      territory — that component belongs in the consuming product, never in
+      Strata. */
 :root{
   color-scheme:light;
   --font-smooth:auto;

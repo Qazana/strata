@@ -10,8 +10,7 @@
 // LOCAL GATE ONLY — deliberately NOT wired into `npm test`. Pixel diffs are
 // font-rendering-sensitive (hinting/AA differs across OSes and font versions), so
 // running this in CI would flap on machines whose fonts don't match the baseline's.
-// Run it locally before a change you expect to be visually neutral. Mirrors how
-// a sibling project keeps run-coverage.mjs out of its test script.
+// Run it locally before a change you expect to be visually neutral.
 //
 // Usage:
 //   node harness/visual.mjs                 # diff vs baseline; EXITS 1 on any regression

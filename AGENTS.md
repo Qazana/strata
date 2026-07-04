@@ -69,9 +69,9 @@ renaming, deprecating, or removing public surface area.
 ## Consuming projects
 
 Consumed per stack as documented in the README (vanilla, React + Tailwind,
-Ember). The product roster, per-product integration notes, and internal plans
-live in the **private `companion` repo** (`strata/consumers.md`,
-`strata/plans/`) — product identity stays out of this repo and its history.
-Per-product theme files are private and live in companion (strata/themes/) until each product owns its copy.
+Ember). The product roster, per-product integration notes, internal plans, and
+per-product theme files live in a **private companion repo** — product
+identity (names included) stays out of this public repo and its history. The
+pointer to that repo lives in local, untracked context (`CLAUDE.local.md`).
 
 Keep this file accurate; it is the contract for reuse.

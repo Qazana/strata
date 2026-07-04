@@ -4,6 +4,7 @@ dist/
 *.log
 harness/out/
 /.firecrawl
+CLAUDE.local.md
 # public/ holds tracked static assets (e.g. CNAME); only the build-synced
 # subdirs are generated — those are ignored in docs-site/.gitignore
 docs-site/public/demo/
