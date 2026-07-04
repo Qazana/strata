@@ -66,6 +66,16 @@ change.
   README; `docs/` now ships in the npm tarball so the contract/upgrade links
   resolve; `docs/figma.md` names `scripts/figma-tokens.mjs`; `tokens.json`
   documents which token families are intentionally CSS-only.
+- **Demo: "stage" example theme** (`demo/themes/stage.css`, wired
+  into the theme picker + demo bar). A theming-range study recreating
+  a stage-timer SaaS from its live compiled CSS and computed styles (home +
+  pricing): white page, Tailwind neutral ink, emerald-600 product buttons with
+  emerald-700 emphasis, teal-700 accent, 4px controls / 12px cards, their
+  static type ladder (48/48 h1, untracked, Inter 300 marketing copy), Inter +
+  IBM Plex Mono, Tailwind elevation. Documents exactly where tokens stop and
+  component overrides start (button/h2 weight, hero metrics) and demonstrates
+  the scoped-token `.band-invert` pattern for inverted sections. Demo-only,
+  not shipped to npm.
 - **Harness:** new checks for `min="0"` steppers (doubling as the `QZ.init`
   idempotency probe), the persist sensitive-name guard, `QZ.init` on post-load
   markup, rating keyboard operation, and the picker keyboard path. The visual
