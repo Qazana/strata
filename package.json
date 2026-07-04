@@ -1,6 +1,6 @@
 {
   "name": "@qazana/strata",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0",
   "description": "Qazana Strata — the shared, framework-agnostic design system — semantic design tokens + vanilla (data-attribute) component CSS/JS, themeable per product with a single :root override.",
   "keywords": [
     "design-system",

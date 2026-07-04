@@ -1,7 +1,7 @@
 # Upgrading existing consumers
 
 This guide is for apps that already consume `@qazana/strata` and need to move to
-the `1.0.0-rc.1` release candidate.
+the `1.0.0` stable release.
 
 Strata is now governed as a stable public API. Exported kits, documented tokens,
 documented classes, documented DOM anatomy, and documented `data-*` hooks are
@@ -11,7 +11,7 @@ semver-protected unless explicitly marked otherwise. Read
 ## Upgrade target
 
 ```bash
-npm install @qazana/strata@1.0.0-rc.1
+npm install @qazana/strata@^1.0.0
 ```
 
 If the app uses a lockfile, commit the lockfile update with the app change.
@@ -51,7 +51,7 @@ Prefer scoped or classless-content selectors:
 For apps that install Strata from npm:
 
 ```bash
-npm install @qazana/strata@1.0.0-rc.1
+npm install @qazana/strata@^1.0.0
 ```
 
 Then run the app's normal checks:

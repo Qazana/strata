@@ -66,7 +66,7 @@ user-facing element without a library entry is incomplete.
 | Media | `.media-block` / `.audio` | `@qazana/strata/media` |
 | Commerce | `.shop` | `@qazana/strata/commerce` |
 
-**Commerce kit** (`v0.21.0`): catalog → PDP → cart → checkout → order.
+**Commerce kit**: catalog → PDP → cart → checkout → order.
 JS hooks: `[data-stepper]` (qty stepper) and `[data-variant]` (radiogroup variant/swatch).
 No new tokens; no `app.css` dependency; composes with `site.css`.
 

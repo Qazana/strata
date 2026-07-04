@@ -4,18 +4,58 @@ All notable changes to `@qazana/strata`. Semver: patch = fix, minor = additive
 component/token/kit/behavior, major = rename/removal/breaking public contract
 change.
 
-## Unreleased
+## 1.0.0 — 2026-07-04
+
+First stable release. Everything since 0.0.1 ships here — the interim `0.1.0`
+and `1.0.0-rc.1` staging notes were never tagged or published to npm, so they
+are collapsed into this section (versions in this file always match the
+registry). Relative to the published 0.0.1: three new kits (Billing, Docs,
+Support), a public `QZ` JS API, a full keyboard/ARIA pass, generic form
+behaviors, a governance contract (`docs/API_CONTRACT.md`), and a repo-wide
+token-discipline sweep. Nothing published in 0.0.1 was renamed or removed.
 
 ### Major
 
 - **`.albumart` renamed to `.cover`** (`.xs/.sm/.md/.lg/.xl` sizes unchanged).
   The old name was music-product vocabulary and violated the no-domain-components
   rule; `.cover` is the generic cover-thumbnail primitive (album/book/course
-  art). Never published to npm under the old name, but breaking for anyone
-  consuming `release/1.0.0-rc` from git. Contract: stable class renamed before
-  the 1.0.0 surface freezes.
+  art). Never published to npm under the old name — breaking only for anyone
+  consuming pre-1.0.0 git snapshots. Contract: stable class renamed before the
+  1.0.0 surface froze.
 
-### Minor
+### Minor — new kits
+
+- **Billing kit** (`@qazana/strata/billing`, scope `.billing`) — in-product
+  subscription surfaces, themed by the same tokens: current-plan summary
+  (+ trial), plan switcher with a monthly/annual cycle toggle and inline
+  proration confirm, invoice history with five status states (paid / open /
+  past-due / refunded / void), saved-state payment-method cards, metered usage →
+  cost with an over-limit upgrade nudge, a dunning (failed-payment) banner, seat
+  management, and a retention-framed cancel modal. Money is always static markup
+  — no currency math or `Intl`. One new vanilla controller `[data-billing-cycle]`
+  (monthly/annual radiogroup flipping `data-cycle`); cancel reuses
+  `[data-modal-open]`, seats reuse `[data-stepper]`. No payment processing,
+  provider SDK/iframe, card validation, or plan/feature copy — those stay in the
+  consuming app.
+- **Docs kit** (`@qazana/strata/docs`, scope `.docs`) — documentation surface
+  that **pairs with the Content kit** (load `content.css + docs.css`): a 3-column
+  doc shell (collapsible sidebar nav, prose, TOC), stacked API-reference blocks
+  (verb badges, params tables, request/response samples), a version/locale
+  switcher, prev/next pager, and a help-center landing (search hero, category
+  grid, popular articles, breadcrumb, "was this helpful?", related articles).
+  Zero new behavior JS — sidebar nesting is native `<details>`, the TOC reuses
+  `[data-toc]` scrollspy, search is a provider hook (Algolia/Pagefind).
+- **Support kit** (`@qazana/strata/support`, scope `.support`) — helpdesk
+  surface, standalone on base.css: a contact/ticket form (base form controls)
+  with attachment dropzone and confirmation state; a ticket-list table with
+  status badges (open/pending/solved/closed) and priority dots; and a
+  ticket-detail view with a conversation thread of stacked message cards
+  (customer / agent / internal-note), a reply composer, and a canned-reply
+  (macro) picker. Zero new behavior JS (macro picker is native `<details>`;
+  status/priority are CSS-only). No SLA timers, agent routing, live send, or
+  ticketing backend.
+
+### Minor — public JS API & behaviors
 
 - **Public `window.QZ` namespace with `QZ.init(root?)`.** Setup-style behaviors
   now register in a shared registry; `QZ.init(subtree)` binds behaviors to
@@ -24,88 +64,6 @@ change.
   aliased (`QZ.store/i18n/scroll/q/ready/cal`); the historical globals
   (`QZstore`, `QZi18n`, …) keep working. Contract: stable API addition,
   documented in `docs/API_CONTRACT.md`.
-- **Keyboard + ARIA across previously pointer-only components.** Date picker,
-  inline calendar, and date-range day cells are keyboard-operable (roving
-  tabindex, arrow/Home/End movement, Enter/Space select, labelled cells); the
-  picker closes on Escape and restores focus. Rating stars and color-picker
-  swatches are arrow-key radiogroups. Toggle-group buttons expose
-  `aria-pressed`. Tree rows get `role=treeitem` + `aria-selected` (+
-  `aria-expanded` mirrored onto the row); `.tree-children` get `role=group`.
-  Tabs gain `aria-controls`, `role=tabpanel`, and `aria-labelledby`. The
-  command palette traps Tab; the modal trap recaptures focus that escaped the
-  dialog; popovers restore focus to their trigger on Escape/close; the admin
-  sidebar toggle exposes `aria-expanded`. Contract: stable a11y additions.
-- **Elevation tokens `--shadow-pop` (menus/popovers) and `--shadow-sheet`
-  (side sheets)** replace the hand-rolled popover/sheet shadows; values are
-  unchanged, scheme-invariant for now. Added to `tokens.json` + Figma export.
-
-### Patch
-
-- **Fixed undefined token `--on-green`** on date-range endpoint cells → the ink
-  is `var(--on-primary)` again instead of silently inheriting.
-- **Calendars default to today.** The date picker, inline calendar, and date
-  range no longer open on a hardcoded June 2026 with the 9th pre-selected; the
-  picker parses an existing `YYYY-MM-DD` input value as its selection.
-- **`[data-stepper]` honors `min="0"`** (and value 0) — bounds no longer fall
-  back to 1 through `||`-defaulting.
-- **`[data-persist]` blocks concatenated sensitive names** (`creditcard`,
-  `mypassword`, `ssntaxid`, …) via an unambiguous-substring guard on top of the
-  token match; `shipping`/`passenger`/`discard` still persist fine.
-- **Tooltips preserve a trigger's own `aria-describedby`** — the engine now
-  appends/removes its id as a token instead of overwriting the attribute.
-- **Token discipline sweep, render-identical:** `border-radius:99px` →
-  `var(--radius-pill)` (36×), `6px` → `var(--radius-sm)`, bare `.2s` transitions
-  → `var(--dur-2)`, near-scale font sizes and `.04em` tracking snapped to
-  tokens, comma-form `rgba()` → channel form.
-- Combobox/date-picker/context-menu outside-click listeners are shared
-  (one per document, not one per instance); the drag-reorder drop index ignores
-  the injected live region; select-all tolerates checkboxes outside `<tr>`;
-  `[data-relative-time]`'s minute tick stops when no tracked element remains;
-  heatmap demo fill is deterministic (no per-render jitter).
-- **Docs/packaging:** removed the dangling `HANDOFF.md` references from the
-  README; `docs/` now ships in the npm tarball so the contract/upgrade links
-  resolve; `docs/figma.md` names `scripts/figma-tokens.mjs`; `tokens.json`
-  documents which token families are intentionally CSS-only.
-- **Demo: "stage" example theme** (`demo/themes/stage.css`, wired
-  into the theme picker + demo bar). A theming-range study recreating
-  a stage-timer SaaS from its live compiled CSS and computed styles (home +
-  pricing): white page, Tailwind neutral ink, emerald-600 product buttons with
-  emerald-700 emphasis, teal-700 accent, 4px controls / 12px cards, their
-  static type ladder (48/48 h1, untracked, Inter 300 marketing copy), Inter +
-  IBM Plex Mono, Tailwind elevation. Documents exactly where tokens stop and
-  component overrides start (button/h2 weight, hero metrics) and demonstrates
-  the scoped-token `.band-invert` pattern for inverted sections. Demo-only,
-  not shipped to npm.
-- **Harness:** new checks for `min="0"` steppers (doubling as the `QZ.init`
-  idempotency probe), the persist sensitive-name guard, `QZ.init` on post-load
-  markup, rating keyboard operation, and the picker keyboard path. The visual
-  harness freezes the page clock (calendars follow the real date now) and the
-  baseline was recaptured — the old one had drifted from the committed demos.
-
-## 1.0.0-rc.1 — 2026-06-26
-
-### Documentation
-
-- **Public API contract.** Added `docs/API_CONTRACT.md` to define Strata's
-  stability tiers, semver-protected surfaces, deprecation policy, behavior
-  contract, token contract, and consumer responsibilities. Contract: stable
-  governance addition.
-- **Kit stability labels.** The README now marks every exported, documented kit as
-  a stable public entrypoint and links contract changes to the API contract.
-  Contract: stable behavior preserved.
-- **Form vocabulary policy.** Clarified that `.form-field` is canonical for new
-  forms while `.field-row`/`.fld`/`.ferr` and scoped auth `.field`/`.err` remain
-  legacy-compatible until a documented major release. Contract: legacy aliases
-  preserved.
-- **Consumer integration checklist.** Added load-order, version-pinning,
-  cascade-safety, and public-surface guidance for downstream apps. Contract:
-  stable guidance addition.
-- **Upgrade guide.** Added `docs/UPGRADING.md` with the `1.0.0-rc.1` install
-  path, vendored static-site flow, stack notes, compatibility notes, verification
-  checklist, and rollback instructions. Contract: stable guidance addition.
-
-### Minor
-
 - **Form behaviors** (base). Four generic, opt-in, data-attribute behaviors in
   `js/qazana.js` driving new universal classes in `base.css`:
   `data-persist` (autosave/restore non-sensitive fields across reload — password/file
@@ -143,16 +101,16 @@ change.
 - **`[data-relative-time]`** (base). Renders "3h ago" / "in 2 days" from a `<time datetime>`
   via `Intl.RelativeTimeFormat` (true localization; QZi18n fallback on older engines),
   refreshing each minute, keeping the absolute time as `title`.
-- **Lightbox deep-linking** (Media kit). A `[data-lightbox]` gallery with an `id` now writes
-  `#lightbox=<id>/<index>` to the URL, so the viewer is shareable: a shared link opens it on
-  load, navigating updates the hash, and the browser Back button closes it. Hash-based to stay
-  router-agnostic.
 - **Gallery + lightbox** (Media kit). `.media .gallery` responsive tile grid (`.tile`,
   `.tile-cap`, `.tile-badge`) and a `data-lightbox` behavior that builds one full-screen
   viewer at `<body>` level — images **or** video (`data-type="video"` / `.mp4|.webm|.mov|.m4v`),
   prev/next + counter, keyboard (←/→/Esc), focus trap + restore, scroll-lock, `role="dialog"`.
   Re-authored generically from an earlier prototype's Flickr-specific PhotoGrid/ImageViewer (no domain
   logic). Dark chrome uses the kit's intentional black/white constants.
+- **Lightbox deep-linking** (Media kit). A `[data-lightbox]` gallery with an `id` now writes
+  `#lightbox=<id>/<index>` to the URL, so the viewer is shareable: a shared link opens it on
+  load, navigating updates the hash, and the browser Back button closes it. Hash-based to stay
+  router-agnostic.
 - **Tooltips unified + context-aware.** Both `[data-tip]` (text) and `.tip`/`.tip-pop`
   (rich) now run through one engine in `js/qazana.js` that renders a single floating
   node at `<body>` level (`position:fixed`) — so tooltips **escape `overflow:hidden`/
@@ -161,15 +119,21 @@ change.
   is kept as the no-JS fallback, suppressed by `.qz-tip-js` on `<html>`. WCAG 1.4.13:
   Escape-dismissible, `aria-describedby`, rich tips hoverable; respects reduced-motion.
 
-### Demo
+### Minor — accessibility
 
-- Added a fictional **Material** example theme (`demo/themes/material.css`)
-  modelling Material 3 — tonal-purple primary, mauve tertiary, Roboto, 12px
-  radius, dual-layer elevation shadows; light-oriented. Registered in the brand
-  picker (`demo-nav.js`) and the theme switcher. Demo-only; not shipped in the
-  package.
+- **Keyboard + ARIA across previously pointer-only components.** Date picker,
+  inline calendar, and date-range day cells are keyboard-operable (roving
+  tabindex, arrow/Home/End movement, Enter/Space select, labelled cells); the
+  picker closes on Escape and restores focus. Rating stars and color-picker
+  swatches are arrow-key radiogroups. Toggle-group buttons expose
+  `aria-pressed`. Tree rows get `role=treeitem` + `aria-selected` (+
+  `aria-expanded` mirrored onto the row); `.tree-children` get `role=group`.
+  Tabs gain `aria-controls`, `role=tabpanel`, and `aria-labelledby`. The
+  command palette traps Tab; the modal trap recaptures focus that escaped the
+  dialog; popovers restore focus to their trigger on Escape/close; the admin
+  sidebar toggle exposes `aria-expanded`. Contract: stable a11y additions.
 
-### Minor
+### Minor — components & tokens
 
 - **Checklist** (`.checklist`) — tickable to-do list in the App kit. Reuses the
   existing `.check` checkbox; the done state (dim + strike-through) is pure CSS off
@@ -178,9 +142,76 @@ change.
   progress bar (`.setup-prog`, `role="progressbar"`) and `.setup-list` task rows
   (`.done` state, `.sc-ic` check, `.sc-body`, trailing `.btn` action). Progress is
   author-set markup. No new tokens.
+- **Elevation tokens `--shadow-pop` (menus/popovers) and `--shadow-sheet`
+  (side sheets)** replace the hand-rolled popover/sheet shadows; values are
+  unchanged, scheme-invariant for now. Added to `tokens.json` + Figma export.
+- **Densified the spacing scale** with half-steps (`_5`, à la Tailwind 2.5/3.5)
+  and three larger steps — added `--space-1_5`/`2_5`/`3_5`/`4_5`/`5_5`/`6_5`
+  (6/10/14/20/28/40px) and `--space-8`/`9`/`10` (56/64/80px). Existing
+  `--space-1…7` values are unchanged (non-breaking). Mirrored into
+  `tokens.json` + regenerated the Figma export.
+- **Tokenized box-model spacing in `kits/*.css`** — raw px in
+  padding/margin/gap now references `--space-*` (script:
+  `scripts/snap-spacing.mjs`). Exact matches are unchanged visually; off-scale
+  values (18/9/11/7/5/13/22/26…px) were **snapped to the nearest step, ties
+  rounding up**, a deliberate spacing-rhythm tightening. Borders, box-shadows,
+  transforms, dimensions, radii and 1–2px optical nudges were left untouched.
+  Net effect is a slightly roomier, on-scale rhythm; visual baselines
+  recaptured. The intentional control-density tokens
+  (`--ctl/--btn/--row/--cell-pad`) are unchanged.
+- **Positioning offsets stay literal px.** `top`/`right`/`bottom`/`left`/`inset*`
+  are placement/geometry, not rhythm — an earlier pass tokenized them, which
+  shifted absolutely positioned glyphs (the checkbox checkmark, `.split .resizer`
+  bar, `.toast-host` corners). Reverted all 53 to their exact original px and
+  excluded these properties from the tokenizer.
 
-### Patch
+### Documentation & governance
 
+- **Public API contract.** Added `docs/API_CONTRACT.md` to define Strata's
+  stability tiers, semver-protected surfaces, deprecation policy, behavior
+  contract, token contract, and consumer responsibilities. Contract: stable
+  governance addition.
+- **Kit stability labels.** The README now marks every exported, documented kit as
+  a stable public entrypoint and links contract changes to the API contract.
+  Contract: stable behavior preserved.
+- **Form vocabulary policy.** Clarified that `.form-field` is canonical for new
+  forms while `.field-row`/`.fld`/`.ferr` and scoped auth `.field`/`.err` remain
+  legacy-compatible until a documented major release. Contract: legacy aliases
+  preserved.
+- **Consumer integration checklist.** Added load-order, version-pinning,
+  cascade-safety, and public-surface guidance for downstream apps. Contract:
+  stable guidance addition.
+- **Upgrade guide.** Added `docs/UPGRADING.md` with the `1.0.0` install
+  path, vendored static-site flow, stack notes, compatibility notes, verification
+  checklist, and rollback instructions. Contract: stable guidance addition.
+- **Docs/packaging:** removed the dangling `HANDOFF.md` references from the
+  README; `docs/` now ships in the npm tarball so the contract/upgrade links
+  resolve; `docs/figma.md` names `scripts/figma-tokens.mjs`; `tokens.json`
+  documents which token families are intentionally CSS-only.
+
+### Patch — fixes
+
+- **Fixed undefined token `--on-green`** on date-range endpoint cells → the ink
+  is `var(--on-primary)` again instead of silently inheriting.
+- **Calendars default to today.** The date picker, inline calendar, and date
+  range no longer open on a hardcoded June 2026 with the 9th pre-selected; the
+  picker parses an existing `YYYY-MM-DD` input value as its selection.
+- **`[data-stepper]` honors `min="0"`** (and value 0) — bounds no longer fall
+  back to 1 through `||`-defaulting.
+- **`[data-persist]` blocks concatenated sensitive names** (`creditcard`,
+  `mypassword`, `ssntaxid`, …) via an unambiguous-substring guard on top of the
+  token match; `shipping`/`passenger`/`discard` still persist fine.
+- **Tooltips preserve a trigger's own `aria-describedby`** — the engine now
+  appends/removes its id as a token instead of overwriting the attribute.
+- **Token discipline sweep, render-identical:** `border-radius:99px` →
+  `var(--radius-pill)` (36×), `6px` → `var(--radius-sm)`, bare `.2s` transitions
+  → `var(--dur-2)`, near-scale font sizes and `.04em` tracking snapped to
+  tokens, comma-form `rgba()` → channel form.
+- Combobox/date-picker/context-menu outside-click listeners are shared
+  (one per document, not one per instance); the drag-reorder drop index ignores
+  the injected live region; select-all tolerates checkboxes outside `<tr>`;
+  `[data-relative-time]`'s minute tick stops when no tracked element remains;
+  heatmap demo fill is deterministic (no per-render jitter).
 - **Scroll-lock unified + clobber fixed.** Modal, command palette, nav-drawer, lightbox,
   and confirm now share one ref-counted `QZscroll` body-scroll lock instead of each
   blindly setting `overflow`/`padding-right` and resetting to `''` on close. Fixes two
@@ -210,68 +241,26 @@ change.
   `.t-h2`) sit closer; loose line-height read as too airy at display sizes. Token
   value tweak (no rename/removal) — synced `tokens.json`, regenerated the Figma
   export, and updated the typography demo swatch label.
-
-## 0.1.0 — 2026-06-22
-
-First tagged release since 0.0.1. **Minor** — additive (three new kits: Billing,
-Docs, Support; a densified spacing scale) plus fixes and internal refactors. No
-breaking token changes (no renames or removals).
-
-Internal (no API/output change):
-
-- **Shared month-grid model.** The date maths (days-in-month, Monday-first first
-  weekday, month roll, grid cells) was copied across the date picker, inline
-  calendar, and date-range behaviors in `js/qazana.js`. Extracted to one pure
-  `QZcal` model; the three behaviors are now adapters that render its cells and
-  keep only their own selection/header. Date maths is now unit-tested directly
-  (`harness/behaviors-forms.mjs` → "month-grid (QZcal)") rather than only through
-  DOM clicks; rendered output is unchanged.
-- **Shared harness runtime + page manifest.** The throwaway static server + MIME
-  map was copied verbatim across seven harness files; three `PAGES` lists had
-  diverged (which is how `app/survey` got into the a11y + visual gates but not
-  the screenshot sweep). Extracted `harness/_serve.mjs` (one `makeServer`) and
-  `harness/_pages.mjs` (one tagged manifest; `a11y`/`visual`/`shoot` derive their
-  lists via `pagesFor(tag)`). Adding a demo is now one tagged row. Verified the
-  derived lists reproduce all three originals exactly before switching over.
-- **Token drift guard extended to the space scale.** The contract test only
-  enforced colour-group sync between `qazana.tokens.css` and `tokens.json`, so
-  space/radius/type could drift silently (nine space tokens were recently
-  hand-added to both files unguarded). Added a `space-sync` check that mirrors
-  the scale by **name and value**, bidirectionally (incl. underscore half-steps
-  like `--space-1_5`). (Full single-source generation of `tokens.json` from the
-  CSS remains a larger follow-up — the value bridge is non-trivial.)
-
-Additive — spacing scale densified + spacing fully tokenized:
-
-- **Densified the spacing scale** with half-steps (`_5`, à la Tailwind 2.5/3.5)
-  and three larger steps — added `--space-1_5`/`2_5`/`3_5`/`4_5`/`5_5`/`6_5`
-  (6/10/14/20/28/40px) and `--space-8`/`9`/`10` (56/64/80px). Existing
-  `--space-1…7` values are unchanged (non-breaking). Mirrored into
-  `tokens.json` + regenerated the Figma export.
-- **Tokenized box-model spacing in `kits/*.css`** — raw px in
-  padding/margin/gap now references `--space-*` (script:
-  `scripts/snap-spacing.mjs`). Exact matches are unchanged visually; off-scale
-  values (18/9/11/7/5/13/22/26…px) were **snapped to the nearest step, ties
-  rounding up**, a deliberate spacing-rhythm tightening. Borders, box-shadows,
-  transforms, dimensions, radii and 1–2px optical nudges were left untouched.
-  Net effect is a slightly roomier, on-scale rhythm; visual baselines
-  recaptured. The intentional control-density tokens
-  (`--ctl/--btn/--row/--cell-pad`) are unchanged.
-- **Positioning offsets stay literal px.** `top`/`right`/`bottom`/`left`/`inset*`
-  are placement/geometry, not rhythm — an earlier pass tokenized them, which
-  shifted absolutely positioned glyphs (the checkbox checkmark, `.split .resizer`
-  bar, `.toast-host` corners). Reverted all 53 to their exact original px and
-  excluded these properties from the tokenizer.
-
-Fixes:
-
 - **Alerts/banners/empty-states no longer butt against neighbouring elements.**
   The self-spacing rule only added margin between *consecutive* notices
   (`.alert + .alert`), so a lone alert dropped next to a heading or paragraph
   still collapsed against it. The notice blocks now carry their own
   `margin-block` (margins collapse, so stacked notices still read as one gap),
   neutralized inside the layout primitives + `.demo` wrapper so wrapping never
-  double-spaces.
+  double-spaces. Extended to the full **notice/feedback block** family —
+  `.alert`, `.banner`, `.empty` (App kit) and `.bill-banner` (Billing kit) —
+  since these are emitted standalone and were collapsing when stacked bare.
+  Scoped to free-standing surfaces only: row/list families that ship inside a
+  dedicated gap container (`.upload-row`/`.upload-list`, `.msg`/`.thread`, etc.)
+  are intentionally excluded to avoid double-spacing, as are `.prose .callout`
+  (already spaced by `.prose > * + *`).
+- Bare stacked card surfaces (`.card`, `.feature-card`, `.plan`, `.pack`) no
+  longer collapse together. Added a `:is(...) + :is(...)` owl rule adding
+  `--space-4` top margin (matching `.l-stack`'s default gap) between adjacent
+  card surfaces, neutralized inside `.l-stack`/`.l-grid`/`.l-row` so wrapping
+  never double-spaces. `.l-stack`/`.l-grid` remain the preferred path; this is a
+  safety net for hand- or AI-authored markup. See `docs/layout.md` → Stacked
+  surfaces.
 - **`.auth .btn` no longer defaults to full width.** It was the only `.btn` in
   any kit that set `width:100%` by default; now it's `inline-flex` and full-width
   is contextual (`.auth form .btn`, `.auth .oauth .btn` — the narrow form + the
@@ -288,6 +277,11 @@ Fixes:
   decoration and break if removed: the conic progress ring, the volume-slider
   fill, the swatch/sold-out diagonal, the `.grid-overlay` line texture, and the
   skeleton-shimmer animation.
+- Removed coloured left-accent border stripes in favour of the repo's
+  established pattern (full subtle tint + coloured title/filled-pill active
+  state): content `.callout` (note/tip/warn) and the docs sidebar/TOC active
+  states. Tinted chip/title text now mixes toward `--text` via `color-mix` so it
+  clears AA contrast in both themes.
 - **Direction toggle icon now reflects state.** `[data-dir-toggle]` showed a
   static, ambiguous swap glyph (`fa-right-left`); it now mirrors the theme
   toggle's sun/moon pattern — `fa-align-left` in LTR, `fa-align-right` in RTL —
@@ -313,7 +307,6 @@ Fixes:
   pane — so the handle was ignored and the detail pane wrapped to a second row.
   Switched `.split` to `display:flex` (`.split-list` `flex:0 0 240px`,
   `.split-detail` `flex:1`; mobile stacks via `flex-direction:column`).
-
 - **Article layout spine was misaligned.** `.doc-layout` (content kit) used a
   `1fr 220px` grid, so the prose sat in the left column ~130px left-of-centre
   while the article head, hero, and footer were all centred — the body jutted
@@ -324,9 +317,48 @@ Fixes:
   remains the docs kit's job (`.doc-shell`); `.toc` is unchanged there. Added
   `demo/content/article.html` to the a11y + visual harnesses (it was uncovered,
   which is why this slipped through).
+- Content `.prose h1` was unstyled (browser default). Added the display-face
+  title treatment (`clamp(1.9–2.4rem)`, `--display`, tight tracking,
+  `margin-top:0`) so article/help-article titles read as the top of the
+  hierarchy. Affects every prose article (Content + Docs kits).
+- Tokenized a stray `margin-bottom:18px` literal on the auth `.form-msg` banner
+  (`auth.css`) to `var(--space-4)` — off-scale px snapped to the spacing scale,
+  per the tokens-are-the-source-of-truth rule.
 
-Demos:
+### Demos & harness (not shipped to npm)
 
+- **Unified demo navigation** (`demo/demo-nav.js`). Every demo page previously
+  had its own ad-hoc header (no consistent "home", brand pointing at different
+  places, kits siloed). One injected top bar now gives every page the same
+  chrome — *All demos* (home), a kit switcher, the current kit's pages, and a
+  theme toggle — above each kit's own header. Single-source (one script +
+  manifest); self-styled with tokens; spans grid/flex-bodied layouts (auth) and
+  sits below kit overlays. Also fixed a broken `content/blog.html` footer link
+  (`site.html` → `../site/landing.html`). The bar also carries a
+  **brand-theme picker** — swap any example brand (qazana/aurora/vermeil/
+  nocturne/cedar) onto any demo page (swaps the `theme.css` override, lazy-loads
+  non-self-hosted display fonts, applies the brand's scheme, persists across
+  pages). Suppressed on `themes/index.html` (its own switcher).
+- **Example themes** (`demo/themes/`, demo-only): **cedar** — a fictional brand
+  deliberately designed *against* generated-UI tells: Bricolage Grotesque
+  display, a committed pine-green dominant + a sharp brass accent, on the warm
+  cream scheme; **Material** — models Material 3 (tonal-purple primary, mauve
+  tertiary, Roboto, 12px radius, dual-layer elevation shadows, light-oriented);
+  **stage** — a theming-range study recreating a stage-timer SaaS from its live
+  compiled CSS and computed styles (home + pricing): white page, Tailwind
+  neutral ink, emerald-600 product buttons with emerald-700 emphasis, teal-700
+  accent, 4px controls / 12px cards, their static type ladder (48/48 h1,
+  untracked, Inter 300 marketing copy), Inter + IBM Plex Mono, Tailwind
+  elevation — documents exactly where tokens stop and component overrides start
+  (button/h2 weight, hero metrics) and demonstrates the scoped-token
+  `.band-invert` pattern for inverted sections. All registered in the brand
+  picker and theme switcher.
+- **Survey / questionnaire use case** (`demo/app/survey.html`) — a multi-step
+  questionnaire showing how to *compose* existing primitives (no new component):
+  the `[data-wizard]` stepper drives the flow; questions use `.choice` radios
+  (single-select), `.choice` checkboxes (multi-select), an inline Likert scale
+  built from `.choice.inline` radios, and a text field. Added to the demo index
+  and the a11y + visual-regression harnesses.
 - **`strata.html` kit gallery + stat-band.** The kit gallery reused the shared
   square `.work` portfolio tile (`aspect-ratio:4/3` → too tall, ~270px); gave
   strata a page-scoped compact tile instead (auto height ~123px, left-aligned
@@ -340,92 +372,35 @@ Demos:
   — a uniform wordmark instead of the templated coloured-final-letter tell. Also
   completed the admin sidebar logo's empty `.word-txt` (`azana`) so it reads
   "Qazana" in HTML (collapsing to the "Q" monogram), no JS needed.
-- **New example theme `cedar`** (`demo/themes/cedar.css`) — a fictional demo
-  brand deliberately designed *against* generated-UI tells: Bricolage Grotesque
-  display (not Inter/Roboto/Space Grotesk), a committed pine-green dominant + a
-  sharp brass accent (not violet gradients / SaaS-blue / mint / timid pastels),
-  on the warm cream scheme. One `:root` override; wired into the theme switcher.
-- **Survey / questionnaire use case** (`demo/app/survey.html`) — a multi-step
-  questionnaire showing how to *compose* existing primitives (no new component):
-  the `[data-wizard]` stepper drives the flow; questions use `.choice` radios
-  (single-select), `.choice` checkboxes (multi-select), an inline Likert scale
-  built from `.choice.inline` radios, and a text field. Added to the demo index
-  and the a11y + visual-regression harnesses.
-- **Unified demo navigation** (`demo/demo-nav.js`, demo-only — not in the
-  published package). Every demo page previously had its own ad-hoc header (no
-  consistent "home", brand pointing at different places, kits siloed). One
-  injected top bar now gives every page the same chrome — *All demos* (home),
-  a kit switcher, the current kit's pages, and a theme toggle — above each kit's
-  own header. Single-source (one script + manifest); self-styled with tokens;
-  spans grid/flex-bodied layouts (auth) and sits below kit overlays. Also fixed
-  a broken `content/blog.html` footer link (`site.html` → `../site/landing.html`).
-  The bar also carries a **brand-theme picker** — swap any example brand
-  (qazana/aurora/vermeil/nocturne/cedar) onto any demo page (swaps the `theme.css`
-  override, lazy-loads non-self-hosted display fonts, applies the brand's scheme,
-  persists across pages). Suppressed on `themes/index.html` (its own switcher).
+- **Harness:** new checks for `min="0"` steppers (doubling as the `QZ.init`
+  idempotency probe), the persist sensitive-name guard, `QZ.init` on post-load
+  markup, rating keyboard operation, and the picker keyboard path. The visual
+  harness freezes the page clock (calendars follow the real date now) and the
+  baseline was recaptured — the old one had drifted from the committed demos.
 
-Additive — three new kits since 0.0.1:
+### Internal (no API/output change)
 
-- **Billing kit** (`@qazana/strata/billing`, scope `.billing`) — in-product
-  subscription surfaces, themed by the same tokens: current-plan summary
-  (+ trial), plan switcher with a monthly/annual cycle toggle and inline
-  proration confirm, invoice history with five status states (paid / open /
-  past-due / refunded / void), saved-state payment-method cards, metered usage →
-  cost with an over-limit upgrade nudge, a dunning (failed-payment) banner, seat
-  management, and a retention-framed cancel modal. Money is always static markup
-  — no currency math or `Intl`. One new vanilla controller `[data-billing-cycle]`
-  (monthly/annual radiogroup flipping `data-cycle`); cancel reuses
-  `[data-modal-open]`, seats reuse `[data-stepper]`. No payment processing,
-  provider SDK/iframe, card validation, or plan/feature copy — those stay in the
-  consuming app.
-- **Docs kit** (`@qazana/strata/docs`, scope `.docs`) — documentation surface
-  that **pairs with the Content kit** (load `content.css + docs.css`): a 3-column
-  doc shell (collapsible sidebar nav, prose, TOC), stacked API-reference blocks
-  (verb badges, params tables, request/response samples), a version/locale
-  switcher, prev/next pager, and a help-center landing (search hero, category
-  grid, popular articles, breadcrumb, "was this helpful?", related articles).
-  Zero new behavior JS — sidebar nesting is native `<details>`, the TOC reuses
-  `[data-toc]` scrollspy, search is a provider hook (Algolia/Pagefind). Also
-  linked the previously-missing **Commerce** kit in the docs-site sidebar.
-- **Support kit** (`@qazana/strata/support`, scope `.support`) — helpdesk
-  surface, standalone on base.css: a contact/ticket form (base form controls)
-  with attachment dropzone and confirmation state; a ticket-list table with
-  status badges (open/pending/solved/closed) and priority dots; and a
-  ticket-detail view with a conversation thread of stacked message cards
-  (customer / agent / internal-note), a reply composer, and a canned-reply
-  (macro) picker. Zero new behavior JS (macro picker is native `<details>`;
-  status/priority are CSS-only). No SLA timers, agent routing, live send, or
-  ticketing backend.
-
-Fixes / refinements (no API changes):
-
-- Removed coloured left-accent border stripes in favour of the repo's
-  established pattern (full subtle tint + coloured title/filled-pill active
-  state): content `.callout` (note/tip/warn) and the docs sidebar/TOC active
-  states. Tinted chip/title text now mixes toward `--text` via `color-mix` so it
-  clears AA contrast in both themes.
-- Content `.prose h1` was unstyled (browser default). Added the display-face
-  title treatment (`clamp(1.9–2.4rem)`, `--display`, tight tracking,
-  `margin-top:0`) so article/help-article titles read as the top of the
-  hierarchy. Affects every prose article (Content + Docs kits).
-- Bare stacked card surfaces (`.card`, `.feature-card`, `.plan`, `.pack`) no
-  longer collapse together. Added a `:is(...) + :is(...)` owl rule adding
-  `--space-4` top margin (matching `.l-stack`'s default gap) between adjacent
-  card surfaces, neutralized inside `.l-stack`/`.l-grid`/`.l-row` so wrapping
-  never double-spaces. `.l-stack`/`.l-grid` remain the preferred path; this is a
-  safety net for hand- or AI-authored markup. See `docs/layout.md` → Stacked
-  surfaces.
-- Extended the same self-spacing safety net to the **notice/feedback block**
-  family — `.alert`, `.banner`, `.empty` (App kit) and `.bill-banner` (Billing
-  kit) — since these are emitted standalone and were collapsing when stacked
-  bare. Neutralized inside the layout primitives plus the `.demo` gallery
-  wrapper. Scoped to free-standing surfaces only: row/list families that ship
-  inside a dedicated gap container (`.upload-row`/`.upload-list`, `.msg`/
-  `.thread`, etc.) are intentionally excluded to avoid double-spacing, as are
-  `.prose .callout` (already spaced by `.prose > * + *`).
-- Tokenized a stray `margin-bottom:18px` literal on the auth `.form-msg` banner
-  (`auth.css`) to `var(--space-4)` — off-scale px snapped to the spacing scale,
-  per the tokens-are-the-source-of-truth rule.
+- **Shared month-grid model.** The date maths (days-in-month, Monday-first first
+  weekday, month roll, grid cells) was copied across the date picker, inline
+  calendar, and date-range behaviors in `js/qazana.js`. Extracted to one pure
+  `QZcal` model; the three behaviors are now adapters that render its cells and
+  keep only their own selection/header. Date maths is now unit-tested directly
+  (`harness/behaviors-forms.mjs` → "month-grid (QZcal)") rather than only through
+  DOM clicks; rendered output is unchanged.
+- **Shared harness runtime + page manifest.** The throwaway static server + MIME
+  map was copied verbatim across seven harness files; three `PAGES` lists had
+  diverged (which is how `app/survey` got into the a11y + visual gates but not
+  the screenshot sweep). Extracted `harness/_serve.mjs` (one `makeServer`) and
+  `harness/_pages.mjs` (one tagged manifest; `a11y`/`visual`/`shoot` derive their
+  lists via `pagesFor(tag)`). Adding a demo is now one tagged row. Verified the
+  derived lists reproduce all three originals exactly before switching over.
+- **Token drift guard extended to the space scale.** The contract test only
+  enforced colour-group sync between `qazana.tokens.css` and `tokens.json`, so
+  space/radius/type could drift silently (nine space tokens were recently
+  hand-added to both files unguarded). Added a `space-sync` check that mirrors
+  the scale by **name and value**, bidirectionally (incl. underscore half-steps
+  like `--space-1_5`). (Full single-source generation of `tokens.json` from the
+  CSS remains a larger follow-up — the value bridge is non-trivial.)
 
 ## 0.0.1 — 2026-06-12
 

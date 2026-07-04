@@ -258,10 +258,10 @@ deprecating, or removing any public surface.
 Existing consumers should use the upgrade guide:
 [docs/UPGRADING.md](docs/UPGRADING.md).
 
-For the `1.0.0-rc.1` release candidate:
+To move to `1.0.0`:
 
 ```bash
-npm install @qazana/strata@1.0.0-rc.1
+npm install @qazana/strata@^1.0.0
 ```
 
 Vendored static sites should refresh their checked-in copy after upgrading:
