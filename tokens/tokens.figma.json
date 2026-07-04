@@ -418,6 +418,14 @@
       "lg": {
         "value": "0 12px 30px -16px rgba(0,0,0,0.45)",
         "type": "boxShadow"
+      },
+      "pop": {
+        "value": "0 16px 40px -12px rgba(0,0,0,0.7)",
+        "type": "boxShadow"
+      },
+      "sheet": {
+        "value": "0 0 50px rgba(0,0,0,0.6)",
+        "type": "boxShadow"
       }
     },
     "motion": {

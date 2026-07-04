@@ -6,6 +6,84 @@ change.
 
 ## Unreleased
 
+### Major
+
+- **`.albumart` renamed to `.cover`** (`.xs/.sm/.md/.lg/.xl` sizes unchanged).
+  The old name was music-product vocabulary and violated the no-domain-components
+  rule; `.cover` is the generic cover-thumbnail primitive (album/book/course
+  art). Never published to npm under the old name, but breaking for anyone
+  consuming `release/1.0.0-rc` from git. Contract: stable class renamed before
+  the 1.0.0 surface freezes.
+
+### Minor
+
+- **Public `window.QZ` namespace with `QZ.init(root?)`.** Setup-style behaviors
+  now register in a shared registry; `QZ.init(subtree)` binds behaviors to
+  markup rendered after load (SPA mounts, HTMX swaps) and is idempotent — an
+  element binds to a behavior once, however often init runs. Shared helpers are
+  aliased (`QZ.store/i18n/scroll/q/ready/cal`); the historical globals
+  (`QZstore`, `QZi18n`, …) keep working. Contract: stable API addition,
+  documented in `docs/API_CONTRACT.md`.
+- **Keyboard + ARIA across previously pointer-only components.** Date picker,
+  inline calendar, and date-range day cells are keyboard-operable (roving
+  tabindex, arrow/Home/End movement, Enter/Space select, labelled cells); the
+  picker closes on Escape and restores focus. Rating stars and color-picker
+  swatches are arrow-key radiogroups. Toggle-group buttons expose
+  `aria-pressed`. Tree rows get `role=treeitem` + `aria-selected` (+
+  `aria-expanded` mirrored onto the row); `.tree-children` get `role=group`.
+  Tabs gain `aria-controls`, `role=tabpanel`, and `aria-labelledby`. The
+  command palette traps Tab; the modal trap recaptures focus that escaped the
+  dialog; popovers restore focus to their trigger on Escape/close; the admin
+  sidebar toggle exposes `aria-expanded`. Contract: stable a11y additions.
+- **Elevation tokens `--shadow-pop` (menus/popovers) and `--shadow-sheet`
+  (side sheets)** replace the hand-rolled popover/sheet shadows; values are
+  unchanged, scheme-invariant for now. Added to `tokens.json` + Figma export.
+
+### Patch
+
+- **Fixed undefined token `--on-green`** on date-range endpoint cells → the ink
+  is `var(--on-primary)` again instead of silently inheriting.
+- **Calendars default to today.** The date picker, inline calendar, and date
+  range no longer open on a hardcoded June 2026 with the 9th pre-selected; the
+  picker parses an existing `YYYY-MM-DD` input value as its selection.
+- **`[data-stepper]` honors `min="0"`** (and value 0) — bounds no longer fall
+  back to 1 through `||`-defaulting.
+- **`[data-persist]` blocks concatenated sensitive names** (`creditcard`,
+  `mypassword`, `ssntaxid`, …) via an unambiguous-substring guard on top of the
+  token match; `shipping`/`passenger`/`discard` still persist fine.
+- **Tooltips preserve a trigger's own `aria-describedby`** — the engine now
+  appends/removes its id as a token instead of overwriting the attribute.
+- **Token discipline sweep, render-identical:** `border-radius:99px` →
+  `var(--radius-pill)` (36×), `6px` → `var(--radius-sm)`, bare `.2s` transitions
+  → `var(--dur-2)`, near-scale font sizes and `.04em` tracking snapped to
+  tokens, comma-form `rgba()` → channel form.
+- Combobox/date-picker/context-menu outside-click listeners are shared
+  (one per document, not one per instance); the drag-reorder drop index ignores
+  the injected live region; select-all tolerates checkboxes outside `<tr>`;
+  `[data-relative-time]`'s minute tick stops when no tracked element remains;
+  heatmap demo fill is deterministic (no per-render jitter).
+- **Docs/packaging:** removed the dangling `HANDOFF.md` references from the
+  README; `docs/` now ships in the npm tarball so the contract/upgrade links
+  resolve; `docs/figma.md` names `scripts/figma-tokens.mjs`; `tokens.json`
+  documents which token families are intentionally CSS-only.
+- **Demo: "stage" example theme** (`demo/themes/stage.css`, wired
+  into the theme picker + demo bar). A theming-range study recreating
+  a stage-timer SaaS from its live compiled CSS and computed styles (home +
+  pricing): white page, Tailwind neutral ink, emerald-600 product buttons with
+  emerald-700 emphasis, teal-700 accent, 4px controls / 12px cards, their
+  static type ladder (48/48 h1, untracked, Inter 300 marketing copy), Inter +
+  IBM Plex Mono, Tailwind elevation. Documents exactly where tokens stop and
+  component overrides start (button/h2 weight, hero metrics) and demonstrates
+  the scoped-token `.band-invert` pattern for inverted sections. Demo-only,
+  not shipped to npm.
+- **Harness:** new checks for `min="0"` steppers (doubling as the `QZ.init`
+  idempotency probe), the persist sensitive-name guard, `QZ.init` on post-load
+  markup, rating keyboard operation, and the picker keyboard path. The visual
+  harness freezes the page clock (calendars follow the real date now) and the
+  baseline was recaptured — the old one had drifted from the committed demos.
+
+## 1.0.0-rc.1 — 2026-06-26
+
 ### Documentation
 
 - **Public API contract.** Added `docs/API_CONTRACT.md` to define Strata's
@@ -22,6 +100,9 @@ change.
 - **Consumer integration checklist.** Added load-order, version-pinning,
   cascade-safety, and public-surface guidance for downstream apps. Contract:
   stable guidance addition.
+- **Upgrade guide.** Added `docs/UPGRADING.md` with the `1.0.0-rc.1` install
+  path, vendored static-site flow, stack notes, compatibility notes, verification
+  checklist, and rollback instructions. Contract: stable guidance addition.
 
 ### Minor
 

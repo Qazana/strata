@@ -20,8 +20,8 @@
 .media .pcontrols{position:absolute;inset-inline-start:0;inset-inline-end:0;bottom:0;z-index:2;display:flex;align-items:center;gap:var(--space-3);padding:var(--space-5) var(--space-3_5) var(--space-3);color:#fff;
   background:linear-gradient(to top,rgb(0 0 0 / .72),rgb(0 0 0 / 0))}   /* scrim: white chrome stays legible over any video / theme */
 .media .pcontrols .ico{opacity:.9}
-.media .ptrack{flex:1;height:4px;border-radius:99px;background:rgb(255 255 255 / .3);position:relative}
-.media .ptrack i{position:absolute;inset-block:0;inset-inline-start:0;width:38%;background:var(--primary);border-radius:99px}
+.media .ptrack{flex:1;height:4px;border-radius:var(--radius-pill);background:rgb(255 255 255 / .3);position:relative}
+.media .ptrack i{position:absolute;inset-block:0;inset-inline-start:0;width:38%;background:var(--primary);border-radius:var(--radius-pill)}
 .media .ptime{font-family:var(--mono);font-size:var(--text-xs);opacity:.9}
 .media .duration{position:absolute;bottom:8px;inset-inline-end:8px;z-index:2;background:rgb(0 0 0 / .72);color:#fff;
   font-family:var(--mono);font-size:var(--text-xs);padding:2px var(--space-2);border-radius:5px}
@@ -79,13 +79,13 @@
 
 /* progress row primitives — shared by .audio, .audio-lg and .player-bar */
 .media .awrap{display:flex;align-items:center;gap:var(--space-2_5)}
-.media .atrack{flex:1;height:4px;border-radius:99px;background:var(--surface-2);position:relative}
-.media .atrack i{position:absolute;inset-block:0;inset-inline-start:0;width:30%;background:var(--primary);border-radius:99px}
+.media .atrack{flex:1;height:4px;border-radius:var(--radius-pill);background:var(--surface-2);position:relative}
+.media .atrack i{position:absolute;inset-block:0;inset-inline-start:0;width:30%;background:var(--primary);border-radius:var(--radius-pill)}
 .media .atime{font-family:var(--mono);font-size:var(--text-xs);color:var(--muted)}
 
 /* ---- waveform progress (drop-in alternative to .atrack) ---- */
 .media .wave{flex:1;display:flex;align-items:center;gap:2px;height:28px}
-.media .wave i{flex:1;min-width:2px;border-radius:99px;background:var(--surface-2);height:30%;transition:background var(--dur-1)}
+.media .wave i{flex:1;min-width:2px;border-radius:var(--radius-pill);background:var(--surface-2);height:30%;transition:background var(--dur-1)}
 .media .wave i.on{background:var(--primary)}
 
 /* ---- large player (episode page / featured) ---- */
@@ -109,7 +109,7 @@
 
 /* ---- volume (native range, themed) ---- */
 .media .avol{display:inline-flex;align-items:center;gap:var(--space-2);color:var(--muted)}
-.media .avol input[type="range"]{appearance:none;-webkit-appearance:none;width:90px;height:4px;border-radius:99px;
+.media .avol input[type="range"]{appearance:none;-webkit-appearance:none;width:90px;height:4px;border-radius:var(--radius-pill);
   background:linear-gradient(to right,var(--primary) var(--vol,70%),var(--surface-2) var(--vol,70%));cursor:pointer;outline-offset:4px}
 .media .avol input[type="range"]::-webkit-slider-thumb{appearance:none;-webkit-appearance:none;width:14px;height:14px;border-radius:50%;
   background:var(--primary);border:2px solid var(--surface)}

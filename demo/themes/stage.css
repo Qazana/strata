@@ -1,0 +1,134 @@
+/* "Stage" — example theme for the public demo, recreating the design
+   language of a stage-timer SaaS (sampled from the live site's compiled CSS +
+   computed styles across the home and pricing pages, 2026-07). A theming-range
+   study: how far one :root token block pushes Strata toward an existing
+   product's look, and exactly where component overrides have to take over.
+
+   The look: pure-white page, Tailwind *neutral* ink ramp, emerald-600 product
+   buttons (#059669 — every pricing CTA; the home hero's darker #047857 serves
+   as hover/emphasis), teal-700 secondary accent, blue-600 info, 4px control
+   corners with 12px cards on Tailwind shadow-lg, Inter everywhere at LIGHT
+   marketing weights (h1 48/48 semibold, untracked; lead copy Inter 300),
+   IBM Plex Mono for timer digits, deep #121119 / slate-800 inverted bands.
+   Inter is normally an AI-tell we avoid (see cedar.css) — here it IS the
+   brand being recreated.
+
+   AA note: white-on-#059669 is ~3.6:1 — the source product's own pairing, kept for
+   fidelity since this is a recreation study. A real product would darken the
+   fill or the ink; don't copy this pairing into an accessibility-gated page.
+
+   Made for the LIGHT scheme: a `:root` override beats both scheme blocks, so
+   the surfaces below pin the source product's stark white regardless of the toggle.
+   Inter + IBM Plex Mono load via the demo's Google Fonts link; a consuming
+   product should self-host WOFF2 with metric fallbacks like the tokens file.
+
+   DEEPER THAN TOKENS — what the token block could NOT reach:
+   1. .btn hardcodes font-weight:600; the source product buttons are 500. Re-declared
+      below (this file is unlayered, so it beats the kits' @layer qazana).
+   2. Their h1 is 600 but their h2 is 700 — Strata drives both from
+      --weight-black, so one of the two needs a component line (.t-h2 below);
+      .site .hero-title additionally hardcodes 800/-.035em in the kit.
+   3. Inverted dark bands are a SECTION concern — solved WITH tokens anyway:
+      .band-invert re-scopes the token set on a subtree and every Strata
+      component inside re-tints for free.
+   4. Decorative marketing flourishes — the hero's mint→orange gradient wash,
+      the green title underline, the tilted photo collage — are per-section
+      art a consuming site adds itself; no design token expresses them.
+   5. The fullscreen timer (giant mono digits) is the source product DOMAIN territory
+      — that component belongs in the consuming product, never in Strata. */
+:root{
+  color-scheme:light;
+  --font-smooth:auto;
+
+  /* ---- neutrals: stark white page, Tailwind neutral ink ramp ---- */
+  --bg:#ffffff;
+  --surface:#ffffff;            /* cards float on white via elevation */
+  --surface-2:#f5f5f5;          /* neutral-100 — bands + their ghost buttons */
+  --surface-3:#ffffff;
+  --surface-sunken:#fafafa;     /* neutral-50 */
+  --surface-active:#f5f5f5;
+  --skeleton:#e5e5e5;           /* neutral-200 */
+  --border-rgb:23 23 23;        /* neutral ink channel → --line ≈ gray-200 */
+  --text:#171717;               /* neutral-900 — headings */
+  --text-2:#404040;             /* neutral-700 — body copy */
+  --muted:#737373;              /* neutral-500 */
+
+  /* ---- brand + semantic ---- */
+  --primary:#059669;         --primary-rgb:5 150 105;      /* emerald-600 — THE product button green (pricing CTAs, Accept) */
+  --primary-bright:#047857;  --primary-bright-rgb:4 120 87; /* emerald-700 — their hero CTA; reads as hover/emphasis on white */
+  --on-primary:#ffffff;                                     /* their pairing — see AA note above */
+  --danger:#dc2626;          --danger-rgb:220 38 38;       /* red-600 */
+  --warning:#b45309;         --warning-rgb:180 83 9;       /* they use amber-600 decoratively; -700 holds AA as text */
+  --info:#2563eb;            --info-rgb:37 99 235;         /* blue-600 — their docs/link blue */
+  --accent:#0f766e;          --accent-rgb:15 118 110;      /* teal-700 — their secondary accent */
+  --on-danger:#fff; --on-warning:#fff; --on-info:#fff; --on-accent:#fff;
+
+  /* ---- geometry: their controls are 4px ("rounded"), cards 12px
+     ("rounded-xl") — so the radius knob and the lg step part company ---- */
+  --radius:4px;
+  --radius-sm:4px;
+  --radius-lg:12px;
+
+  /* ---- elevation: Tailwind shadow / shadow-lg / shadow-xl on white ---- */
+  --shadow-sm:0 1px 3px 0 rgb(0 0 0 / .1);
+  --shadow:0 10px 15px -3px rgb(0 0 0 / .1);
+  --shadow-lg:0 20px 25px -5px rgb(0 0 0 / .1);
+
+  /* ---- controls: 16px text in 40px buttons (8px/24px padding) ---- */
+  --ctl-font:1rem;
+  --btn-pad-y:8px; --btn-pad-x:24px;
+
+  /* ---- type ladder: their scale is STATIC Tailwind steps — no fluid clamp,
+     no negative tracking, roomy-but-tight leading. Sampled: h1 48/48 · 600,
+     h2 30/36 · 700, h3 24/32 · 600, body 16/24, small 14/20. ---- */
+  --fs-display:3rem;            /* their largest heading is 48px */
+  --fs-h1:3rem;
+  --fs-h2:1.875rem;             /* 30px */
+  --fs-h3:1.5rem;               /* 24px */
+  --fs-h4:1.25rem;              /* 20px */
+  --leading-tight:1.2;          /* h2 30/36; the 48/48 h1 case is handled below */
+  --tracking-tight:0;           /* all their headings are untracked */
+  --tracking-tighter:0;
+  --weight-black:600;           /* their h1/display weight; h2 corrected below */
+  --weight-regular:300;         /* marketing copy is Inter LIGHT */
+
+  /* ---- type: Inter carries display AND body (display face == body face is
+     part of the look); IBM Plex Mono is the data/timer face ---- */
+  --display:'Inter',ui-sans-serif,system-ui,sans-serif;
+  --body:'Inter',ui-sans-serif,system-ui,sans-serif;
+  --mono:'IBM Plex Mono',ui-monospace,'SFMono-Regular',Menlo,Consolas,monospace;
+}
+
+/* ---- deeper than tokens #1/#2 — component typography the kits hardcode ---- */
+.btn{font-weight:500}                                        /* theirs: 500 (Accept/ghost 400) */
+.t-h2{font-weight:700}                                       /* h1 600 but h2 700 — one token can't say both */
+.site .hero-title{font-weight:600;letter-spacing:0;line-height:1}  /* their h1: 48/48, untracked */
+/* the theme picker's own specimen headline hardcodes 800 — re-point it at the
+   token so the preview tells the truth (:root wins the specificity tie) */
+:root .type-display{font-weight:var(--weight-black)}
+
+/* ---- deeper than tokens #3 — inverted feature band, solved WITH tokens.
+   Wrap any section in .band-invert and the whole token set re-scopes: cards,
+   badges and buttons inside re-tint with zero per-component CSS. ---- */
+.band-invert{
+  color-scheme:dark;
+  --bg:#121119;                 /* their dark section background (app shell leans #1f1716) */
+  --surface:#1e293b;            /* slate-800 — their dark panels + dark buttons */
+  --surface-2:#283548;
+  --surface-3:#1e293b;
+  --surface-sunken:#0d0c13;
+  --surface-active:#243044;
+  --skeleton:#334155;
+  --border-rgb:255 255 255;
+  --text:#ffffff;
+  --text-2:#94a3b8;             /* slate-400 — their dark-section body text */
+  --muted:#64748b;              /* slate-500 */
+  --primary:#10b981;         --primary-rgb:16 185 129;   /* emerald-500 pops on dark (their gradients run 500→300) */
+  --primary-bright:#6ee7b7;  --primary-bright-rgb:110 231 183; /* emerald-300 */
+  --on-primary:#022c22;
+  --shadow-sm:0 2px 6px -3px rgb(0 0 0 / .35);
+  --shadow:0 6px 18px -10px rgb(0 0 0 / .4);
+  --shadow-lg:0 12px 30px -16px rgb(0 0 0 / .45);
+  background:var(--bg);
+  color:var(--text);
+}

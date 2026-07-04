@@ -26,6 +26,7 @@ dark scheme and a warm-cream "Désert Dunes" light scheme.
 - [Theming & schemes](#theming--schemes)
 - [Tokens](#tokens)
 - [Public contract](#public-contract)
+- [Upgrading existing apps](#upgrading-existing-apps)
 - [Consuming per stack](#consuming-per-stack)
 - [Demos](#demos)
 - [Render harness](#render-harness)
@@ -52,6 +53,9 @@ A vanilla page — load the tokens, a kit, and the behaviour layer:
 ```
 
 Markup uses plain classes + `data-*` hooks; `qazana.js` auto-initialises on load.
+Markup rendered *after* load (a React/Ember mount, an HTMX swap) gets behavior by
+calling `QZ.init(subtree)` — or `QZ.init()` for the whole document. Init is
+idempotent, so calling it again never double-binds.
 The tokens set `color-scheme` per theme, so native controls match automatically —
 no extra setup.
 
@@ -123,7 +127,6 @@ harness/
   shoot.mjs           Playwright render harness (screenshots + probes)
 DESIGN.md             design system: thesis, type, colour, motion, anti-slop principles
 CLAUDE.md             maintenance contract (token discipline, no domain code, a11y)
-HANDOFF.md            design → dev handoff notes
 ```
 
 **Cascade:** each kit's rules are wrapped in `@layer qazana`, so a consuming
@@ -250,6 +253,24 @@ a versioned API, not a bundle of copyable snippets.
 See [docs/API_CONTRACT.md](docs/API_CONTRACT.md) before adding, renaming,
 deprecating, or removing any public surface.
 
+## Upgrading existing apps
+
+Existing consumers should use the upgrade guide:
+[docs/UPGRADING.md](docs/UPGRADING.md).
+
+For the `1.0.0-rc.1` release candidate:
+
+```bash
+npm install @qazana/strata@1.0.0-rc.1
+```
+
+Vendored static sites should refresh their checked-in copy after upgrading:
+
+```bash
+npm install
+npm run sync-strata
+```
+
 ## Consuming per stack
 
 ### Vanilla / any stack
@@ -365,5 +386,4 @@ Add it to the harness `SCHEMES` list so it's screenshot + contrast-checked too.
 - Keep `tokens/tokens.json` in sync with `tokens/qazana.tokens.css`.
 - Update the relevant `demo/` and `docs/` when you change a component.
 - **`CLAUDE.md`** is the maintenance contract (token discipline, semantic naming,
-  no domain-specific components, accessibility + reduced-motion). **`HANDOFF.md`**
-  covers design → dev.
+  no domain-specific components, accessibility + reduced-motion).

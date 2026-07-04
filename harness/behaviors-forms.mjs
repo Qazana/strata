@@ -385,6 +385,114 @@ const CHECKS = [
     },
   },
 
+  {
+    // [data-stepper] with min="0": 0 is a legal bound and must not fall back to 1.
+    // Also the QZ.init idempotency probe: init runs twice, one click still steps once.
+    name: 'stepper-zero',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const r = await page.evaluate(() => {
+        const d = document.createElement('div');
+        d.setAttribute('data-stepper', '');
+        d.innerHTML = '<button type="button" data-dec aria-label="Decrease">-</button>'
+          + '<input type="number" min="0" max="5" value="0">'
+          + '<button type="button" data-inc aria-label="Increase">+</button>';
+        document.body.appendChild(d);
+        window.QZ.init(d);
+        window.QZ.init(d);                      // second pass must not double-bind
+        const inp = d.querySelector('input'), dec = d.querySelector('[data-dec]'), inc = d.querySelector('[data-inc]');
+        const startVal = inp.value, decDisabledAtZero = dec.disabled;
+        inc.click();
+        const afterOneInc = inp.value;
+        dec.click();
+        const backAtZero = inp.value, decDisabledAgain = dec.disabled;
+        d.remove();
+        return { startVal, decDisabledAtZero, afterOneInc, backAtZero, decDisabledAgain };
+      });
+      t(r.startVal === '0', `min="0" stepper starts at 0, not 1 (got ${r.startVal})`);
+      t(r.decDisabledAtZero, 'dec disabled at the 0 floor');
+      t(r.afterOneInc === '1', `one inc click steps exactly once — init is idempotent (got ${r.afterOneInc})`);
+      t(r.backAtZero === '0' && r.decDisabledAgain, 'dec returns to 0 and re-disables');
+      return fails;
+    },
+  },
+  {
+    // [data-persist] sensitive-name guard: concatenated lowercase names like
+    // "creditcard" must never land in storage; "shipping" must still persist.
+    name: 'persist-sensitive',
+    url: '/demo/foundations/forms.html',
+    viewport: { width: 720, height: 1100 },
+    async run(page) {
+      const { t, fails } = checker();
+      const raw = await page.evaluate(() => {
+        const f = document.createElement('form');
+        f.setAttribute('data-persist', 'qa-sensitive');
+        f.innerHTML = '<input name="creditcard"><input name="shipping">';
+        document.body.appendChild(f);
+        window.QZ.init(f);
+        f.querySelector('[name=creditcard]').value = '4111111111111111';
+        f.querySelector('[name=shipping]').value = '12 Main St';
+        f.dispatchEvent(new Event('input', { bubbles: true }));
+        const blob = localStorage.getItem('qz:persist:qa-sensitive') || '';
+        localStorage.removeItem('qz:persist:qa-sensitive');
+        f.remove();
+        return blob;
+      });
+      t(!/4111111111111111/.test(raw), 'concatenated sensitive name (creditcard) never lands in storage');
+      t(/12 Main St/.test(raw), 'non-sensitive field (shipping) still persists');
+      return fails;
+    },
+  },
+  {
+    // QZ.init(subtree): markup rendered AFTER load gets behavior — the framework
+    // integration seam (React/Ember mounts, HTMX swaps).
+    name: 'qz-init (dynamic DOM)',
+    url: '/demo/foundations/forms.html',
+    viewport: { width: 720, height: 1100 },
+    async run(page) {
+      const { t, fails } = checker();
+      const r = await page.evaluate(() => {
+        if (!(window.QZ && window.QZ.init)) return { hasQZ: false };
+        const w = document.createElement('div');
+        w.innerHTML = '<div class="form-field"><textarea data-char-count maxlength="20"></textarea></div>';
+        document.body.appendChild(w);
+        window.QZ.init(w);
+        const ta = w.querySelector('textarea');
+        ta.value = 'hello';
+        ta.dispatchEvent(new Event('input', { bubbles: true }));
+        const text = (w.querySelector('.char-count') || { textContent: '' }).textContent;
+        w.remove();
+        return { hasQZ: true, text };
+      });
+      t(r.hasQZ, 'window.QZ.init is exposed');
+      if (!r.hasQZ) return fails;
+      t(r.text === '5 / 20', `char-count works on post-load markup after QZ.init (got "${r.text}")`);
+      return fails;
+    },
+  },
+  {
+    // rating: stars are an arrow-key radiogroup (keyboard sets the value)
+    name: 'rating-keyboard',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const r = page.locator('.rating:not(.ro)').first();
+      if (!(await r.count())) return ['no .rating in fixture'];
+      t(await r.getAttribute('role') === 'radiogroup', 'rating exposes role=radiogroup');
+      const stop = r.locator('i[tabindex="0"]').first();
+      t(await stop.count() === 1, 'one star is the roving tab stop');
+      await stop.focus();
+      await page.keyboard.press('ArrowRight');
+      const checked = r.locator('i[aria-checked="true"]');
+      t(await checked.count() === 1, 'ArrowRight selects a star (aria-checked)');
+      t(await page.evaluate(() => document.activeElement.matches('.rating i')), 'focus follows the selection');
+      return fails;
+    },
+  },
+
   // ---- month-grid model: the pure interface behind picker/calendar/daterange.
   // Tested directly (no DOM clicks) — the interface is the test surface.
   {

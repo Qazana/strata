@@ -69,7 +69,7 @@
 .support .support-sent h2{font-weight:700;font-size:var(--text-xl)}
 .support .support-sent p{color:var(--text-2);margin-top:var(--space-2)}
 .support .support-sent .ref{font-family:var(--mono);color:var(--text);background:var(--surface-2);
-  border:1px solid var(--line);border-radius:6px;padding:3px var(--space-2_5);display:inline-block;margin-top:var(--space-4)}
+  border:1px solid var(--line);border-radius:var(--radius-sm);padding:3px var(--space-2_5);display:inline-block;margin-top:var(--space-4)}
 
 /* ============================================================================
    TICKET LIST  —  table (row links to the ticket)
@@ -110,7 +110,7 @@
   background:var(--surface);overflow:hidden}
 .support .msg .m-head{display:flex;align-items:center;gap:var(--space-2_5);padding:var(--space-2_5) var(--space-3_5);border-bottom:1px solid var(--line);font-size:var(--text-sm)}
 .support .msg .m-author{font-weight:600;color:var(--text)}
-.support .msg .m-role{font-size:var(--text-2xs);text-transform:uppercase;letter-spacing:.04em;font-weight:700;
+.support .msg .m-role{font-size:var(--text-2xs);text-transform:uppercase;letter-spacing:var(--tracking-wide);font-weight:700;
   padding:2px var(--space-2);border-radius:5px;background:var(--surface-2);color:var(--text-2)}
 .support .msg.agent .m-role{background:rgb(var(--primary-rgb) / .16);color:color-mix(in srgb, var(--primary-bright) 76%, var(--text))}
 .support .msg .m-time{margin-inline-start:auto;color:var(--muted);font-family:var(--mono);font-size:var(--text-xs)}

@@ -119,8 +119,8 @@
 }
 
 /* password strength meter */
-.auth .pwbar{height:6px;border-radius:99px;background:var(--surface-2);overflow:hidden;margin-top:var(--space-2_5)}
-.auth .pwbar i{display:block;height:100%;width:0;background:var(--danger);border-radius:99px;transition:width var(--dur-2),background var(--dur-2)}
+.auth .pwbar{height:6px;border-radius:var(--radius-pill);background:var(--surface-2);overflow:hidden;margin-top:var(--space-2_5)}
+.auth .pwbar i{display:block;height:100%;width:0;background:var(--danger);border-radius:var(--radius-pill);transition:width var(--dur-2),background var(--dur-2)}
 .auth .pwbar i.weak{background:var(--danger)}
 .auth .pwbar i.fair{background:var(--warning)}
 .auth .pwbar i.good{background:var(--info)}

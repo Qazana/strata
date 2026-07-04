@@ -183,6 +183,45 @@ const CHECKS = [
     },
   },
   {
+    // Date picker, keyboard path: day cells are focusable button-role controls;
+    // arrows move the roving stop, Enter selects and closes, Escape closes.
+    name: 'picker-keyboard',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const pk = page.locator('.picker[data-picker]').first();
+      if (!(await pk.count())) return ['no .picker[data-picker] in fixture'];
+      const input = pk.locator('input');
+      const cal = pk.locator('.cal');
+
+      await input.click();
+      const stop = cal.locator('.day[tabindex="0"]').first();
+      t(await stop.count() === 1, 'one day cell is the roving tab stop');
+      t(await stop.getAttribute('role') === 'button', 'day cells expose role=button');
+      t(!!(await stop.getAttribute('aria-label')), 'day cells carry an accessible name');
+
+      // arrow to the next day, Enter selects it: value written, calendar closed
+      await stop.focus();
+      await page.keyboard.press('ArrowRight');
+      const focusedDay = await page.evaluate(() => document.activeElement.textContent);
+      await page.keyboard.press('Enter');
+      const val = await input.inputValue();
+      t(/^\d{4}-\d{2}-\d{2}$/.test(val), `Enter on a day writes a date value (got "${val}")`);
+      t(val.endsWith('-' + String(focusedDay).padStart(2, '0')), `value matches the focused day (${focusedDay} → ${val})`);
+      t(await cal.evaluate((el) => el.hidden), 'Enter closes the calendar');
+      t(await page.evaluate(() => document.activeElement.matches('.picker input')), 'focus returns to the input');
+
+      // re-open, Escape closes and keeps focus on the input
+      await page.keyboard.press('Escape');   // clear any residual state
+      await input.click();
+      t(!(await cal.evaluate((el) => el.hidden)), 'picker re-opens for the Escape check');
+      await page.keyboard.press('Escape');
+      t(await cal.evaluate((el) => el.hidden), 'Escape closes the picker');
+      return fails;
+    },
+  },
+  {
     // Inline calendar: [data-calendar] self-renders a .cal-grid of .day cells;
     // clicking a day moves the .sel marker to it.
     name: 'calendar',

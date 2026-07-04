@@ -174,9 +174,19 @@ Behavior changes are breaking when they alter a documented observable contract:
 - emitted or required attributes
 - keyboard navigation
 
-Consumers should not call private functions from `js/qazana.js`. If a product
-needs a programmatic lifecycle API for SPA route changes or dynamic DOM updates,
-add and document a stable public API before relying on it.
+Consumers should not call private functions from `js/qazana.js`. The stable
+programmatic surface is the `window.QZ` namespace:
+
+- `QZ.init(root?)` — re-scan `root` (default: the whole document) and bind
+  behaviors to matching elements that aren't bound yet. Call it after rendering
+  markup dynamically (SPA route change, framework mount, HTMX swap). Idempotent:
+  an element is bound to a behavior once, however often init runs. Delegated
+  behaviors (modals, popovers, tooltips, confirm, lightbox) listen on `document`
+  and need no re-init.
+- `QZ.store`, `QZ.i18n`, `QZ.scroll`, `QZ.q`, `QZ.ready`, `QZ.cal` — stable
+  aliases of the shared helpers, which also remain available under their
+  historical globals (`QZstore`, `QZi18n`, `QZscroll`, `QZq`, `QZready`,
+  `QZcal`).
 
 ## Form vocabulary
 
@@ -211,6 +221,7 @@ it. New product code should use the canonical vocabulary.
 Consumers must:
 
 - pin the Strata version they ship
+- follow [`UPGRADING.md`](UPGRADING.md) when moving between releases
 - load tokens before kits
 - load product theme overrides before kits when overriding root tokens
 - load only the kits they use
