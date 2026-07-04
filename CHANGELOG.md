@@ -4,6 +4,17 @@ All notable changes to `@qazana/strata`. Semver: patch = fix, minor = additive
 component/token/kit/behavior, major = rename/removal/breaking public contract
 change. Versions here always match what's published on the registry.
 
+## Unreleased
+
+### Patch
+
+- Docs: tagline unified to **"One style base. No build step, no framework."**
+  across the README, package description, docs-site config + landing hero, and
+  the demo landing page. "Token" stays the technical term in prose but is now
+  defined in plain language at first use (named design decisions — color,
+  spacing, type, motion — stored as CSS variables). Also fixed the demo hero
+  note's stale "v0.0.1 · 7 kits" → "v1.0.0 · 10 kits".
+
 ## 1.0.0 — 2026-07-04
 
 First stable release, and the baseline for this changelog. Everything before

@@ -13,7 +13,7 @@ export default defineConfig({
     starlight({
       title: 'Qazana Strata',
       description:
-        'Framework-agnostic, token-driven design system — vanilla CSS + data-attribute behaviours, themeable per product.',
+        'One style base, no build step, no framework — design tokens (CSS variables) + vanilla data-attribute behaviours, themeable per product.',
       head: [
         {
           tag: 'script',

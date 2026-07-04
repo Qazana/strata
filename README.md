@@ -1,8 +1,11 @@
 # @qazana/strata
 
-**Qazana Strata** — the shared, framework-agnostic design system for all Qazana
-products. One **token + theme foundation**, consumed by a set of composable
-**kits**. Vanilla CSS + data-attribute JS. No build step required.
+**Qazana Strata** — the shared design system for all Qazana products.
+**One style base. No build step, no framework.**
+
+The style base is a single set of **design tokens** — named design decisions
+(color, spacing, type, motion) stored as CSS variables — consumed by a set of
+composable **kits**. Vanilla CSS + data-attribute JS.
 
 - **Foundation** — semantic design tokens (the single source of truth) and the
   theme schemes (`dark`, `desert-dunes`). Everything is built on these.
