@@ -14,6 +14,12 @@ change. Versions here always match what's published on the registry.
   defined in plain language at first use (named design decisions — color,
   spacing, type, motion — stored as CSS variables). Also fixed the demo hero
   note's stale "v0.0.1 · 7 kits" → "v1.0.0 · 10 kits".
+- Docs site: now serves `/llms.txt`, `/llms-full.txt` and `/llms-small.txt`
+  (via `starlight-llms-txt`) so coding agents can read the docs as plain
+  markdown. `llms.txt` opens with the core usage rules and links the API
+  contract.
+- Docs site: fixed internal links that still carried the old `/strata/` base
+  path and 404'd since the move to `strata.docs.qazana.net`.
 
 ## 1.0.0 — 2026-07-04
 
