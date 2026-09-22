@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 2 32 32">
+  <!-- Strata mark. Colors mirror the accent, primary and info tokens in tokens/qazana.tokens.css (dark, then light scheme). -->
+  <style>
+    .a{fill:#a98bff}.p{fill:#2dd4bf}.i{fill:#5aa9ff}
+    @media (prefers-color-scheme: light){.a{fill:#684cd6}.p{fill:#bf5038}.i{fill:#2860cb}}
+  </style>
+  <path class="a" d="M16 3 29 9.5 16 16 3 9.5Z"/>
+  <path class="p" d="M16 11.5 29 18 16 24.5 3 18Z"/>
+  <path class="i" d="M16 20 29 26.5 16 33 3 26.5Z" opacity=".85"/>
+</svg>

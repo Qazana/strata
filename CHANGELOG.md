@@ -20,6 +20,8 @@ change. Versions here always match what's published on the registry.
   contract.
 - Docs site: fixed internal links that still carried the old `/strata/` base
   path and 404'd since the move to `strata.docs.qazana.net`.
+- Docs site: added the missing `favicon.svg` (the Strata mark, using the
+  token colors for the dark and light schemes).
 
 ## 1.0.0 — 2026-07-04
 
