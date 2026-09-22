@@ -33,7 +33,7 @@ support.
 ## Motion
 
 Every animation respects `@media (prefers-reduced-motion: reduce)` — see
-[Motion](/strata/foundations/motion/).
+[Motion](/foundations/motion/).
 
 ## Verifying
 
