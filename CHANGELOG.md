@@ -22,6 +22,9 @@ change. Versions here always match what's published on the registry.
   path and 404'd since the move to `strata.docs.qazana.net`.
 - Docs site: added the missing `favicon.svg` (the Strata mark, using the
   token colors for the dark and light schemes).
+- Docs site: upgraded to Astro 7.3 and Starlight 0.42, which clears the open
+  Astro security advisories. The docs build now needs Node 22.12+. The docs
+  site is not part of the published package, so consumers are unaffected.
 
 ## 1.0.0 — 2026-07-04
 

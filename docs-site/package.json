@@ -14,12 +14,8 @@
     "preview": "astro preview"
   },
   "dependencies": {
-    "@astrojs/starlight": "^0.34.0",
-    "astro": "^5.6.0",
-    "sharp": "^0.33.5",
-    "starlight-llms-txt": "~0.7.0"
-  },
-  "overrides": {
-    "esbuild": "^0.28.1"
+    "@astrojs/starlight": "^0.42.2",
+    "astro": "^7.3.3",
+    "starlight-llms-txt": "^0.12.0"
   }
 }

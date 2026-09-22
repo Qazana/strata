@@ -103,7 +103,7 @@ gtag('config', '${GA_MEASUREMENT_ID}');
         },
         {
           label: 'Components',
-          autogenerate: { directory: 'components' },
+          items: [{ autogenerate: { directory: 'components' } }],
         },
         {
           label: 'Guides',
