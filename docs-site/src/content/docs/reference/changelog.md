@@ -27,4 +27,4 @@ Initial release.
   switcher.
 
 The full commit-level history lives in the
-[repository](https://github.com/qazana/strata/commits/).
+[repository](https://github.com/Qazana/strata/commits/).

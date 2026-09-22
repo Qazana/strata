@@ -6,7 +6,7 @@ sidebar:
 ---
 
 Colour is one of the two orthogonal axes (the other is
-[density](/strata/foundations/density/)). A scheme is just
+[density](/foundations/density/)). A scheme is just
 a block of token overrides — no CSS fork.
 
 ## The two named schemes
@@ -61,7 +61,7 @@ everything:
 ```
 
 Neutral lines and borders flow through `--border-rgb`, so they flip with the
-scheme automatically. See [Brand a product](/strata/guides/brand-a-product/)
+scheme automatically. See [Brand a product](/guides/brand-a-product/)
 for the full recipe.
 
 ## Product themes are private
@@ -77,7 +77,7 @@ demonstrated with fictional example brands:
 | `vermeil` | vermilion | Fraunces |
 | `nocturne` | indigo | Bricolage Grotesque |
 
-Try them in the [live theme switcher](/strata/demo/themes/index.html) —
+Try them in the [live theme switcher](/demo/themes/index.html) —
 picking a theme swaps a real override file onto the page.
 
 ## Theme overrides always win

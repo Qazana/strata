@@ -43,7 +43,7 @@ solid fills, soft tints, rings and borders all flow from the same tokens:
 ```
 
 Add product-specific (domain) components in your own repo — they do **not** go in
-the shared library. See [Build domain components](/strata/guides/domain-components/).
+the shared library. See [Build domain components](/guides/domain-components/).
 
 ## Switching scheme & density
 

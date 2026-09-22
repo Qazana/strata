@@ -38,4 +38,4 @@ keeping the library reusable.
 - **Has sizing?** Route padding/font through density tokens.
 - **Domain-specific?** Then it doesn't belong here.
 
-See [Philosophy & lessons](/strata/reference/philosophy/) for the *why*.
+See [Philosophy & lessons](/reference/philosophy/) for the *why*.

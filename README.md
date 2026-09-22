@@ -17,7 +17,7 @@ composable **kits**. Vanilla CSS + data-attribute JS.
 Brand colours come from qazana.net: a coral primary, with a teal accent on the
 dark scheme and a warm-cream "Désert Dunes" light scheme.
 
-**Links:** [Docs](https://strata.docs.qazana.net/) · [Site](https://strata.qazana.net/) · [Figma library](https://www.figma.com/design/bcPBKFlIq3QmtGDPCpd6I2/Qazana-Strata--Design-System?node-id=44-2) · [npm](https://www.npmjs.com/package/@qazana/strata)
+**Links:** [Docs](https://strata.docs.qazana.net/) · [Docs for AI agents (llms.txt)](https://strata.docs.qazana.net/llms.txt) · [Site](https://strata.qazana.net/) · [Figma library](https://www.figma.com/design/bcPBKFlIq3QmtGDPCpd6I2/Qazana-Strata--Design-System?node-id=44-2) · [npm](https://www.npmjs.com/package/@qazana/strata)
 
 ---
 

@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
 import starlight from '@astrojs/starlight';
+import starlightLlmsTxt from 'starlight-llms-txt';
 
 // Per-product docs subdomain (GitHub Pages; Cloudflare CNAME strata.docs -> qazana.github.io)
 const SITE = 'https://strata.docs.qazana.net';
@@ -31,6 +32,30 @@ gtag('js', new Date());
 gtag('config', '${GA_MEASUREMENT_ID}');
           `.trim(),
         },
+      ],
+      // Serves /llms.txt, /llms-full.txt and /llms-small.txt so coding agents
+      // can read the docs as plain markdown.
+      plugins: [
+        starlightLlmsTxt({
+          details: [
+            'Rules for code that uses Strata:',
+            '',
+            '- Never hardcode a color, radius, spacing, shadow, font or duration. Use a token, e.g. `var(--primary)`, `var(--space-3)`.',
+            '- Alpha tints use the channel form: `rgb(var(--primary-rgb) / .12)`.',
+            '- Behavior attaches through `data-*` hooks on plain markup. There is no framework and no build step.',
+            '- Re-brand a product with one `:root {}` override of the semantic tokens.',
+            '- Only documented tokens, classes, DOM anatomy and `data-*` hooks are stable public API.',
+          ].join('\n'),
+          promote: ['getting-started/**', 'foundations/tokens', 'foundations/theming'],
+          demote: ['reference/changelog'],
+          optionalLinks: [
+            {
+              label: 'Public API contract',
+              url: 'https://github.com/Qazana/strata/blob/master/docs/API_CONTRACT.md',
+              description: 'What counts as stable public surface and how it may change.',
+            },
+          ],
+        }),
       ],
       tableOfContents: { minHeadingLevel: 2, maxHeadingLevel: 3 },
       social: [

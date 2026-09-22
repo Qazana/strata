@@ -44,6 +44,6 @@ There's nothing to compile to *consume* the library. The kit CSS lives in
 
 ## Pick your framework
 
-- [Vanilla / HTML](/strata/getting-started/vanilla/)
-- [React + Tailwind](/strata/getting-started/react-tailwind/)
-- [Ember](/strata/getting-started/ember/)
+- [Vanilla / HTML](/getting-started/vanilla/)
+- [React + Tailwind](/getting-started/react-tailwind/)
+- [Ember](/getting-started/ember/)
