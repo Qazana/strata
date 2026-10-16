@@ -59,7 +59,8 @@
     "harness:behaviors": "node harness/behaviors.mjs",
     "contract": "node harness/contract.mjs",
     "a11y": "node harness/a11y.mjs",
-    "test": "node harness/contract.mjs && node harness/behaviors.mjs && node harness/behaviors-forms.mjs && node harness/behaviors-overlays.mjs && node harness/behaviors-toggles.mjs && node harness/a11y.mjs"
+    "focus": "node harness/focus.mjs",
+    "test": "node harness/contract.mjs && node harness/behaviors.mjs && node harness/behaviors-forms.mjs && node harness/behaviors-overlays.mjs && node harness/behaviors-toggles.mjs && node harness/a11y.mjs && node harness/focus.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.0",

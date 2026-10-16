@@ -53,6 +53,41 @@ mirrors. The rules, in order of preference:
 - The harness renders every demo page at 390px with `dir="rtl"` and fails if
   layout overflows either edge.
 
+## Focus
+Keyboard focus looks the same everywhere: a solid `--focus-ring` outline
+(`--focus-ring-width`, default 2px) at `--focus-ring-offset` (default 2px).
+- **One rule in `base.css`** covers buttons, links, `summary`, checkboxes,
+  radios, ranges, anything with `tabindex="0"`, and the interactive ARIA roles.
+  It uses `:where()`, so it has zero specificity and a kit or app rule can retune
+  it. Elements with `tabindex="-1"` are left out, so a modal panel that receives
+  focus programmatically doesn't get a box.
+- **Content never gets the control ring.** A ring means "you can act here".
+  - Content that is a Tab stop only so the keyboard can reach or scroll it
+    (`.tbl-wrap`, `pre`, `role=region`, a tab panel with no controls) gets a
+    quiet 1px line instead.
+  - Headings, landmarks and modal or drawer panels that script focuses with
+    `tabindex="-1"` (after a skip link or a route change) get no ring at all.
+  - `[data-tabs]` makes a panel a Tab stop only when the panel has no controls
+    of its own. Otherwise Tab goes straight to its first control.
+- **Text fields** (`input`, `textarea`, `select`) keep their own signal: the
+  border turns `--primary-bright`, plus a soft `--primary-ring` halo. The halo is
+  decoration. The border change is what makes focus visible.
+- **Fields in an error or success state** thicken their state border on focus,
+  so focus still shows on top of the state ring.
+- **Joined controls** (`.btn-group`, `.stepper`, the commerce `.qty`) don't use
+  `overflow:hidden`, which would clip the ring. Inputs inside them, and rows
+  inside `.card-field`, draw the ring inset.
+- **Hidden native inputs** move the ring to what you see: `.switch` rings its
+  `.track`, ranges ring the thumb.
+- **On a solid colour fill** (like `.session-bar`) the ring uses `currentColor`,
+  because the brand colour would disappear against it.
+- To re-colour focus for one app, override `--focus-ring`. Keep it at 3:1 or more
+  against your page background.
+- `npm run focus` (part of `npm test`) tabs through every demo page in both
+  schemes. It fails if a focus stop falls back to the browser's default ring,
+  shows no change, or has an indicator under 3:1. It also focuses each page's
+  headings and landmarks by script and fails if any of them shows a ring.
+
 ## Buttons
 - `.btn` + `.btn-primary` / `.btn-secondary` / `.btn-outline` / `.btn-ghost` / `.btn-danger` / `.btn-link` · `.btn-sm` · `.btn-icon`
 - States: `.is-loading` (with `<span class="spin sm">`), `.is-success`, `.is-disabled`

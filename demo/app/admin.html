@@ -6,6 +6,11 @@
 <title>Qazana Strata — Admin Components</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="../../kits/app.css" rel="stylesheet">
+<style>
+/* tinted selects: the tint yields to the focus border, so focus stays visible */
+select.tint-accent:not(:focus-visible){border-color:rgb(var(--accent-rgb) / .4)}
+select.tint-danger:not(:focus-visible){border-color:rgb(var(--danger-rgb) / .4)}
+</style>
 </head>
 <body>
 <div class="bg-layer"><div class="glow one"></div><div class="glow two"></div><div class="grid-overlay"></div></div>
@@ -124,8 +129,8 @@
       <div class="jobrow"><span class="tier tier-pro">Pro</span><span class="jt">grace@hopper.dev</span>
         <span class="js">38/50 credits · <span style="color:var(--danger)">12 used</span></span>
         <div style="display:flex;gap:8px;margin-left:12px"><button class="btn btn-primary btn-sm">+Credits</button><button class="btn btn-ghost btn-sm">Comp ∞</button></div></div>
-      <div class="demo"><span class="swatch">Tier select</span><select style="max-width:140px;border-color:rgb(var(--accent-rgb) / .4)"><option>Free</option><option selected>Pro</option><option>Unlimited</option></select>
-        <span class="swatch">Role select</span><select style="max-width:140px;border-color:rgb(var(--danger-rgb) / .4)"><option>User</option><option selected>Admin</option></select></div>
+      <div class="demo"><span class="swatch">Tier select</span><select class="tint-accent" style="max-width:140px"><option>Free</option><option selected>Pro</option><option>Unlimited</option></select>
+        <span class="swatch">Role select</span><select class="tint-danger" style="max-width:140px"><option>User</option><option selected>Admin</option></select></div>
     </div>
   </section>
 

@@ -45,7 +45,11 @@ input:focus-visible,textarea:focus-visible,select:focus-visible{
   border-color:var(--primary-bright);background:var(--surface-active);box-shadow:0 0 0 2px var(--primary-ring);caret-color:var(--primary-bright)}
 input.invalid,input.is-error,textarea.is-error,select.is-error{border-color:var(--danger);box-shadow:0 0 0 3px rgb(var(--danger-rgb) / .18)}
 input.is-success,textarea.is-success,select.is-success{border-color:var(--primary);box-shadow:0 0 0 3px rgb(var(--primary-rgb) / .14)}
-input.is-error:focus,input.is-success:focus{box-shadow:0 0 0 3px rgb(var(--danger-rgb) / .22)}
+/* a field already wearing a state ring still needs a visible focus change:
+   thicken the state border to 2px (inner solid ring) and keep the state halo */
+:is(input,textarea,select):is(.invalid,.is-error):focus-visible,
+.form-field.is-error :is(input,textarea,select):focus-visible{box-shadow:0 0 0 1px var(--danger),0 0 0 4px rgb(var(--danger-rgb) / .22)}
+:is(input,textarea,select).is-success:focus-visible{box-shadow:0 0 0 1px var(--primary),0 0 0 4px rgb(var(--primary-rgb) / .2)}
 input[readonly]{color:var(--text-2);background:var(--surface-2);cursor:default;border-style:dashed}
 input:disabled,textarea:disabled,select:disabled{opacity:.5;cursor:not-allowed}
 
@@ -102,7 +106,6 @@ textarea[data-autosize]{resize:none;overflow:hidden}
 .qz-confirm-cancel{background:var(--surface-2);border-color:var(--line);color:var(--text)}
 .qz-confirm-ok{background:var(--primary);color:var(--on-primary)}
 .qz-confirm-ok.danger{background:var(--danger)}
-.qz-confirm-actions button:focus-visible{outline:none;box-shadow:0 0 0 2px var(--primary-ring)}
 @media (prefers-reduced-motion:reduce){.qz-confirm.is-open{animation:none}}
 
 /* ---- layout primitives — composable building blocks. Gap is var-driven
@@ -124,6 +127,32 @@ textarea[data-autosize]{resize:none;overflow:hidden}
 /* gap helpers → space scale */
 .gap-1{--gap:var(--space-1)}.gap-2{--gap:var(--space-2)}.gap-3{--gap:var(--space-3)}
 .gap-4{--gap:var(--space-4)}.gap-5{--gap:var(--space-5)}.gap-6{--gap:var(--space-6)}.gap-7{--gap:var(--space-7)}
+
+/* ---- keyboard focus indicator — one solid outline for every focusable control
+   that isn't a text field (text fields signal focus with a border change in the
+   form-controls block above). :where() keeps it at zero specificity, so a kit
+   rule or consumer CSS can retune it without a fight. tabindex="-1" is left out
+   so programmatically focused containers (modal panels, scrims) don't get a box. */
+:where(a[href],button,summary,[tabindex]:not([tabindex="-1"]),
+  [role=button],[role=tab],[role=option],[role=radio],[role=checkbox],[role=switch],
+  [role=menuitem],[role=menuitemradio],[role=menuitemcheckbox],[role=treeitem],[role=gridcell],
+  input:is([type=checkbox],[type=radio],[type=range],[type=file],[type=color],[type=button],[type=submit],[type=reset])
+):focus-visible{outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:var(--focus-ring-offset)}
+/* content that is a Tab stop only so the keyboard can reach or scroll it
+   (scroll containers, tab panels without controls, scroll regions) — a quiet
+   1px inset line, so it never reads as a control. Covers browsers that make
+   overflowing scrollers focusable on their own, too. */
+:where(.tbl-wrap,pre,[role=region],[role=tabpanel],[role=log],[role=document]):focus-visible{
+  outline:1px solid var(--focus-ring);outline-offset:-1px}
+/* panels with no box of their own: sit the line just outside the text */
+:where([role=tabpanel],[role=log],[role=document]):focus-visible{outline-offset:var(--space-1);border-radius:var(--radius-sm)}
+/* programmatic focus targets — a heading or landmark focused after a skip link
+   or route change, a modal/drawer panel focused because it holds no control.
+   Focus moves there for screen readers; nothing to act on, so no ring (this
+   also beats the browser's own default ring). */
+:where(h1,h2,h3,h4,h5,h6,p,main,section,article,header,footer,aside,nav,form,figure,
+  dialog,[role=dialog],[role=alertdialog],[role=main],[role=region],[role=document],[role=group],
+  .modal-scrim,.modal-dialog,.drawer)[tabindex="-1"]:focus-visible{outline:none}
 
 /* ---- forced-colors / Windows High-Contrast Mode. Focus rings here are drawn
    with box-shadow, which the OS DROPS in forced-colors mode — so keyboard focus

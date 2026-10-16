@@ -29,7 +29,8 @@ without taking their *dependencies*.
 5. **Vanilla + `data-*`.** Behaviours attach via `data-*` hooks and work in any
    framework through the rendered DOM. No build step to consume.
 6. **Cascade hygiene.** Kit CSS lives in `@layer qazana` so a consuming app's own
-   styles win without specificity battles. Focus rings use `:focus-visible`.
+   styles win without specificity battles. Focus rings use `:focus-visible` and
+   one `--focus-ring` outline, set once in `base.css`.
 7. **Own the code.** Unlike a copy-paste registry, this is a shared library — the
    right call for a multi-product org where *consistency across products* beats
    per-app customisation.

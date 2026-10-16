@@ -14,10 +14,10 @@ single source of truth; Figma mirrors it.
    override touches ~5 tokens.
 3. **Tints via opacity, not variables (the key rule).** The code derives tints
    at use-time: `--primary-soft = rgb(var(--primary-rgb) / .12)`,
-   `--primary-ring` = `/.22`, `--line` = `rgb(var(--border-rgb) / .08)`. Figma
+   `--primary-ring` = `/.15`, `--line` = `rgb(var(--border-rgb) / .08)`. Figma
    variables can't compute "color at alpha." So **only base colors are
    variables**; a soft fill is the base variable bound at **12% layer opacity**,
-   a ring at 22%, a line is `border` at 8%/14%. Changing the one `primary`
+   a field halo at 15%, a line is `border` at 8%/14%. Changing the one `primary`
    variable re-tints everything — the Figma analog of the single `:root`
    override. **Never bake `-soft`/`-ring`/`-line` as variables** (that would
    break rebrand).
@@ -59,7 +59,7 @@ single source of truth; Figma mirrors it.
 | Use | Base variable | Opacity |
 |---|---|---|
 | soft fill (`-soft`) | the semantic color | 12% |
-| focus ring (`-ring`) | the semantic color | 22% |
+| field halo (`-ring`) | the semantic color | 15% |
 | brand line (`-line`) | the semantic color | 30% |
 | hairline (`--line`) | `border` | 8% |
 | strong line (`--line-strong`) | `border` | 14% |
@@ -89,7 +89,9 @@ single source of truth; Figma mirrors it.
 - **State model:** `State = {Default, Focus, Disabled}` as variants. Hover is NOT
   a placeable variant (its signature is a `translateY` lift Figma can't render
   statically) — model hover as a Figma interactive-component reaction. Focus =
-  3px ring (`primary` @ 22%, i.e. `primary-ring`); Disabled = layer opacity 50%.
+  2px solid `primary-bright` stroke, 2px outside the shape (`--focus-ring`);
+  text fields instead swap their border to `primary-bright` plus a 2px
+  `primary` @ 15% halo. Disabled = layer opacity 50%.
 - **Button matrix:** `Variant {Primary, Secondary, Outline, Ghost, Danger, Link}`
   × `Size {sm, md}` × `State {Default, Focus, Disabled}` = 36 variants (built full,
   it's the reference component). **Icon Button is a SEPARATE component** (square,
