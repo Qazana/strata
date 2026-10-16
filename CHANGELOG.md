@@ -6,7 +6,40 @@ change. Versions here always match what's published on the registry.
 
 ## Unreleased
 
+### Minor
+
+- Focus: new `--focus-ring`, `--focus-ring-width` and `--focus-ring-offset`
+  tokens, and one `:focus-visible` outline in `base.css` for buttons, links,
+  `summary`, checkboxes, radios, ranges, `tabindex="0"` and interactive ARIA
+  roles. Before this, most controls fell back to the browser's default ring.
+  This changes how focus looks everywhere (observable, not breaking). Override
+  `--focus-ring` to re-colour it per app.
+- Harness: `npm run focus` (now part of `npm test`) tabs through every demo
+  page in both schemes and fails on a missing, browser-default or sub-3:1 focus
+  indicator.
+
 ### Patch
+
+- Focus fixes where keyboard focus was invisible or close to it: `.switch`,
+  `.check`/`.choice`, table select checkboxes, `.tree-row`, confirm-dialog
+  buttons, `input.slider`, `.dual` range (now Firefox too), `.stepper` and
+  billing `.stepper` inputs, commerce `.qty` and `.card-field`, the support
+  `.composer`, and docs `.help-search`. These relied on the 15% `--primary-ring`
+  halo alone, which measures about 1.3:1.
+- Focus: `.btn-group`, `.stepper`, billing `.stepper` and commerce `.qty` no
+  longer use `overflow:hidden`, which clipped the ring. Their end children now
+  round their own corners.
+- Forms: a focused `input.is-success` showed the danger ring. Fields in an
+  error or success state now thicken their state border on focus, so focus
+  shows on top of the state ring.
+- Focus: content no longer looks like a control. Headings, landmarks and
+  modal or drawer panels focused by script (`tabindex="-1"`) show no ring,
+  which also hides the browser's default one. Scroll containers and tab panels
+  get a quiet 1px line instead of the full ring.
+- Tabs: `[data-tabs]` makes a panel a Tab stop only when it has no controls of
+  its own, as the ARIA tabs pattern advises. Panels with controls no longer add
+  an extra stop before their first control.
+- Docs: `figma.md` gave the `-ring` tint as 22%. The code has always used 15%.
 
 - Docs: tagline unified to **"One style base. No build step, no framework."**
   across the README, package description, docs-site config + landing hero, and

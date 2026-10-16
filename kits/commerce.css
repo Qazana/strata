@@ -231,7 +231,7 @@
 
 .shop .qty{
   display:inline-flex;align-items:center;
-  border:1px solid var(--line-strong);border-radius:var(--radius);overflow:hidden;
+  border:1px solid var(--line-strong);border-radius:var(--radius);
   background:var(--surface)}
 .shop .qty button{
   display:grid;place-items:center;width:38px;height:38px;border:0;background:none;
@@ -243,6 +243,12 @@
   width:52px;text-align:center;border:none;border-inline:1px solid var(--line);
   background:transparent;color:var(--text);font-family:var(--mono);font-weight:600;
   font-size:var(--text-base);padding:0;-moz-appearance:textfield}
+/* joined control: no overflow:hidden (it would clip the focus ring) — the end
+   children round their own corners and the focused child lifts above its neighbours */
+.shop .qty > :first-child{border-start-start-radius:calc(var(--radius) - 1px);border-end-start-radius:calc(var(--radius) - 1px)}
+.shop .qty > :last-child{border-start-end-radius:calc(var(--radius) - 1px);border-end-end-radius:calc(var(--radius) - 1px)}
+.shop .qty > :focus-visible{position:relative;z-index:1}
+.shop .qty input:focus-visible{box-shadow:none;outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:calc(var(--focus-ring-width) * -1)}
 .shop .qty input[type=number]::-webkit-inner-spin-button,
 .shop .qty input[type=number]::-webkit-outer-spin-button{-webkit-appearance:none;margin:0}
 
@@ -268,7 +274,7 @@
   content:"";position:absolute;inset-block-start:0;inset-inline-start:0;
   width:100%;height:100%;
   background:linear-gradient(to bottom right, transparent calc(50% - .5px), var(--line-strong) calc(50% - .5px), var(--line-strong) calc(50% + .5px), transparent calc(50% + .5px))}
-.shop .vchip:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.shop .vchip:focus-visible{outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:var(--focus-ring-offset)}
 
 /* swatch variant (colour) */
 .shop .swatches{display:flex;flex-wrap:wrap;gap:var(--space-2)}
@@ -278,7 +284,7 @@
   display:block;outline:none}
 .shop .swatches .sw[aria-checked="true"],.shop .swatches .sw.on{
   box-shadow:0 0 0 3px var(--bg),0 0 0 5px var(--primary)}
-.shop .swatches .sw:focus-visible{outline:2px solid var(--primary);outline-offset:3px}
+.shop .swatches .sw:focus-visible{outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:3px}
 .shop .swatches .sw.oos{opacity:.45}
 
 /* ============================================================================
@@ -297,7 +303,7 @@
 .shop .gallery-thumbs .tab img{width:100%;height:100%;object-fit:cover;display:block}
 .shop .gallery-thumbs .tab.active,.shop .gallery-thumbs .tab[aria-selected="true"]{
   border-color:var(--primary)}
-.shop .gallery-thumbs .tab:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.shop .gallery-thumbs .tab:focus-visible{outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:var(--focus-ring-offset)}
 /* gallery panels — only active panel visible */
 .shop .gallery-panel{display:none}
 .shop .gallery-panel.active,.shop .gallery-panel[hidden=false]{display:block}
@@ -492,8 +498,10 @@
 .shop .card-field-row input{
   border:none;background:transparent;border-radius:0;flex:1;
   padding:var(--ctl-pad-y) var(--ctl-pad-x);font-size:var(--text-base)}
+/* rows sit inside the card-field's overflow:hidden, so the ring is drawn inset */
 .shop .card-field-row input:focus-visible{
-  box-shadow:none;outline:none;background:var(--surface-active)}
+  box-shadow:none;background:var(--surface-active);
+  outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:calc(var(--focus-ring-width) * -1)}
 .shop .card-field-icon{
   padding:0 var(--space-3);color:var(--muted);flex:0 0 auto;font-size:1rem}
 .shop .card-field-sep{width:1px;background:var(--line);align-self:stretch}

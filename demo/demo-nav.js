@@ -83,6 +83,7 @@
     + '.demo-bar .db-brand{font:inherit;font-size:var(--text-sm);color:var(--text);background:var(--surface);border:1px solid var(--line);'
     + 'border-radius:var(--radius-sm);padding:var(--space-1_5) var(--space-2);cursor:pointer;max-width:150px}'
     + '.demo-bar .db-brand:hover{border-color:var(--line-strong)}'
+    + '.demo-bar .db-brand:focus-visible{border-color:var(--primary-bright)}'
     + '.demo-bar .db-kitmenu{position:absolute;top:calc(100% + 6px);inset-inline-start:0;z-index:600;display:flex;flex-direction:column;'
     + 'min-width:160px;background:var(--surface-3,var(--surface));border:1px solid var(--line);border-radius:var(--radius);'
     + 'box-shadow:var(--shadow-lg);padding:var(--space-1_5)}'

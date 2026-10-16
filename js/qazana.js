@@ -345,7 +345,9 @@ function QZdayNav(grid, label) {
         if (!p.id) p.id = 'qz-tabpanel-' + (++uid);
         t.setAttribute('aria-controls', p.id);
         p.setAttribute('role', 'tabpanel'); p.setAttribute('aria-labelledby', t.id);
-        if (!p.hasAttribute('tabindex')) p.tabIndex = 0;
+        // a Tab stop only when the panel holds no controls of its own (ARIA tabs
+        // pattern) — otherwise Tab goes straight to its first control
+        if (!p.hasAttribute('tabindex') && !p.querySelector('a[href],button,input,select,textarea,summary,iframe,[contenteditable="true"],[tabindex]:not([tabindex="-1"])')) p.tabIndex = 0;
       }
       t.addEventListener('click', function () { select(i); });
       t.addEventListener('keydown', function (e) {

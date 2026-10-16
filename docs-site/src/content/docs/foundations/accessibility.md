@@ -17,8 +17,17 @@ support.
   modal, drawer, popover, command palette.
 - **Roving focus + typeahead** — arrow-key navigation, Home/End, `aria-expanded`
   / `aria-activedescendant` for tabs, combobox, tree, command palette.
-- **`:focus-visible` everywhere** — keyboard focus shows a strong ring; mouse
+- **`:focus-visible` everywhere** — keyboard focus shows one solid ring; mouse
   focus doesn't clutter the UI.
+
+## Focus ring
+
+Every focusable control gets the same 2px outline in `--focus-ring` (default
+`--primary-bright`), set once in `base.css`. Text fields signal focus with a
+`--primary-bright` border instead. Content is not a control, so it never gets
+that ring. Scroll containers and tab panels that take focus get a quiet 1px
+line, and headings or panels focused by script get none. Override `--focus-ring` to re-colour focus
+for one app, and keep it at 3:1 or more against your page background.
 
 ## Keyboard reference
 
@@ -39,4 +48,5 @@ Every animation respects `@media (prefers-reduced-motion: reduce)` — see
 
 The repo's Playwright harness renders every demo in **both** schemes and probes
 contrast (background vs text luminance), dead tokens and SVG colour bugs. Run
-`npm run harness` before shipping any change.
+`npm run harness` before shipping any change. `npm run focus` tabs through every
+demo and fails on any focus stop without a visible, 3:1 indicator.

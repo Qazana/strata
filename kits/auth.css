@@ -51,6 +51,7 @@
 .auth input:hover{border-color:rgb(var(--border-rgb) / .22)}
 .auth input:focus{border-color:var(--primary-bright);background:var(--surface-active);box-shadow:0 0 0 2px var(--primary-ring)}
 .auth input.is-error{border-color:var(--danger);box-shadow:0 0 0 3px rgb(var(--danger-rgb) / .2)}
+.auth input.is-error:focus-visible{box-shadow:0 0 0 1px var(--danger),0 0 0 4px rgb(var(--danger-rgb) / .22)}
 .auth .err{display:block;color:var(--danger);font-size:var(--text-sm);margin-top:var(--space-1_5)}
 .auth .pw{position:relative}
 .auth .pw button{position:absolute;inset-inline-end:6px;top:50%;transform:translateY(-50%);background:none;border:0;

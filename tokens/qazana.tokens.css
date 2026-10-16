@@ -88,11 +88,18 @@
 
   /* ---- derived tints (themeable via the channels above) ---- */
   --primary-soft:rgb(var(--primary-rgb) / .12);   /* soft fill */
-  --primary-ring:rgb(var(--primary-rgb) / .15);   /* focus ring — kept subtle */
+  --primary-ring:rgb(var(--primary-rgb) / .15);   /* soft halo around a focused field — decorative, too faint to be the only focus cue */
   --primary-line:rgb(var(--primary-rgb) / .30);   /* brand border/accent */
   --danger-soft:rgb(var(--danger-rgb) / .12);
   --warning-soft:rgb(var(--warning-rgb) / .12);
   --info-soft:rgb(var(--info-rgb) / .12);
+
+  /* ---- keyboard focus indicator. One solid outline on every focusable
+     control (base.css). --primary-bright clears 3:1 against the page in both
+     schemes; override --focus-ring per app if the brand colour doesn't. ---- */
+  --focus-ring:var(--primary-bright);
+  --focus-ring-width:2px;
+  --focus-ring-offset:2px;
 
   /* ---- radius (one knob: --radius scales sm/lg) ---- */
   --radius:8px;

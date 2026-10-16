@@ -229,6 +229,7 @@ alpha tints stay themeable: `rgb(var(--primary-rgb) / .12)`.
 | Text | `--text` `--text-2` `--muted` |
 | Brand / semantic | `--primary(+ -bright, -rgb)` `--on-primary` `--danger` `--warning` `--info` `--accent` |
 | Tints | `--primary-soft` `--primary-ring` `--primary-line` `--danger-soft` `--warning-soft` `--info-soft` |
+| Focus | `--focus-ring` (defaults to `--primary-bright`) `--focus-ring-width` `--focus-ring-offset` |
 | Radius | `--radius-sm` `--radius` `--radius-lg` `--radius-pill` |
 | Elevation | `--shadow-sm` `--shadow` `--shadow-lg` |
 | Spacing | `--space-1` … `--space-10` + `_5` half-steps (4·6·8·10·12·14·16·20·24·28·32·40·48·56·64·80) |
