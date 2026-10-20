@@ -200,6 +200,7 @@ html{color-scheme:dark}
 .switch input:focus-visible{outline:0}
 .switch input:focus-visible + .track{outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:var(--focus-ring-offset)}
 .check{display:inline-flex;align-items:center;gap:var(--space-2_5);cursor:pointer;font-size:var(--text-md)}
+.check.disabled{opacity:.5;cursor:not-allowed}
 input[type=range].slider{-webkit-appearance:none;appearance:none;height:5px;border-radius:var(--radius-pill);background:var(--surface-2);width:100%;outline:none}
 input[type=range].slider::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--primary-bright);cursor:pointer;box-shadow:0 0 0 4px var(--primary-ring)}
 input[type=range].slider::-moz-range-thumb{width:18px;height:18px;border:0;border-radius:50%;background:var(--primary-bright);cursor:pointer}
@@ -423,6 +424,11 @@ table.tbl tr.is-open .row-toggle{transform:rotate(90deg);color:var(--primary-bri
 .menu-item{display:flex;align-items:center;gap:var(--space-2_5);padding:var(--space-2_5) var(--space-3);border-radius:var(--radius-sm);font-size:var(--text-md);color:var(--text-2);text-decoration:none;cursor:pointer}
 .menu-item:hover{background:var(--surface-2);color:var(--text)}
 .menu-sep{height:1px;background:var(--line);margin:var(--space-1_5) 0}
+button.menu-item{width:100%;border:0;background:transparent;font-family:var(--body);text-align:start;cursor:pointer}
+/* floating surface with no positioning of its own, for overlays a script
+   places (framework popovers, tooltips, menus). .sm = tooltip-sized */
+.panel{background:var(--surface-3);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-pop);padding:var(--space-4);color:var(--text)}
+.panel.sm{padding:var(--space-1_5) var(--space-2_5);border-radius:var(--radius-sm);font-size:var(--text-xs);max-width:28ch}
 
 /* tabs */
 .tabs{display:flex;gap:var(--space-1);background:var(--surface-2);border-radius:var(--radius);padding:var(--space-1);width:max-content}
@@ -443,9 +449,10 @@ table.tbl tbody tr:hover{background:var(--surface-2)}
 table.tbl td b{color:var(--text);font-weight:600}
 .cell-mono{font-family:var(--mono);font-size:var(--text-xs)}
 .pager{display:flex;gap:var(--space-1_5);margin-top:var(--space-3_5);align-items:center}
-.pager a{font-size:var(--text-sm);color:var(--text-2);text-decoration:none;border:1px solid var(--line);border-radius:var(--radius-sm);padding:var(--space-1_5) var(--space-3);transition:.18s}
-.pager a:hover{color:var(--text);border-color:rgb(var(--border-rgb) / .2)}
-.pager a.active{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
+.pager a,.pager button{font-size:var(--text-sm);font-family:var(--body);color:var(--text-2);text-decoration:none;background:transparent;border:1px solid var(--line);border-radius:var(--radius-sm);padding:var(--space-1_5) var(--space-3);transition:.18s;cursor:pointer}
+.pager button:disabled{opacity:.5;cursor:not-allowed}
+.pager a:hover,.pager button:not(:disabled):hover{color:var(--text);border-color:rgb(var(--border-rgb) / .2)}
+.pager a.active,.pager button.active{background:var(--primary);color:var(--on-primary);border-color:var(--primary)}
 
 /* ---- admin layout ---- */
 .adminframe{display:grid;grid-template-columns:200px 1fr;gap:0;border:1px solid var(--line);border-radius:var(--radius-lg);overflow:hidden;min-height:360px;position:relative}
@@ -461,6 +468,21 @@ table.tbl td b{color:var(--text);font-weight:600}
 .side-item.active{color:var(--primary-bright);background:var(--primary-soft);font-weight:600}
 .side-item .ct{margin-inline-start:auto;font-size:var(--text-2xs);background:var(--danger);color:var(--on-danger);border-radius:var(--radius-pill);padding:1px var(--space-2);font-weight:700}
 .adminbody{padding:var(--space-5)}
+/* full-viewport variant: the frame IS the app, not a boxed demo. The main
+   column (.adminmain) stacks a .topbar + scrolling .adminbody. */
+.adminframe.full{height:100dvh;min-height:0;border:0;border-radius:0;grid-template-columns:256px 1fr;background:var(--bg)}
+.adminframe.full .sidebar{overflow-y:auto}
+.adminframe.full .adminmain{display:flex;flex-direction:column;min-width:0;min-height:0}
+.adminframe.full .adminbody{flex:1;min-height:0;overflow:auto}
+/* persistent top bar for the full shell (the mobile-only .admin-bar stays for framed demos) */
+.topbar{display:flex;flex-wrap:nowrap;align-items:center;gap:var(--space-3);padding:var(--space-2_5) var(--space-4);border-bottom:1px solid var(--line);background:var(--surface)}
+.topbar .hamb,.sidebar .hamb{display:none}
+/* sidebar section label; a <button> when the section collapses */
+.side-label{display:flex;align-items:center;justify-content:space-between;width:100%;margin-top:var(--space-3);padding:var(--space-2) var(--row-pad-x);min-height:32px;border:0;background:transparent;
+  font-family:var(--body);font-size:var(--text-2xs);font-weight:600;letter-spacing:var(--tracking-caps);text-transform:uppercase;color:var(--muted);cursor:pointer;border-radius:var(--radius-sm)}
+.side-label:hover{color:var(--text-2)}
+/* pinned to the bottom of the sidebar: account row, sign-out */
+.side-foot{margin-block-start:auto;padding-top:var(--space-3);border-top:1px solid var(--line)}
 .ah2{display:flex;align-items:center;justify-content:space-between;gap:var(--space-3);margin-bottom:var(--space-4_5);flex-wrap:wrap}
 .ah2.start{justify-content:flex-start}
 .adminbody .ah2 h3{font-weight:700;font-size:var(--text-lg)}
@@ -523,9 +545,9 @@ table.tbl td b{color:var(--text);font-weight:600}
 
 /* mobile: sidebar becomes an off-canvas drawer toggled by a hamburger in .admin-bar */
 @media(max-width:640px){
-  .adminframe{grid-template-columns:1fr}
+  .adminframe,.adminframe.full{grid-template-columns:1fr}
   .admin-bar{display:flex;align-items:center;gap:var(--space-2_5);padding:var(--space-2_5) var(--space-3);border-bottom:1px solid var(--line);background:var(--surface);font-weight:700}
-  .admin-bar .hamb{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:var(--radius-sm);border:1px solid var(--line);background:var(--surface-2);color:var(--text);cursor:pointer}
+  .admin-bar .hamb,.topbar .hamb,.sidebar .hamb{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:var(--radius-sm);border:1px solid var(--line);background:var(--surface-2);color:var(--text);cursor:pointer}
   .adminframe .sidebar{position:absolute;inset-block:0;inset-inline-start:0;inset-inline-end:auto;width:min(260px,80%);transform:translateX(-100%);z-index:20;border-inline-end:1px solid var(--line);overflow-y:auto;transition:transform var(--dur-2) var(--ease)}
   [dir="rtl"] .adminframe .sidebar{transform:translateX(100%)}
   .adminframe.nav-open .sidebar{transform:none;box-shadow:var(--shadow-lg)}
@@ -675,6 +697,9 @@ input[type=date],input[type=time]{font-family:var(--body)}
 .addon{display:flex;align-items:center;padding:0 var(--space-3_5);background:var(--surface-2);color:var(--muted);font-size:var(--text-md);font-family:var(--mono);white-space:nowrap}
 .addon-group .addon:first-child{border-inline-end:1px solid var(--line)}
 .addon-group .addon:last-child{border-inline-start:1px solid var(--line)}
+button.addon{border:0;font-family:var(--body);cursor:pointer;transition:background-color .15s,color .15s}
+button.addon:hover:not(:disabled){background:var(--surface-3);color:var(--text)}
+button.addon:disabled{cursor:not-allowed;opacity:.5}
 
 /* password */
 .pw{position:relative}
@@ -769,10 +794,50 @@ input[type=date],input[type=time]{font-family:var(--body)}
   background:var(--surface);border:1px solid rgb(var(--border-rgb) / .14);border-radius:var(--radius-sm);outline:0;caret-color:var(--primary-bright)}
 .otp input:focus{border-color:var(--primary-bright);box-shadow:0 0 0 2px var(--primary-ring)}
 
+/* rich-text editor chrome: toolbar + body + footer. The editing engine
+   (TipTap, ProseMirror, contenteditable) is the app's; this is only the frame. */
+.rte{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:var(--radius);background:var(--surface);overflow:hidden}
+.rte-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:var(--space-1);padding:var(--space-1_5) var(--space-2);border-bottom:1px solid var(--line);background:var(--surface-2)}
+.rte-toolbar .tgroup{display:flex;gap:2px;padding-inline-end:var(--space-1_5);margin-inline-end:var(--space-1);border-inline-end:1px solid var(--line)}
+.rte-toolbar .tgroup:last-child{border:0;margin:0;padding:0}
+.rte-toolbar .btn-icon{width:32px;height:32px;background:transparent;color:var(--text-2)}
+.rte-toolbar .btn-icon:hover{background:var(--surface);color:var(--text)}
+.rte-toolbar .btn-icon[aria-pressed=true]{background:var(--primary-soft);color:var(--primary-bright)}
+.rte-body{flex:1;min-height:20rem;overflow:auto;padding:var(--space-3_5) var(--space-4)}
+.rte-body[contenteditable]:focus-visible,.rte-body [contenteditable]:focus-visible{outline:1px solid var(--focus-ring);outline-offset:-1px}
+.rte-foot{display:flex;justify-content:space-between;gap:var(--space-3);padding:var(--space-1_5) var(--space-4);border-top:1px solid var(--line);background:var(--surface-2);color:var(--muted);font-size:var(--text-xs);font-family:var(--mono)}
+/* bare title field above an editor: no chrome, heading size */
+input.rte-title,input.rte-title[type]{width:100%;border:0;background:transparent;padding:0;font-family:var(--body);font-size:var(--text-3xl);font-weight:var(--weight-bold);line-height:var(--leading-tight);letter-spacing:var(--tracking-tight);color:var(--text)}
+input.rte-title:focus{box-shadow:none;outline:0;background:transparent}
+input.rte-title:focus-visible{box-shadow:none;background:transparent;outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:var(--focus-ring-offset)}
+input.rte-title::placeholder{color:var(--muted)}
+
 /* file dropzone */
 .dropzone{border:1.5px dashed rgb(var(--border-rgb) / .18);border-radius:var(--radius-lg);padding:var(--space-5_5);text-align:center;
   color:var(--muted);background:var(--surface);transition:.16s;cursor:pointer}
 .dropzone:hover{border-color:var(--primary);color:var(--text-2);background:rgb(var(--primary-rgb) / .04)}
+/* script-driven states: a file is being dragged over it; uploads are blocked */
+.dropzone.is-active{border-color:var(--primary);background:rgb(var(--primary-rgb) / .08);color:var(--text)}
+.dropzone.is-disabled{opacity:.5;cursor:not-allowed}
+.dropzone.is-disabled:hover{border-color:rgb(var(--border-rgb) / .18);background:transparent}
+/* media grid: thumbnail cards with a select box, type badge, hover actions and a meta strip */
+.media-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:var(--space-3)}
+.media-card{position:relative;border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;background:var(--surface);transition:border-color var(--dur-1) var(--ease)}
+button.media-card{width:100%;padding:0;font:inherit;color:inherit;text-align:start;cursor:pointer}
+.media-card[aria-pressed=true]{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-ring)}
+.media-card:hover{border-color:var(--line-strong)}
+.media-card.selected{border-color:var(--primary);box-shadow:0 0 0 2px var(--primary-ring)}
+.media-card .mthumb{aspect-ratio:1;background:var(--surface-2);display:grid;place-items:center;overflow:hidden;color:var(--muted)}
+.media-card .mthumb img{width:100%;height:100%;object-fit:cover;display:block}
+.media-card .msel{position:absolute;top:var(--space-2);inset-inline-start:var(--space-2);z-index:2}
+.media-card .mtype{position:absolute;top:var(--space-2);inset-inline-end:var(--space-2);z-index:2}
+.media-card .macts{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:var(--space-2);background:rgb(0 0 0 / .45);opacity:0;transition:opacity var(--dur-1) var(--ease)}
+.media-card:hover .macts,.media-card:focus-within .macts{opacity:1}
+.media-card .macts .btn-icon:focus-visible{outline-color:#fff}   /* brand ring vanishes on the dark overlay */
+.media-card .mmeta{padding:var(--space-2_5) var(--space-3)}
+.media-card .mname{font-weight:600;font-size:var(--text-sm);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.media-card .msub{display:flex;justify-content:space-between;gap:var(--space-2);color:var(--muted);font-size:var(--text-xs);margin-top:2px}
+@media (prefers-reduced-motion: reduce){.media-card,.media-card .macts{transition:none}}
 .dropzone .dzi{font-size:var(--text-2xl);margin-bottom:var(--space-2);color:var(--primary-bright)}
 
 /* range with live value */

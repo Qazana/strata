@@ -214,6 +214,24 @@
         <div class="otp"><input maxlength="1" value="4" aria-label="Verification code digit 1"><input maxlength="1" value="8" aria-label="Verification code digit 2"><input maxlength="1" aria-label="Verification code digit 3"><input maxlength="1" aria-label="Verification code digit 4"></div></div>
       <div class="field-row full"><label class="fld">Cookie file (upload)</label>
         <div class="dropzone"><div class="dzi"><i class="fa-solid fa-cloud-arrow-up"></i></div>Drop a file here or <b>browse</b><div class="fhelp" style="margin-top:4px">Netscape cookie format, up to 1 MB</div></div></div>
+        <div class="sub">Rich text editor frame</div>
+        <input class="rte-title" value="Why we moved the admin to one style base" aria-label="Title" style="margin-bottom:var(--space-3)">
+        <div class="rte">
+          <div class="rte-toolbar">
+            <div class="tgroup"><button class="btn-icon" aria-label="Undo"><i class="fa-solid fa-rotate-left"></i></button><button class="btn-icon" aria-label="Redo"><i class="fa-solid fa-rotate-right"></i></button></div>
+            <div class="tgroup"><button class="btn-icon" aria-label="Bold" aria-pressed="true"><i class="fa-solid fa-bold"></i></button><button class="btn-icon" aria-label="Italic" aria-pressed="false"><i class="fa-solid fa-italic"></i></button><button class="btn-icon" aria-label="Link"><i class="fa-solid fa-link"></i></button></div>
+            <div class="tgroup"><button class="btn-icon" aria-label="Bulleted list"><i class="fa-solid fa-list-ul"></i></button><button class="btn-icon" aria-label="Quote"><i class="fa-solid fa-quote-left"></i></button></div>
+          </div>
+          <div class="rte-body prose" contenteditable="true" style="min-height:8rem"><p>One style base, no build step. <b>Tokens</b> first, then kits.</p></div>
+          <div class="rte-foot"><span>12 words</span><span>61 characters</span></div>
+        </div>
+        <div class="sub">Media grid</div>
+        <div class="media-grid" style="max-width:520px">
+          <div class="media-card selected"><label class="msel"><input type="checkbox" checked aria-label="Select cover.jpg"></label><span class="mtype badge neutral">JPEG</span><div class="mthumb"><i class="fa-regular fa-image" style="font-size:2rem"></i></div><div class="macts"><button class="btn-icon" aria-label="Edit"><i class="fa-solid fa-pen"></i></button><button class="btn-icon" aria-label="Delete"><i class="fa-solid fa-trash"></i></button></div><div class="mmeta"><div class="mname">cover.jpg</div><div class="msub"><span>412 KB</span><span>Oct 20</span></div></div></div>
+          <div class="media-card"><label class="msel"><input type="checkbox" aria-label="Select intro.mp4"></label><span class="mtype badge neutral">MP4</span><div class="mthumb"><i class="fa-solid fa-film" style="font-size:2rem"></i></div><div class="macts"><button class="btn-icon" aria-label="Edit"><i class="fa-solid fa-pen"></i></button></div><div class="mmeta"><div class="mname">intro.mp4</div><div class="msub"><span>18 MB</span><span>Oct 18</span></div></div></div>
+          <div class="media-card"><label class="msel"><input type="checkbox" aria-label="Select brief.pdf"></label><span class="mtype badge neutral">PDF</span><div class="mthumb"><i class="fa-regular fa-file-lines" style="font-size:2rem"></i></div><div class="mmeta"><div class="mname">brief.pdf</div><div class="msub"><span>96 KB</span><span>Oct 2</span></div></div></div>
+          <button type="button" class="media-card" aria-pressed="true"><div class="mthumb"><i class="fa-regular fa-image" style="font-size:2rem"></i></div><div class="mmeta"><div class="mname">Pick me (button tile)</div><div class="msub"><span>aria-pressed</span></div></div></button>
+        </div>
     </div>
 
     <div class="sub">Date picker · dual-thumb range</div>
@@ -841,6 +859,7 @@
     <div class="demo">
       <div class="addon-group" style="max-width:240px"><span class="addon">@</span><input placeholder="handle"></div>
       <div class="addon-group" style="max-width:240px"><input placeholder="amount" style="text-align:right"><span class="addon">credits</span></div>
+      <div class="addon-group" style="max-width:240px"><input type="url" placeholder="https://example.com" aria-label="Link"><button type="button" class="addon" aria-label="Pick an internal link">#</button></div>
     </div>
 
     <div class="sub">Toggle group (multi-select)</div>

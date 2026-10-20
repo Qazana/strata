@@ -118,6 +118,8 @@ textarea[data-autosize]{resize:none;overflow:hidden}
 /* auto-fit grid; min(--col,100%) keeps it from overflowing narrow viewports */
 .l-grid{display:grid;gap:var(--gap,var(--space-4));grid-template-columns:repeat(auto-fit,minmax(min(var(--col,16rem),100%),1fr))}
 .l-spacer{flex:1 1 auto}
+/* visually hidden, still read by assistive tech */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 /* row alignment modifiers */
 .l-row.between{justify-content:space-between}
 .l-row.center{justify-content:center}

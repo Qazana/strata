@@ -8,6 +8,24 @@ change. Versions here always match what's published on the registry.
 
 ### Minor
 
+- Admin shell: `.adminframe.full` (viewport-filling variant with `.adminmain`,
+  `.topbar` and a scrolling `.adminbody`), `.side-label` sidebar section
+  headers and `.side-foot`. First consumer is a React app shell where the
+  framed demo layout did not fit.
+- Overlays: `.panel` (+`.sm`), a floating surface with no positioning of its
+  own for overlays a script places, and a `button.menu-item` reset so menu
+  items can be buttons.
+- Pager: `.pager button` is styled like `.pager a` (with a disabled state), so
+  script-driven pagination can use real buttons.
+- Media grid: `.media-grid` + `.media-card` (thumbnail, select box, type badge,
+  hover actions, meta strip). Dropzone: `.is-active` and `.is-disabled` states
+  for script-driven drag and upload locks.
+- Forms: `button.addon` so an add-on can be a picker or clear button.
+- Forms: `.check.disabled` dims a checkbox label whose input is disabled.
+- Media grid: `button.media-card` reset and a `[aria-pressed=true]` selected state, so a tile can be a pick button.
+- Utility: `.sr-only` for visually hidden text that assistive tech still reads.
+- Rich text editor frame: `.rte` with `.rte-toolbar` / `.rte-body` / `.rte-foot`
+  and the bare `.rte-title` input, for apps that bring their own editing engine.
 - Focus: new `--focus-ring`, `--focus-ring-width` and `--focus-ring-offset`
   tokens, and one `:focus-visible` outline in `base.css` for buttons, links,
   `summary`, checkboxes, radios, ranges, `tabindex="0"` and interactive ARIA

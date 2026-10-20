@@ -96,17 +96,29 @@ Keyboard focus looks the same everywhere: a solid `--focus-ring` outline
 ## Forms
 - **Inputs** — `.field` or bare `input[type=…]` / `textarea` / `select` (one size, themed focus ring)
 - **Input group** — `.input-group` (leading icon + trailing button); paste button `data-paste="#id"`
-- **Add-ons** — `.addon-group` with `.addon` prefix/suffix
+- **Add-ons** — `.addon-group` with `.addon` prefix/suffix; a `button.addon` is a clickable suffix (picker, clear)
 - **Password** — `.pw` + `.pw-toggle` + `.pwbar`
 - **Select** — native, `select[multiple]`, or searchable **combobox** `.combo` + `data-combo`
 - **Choice** — `.choice` (radio/checkbox groups, custom dark) · `.switch` · `.check`
 - **Range** — `input.slider` · dual-thumb `.dual` + `data-dual` (with `.dual-out`)
 - **Numeric** — `.stepper` · `.amount-field` + `data-amount` (currency prefix, thousands format, +/- tone)
-- **Tags** — `.tagsinput` + `.tagchip` · **OTP** `.otp` · **upload** `.dropzone`
+- **Tags** — `.tagsinput` + `.tagchip` · **OTP** `.otp` · **upload** `.dropzone` (+`.is-active` while a file
+  is dragged over it, `.is-disabled`)
 - **Field anatomy** — `.field-row` + `.label`/`.fld` (+`.req`/`.opt`) + `.fhelp` / `.ferr` / `.fok`; validation `.is-error` / `.is-success`
 - **Live validation** — `[data-validate]` on a `<form>`; per-field `required` / `type=email` /
   `minlength` / `data-match="#otherField"`. On submit, invalid fields get `.is-error` + a
   `.ferr` message; a summary `.form-msg` announces the count. Clears on input.
+
+## Rich text editor frame
+`.rte` > `.rte-toolbar` (groups of `.btn-icon` in `.tgroup`; a pressed tool carries
+`aria-pressed="true"`) + `.rte-body` (the app's contenteditable, typically with `.prose`) +
+`.rte-foot` (counts). `.rte-title` is the bare heading-sized title input above it. The
+editing engine is the app's; Strata only frames it.
+
+## Media grid
+`.media-grid` > `.media-card` (+`.selected`): `.mthumb` (square, `<img>` or an icon) with a
+`.msel` checkbox and `.mtype` badge overlaid, `.macts` hover/focus action overlay, and a `.mmeta`
+strip (`.mname`, `.msub`). Scripts set `.selected`; the overlay needs no JS. A tile can be a `button.media-card` (reset included); `aria-pressed="true"` draws the selected ring.
 
 ## Pickers
 - Date popover — `.picker` + `data-picker` (month/year quick-nav)
@@ -191,6 +203,8 @@ and focus-trap are inherited, not re-implemented per component.
   formaction; links/others by replaying the click). Relabel with
   `data-qz-confirm-ok`/`data-qz-confirm-cancel`; `data-qz-confirm-danger` tints the confirm
   button. (Namespaced `data-qz-*` so it never collides with Rails UJS's `data-confirm`.)
+- Panel `.panel` (+`.sm` tooltip size) — floating surface with no positioning of its own, for
+  overlays a script places (framework popovers, tooltips, menus); `button.menu-item` is reset
 - Menu `.menu` + `.menu-item` (+`.danger`, `.menu-sep`, `.menu-label`)
 - Context menu `.menu.ctx` + `data-ctx="#id"` (right-click target)
 - Tabs `.tabs` + `[data-tabs]` (switch `.tabpanel`) · accordion `.acc` > `<details>`
@@ -228,7 +242,7 @@ bottom-left, bottom-right. Trigger live toasts with `data-toast="msg"` + `data-t
 ## Data table
 `.tbl` in `.tbl-wrap` · sortable `[data-table-sort]` + `th.sortable` · select-all
 `[data-select-all]` · bulk bar `.bulkbar` + `[data-bulk]` · faceted filters
-`.facets`/`.fchip` (`data-fchip` remove, `data-fclear` clear) · `.pager`
+`.facets`/`.fchip` (`data-fchip` remove, `data-fclear` clear) · `.pager` (links or buttons)
 - **Advanced** — sticky header `.tbl-wrap.sticky` · type-to-filter `[data-table-filter]`
   · expandable rows: `.row-toggle` button + a following `tr.row-detail` (`.rd-body`),
   `tr.is-open` reveals it
@@ -241,6 +255,10 @@ via a `.resizer` element between panes (pointer-drag sets the previous pane's wi
 On phones (≤640) the `.sidebar` becomes an **off-canvas drawer**: put a
 `[data-sidebar-toggle="<frame selector>"]` hamburger in an `.admin-bar`; it flips
 `.nav-open` on the `.adminframe` (backdrop-click, nav-item-click and Esc close it)
+- **Full shell** — `.adminframe.full` fills the viewport (no frame border, 256px sidebar); its
+  main column is `.adminmain` > `.topbar` (always visible; a `.hamb` in it or in the `.sidebar` shows ≤640 only) +
+  scrolling `.adminbody`. Sidebar sections use `.side-label` (a `<button>` when collapsible);
+  `.side-foot` pins the account row to the bottom.
 
 ## Shared / utility
 QR `.qr` · pairing code `.paircode` · color picker `.colorpicker` + `data-colorpicker` ·
@@ -250,7 +268,7 @@ separator `.separator` (+`.labeled`, `.sep-v`) · `.kbd` · notification bell `.
 **read-more** `[data-clamp="N"]` (clamps to N lines + a `.clamp-toggle`; `data-clamp-more`/
 `data-clamp-less` relabel it; omitted when content already fits) ·
 **relative time** `[data-relative-time]` on a `<time datetime>` (renders "3h ago"/"in 2 days",
-refreshes each minute, keeps the absolute time as `title`)
+refreshes each minute, keeps the absolute time as `title`) · `.sr-only` (visually hidden, read by assistive tech)
 
 ## Error pages
 `.errpage` (+`.code.amber/.coral`) · grid `.err-grid` > `.errcard`
