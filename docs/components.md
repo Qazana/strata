@@ -125,6 +125,16 @@ strip (`.mname`, `.msub`). Scripts set `.selected`; the overlay needs no JS. A t
 - Inline calendar — `.cal-inline` + `data-calendar`
 - Date range — `.daterange` + `data-daterange` (two months, range highlight)
 
+## Calendar
+A month or week grid with events, as a scheduling or editorial calendar; the date *picker* is
+`.cal`. `.calendar` (+`data-view="month|week"`, week cells are taller) > `.calendar-dow` (seven
+weekday labels) + `.calendar-grid` of `button.calendar-day` (+`.is-other` for days outside the
+month, `.is-today`, `.is-selected` or `aria-pressed="true"`). Inside a day: `.calendar-top`
+(`.calendar-num` and an optional `.calendar-count`), then `.calendar-event`s (`.amber/.coral/
+.info/.neutral` tones, default primary) and a `.calendar-more` line. The navigation row above it
+is the app's (`.btn-group`, `.segmented`). Below 640px the grid keeps the counts and hides the
+event rows. No behaviour: the app renders the days.
+
 ## Badges & status
 - `.badge` · `.green/.amber/.coral/.info/.neutral`
 - `.tier` · `.tier-free/.tier-pro/.tier-unlimited` · `.role-admin`

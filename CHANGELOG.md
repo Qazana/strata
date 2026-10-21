@@ -8,6 +8,7 @@ change. Versions here always match what's published on the registry.
 
 ### Minor
 
+- Calendar: `.calendar` (+`data-view`) with `.calendar-dow`, `.calendar-grid`, `button.calendar-day` states, `.calendar-num`, `.calendar-count`, `.calendar-event` tones and `.calendar-more`. A month or week grid with events, distinct from the `.cal` date picker. First consumer is an editorial calendar that had drawn its own grid.
 - Admin shell: `.adminframe.full` (viewport-filling variant with `.adminmain`,
   `.topbar` and a scrolling `.adminbody`), `.side-label` sidebar section
   headers and `.side-foot`. First consumer is a React app shell where the
