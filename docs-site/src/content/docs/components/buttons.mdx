@@ -30,3 +30,28 @@ import Demo from '../../../components/Demo.astro';
 
 All padding/size flows through the density tokens, so buttons shrink in
 [compact mode](/foundations/density/).
+
+Use native `disabled` to prevent button activation. `.is-disabled` supplies
+visual styling and does not replace native semantics.
+
+## Standalone buttons (experimental)
+
+The **Unreleased** `@qazana/strata/button` entry uses `.qz-button` and a single
+variant such as `.qz-button-primary`. It loads button-local tokens with no page
+reset, font files, or JavaScript. It is experimental and may change in a minor
+release.
+
+```css
+@import '@qazana/strata/button';
+```
+
+```html
+<button class="qz-button qz-button-primary" data-qz-theme="light">Save</button>
+```
+
+Set `data-qz-theme` on each button; unset follows the OS. The host owns the
+matching background. Ancestor `data-theme` and `data-density` do not affect this
+entry. See the [full reference](https://github.com/Qazana/strata/blob/master/docs/button.md)
+for supported variants, token overrides, and disabled semantics.
+
+<Demo src="app/button.html" title="Standalone buttons" height={540} />

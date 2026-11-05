@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" data-theme="dark-knight">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Tabs and accordions · Strata</title>
+  <link rel="stylesheet" href="../../tokens/qazana.tokens.css">
+  <link rel="stylesheet" href="../../kits/tabs.css">
+  <link rel="stylesheet" href="../../kits/accordion.css">
+  <style>
+    body{margin:0;background:var(--bg);color:var(--text);font:var(--text-base)/var(--leading-normal) var(--body)}
+    main{max-width:70rem;padding:var(--space-6);margin:auto;display:grid;gap:var(--space-6);min-width:0}
+    section{min-width:0}h1{font-family:var(--display)}h2{font-size:var(--text-lg)}p{color:var(--text-2)}
+    input{font:inherit;color:var(--text);background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-sm);padding:var(--space-2);max-width:100%;box-sizing:border-box}
+    input:focus-visible,a:focus-visible,#host-control:focus-visible{outline:2px solid var(--primary)}a{color:var(--primary-bright)}
+    :is(main,section,h1,h2):focus{outline:none}
+    .demo-vertical{display:flex;gap:var(--space-4)}.demo-vertical>.tabpanel{min-width:0;margin-top:0}.demo-nested{margin-block:var(--space-4)}
+  </style>
+  <script src="../../js/qazana.js" defer></script>
+</head>
+<body><main>
+  <header><h1>Tabs and accordions</h1><p>Use tabs to switch between views and accordions for optional detail. Both support component imports.</p><a href="../index.html">All components</a></header>
+  <section aria-labelledby="line-title"><h2 id="line-title">Views with counts</h2>
+    <div data-tabs id="line-tabs">
+      <div class="tabs line" aria-label="Work views">
+        <button class="tab active">Overview <span class="tab-count">12</span></button>
+        <button class="tab" disabled>Unavailable</button>
+        <button class="tab">Activity <span class="tab-count">3</span></button>
+        <button class="tab">Preferences</button>
+      </div>
+      <div class="tabpanel"><p>Overview remains visible while a nested tab changes.</p>
+        <div class="demo-nested" data-tabs id="nested-tabs">
+          <div class="tabs" aria-label="Overview details"><button class="tab active">Summary</button><button class="tab">Details</button></div>
+          <div class="tabpanel">A short summary.</div><div class="tabpanel" hidden>Additional detail.</div>
+        </div>
+      </div>
+      <div class="tabpanel" hidden>Unavailable content.</div>
+      <div class="tabpanel" hidden><p>Three recent changes.</p></div>
+      <div class="tabpanel" hidden><label>Display name <input value="Workspace"></label></div>
+    </div>
+  </section>
+  <section aria-labelledby="vertical-title"><h2 id="vertical-title">Vertical, manual activation</h2><p>Move with Up and Down. Press Enter or Space to open a view.</p>
+    <div class="demo-vertical" data-tabs data-tabs-activation="manual" id="manual-tabs">
+      <div class="tabs line" aria-label="Account views" aria-orientation="vertical"><button class="tab active">Profile</button><button class="tab" aria-disabled="true">Billing</button><button class="tab">Security</button></div>
+      <div class="tabpanel">Profile details.</div><div class="tabpanel" hidden>Billing details.</div><div class="tabpanel" hidden>Security details.</div>
+    </div>
+  </section>
+  <section aria-labelledby="advanced-title"><h2 id="advanced-title">Advanced preferences</h2>
+    <div class="acc" id="advanced">
+      <details name="advanced"><summary><span class="acc-heading"><span class="acc-title">Connection settings</span><span class="acc-hint">Optional endpoints and connection checks.</span></span><span class="acc-meta">2 options</span></summary><div class="acc-body"><label>Endpoint <input type="url" value="https://example.com"></label>
+        <div class="acc demo-nested"><details><summary>Request headers</summary><div class="acc-body">Leave defaults unless your service requires a change.</div></details></div>
+      </div></details>
+      <details name="advanced"><summary><span class="acc-heading"><span class="acc-title">Export fields</span><span class="acc-hint">Choose which fields are included in saved files.</span></span></summary><div class="acc-body"><label><input type="checkbox" checked> Include descriptions</label></div></details>
+    </div>
+  </section>
+  <section aria-label="Host content"><button id="host-control">Unstyled host button</button></section>
+</main></body></html>

@@ -132,15 +132,15 @@ select.tint-danger:not(:focus-visible){border-color:rgb(var(--danger-rgb) / .4)}
       <div class="jobrow"><span class="tier tier-pro">Pro</span><span class="jt">grace@hopper.dev</span>
         <span class="js">38/50 credits · <span style="color:var(--danger)">12 used</span></span>
         <div style="display:flex;gap:8px;margin-left:12px"><button class="btn btn-primary btn-sm">+Credits</button><button class="btn btn-ghost btn-sm">Comp ∞</button></div></div>
-      <div class="demo"><span class="swatch">Tier select</span><select class="tint-accent" style="max-width:140px"><option>Free</option><option selected>Pro</option><option>Unlimited</option></select>
-        <span class="swatch">Role select</span><select class="tint-danger" style="max-width:140px"><option>User</option><option selected>Admin</option></select></div>
+      <div class="demo"><label class="swatch" for="user-tier">Tier select</label><select id="user-tier" class="tint-accent" style="max-width:140px"><option>Free</option><option selected>Pro</option><option>Unlimited</option></select>
+        <label class="swatch" for="user-role">Role select</label><select id="user-role" class="tint-danger" style="max-width:140px"><option>User</option><option selected>Admin</option></select></div>
     </div>
   </section>
 
   <!-- JOBS -->
   <section class="sec" id="jobs">
     <h2>Jobs: row, status, inline log</h2>
-    <select style="max-width:170px;margin-bottom:12px"><option>All statuses</option><option>Processing</option><option>Failed</option></select>
+    <select aria-label="Job status" style="max-width:170px;margin-bottom:12px"><option>All statuses</option><option>Processing</option><option>Failed</option></select>
     <div class="demo col">
       <div class="jobrow"><span class="dot ok"></span><span class="jt">Sunset Set — Désert Dunes</span><span class="js">completed · 14 songs · 1:08:42 · 2d ago</span><button class="btn btn-ghost btn-sm" style="margin-left:10px">Log</button></div>
       <div class="jobrow"><span class="dot warn"></span><span class="jt">Boiler Room — Night Two</span><span class="js">processing · 62%</span><button class="btn btn-ghost btn-sm" style="margin-left:10px">Log</button></div>
@@ -212,8 +212,8 @@ select.tint-danger:not(:focus-visible){border-color:rgb(var(--danger-rgb) / .4)}
     <h2>Admin controls & forms</h2>
     <div class="grid2">
       <div class="card"><div class="card-h">Notification settings</div>
-        <div class="demo" style="justify-content:space-between"><label class="check"><input type="checkbox" checked> Critical alerts</label><select style="max-width:120px"><option>Instant</option><option>Daily</option></select></div>
-        <div class="demo" style="justify-content:space-between;margin-top:10px"><label class="check"><input type="checkbox"> Weekly digest</label><label class="switch"><input type="checkbox"><span class="track"></span></label></div>
+        <div class="demo" style="justify-content:space-between"><label class="check"><input type="checkbox" checked> Critical alerts</label><select aria-label="Alert frequency" style="max-width:120px"><option>Instant</option><option>Daily</option></select></div>
+        <div class="demo" style="justify-content:space-between;margin-top:10px"><label class="check"><input type="checkbox"> Weekly digest</label><label class="switch"><input type="checkbox" aria-label="Enable email notifications"><span class="track"></span></label></div>
       </div>
       <div class="card"><div class="card-h">YouTube cookies</div>
         <div style="font-size:.84rem;margin-bottom:8px"><span class="dot ok"></span> Present · logged in · 142 cookies</div>
@@ -257,17 +257,17 @@ select.tint-danger:not(:focus-visible){border-color:rgb(var(--danger-rgb) / .4)}
 
     <div class="sub">Faceted filters + bulk actions — tick rows</div>
     <div class="facets">
-      <select style="max-width:150px"><option>Status…</option><option>Active</option><option>Banned</option></select>
+      <select aria-label="User status" style="max-width:150px"><option>Status…</option><option>Active</option><option>Banned</option></select>
       <span class="facet-chips"><span class="fchip"><b>Status:</b> Active <button data-fchip>✕</button></span><span class="fchip"><b>Tier:</b> Pro <button data-fchip>✕</button></span></span>
       <button class="facet-clear" data-fclear>Clear all</button>
     </div>
     <div class="bulkbar" data-bulkbar hidden><span class="bcount">0</span> selected<div class="bx"><button class="btn btn-ghost btn-sm">Export</button><button class="btn btn-ghost btn-sm">Suspend</button><button class="btn btn-danger btn-sm">Delete</button></div></div>
     <div class="tbl-wrap"><table class="tbl" data-bulk>
-      <thead><tr><th class="sel-col"><input type="checkbox" data-select-all></th><th>Email</th><th>Tier</th><th>Status</th></tr></thead>
+      <thead><tr><th class="sel-col"><input type="checkbox" data-select-all aria-label="Select all users"></th><th>Email</th><th>Tier</th><th>Status</th></tr></thead>
       <tbody>
-        <tr><td class="sel-col"><input type="checkbox"></td><td><b>ada@lovelace.io</b></td><td><span class="tier tier-pro">Pro</span></td><td><span class="conn-pill up"><span class="cdot"></span> Active</span></td></tr>
-        <tr><td class="sel-col"><input type="checkbox"></td><td><b>grace@hopper.dev</b></td><td><span class="tier tier-free">Free</span></td><td><span class="conn-pill up"><span class="cdot"></span> Active</span></td></tr>
-        <tr><td class="sel-col"><input type="checkbox"></td><td><b>spam@bot.io</b></td><td><span class="tier tier-free">Free</span></td><td><span class="conn-pill down"><span class="cdot"></span> Banned</span></td></tr>
+        <tr><td class="sel-col"><input type="checkbox" aria-label="Select ada@lovelace.io"></td><td><b>ada@lovelace.io</b></td><td><span class="tier tier-pro">Pro</span></td><td><span class="conn-pill up"><span class="cdot"></span> Active</span></td></tr>
+        <tr><td class="sel-col"><input type="checkbox" aria-label="Select grace@hopper.dev"></td><td><b>grace@hopper.dev</b></td><td><span class="tier tier-free">Free</span></td><td><span class="conn-pill up"><span class="cdot"></span> Active</span></td></tr>
+        <tr><td class="sel-col"><input type="checkbox" aria-label="Select spam@bot.io"></td><td><b>spam@bot.io</b></td><td><span class="tier tier-free">Free</span></td><td><span class="conn-pill down"><span class="cdot"></span> Banned</span></td></tr>
       </tbody>
     </table></div>
 

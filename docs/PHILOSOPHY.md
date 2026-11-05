@@ -1,8 +1,7 @@
 # Qazana Strata — design philosophy & lessons
 
-Why the library is built the way it is, and the specific lessons we borrowed
-from the best component systems. Read this before adding components or changing
-the foundation — it's the *intent* behind the rules in `CLAUDE.md`.
+This document explains the library's design choices and influences.
+Read it alongside [AGENTS.md](../AGENTS.md) before changing the foundation.
 
 ## Our stance in one line
 **A framework-agnostic, token-driven, vanilla CSS + data-attribute system** — owned
@@ -20,12 +19,12 @@ without taking their *dependencies*.
 2. **Two orthogonal axes, both token-driven.** *Colour scheme* (`data-theme`:
    Dark Knight / Désert Dunes) and *density* (`data-density`: comfortable /
    compact) are independent and compose freely. Neither is a fork of the CSS.
-3. **Foreground pairs.** Every solid fill has an `--on-*` text token, so contrast
-   is guaranteed, not lucky (borrowed from shadcn/Radix conventions).
-4. **Behaviour is shared, not per-component.** One dismissable-layer primitive
-   (Esc / outside-click / scroll-lock / focus-trap) and one roving-focus +
-   typeahead helper power modal, drawer, menu, combobox, command palette, popover.
-   Accessibility lives in the primitive, so every component inherits it.
+3. **Foreground pairs.** Solid fills have matching `--on-*` text tokens.
+   Check their contrast when changing a theme; the pairing does not make an
+   arbitrary color accessible.
+4. **Reuse behavior helpers.** Dialog-like overlays share focus and scroll-lock
+   helpers. Menus, popovers, and comboboxes have their own interaction rules.
+   Document and test the keyboard behavior each component needs.
 5. **Vanilla + `data-*`.** Behaviours attach via `data-*` hooks and work in any
    framework through the rendered DOM. No build step to consume.
 6. **Cascade hygiene.** Kit CSS lives in `@layer qazana` so a consuming app's own
@@ -51,9 +50,9 @@ without taking their *dependencies*.
 ### Radix UI / React Aria / Ariakit — headless behaviour
 - **Accessibility as a state machine**, separate from styling: focus-trap,
   roving-tabindex, typeahead, `aria-activedescendant`, dismissable layers.
-- **Lesson:** put a11y in shared primitives, not in each component. *Adopting via
-  the behaviour core.* This is the single biggest thing separating a real system
-  from a "CSS-only" kit.
+- **Lesson:** reuse focus and keyboard helpers where the interaction matches.
+  Check each component's markup and behavior rather than assuming shared code
+  provides all accessibility requirements.
 
 ### Ant Design — dense, data-heavy enterprise UI
 - **The data Table** (sort/filter/row-select/expand/sticky/paginate) and a
@@ -104,8 +103,10 @@ without taking their *dependencies*.
   (`--ctl-*`, `--cell-*`, `--row-*`); add a `[data-density="compact"]` override
   only for fixed-dimension controls.
 - **Will consumers override it?** It's already in `@layer qazana` — keep specificity low.
-- **Is it domain-specific?** Then it does **not** belong here (see `CLAUDE.md`).
-- **Verify both themes AND both densities** in the harness before committing.
+- **Is it domain-specific?** Then it does **not** belong here (see `AGENTS.md`).
+- Run `npm run test` and the relevant render/visual checks before committing.
+  Review both densities separately; the render harness does not sweep them.
+  See the [harness guide](../harness/README.md).
 
 ## Anti-goals
 - No framework dependency; no build step required to consume.

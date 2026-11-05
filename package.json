@@ -1,7 +1,7 @@
 {
   "name": "@qazana/strata",
   "version": "1.0.0",
-  "description": "Qazana Strata — one style base, no build step, no framework. Semantic design tokens (CSS variables) + vanilla data-attribute component CSS/JS, themeable per product with a single :root override.",
+  "description": "Qazana Strata \u2014 one style base, no build step, no framework. Semantic design tokens (CSS variables) + vanilla data-attribute component CSS/JS, themeable per product with a single :root override.",
   "keywords": [
     "design-system",
     "design-tokens",
@@ -42,7 +42,10 @@
     "./billing": "./kits/billing.css",
     "./docs": "./kits/docs.css",
     "./support": "./kits/support.css",
-    "./js": "./js/qazana.js"
+    "./js": "./js/qazana.js",
+    "./button": "./kits/button.css",
+    "./tabs": "./kits/tabs.css",
+    "./accordion": "./kits/accordion.css"
   },
   "files": [
     "tokens",
@@ -60,13 +63,15 @@
     "contract": "node harness/contract.mjs",
     "a11y": "node harness/a11y.mjs",
     "focus": "node harness/focus.mjs",
-    "test": "node harness/contract.mjs && node harness/behaviors.mjs && node harness/behaviors-forms.mjs && node harness/behaviors-overlays.mjs && node harness/behaviors-toggles.mjs && node harness/a11y.mjs && node harness/focus.mjs"
+    "test": "node harness/disclosure.mjs && node harness/success.mjs && node harness/button.mjs && node harness/contract.mjs && node harness/behaviors.mjs && node harness/behaviors-forms.mjs && node harness/behaviors-overlays.mjs && node harness/behaviors-toggles.mjs && node harness/release.mjs && node harness/a11y.mjs && node harness/focus.mjs",
+    "build:button": "node scripts/button-css.mjs"
   },
   "devDependencies": {
     "@playwright/test": "^1.61.0",
     "axe-core": "^4.12.1",
     "pixelmatch": "^7.2.0",
     "playwright": "^1.60.0",
-    "pngjs": "^7.0.0"
+    "pngjs": "^7.0.0",
+    "postcss": "8.5.32"
   }
 }

@@ -126,14 +126,39 @@ strip (`.mname`, `.msub`). Scripts set `.selected`; the overlay needs no JS. A t
 - Date range — `.daterange` + `data-daterange` (two months, range highlight)
 
 ## Calendar
-A month or week grid with events, as a scheduling or editorial calendar; the date *picker* is
-`.cal`. `.calendar` (+`data-view="month|week"`, week cells are taller) > `.calendar-dow` (seven
-weekday labels) + `.calendar-grid` of `button.calendar-day` (+`.is-other` for days outside the
-month, `.is-today`, `.is-selected` or `aria-pressed="true"`). Inside a day: `.calendar-top`
-(`.calendar-num` and an optional `.calendar-count`), then `.calendar-event`s (`.amber/.coral/
-.info/.neutral` tones, default primary) and a `.calendar-more` line. The navigation row above it
-is the app's (`.btn-group`, `.segmented`). Below 640px the grid keeps the counts and hides the
-event rows. No behaviour: the app renders the days.
+A month or week grid with events. The date picker is the separate `.cal` component.
+`.calendar` (`data-view="month|week"`) contains `.calendar-dow` with seven weekday
+labels and `.calendar-grid` with one `.calendar-day` container per date.
+Week cells are taller. Day states are `.is-other`, `.is-today` and `.is-selected`.
+
+Use a native `button.calendar-select.calendar-top` inside each day. It contains
+`.calendar-num` and an optional `.calendar-count`. Put event links beside this
+button, never inside it:
+
+```html
+<div class="calendar-day">
+  <button type="button" class="calendar-select calendar-top"
+    aria-pressed="false" aria-label="Wednesday, June 3, 1 event">
+    <span class="calendar-num">3</span><span class="calendar-count">1</span>
+  </button>
+  <a class="calendar-event" href="/events/launch">Launch notes</a>
+</div>
+```
+
+The date button owns `aria-pressed`; a pressed date also highlights its day
+container. Event links navigate independently. `.calendar-event` supports
+`.amber`, `.coral`, `.info` and `.neutral` tones (default primary). An optional
+`.calendar-more` line shows the remaining count. Include the event count in the
+date button's accessible name when present.
+
+Existing `button.calendar-day` markup remains supported when its contents are
+noninteractive. Its `.is-selected` and `aria-pressed="true"` states still work.
+Do not place anchors or other buttons inside it.
+
+Below 640px, event rows and `.calendar-more` are hidden while counts remain.
+Consumers own day selection, event navigation and access to day details on small
+screens. This CSS component adds no behavior. The navigation row above the grid
+also belongs to the app (`.btn-group`, `.segmented`).
 
 ## Badges & status
 - `.badge` · `.green/.amber/.coral/.info/.neutral`
@@ -187,8 +212,10 @@ skeletons `.skel` (`.skel-line`) · section `.loading-block` · activity log `.l
   `data-qz-*` so it never collides with Bootstrap's `data-dismiss`.)
 
 ## Overlays
-All dismissable layers share one behaviour primitive: Esc, outside-click, scroll-lock
-and focus-trap are inherited, not re-implemented per component.
+Overlay behaviors have separate owners. Modals and drawers trap focus and lock
+scroll; popovers and context menus are non-modal. Framework-managed overlays may
+use `.panel` and `.menu` styles while retaining their own positioning and behavior.
+Do not attach the vanilla hooks to an overlay already owned by a framework.
 - Modal `.modal-scrim` > `.modal-dialog` (`.ok/.danger/.warn/.info`); open/close via
   `data-modal-open="#id"` / `data-modal-close`; footer `.mf`, both-ends `.mf.split`
 - Drawer `.drawer-scrim` > `.drawer` (`.left`/`.right`) — slides in; same `data-modal-*` API
@@ -216,7 +243,23 @@ and focus-trap are inherited, not re-implemented per component.
 - Panel `.panel` (+`.sm` tooltip size) — floating surface with no positioning of its own, for
   overlays a script places (framework popovers, tooltips, menus); `button.menu-item` is reset
 - Menu `.menu` + `.menu-item` (+`.danger`, `.menu-sep`, `.menu-label`)
-- Context menu `.menu.ctx` + `data-ctx="#id"` (right-click target)
+- Context menu `.menu.ctx` + `data-ctx="#id"`: right-click or focus the target and
+  press the Context Menu key / Shift+F10. The first enabled visible `.menu-item`
+  receives focus. Arrow Up/Down wrap; Home/End select the first/last item;
+  Enter/Space activate. Native `disabled` and `aria-disabled="true"` items are
+  skipped and cannot activate. Prefer native buttons for actions and links with
+  `href` for navigation; legacy `.menu-item` markup remains keyboard-operable.
+  Escape closes only this menu and restores its opener; Tab closes and continues
+  from the opener. Item activation restores focus unless the action moves it
+  elsewhere. Outside clicks and focus leaving dismiss without stealing focus.
+  The menu clamps to both viewport edges using its measured dimensions and
+  repositions on resize or scrolling outside the menu. Multiple targets
+  may share a menu. Targets expose `aria-haspopup="menu"` and retain their
+  existing semantics; the engine does not assign a target role or expanded state.
+  This is a flat menu contract, not a nested-submenu engine.
+  Popovers retain their anchored CSS placement; they do not inherit this
+  context-menu positioning or arrow navigation.
+- [Tabs and accordions](disclosure.md): component imports, underline and vertical tabs, summary hints, and keyboard behavior.
 - Tabs `.tabs` + `[data-tabs]` (switch `.tabpanel`) · accordion `.acc` > `<details>`
   (`name=` ⇒ single-open) · hover card `.hc-trigger` > `.hovercard`
 
@@ -340,6 +383,8 @@ JS clamps to `min`/`max`/`step`, disables buttons at bounds, fires native `chang
 options (`aria-disabled="true"` — still focusable and announced, not `disabled`).
 Swatch variant: use `.swatches` wrapper + `.sw` buttons with `data-c` or inline `background`.
 `data-variant-label="#id"` wires a text label that syncs with the selected `data-value`.
+Initialization keeps an enabled `aria-checked="true"` option. If none is checked,
+it selects the first enabled option. All-disabled groups have no tab stop.
 
 **A11y summary:** radiogroup / radio / aria-checked / aria-disabled; arrow-key navigation;
 `.oos` diagonal strike via `::after` pseudo-element.
@@ -350,7 +395,9 @@ Swatch variant: use `.swatches` wrapper + `.sw` buttons with `data-c` or inline 
 
 ### Quick-view dialog (reuses `[data-modal-open]`)
 `.quickview` — two-column grid (gallery + info). Trigger: `data-modal-open="#id"`.
-Focus-trap, Esc-to-close, and focus-restore are provided by the modal controller.
+Wrap it in `.modal-scrim` under `.shop`; the Commerce kit includes the backdrop
+and open/closed states. No demo stylesheet is needed. The modal controller owns
+focus trapping, Escape, and focus restoration. Tall dialogs scroll within the viewport.
 
 ### Cart line items
 `.cart-lines` > `.cart-line` (80 px thumb | info | price grid) →
@@ -430,7 +477,8 @@ degrades without JS. `.plan` modifiers: `.popular`, `.current` (+ `.is-current` 
 ### Proration (inline confirm — no modal)
 Upgrade is the frictionless path: a native `<details class="switch">` whose `summary.btn` reveals a
 `.proration` panel (`.pr-row`, `.pr-row.total`, `.pr-note`) under the chosen plan. Consumer fills the
-prorated numbers server-side.
+prorated numbers server-side. Opening the panel expands only its own plan card.
+Feature lists align with the plan heading without browser-default indentation.
 
 ### Invoice history
 `table.invoices` (real `th[scope=col]`, tabular-nums `.inv-amt`, `.inv-id` mono, `.inv-dl` download
@@ -500,6 +548,13 @@ desc) + `.api-code` request/response samples. No two-panel scroll-sync (that's a
 `.crumbs` breadcrumb (`a` + `.sep`) → `<article class="prose">` → `.help-vote` ("was this helpful?"
 + `.hv-btns`) → `.help-related` related-article cards.
 
+## Auth brand panel
+
+Split auth pages use `.auth-brand` beside `.auth-main`. The brand panel combines
+a surface gradient with a curved line texture tinted by `--primary-rgb`. Its
+decoration sits behind the content, needs no image assets, and does not animate.
+The panel hides at 860px and below. See the [sign-in demo](../demo/auth/sign-in.html).
+
 ## Support kit
 
 `kits/support.css` — root scope `.support`. Standalone on base.css (form controls and `.form-field`
@@ -543,4 +598,16 @@ is consumer-wired.
   `role="dialog"`/`aria-modal`. Dark chrome uses the kit's intentional black/white constants.
   **Deep-linkable** — give the gallery an `id` and the open item writes
   `#lightbox=<id>/<index>` to the URL, so a viewer can be shared and reopened; a shared link
-  opens it on load, navigating updates the hash, and the browser Back button closes it.
+  opens it on load with either a classic script or a module import. Navigating updates
+  the hash; Close restores the previous fragment, and browser Back closes the viewer.
+  Only visible controls enter the focus loop, including a single-image viewer.
+
+Confirmation dialogs keep keyboard focus above an underlying modal. Escape closes
+only the top layer and returns focus to its trigger. Shared modal backdrops use
+`--overlay`. Billing and App dialogs scroll when their contents exceed the viewport.
+
+Card groups in `.l-grid` and legacy `.grid2` use the grid gap without added
+sibling margins. Marketing `.pricing` cards share a button baseline on
+multi-column layouts.
+`.price-list` removes browser list padding; `.site .section` keeps its wrapper’s
+horizontal gutters. FAQ answers reset paragraph margins inside their own padding.

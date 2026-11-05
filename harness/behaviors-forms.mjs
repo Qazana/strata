@@ -27,6 +27,85 @@ const checker = () => {
 
 const CHECKS = [
   {
+    name: 'matching-input-select-sizes',
+    url: '/demo/foundations/forms.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      await page.addStyleTag({ url: BASE + '/kits/auth.css' });
+      await page.evaluate(() => document.fonts.ready);
+      for (const width of [1200, 375]) {
+        await page.setViewportSize({ width, height: 900 });
+        for (const density of ['comfortable', 'compact']) {
+          for (const dir of ['ltr', 'rtl']) {
+            await page.evaluate(({ density, dir }) => {
+              document.documentElement.dataset.density = density;
+              document.documentElement.dir = dir;
+            }, { density, dir });
+            const sizes = await page.evaluate(() => {
+              const measure = node => ({ height: node.getBoundingClientRect().height, font: getComputedStyle(node).fontSize });
+              const demo = [...document.querySelectorAll('[data-control-sizing] input, [data-control-sizing] select')].map(measure);
+              const probe = document.createElement('div');
+              probe.className = 'auth';
+              probe.style.display = 'block';
+              probe.innerHTML = ['text', 'email', 'password', 'search', 'number', 'date', 'time'].map(type => `<input type="${type}" aria-label="Sizing probe">`).join('') + '<select aria-label="Sizing probe"><option>Engineer</option></select><textarea rows="3" aria-label="Sizing probe"></textarea><select multiple size="4" aria-label="Sizing probe"><option>Engineer</option><option>Designer</option></select>';
+              document.body.append(probe);
+              const controls = [...probe.children].map(measure);
+              probe.remove();
+              return { demo, controls };
+            });
+            const context = `${width}px ${density} ${dir}`;
+            t(Math.abs(sizes.demo[0].height - sizes.demo[1].height) < 1, `${context}: demo heights match`);
+            const single = sizes.controls.slice(0, -2);
+            t(single.every(size => Math.abs(size.height - single[0].height) < 1 && size.font === single[0].font), `${context}: all single-line controls match: ${JSON.stringify(single)}`);
+            t(sizes.controls.slice(-2).every(size => size.height > single[0].height), `${context}: multi-row controls remain taller`);
+          }
+        }
+      }
+      return fails;
+    },
+  },
+  {
+    name: 'independent-success-colors',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      await page.addStyleTag({ content: '* { transition: none !important; }' });
+      for (const theme of ['dark', 'light']) {
+        await page.evaluate(theme => document.documentElement.setAttribute('data-theme', theme), theme);
+        const result = await page.evaluate(() => {
+          const root = document.documentElement;
+          const probe = document.createElement('div');
+          probe.innerHTML = '<input class="is-success" aria-label="Success probe"><button class="btn is-success">Saved</button><button class="btn btn-primary">Brand</button>';
+          document.body.append(probe);
+          const field = probe.querySelector('input');
+          const saved = probe.querySelector('.is-success.btn');
+          const brand = probe.querySelector('.btn-primary');
+          const initial = { border: getComputedStyle(field).borderColor, brand: getComputedStyle(brand).backgroundColor, saved: getComputedStyle(saved).backgroundColor };
+          root.style.setProperty('--primary', '#684cd6');
+          root.style.setProperty('--primary-rgb', '104 76 214');
+          root.style.setProperty('--primary-bright', '#a98bff');
+          const branded = { border: getComputedStyle(field).borderColor, brand: getComputedStyle(brand).backgroundColor, saved: getComputedStyle(saved).backgroundColor };
+          const demo = document.querySelector('[data-success-example]');
+          const independent = { field: getComputedStyle(demo.querySelector('input')).borderColor, saved: getComputedStyle(demo.querySelector('.btn.is-success')).backgroundColor, brand: getComputedStyle(demo.querySelector('.btn-primary')).backgroundColor };
+          field.focus();
+          const ring = getComputedStyle(field).boxShadow;
+          probe.remove();
+          for (const name of ['--primary', '--primary-rgb', '--primary-bright']) root.style.removeProperty(name);
+          return { initial, branded, independent, ring };
+        });
+        t(result.initial.border === result.initial.brand, `${theme}: success defaults preserve brand border`);
+        t(result.branded.border === 'rgb(104, 76, 214)' && result.branded.saved === 'rgb(169, 139, 255)', `${theme}: compatibility aliases follow brand overrides`);
+        t(result.independent.brand === result.branded.brand, `${theme}: independent success does not recolor brand action`);
+        const green = theme === 'dark' ? 'rgb(16, 185, 129)' : 'rgb(4, 120, 87)';
+        t(result.independent.field === green && result.independent.saved === green, `${theme}: independent success colors reach field and saved button`);
+        t(result.ring.includes('104, 76, 214'), `${theme}: focused success uses its semantic channel`);
+      }
+      return fails;
+    },
+  },
+  {
     // show/hide password: [data-pw-toggle] flips the sibling input type
     // password<->text and tracks aria-pressed.
     name: 'pw-toggle',
@@ -255,8 +334,10 @@ const CHECKS = [
       t(await email.evaluate((el) => el.classList.contains('is-error')), 'empty required email gets .is-error');
       t((await form.locator('.form-msg.error').count()) > 0, 'invalid submit shows the error summary');
       const desc = await email.getAttribute('aria-describedby');
-      t(!!desc && (await page.locator('#' + desc.split(' ').pop()).count()) > 0,
-        'invalid field is wired to its error node via aria-describedby');
+      const emailError = form.locator('.form-field', { has: email }).locator('.field-error');
+      const emailErrorId = await emailError.getAttribute('id');
+      t(desc === `vEmail-help ${emailErrorId}`,
+        'invalid field keeps its help description and appends its error');
       t((await page.evaluate(() => document.activeElement && document.activeElement.id)) === 'vName',
         'first invalid field (name) receives focus on a failed submit');
 
@@ -274,6 +355,28 @@ const CHECKS = [
       t((await form.locator('.form-msg.ok').count()) > 0, 'valid submit on a data-validate="confirm" action-less form shows the ok summary');
       t(await email.evaluate((el) => !el.classList.contains('is-error')), 'fixed email clears its error');
       t(await email.evaluate((el) => el.classList.contains('is-success')), 'a valid non-empty field gains .is-success (inline positive feedback)');
+      t(await email.getAttribute('aria-invalid') === null, 'corrected email clears invalid state');
+      t(await email.getAttribute('aria-describedby') === 'vEmail-help',
+        'corrected email keeps help without a stale error description');
+      t(await page.locator('#vName').getAttribute('aria-describedby') === null,
+        'corrected field with no help removes the empty description attribute');
+
+      await email.fill('invalid');
+      await email.blur();
+      t(await email.getAttribute('aria-describedby') === `vEmail-help ${emailErrorId}`,
+        'a later error reuses one error association');
+      await email.fill('valid@example.com');
+      t(await email.getAttribute('aria-describedby') === 'vEmail-help',
+        'live correction removes the later error without removing help');
+
+      // Author-owned sticky errors retain their visible message and association.
+      await email.fill('invalid');
+      await email.blur();
+      await emailError.evaluate((el) => { el.dataset.auto = '0'; });
+      await email.fill('valid@example.com');
+      t(await email.getAttribute('aria-describedby') === `vEmail-help ${emailErrorId}`,
+        'author-owned sticky error keeps its association');
+      t(await emailError.isVisible(), 'author-owned sticky error stays visible');
 
       // mismatched confirm -> data-match error
       await page.locator('#vPw2').fill('different');
@@ -355,6 +458,8 @@ const CHECKS = [
       await page.locator('#vPw').fill('hunter2hunter2');
       await page.locator('#vPw2').fill('hunter2hunter2');
       await submit.click();
+      // Native form data is constructed before the submitter disables.
+      await page.waitForFunction(() => document.querySelector('#signupDemo button[type="submit"]').disabled);
       t(await submit.isDisabled(), 'submit button disabled on a valid submit');
       t(await submit.evaluate((el) => el.classList.contains('is-loading')), 'submit button marked .is-loading');
       t(await submit.getAttribute('aria-busy') === 'true', 'submit button aria-busy=true while locked');

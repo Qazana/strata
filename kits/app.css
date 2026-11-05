@@ -1,4 +1,6 @@
 @import "./base.css";
+@import "./tabs.css" layer(qazana);
+@import "./accordion.css" layer(qazana);
 
 @layer qazana {
 
@@ -236,7 +238,7 @@ label.fld{display:block;font-size:var(--text-sm);color:var(--text-2);margin-bott
    adjacency. Neutralized inside the layout primitives, which own spacing via
    gap — prefer wrapping in .l-stack/.l-grid. */
 :is(.card,.feature-card,.plan,.pack) + :is(.card,.feature-card,.plan,.pack){margin-block-start:var(--space-4)}
-:is(.l-stack,.l-grid,.l-row) > :is(.card,.feature-card,.plan,.pack) + :is(.card,.feature-card,.plan,.pack){margin-block-start:0}
+:is(.l-stack,.l-grid,.l-row,.grid2) > :is(.card,.feature-card,.plan,.pack) + :is(.card,.feature-card,.plan,.pack){margin-block-start:0}
 .feature-card{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);padding:var(--space-5);transition:transform .2s,border-color .2s}
 .feature-card:hover{transform:translateY(-3px);border-color:var(--primary-line)}
 .feature-card .fi{width:40px;height:40px;border-radius:var(--radius);display:grid;place-items:center;background:rgb(var(--primary-rgb) / .1);color:var(--primary-bright);margin-bottom:var(--space-3_5)}
@@ -315,7 +317,8 @@ label.fld{display:block;font-size:var(--text-sm);color:var(--text-2);margin-bott
 :is(.modal-dialog,.drawer) .mf{display:flex;align-items:center;flex-wrap:wrap;justify-content:flex-end;gap:var(--space-2_5);padding:var(--space-3_5) var(--space-4_5);border-top:1px solid var(--line)}
 /* interactive modal: fixed scrim + focus-trapped dialog (JS via [data-modal-open]) */
 .modal-scrim{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;padding:var(--space-5);
-  background:rgb(0 0 0 / .55);backdrop-filter:blur(4px)}
+  background:var(--overlay);backdrop-filter:blur(4px)}
+.modal-scrim .modal-dialog{max-block-size:calc(100dvh - var(--space-5) * 2);overflow:auto}
 .modal-scrim.is-open{display:flex;animation:mscrim var(--dur-2) var(--ease)}
 .modal-scrim.is-open .modal-dialog{animation:mpop var(--dur-2) var(--ease)}
 @keyframes mscrim{from{opacity:0}to{opacity:1}}
@@ -430,13 +433,6 @@ button.menu-item{width:100%;border:0;background:transparent;font-family:var(--bo
 .panel{background:var(--surface-3);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow-pop);padding:var(--space-4);color:var(--text)}
 .panel.sm{padding:var(--space-1_5) var(--space-2_5);border-radius:var(--radius-sm);font-size:var(--text-xs);max-width:28ch}
 
-/* tabs */
-.tabs{display:flex;gap:var(--space-1);background:var(--surface-2);border-radius:var(--radius);padding:var(--space-1);width:max-content}
-.tab{padding:var(--space-2) var(--space-4);border-radius:var(--radius-sm);font-size:var(--text-md);font-weight:600;color:var(--text-2);cursor:pointer;border:0;background:transparent;transition:.18s}
-.tab.active{background:var(--primary);color:var(--on-primary)}
-.tab:not(.active):hover{color:var(--text)}
-.tabpanel{margin-top:var(--space-3_5);color:var(--text-2);font-size:var(--text-md);line-height:1.6}
-
 /* ---- table ---- */
 .tbl-wrap{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;overflow-x:auto}
 table.tbl{width:100%;border-collapse:collapse;font-size:var(--text-sm);min-width:560px}
@@ -512,6 +508,7 @@ table.tbl td b{color:var(--text);font-weight:600}
 .jobrow{display:flex;align-items:center;gap:var(--space-3);padding:var(--space-3) var(--space-3_5);background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);font-size:var(--text-md)}
 .jobrow .jt{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
 .jobrow .js{color:var(--muted);font-family:var(--mono);font-size:var(--text-xs);margin-inline-start:auto;white-space:nowrap}
+@media(max-width:640px){.jobrow{flex-wrap:wrap}.jobrow .js{white-space:normal;overflow-wrap:anywhere}.jobrow .jt{flex:1}}
 /* flat full-bordered terminal panel (indented as a child), no left-accent stripe */
 .joblog{font-family:var(--mono);font-size:var(--text-xs);color:var(--text-2);background:var(--surface-sunken);border:1px solid var(--line);
   border-radius:var(--radius);padding:var(--space-3) var(--space-3_5);margin:-2px 0 var(--space-2);margin-inline-start:var(--space-4_5);line-height:1.8}
@@ -632,7 +629,7 @@ table.tbl td b{color:var(--text);font-weight:600}
 [data-density="compact"] .pager a{padding:var(--space-1_5) var(--space-2_5);font-size:var(--text-xs)}
 [data-density="compact"] .btn-sm{padding:var(--space-1_5) var(--space-2_5);font-size:var(--text-xs)}
 [data-density="compact"] .demo{gap:var(--space-2_5)}
-[data-density="compact"] select,[data-density="compact"] .input-group input,[data-density="compact"] .combo-btn{font-size:var(--text-sm)}
+[data-density="compact"] .input-group input,[data-density="compact"] .combo-btn{font-size:var(--text-sm)}
 [data-density="compact"] .input-group{padding:0 var(--space-1_5) 0 var(--space-3)}
 [data-density="compact"] .input-group input{padding:var(--space-2) 0}
 [data-density="compact"] .combo-btn{padding:var(--space-2) var(--space-3)}
@@ -673,12 +670,12 @@ form > .field-row + .field-row{margin-top:var(--space-4)}
 .req{color:var(--danger);margin-inline-start:2px}
 .fhelp{font-size:var(--text-xs);color:var(--muted)}
 .ferr{font-size:var(--text-xs);color:var(--danger);display:flex;align-items:center;gap:var(--space-1_5)}
-.fok{font-size:var(--text-xs);color:var(--primary-bright)}
+.fok{font-size:var(--text-xs);color:var(--success-bright)}
 /* form-level validation summary (injected by [data-validate]) */
 .form-msg{display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-sm);font-weight:500;
   padding:var(--space-3);border-radius:var(--radius);border:1px solid transparent;margin-bottom:var(--space-4)}
 .form-msg.error{color:var(--danger);background:rgb(var(--danger-rgb) / .1);border-color:rgb(var(--danger-rgb) / .25)}
-.form-msg.ok{color:var(--primary-bright);background:rgb(var(--primary-rgb) / .1);border-color:rgb(var(--primary-rgb) / .25)}
+.form-msg.ok{color:var(--success-bright);background:rgb(var(--success-rgb) / .1);border-color:rgb(var(--success-rgb) / .25)}
 .counter{font-size:var(--text-xs);color:var(--muted);text-align:end;font-family:var(--mono)}
 select[multiple]{padding:var(--space-1_5);height:auto;color:var(--text)}
 select[multiple] option{padding:var(--space-1_5) var(--space-2_5);border-radius:var(--radius-sm);margin-bottom:2px;color:var(--text);background:var(--surface)}
@@ -934,7 +931,7 @@ html:not(.qz-tip-js) .tip:is(:hover,:focus-within)>.tip-pop{opacity:1;transform:
 .modal-dialog.warn .mh .mi{color:var(--warning);background:rgb(var(--warning-rgb) / .15)}
 .modal-dialog.info .mh .mi{color:var(--info);background:rgb(var(--info-rgb) / .15)}
 .modalrow{display:flex;flex-wrap:wrap;gap:var(--space-4);align-items:flex-start}
-.modalrow .modal-overlay{flex:1;min-width:300px;padding:var(--space-4_5)}
+.modalrow .modal-overlay{flex:1;min-width:min(300px,100%);padding:var(--space-4_5)}
 
 /* ============================================================
    Commonly-missed: skeletons, accordion, breadcrumb, avatars,
@@ -945,16 +942,6 @@ html:not(.qz-tip-js) .tip:is(:hover,:focus-within)>.tip-pop{opacity:1;transform:
 @keyframes shimmer{0%{background-position:100% 0}100%{background-position:-100% 0}}
 .skel-line{height:12px;margin-bottom:var(--space-2)}.skel-line.sh{width:60%}
 @media (prefers-reduced-motion: reduce){.skel{animation:none}}
-
-.acc{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden}
-.acc details{border-bottom:1px solid var(--line)}
-.acc details:last-child{border-bottom:0}
-.acc summary{padding:var(--space-3_5) var(--space-4);cursor:pointer;font-weight:600;font-size:var(--text-md);list-style:none;display:flex;justify-content:space-between;align-items:center}
-.acc summary::-webkit-details-marker{display:none}
-.acc summary::after{content:"";flex:0 0 auto;width:8px;height:8px;margin-inline-start:var(--space-3);
-  border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform var(--dur-2),border-color var(--dur-2)}
-.acc details[open] summary::after{transform:rotate(-135deg);border-color:var(--primary-bright)}
-.acc .acc-body{padding:0 var(--space-4) var(--space-3_5);color:var(--text-2);font-size:var(--text-md)}
 
 .crumbs{display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-sm);color:var(--muted)}
 .crumbs a{color:var(--text-2);text-decoration:none}.crumbs a:hover{color:var(--text)}
@@ -999,7 +986,7 @@ kbd,.kbd{font-family:var(--mono);font-size:var(--text-xs);background:var(--surfa
    ============================================================ */
 .btn.is-loading{pointer-events:none}
 .btn.is-loading .spin{margin-inline-end:1px}
-.btn.is-success{background:var(--primary-bright);color:var(--on-primary)}
+.btn.is-success{background:var(--success-bright);color:var(--on-success)}
 .spin.lg{width:20px;height:20px;border-width:3px}
 .spin.sm{width:11px;height:11px}
 .loading-block{min-height:120px;border:1px solid var(--line);border-radius:var(--radius);display:grid;place-items:center;
@@ -1070,8 +1057,13 @@ kbd,.kbd{font-family:var(--mono);font-size:var(--text-xs);background:var(--surfa
 .calendar-day:nth-child(7n){border-inline-end:0}
 .calendar-day:hover{background:var(--surface-2)}
 .calendar-day.is-other{background:var(--surface-sunken);color:var(--muted)}
-.calendar-day.is-selected,.calendar-day[aria-pressed=true]{box-shadow:inset 0 0 0 2px var(--primary)}
+.calendar-day.is-selected,.calendar-day[aria-pressed=true],
+.calendar-day:has(> .calendar-select[aria-pressed=true]){box-shadow:inset 0 0 0 2px var(--primary)}
 .calendar-day:focus-visible{outline:2px solid var(--primary);outline-offset:-2px}
+/* Separate the day action from event links; legacy day buttons remain supported. */
+.calendar-day:has(> .calendar-select){cursor:default}
+.calendar-select{width:100%;padding:0;border:0;background:transparent;color:inherit;font:inherit;text-align:inherit;cursor:pointer}
+.calendar-select:focus-visible{outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:calc(var(--focus-ring-width) * -1)}
 .calendar-top{display:flex;align-items:center;justify-content:space-between;gap:var(--space-1)}
 .calendar-num{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:var(--radius-pill);font-size:var(--text-sm);font-weight:600}
 .calendar-day.is-today .calendar-num{background:var(--primary);color:var(--on-primary)}
@@ -1103,6 +1095,12 @@ kbd,.kbd{font-family:var(--mono);font-size:var(--text-xs);background:var(--surfa
 .wstep.active .wlab,.wstep.done .wlab{color:var(--text)}
 .wline{flex:1;height:2px;background:var(--line);margin:0 var(--space-3);min-width:20px}
 .wline.done{background:var(--primary)}
+@media(max-width:640px){
+  .wsteps{align-items:flex-start;gap:var(--space-1)}
+  .wstep{flex:1;min-width:0;flex-direction:column;gap:var(--space-1);text-align:center}
+  .wstep .wlab{white-space:normal;overflow-wrap:anywhere}
+  .wline{flex:0 1 var(--space-3);min-width:0;margin:var(--space-3_5) 0 0}
+}
 .wpane{border:1px solid var(--line);border-radius:var(--radius);padding:var(--space-4_5);min-height:80px;color:var(--text-2);font-size:var(--text-md)}
 
 /* ============================================================
@@ -1125,6 +1123,9 @@ kbd,.kbd{font-family:var(--mono);font-size:var(--text-xs);background:var(--surfa
 .dual .track{position:absolute;top:15px;inset-inline-start:0;inset-inline-end:0;height:5px;border-radius:var(--radius-pill);background:var(--surface-2)}
 .dual .track i{position:absolute;top:0;bottom:0;background:var(--primary);border-radius:var(--radius-pill)}
 .dual-out{font-family:var(--mono);font-size:var(--text-sm);color:var(--primary-bright)}
+@media(forced-colors:active){
+  input[type=range].slider:focus-visible,.dual input[type=range]:focus-visible{outline:var(--focus-ring-width) solid Highlight;outline-offset:var(--focus-ring-offset)}
+}
 
 /* ============================================================
    Graphs & charts (SVG, dependency-free)
@@ -1358,6 +1359,7 @@ table.tbl input[type=checkbox]:checked::after{content:"";position:absolute;inset
 .split-item .si-name{font-weight:600;font-size:var(--text-md);display:flex;align-items:center;gap:var(--space-2)}
 .split-item.active .si-name{color:var(--primary-bright)}
 .split-item .si-sub{color:var(--muted);font-size:var(--text-xs);margin-top:3px}
+.split-item.active .si-sub{color:var(--text-2)}
 .split-detail{flex:1;min-width:0;padding:var(--space-4_5);overflow-y:auto}
 .split-detail .sd-pane[hidden]{display:none}
 @media(max-width:640px){.split{flex-direction:column}.split-list{flex-basis:auto;max-height:160px}.split-detail{min-height:0}.split .resizer{display:none}}

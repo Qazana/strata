@@ -1,0 +1,42 @@
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import postcss from 'postcss';
+import { generateButton } from '../scripts/button-css.mjs';
+const read = name => fs.readFileSync(fileURLToPath(new URL('../' + name, import.meta.url)), 'utf8');
+const sources = ['kits/app.css', 'kits/base.css', 'tokens/qazana.tokens.css'].map(read);
+const built = generateButton(...sources);
+assert.equal(read('kits/button.css'), built.css, 'button output must match source');
+assert.equal(read('tokens/button.tokens.css'), built.tokens, 'local token output must match source');
+const css = postcss.parse(built.css), tokens = postcss.parse(built.tokens);
+for (const tree of [css, tokens]) {
+  tree.walkRules(rule => assert.ok(rule.selector.includes('.qz-button') && !/:root|\bhtml\b|\bbody\b/.test(rule.selector), `unscoped selector ${rule.selector}`));
+  tree.walkDecls(d => {
+    for (const match of d.value.matchAll(/var\((--[\w-]+)/g)) assert.ok(built.names.includes(match[1]), `unresolved ${match[1]}`);
+  });
+  tree.walkAtRules(rule => assert.ok(['media', 'import'].includes(rule.name), `unexpected @${rule.name}`));
+}
+for (const variant of ['primary','secondary','danger','outline','ghost','link']) assert.ok(built.css.includes(`.qz-button-${variant}{`));
+assert.ok(built.css.includes('.qz-button[disabled],.qz-button.is-disabled'));
+assert.ok(built.css.includes('.qz-button:focus-visible'));
+const nativeRules = [];
+css.walkRules('button.qz-button', rule => nativeRules.push(rule));
+assert.equal(nativeRules.length, 1, 'one native button reset');
+const nativeValues = Object.fromEntries(nativeRules[0].nodes.map(d => [d.prop, d.value]));
+assert.deepEqual(nativeValues, { 'line-height': 'normal', appearance: 'auto' }, 'native UA geometry survives host bare resets');
+const anchorLeading = [];
+css.walkRules('.qz-button', rule => rule.walkDecls('line-height', d => anchorLeading.push(d.value)));
+assert.deepEqual(anchorLeading, ['var(--qz-button-leading-normal)'], 'anchors keep canonical body leading');
+assert.ok(built.css.includes('forced-colors: active'));
+assert.ok(built.css.includes('prefers-reduced-motion: reduce'));
+assert.ok(built.tokens.includes(':where(.qz-button)[data-qz-theme="light"]'));
+assert.ok(built.tokens.includes(':where(.qz-button):not([data-qz-theme="dark"])'));
+assert.ok(!built.tokens.includes('data-density'));
+assert.throws(() => generateButton(sources[0].replace('.btn-primary{', '.missing-primary{'), ...sources.slice(1)), /Missing button rule/);
+assert.throws(() => generateButton(sources[0].replace('var(--ctl-font)', 'var(--missing-token)'), ...sources.slice(1)), /Missing token/);
+const changed = generateButton(sources[0].replace('translateY(-2px)', 'translateY(-3px)'), ...sources.slice(1));
+assert.notEqual(changed.css, built.css, 'canonical component edits propagate');
+assert.ok(changed.css.includes('line-height:normal'), 'native reset survives source regeneration');
+const changedToken = generateButton(sources[0], sources[1], sources[2].replace('--btn-pad-y:13px', '--btn-pad-y:17px'));
+assert.ok(changedToken.tokens.includes('--qz-button-btn-pad-y:17px'), 'canonical token edits propagate');
+console.log('PASS button generation, isolation, variants, states, themes, dependency closure and source guards');

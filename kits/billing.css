@@ -80,11 +80,11 @@
 .billing .cycle button.on{background:var(--surface);color:var(--text);box-shadow:var(--shadow-sm)}
 .billing .cycle button:focus-visible{outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:var(--focus-ring-offset)}
 .billing .cycle .save{font-size:var(--text-2xs);font-weight:700;color:var(--primary-bright);
-  background:rgb(var(--primary-rgb) / .14);padding:2px var(--space-2);border-radius:var(--radius-pill)}
+  background:rgb(var(--primary-rgb) / .06);padding:2px var(--space-2);border-radius:var(--radius-pill)}
 
 /* plan grid + scoped .plan copy (laid out as a column so the CTA sinks to the foot) */
 .billing .plan-switch{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(240px,100%),1fr));
-  gap:var(--space-4);align-items:stretch}
+  gap:var(--space-4);align-items:start}
 .billing .plan{position:relative;display:flex;flex-direction:column;background:var(--surface);
   border:1px solid var(--line);border-radius:var(--radius-lg);padding:var(--space-5)}
 .billing .plan.popular{border-color:rgb(var(--primary-rgb) / .45)}
@@ -93,11 +93,11 @@
 .billing .plan .pname{font-weight:700;font-size:var(--text-base)}
 .billing .plan .price{font-family:var(--body);font-weight:800;font-size:2rem;letter-spacing:var(--tracking-tighter);margin:var(--space-2) 0 2px}
 .billing .plan .price small{font-family:var(--body);font-weight:500;font-size:var(--text-sm);color:var(--muted)}
-.billing .plan ul{list-style:none;margin:var(--space-3_5) 0 var(--space-4_5);display:flex;flex-direction:column;gap:var(--space-2)}
+.billing .plan ul{list-style:none;margin:var(--space-3_5) 0 var(--space-4_5);padding-inline-start:0;display:flex;flex-direction:column;gap:var(--space-2)}
 .billing .plan li{font-size:var(--text-md);color:var(--text-2);display:flex;gap:var(--space-2)}
 .billing .plan li::before{content:"\2713";color:var(--primary-bright)}
 .billing .plan .plan-foot{margin-top:auto}                 /* push CTA/switch to the bottom */
-.billing .plan .is-current{color:var(--muted);font-size:var(--text-sm);text-align:center;font-weight:600}
+.billing .plan .is-current{display:flex;align-items:center;justify-content:center;gap:var(--space-1);min-block-size:calc(var(--text-base) + var(--space-2_5) * 2);color:var(--muted);font-size:var(--text-sm);text-align:center;font-weight:600}
 
 /* price swap: both prices live in the markup; CSS shows the active cycle.
    The named target region carries data-cycle (set by [data-billing-cycle]).
@@ -246,10 +246,10 @@
    ============================================================================ */
 
 .billing .modal-scrim{position:fixed;inset:0;z-index:200;display:none;align-items:center;justify-content:center;
-  padding:var(--space-5);background:rgb(0 0 0 / .55);backdrop-filter:blur(4px)}
+  padding:var(--space-5);background:var(--overlay);backdrop-filter:blur(4px)}
 .billing .modal-scrim.is-open{display:flex;animation:b-mscrim var(--dur-2) var(--ease)}
 .billing .modal-dialog{background:var(--surface);border:1px solid var(--line);border-radius:var(--radius-lg);
-  max-width:460px;width:100%;overflow:hidden}
+  max-width:460px;width:100%;max-block-size:calc(100dvh - var(--space-5) * 2);overflow:auto}
 .billing .modal-scrim.is-open .modal-dialog{animation:b-mpop var(--dur-2) var(--ease)}
 .billing .modal-dialog .mh{display:flex;align-items:center;gap:var(--space-2_5);padding:var(--space-4_5) var(--space-4_5);
   border-bottom:1px solid var(--line);font-weight:700}

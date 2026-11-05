@@ -1,23 +1,24 @@
 ---
 title: React + Tailwind
-description: Use Qazana Strata in a React + Tailwind app.
+description: Use shared tokens and DOM behaviors in a React app.
 sidebar:
   order: 3
 ---
 
-For a React + Tailwind app, load the Qazana CSS/tokens globally and map
-the tokens into Tailwind so utilities and Qazana components share one palette.
+Load Strata globally in the browser entry. Keep server rendering code separate
+from the behavior import, which reads the DOM.
 
-## 1. Load tokens + kit globally
-
-```ts
-// app entry (e.g. main.tsx)
+```js
 import '@qazana/strata/tokens';
+import './theme.css';
 import '@qazana/strata/app';
 import '@qazana/strata';
 ```
 
-## 2. Map tokens in `tailwind.config.js`
+## Tailwind token mappings
+
+For Tailwind 3 projects using `tailwind.config.js`, map utilities to the same
+variables the components use:
 
 ```js
 export default {
@@ -27,7 +28,6 @@ export default {
         primary: 'var(--primary)',
         danger: 'var(--danger)',
         surface: 'var(--surface)',
-        // tints use the channel form:
         'primary-soft': 'rgb(var(--primary-rgb) / <alpha-value>)',
       },
       borderRadius: { DEFAULT: 'var(--radius)' },
@@ -36,25 +36,46 @@ export default {
 };
 ```
 
-Now `bg-primary` / `text-danger` / `rounded` resolve to the same tokens Qazana
-components use — no drift between Tailwind utilities and library components.
+This is the configuration-file syntax for Tailwind 3. Use your Tailwind version's
+theme configuration when it differs; the Strata token names stay the same.
+Avoid broad unlayered element styles that override Strata controls.
 
-## Existing `--wis-*` variables
+## Behaviors after rendering
 
-If the app already defines its own brand vars, alias the Qazana tokens to them
-in your theme so one source drives both:
+Call `window.QZ.init(root)` after React mounts new behavior markup. This wrapper
+initializes its subtree after each render:
 
-```css
-:root {
-  --primary: var(--wis-primary);
-  --danger: var(--wis-danger);
+```jsx
+import { useEffect, useRef } from 'react';
+
+export function StrataRegion({ children }) {
+  const root = useRef(null);
+  useEffect(() => {
+    window.QZ.init(root.current);
+  });
+  return <div ref={root}>{children}</div>;
 }
 ```
 
-## Behaviours in React
+Call init in a descendant too if it inserts controls without rerendering this
+wrapper. Repeated effects do not bind existing elements twice.
 
-The `data-*` behaviours attach on load to the rendered DOM, so they work with
-React-rendered markup. For content that mounts after first paint, the dismissable
-layers and command palette are delegated/global; component-scoped behaviours
-(combobox, tree) initialise on `DOMContentLoaded` — re-run their setup after a
-late mount if needed, or render the markup on the initial pass.
+If React or another component library owns state, use Strata's documented
+classes and ARIA relationships and omit the corresponding behavior hook.
+See [tabs](/components/disclosure/) for an example of this ownership choice.
+
+## Existing brand variables
+
+Alias the full color family in the product theme:
+
+```css
+:root {
+  --primary: var(--app-primary);
+  --primary-rgb: var(--app-primary-rgb);
+  --on-primary: var(--app-on-primary);
+  --primary-bright: var(--app-primary-bright);
+  --primary-bright-rgb: var(--app-primary-bright-rgb);
+}
+```
+
+See [Brand a product](/guides/brand-a-product/) for scheme and contrast checks.

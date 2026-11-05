@@ -6,7 +6,53 @@ change. Versions here always match what's published on the registry.
 
 ## Unreleased
 
+### Patch
+
+- Add a theme-aware background and curved line texture to the split auth brand
+  panel. Keep demo navigation above the split layout when kit styles load late.
+  Existing component markup and mobile behavior stay supported.
+- Refresh installation, theming, framework, and maintenance docs. Document
+  harness files and baseline review, and link the site to the canonical changelog.
+- Align marketing pricing actions and feature lists. Keep billing expansion local
+  to its plan, restore section gutters, and normalize FAQ and accordion spacing.
+- Preserve submitter payloads, block repeat submissions, validate dynamic fields,
+  and send date selections to autosave. Check both field identifiers before saving.
+- Fix module lightbox startup, compatibility globals, close URLs, and stacked
+  dialog focus. Ship Commerce scrims and keep tall dialogs and reply menus reachable.
+- Fix narrow layouts, demo labels and contrast, and forced-colors range focus.
+  Add Chromium/WebKit regressions, expand axe coverage, and install WebKit in CI.
+- Keep card margins out of legacy grids and give the rich-text editor demo its
+  own row.
+- Correct plain-HTML installation URLs; npm exports remain available for bundlers.
+
+- Tabs isolate nested groups, skip disabled items, normalize initial selection,
+  and follow orientation and text direction. Accordion chevrons and borders
+  stay scoped to their own details element.
+
+- Contract: stable behavior preserved. Match single-line input and select sizing
+  in comfortable and compact density, including auth forms.
+
 ### Minor
+
+- Add the themeable `--overlay` backdrop color, shared across modal kits.
+
+- Add component-only `tabs` and `accordion` CSS exports, underline and vertical
+  tab styles, count labels, manual tab activation, and accordion title, hint,
+  and metadata slots. Existing App kit classes remain supported.
+
+- Contract: stable addition. Add independent success feedback tokens with
+  compatibility defaults that alias the existing brand colors. Field success,
+  positive help, confirmation messages and saved buttons use the new family;
+  existing classes and behavior remain unchanged. Override all four success
+  tokens together when separating feedback from brand.
+
+- Calendar: add `.calendar-select` for a date button beside event links inside
+  a noninteractive `.calendar-day`. This fixes nested controls in the demo and
+  preserves existing day-button markup and states.
+
+- Experimental `@qazana/strata/button`: an opt-in unlayered button entry with
+  namespaced local tokens and six existing variants. Generated from canonical
+  button rules; no global reset, font loading or JavaScript.
 
 - Calendar: `.calendar` (+`data-view`) with `.calendar-dow`, `.calendar-grid`, `button.calendar-day` states, `.calendar-num`, `.calendar-count`, `.calendar-event` tones and `.calendar-more`. A month or week grid with events, distinct from the `.cal` date picker. First consumer is an editorial calendar that had drawn its own grid.
 - Admin shell: `.adminframe.full` (viewport-filling variant with `.adminmain`,
@@ -39,6 +85,22 @@ change. Versions here always match what's published on the registry.
 
 ### Patch
 
+- Context menus: existing `data-ctx` targets support keyboard opening,
+  navigation, disabled items, Escape and focus return. Menus fit the viewport
+  and reposition on resize. Documented separate ownership for modal, popover
+  and context-menu behavior. Contract: stable behavior preserved; patch fixes
+  keyboard accessibility and clipped menus without changing existing hooks.
+  Targets retain their existing semantics without an imposed role or expanded
+  state.
+
+- Forms: corrected fields remove auto-cleared errors from `aria-describedby`
+  while retaining help text and author-owned sticky errors. Field examples now
+  associate labels, help and error text explicitly. Contract: stable behavior
+  preserved; patch fixes stale validation descriptions.
+
+- Docs: retain the 16 October 2026 code review with reproduction details,
+  validation limits, and resolution status. All 18 findings are now closed.
+  Contract: stable behavior preserved.
 - Focus fixes where keyboard focus was invisible or close to it: `.switch`,
   `.check`/`.choice`, table select checkboxes, `.tree-row`, confirm-dialog
   buttons, `input.slider`, `.dual` range (now Firefox too), `.stepper` and

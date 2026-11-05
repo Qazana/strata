@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Standalone buttons</title>
+<link rel="stylesheet" href="../../kits/button.css">
+<style>
+/* Host styles for this demo. These are not part of the button entry. */
+.button-demo-region { padding: 1rem; background: Canvas; color: CanvasText; }
+.button-demo-light { color-scheme: light; }
+.button-demo-dark { color-scheme: dark; }
+.button-demo-auto { color-scheme: light dark; }
+.button-demo-host:focus-visible { outline: 2px solid LinkText; outline-offset: 2px; }
+.button-demo-heading[tabindex="-1"]:focus-visible,
+.button-demo-region[tabindex="-1"]:focus-visible { outline: none; }
+</style>
+<body>
+<h1 class="button-demo-heading">Standalone buttons (experimental)</h1>
+<p>This page loads only the button entry. The host supplies matching surfaces and focus styles for its own content.</p>
+<section class="button-demo-region button-demo-light" aria-label="Light buttons">
+<button class="qz-button qz-button-primary" data-qz-theme="light">Primary</button>
+<button class="qz-button qz-button-secondary" data-qz-theme="light">Secondary</button>
+<button class="qz-button qz-button-danger" data-qz-theme="light">Danger</button>
+<button class="qz-button qz-button-outline" data-qz-theme="light">Outline</button>
+<button class="qz-button qz-button-ghost" data-qz-theme="light">Ghost</button>
+<a class="qz-button qz-button-link" data-qz-theme="light" href="#dark">Link</a>
+<button class="qz-button qz-button-primary" data-qz-theme="light" disabled>Disabled</button>
+</section>
+<section id="dark" class="button-demo-region button-demo-dark" aria-label="Dark buttons">
+<button class="qz-button qz-button-primary" data-qz-theme="dark">Primary</button>
+<button class="qz-button qz-button-secondary" data-qz-theme="dark">Secondary</button>
+<button class="qz-button qz-button-danger" data-qz-theme="dark">Danger</button>
+<button class="qz-button qz-button-outline" data-qz-theme="dark">Outline</button>
+<button class="qz-button qz-button-ghost" data-qz-theme="dark">Ghost</button>
+<a class="qz-button qz-button-link" data-qz-theme="dark" href="#">Link</a>
+<button class="qz-button qz-button-primary" data-qz-theme="dark" disabled>Disabled</button>
+</section>
+<section class="button-demo-region button-demo-auto" aria-label="OS theme buttons">
+<button class="qz-button qz-button-primary">OS theme</button>
+</section>
+<button class="button-demo-host">Host control</button>
+</body></html>

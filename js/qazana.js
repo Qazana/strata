@@ -53,6 +53,31 @@ var QZ = (function () {
   };
 })();
 
+/* Internal overlay ownership is fixed at the start of each key event. Closing
+   the top layer must not hand that same Escape or Tab to the layer beneath it. */
+var QZoverlays = (function () {
+  var stack = [], owners = new WeakMap();
+  document.addEventListener('keydown', function (e) { owners.set(e, stack[stack.length - 1]); }, true);
+  function remove(el) { var i = stack.indexOf(el); if (i >= 0) stack.splice(i, 1); }
+  return {
+    open: function (el) { remove(el); stack.push(el); },
+    close: remove,
+    owns: function (el, e) { return owners.get(e) === el; },
+    focusables: function (el) {
+      return Array.prototype.slice.call(el.querySelectorAll(
+        'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),summary,video[controls],audio[controls],[tabindex]:not([tabindex="-1"])'
+      )).filter(function (node) { return node.tabIndex >= 0 && node.getClientRects().length > 0 && getComputedStyle(node).visibility !== 'hidden' && !node.closest('[inert]'); });
+    },
+    trap: function (el, e) {
+      var f = this.focusables(el), first = f[0], last = f[f.length - 1];
+      if (!first) { e.preventDefault(); return; }
+      if (!el.contains(document.activeElement)) { e.preventDefault(); (e.shiftKey ? last : first).focus(); }
+      else if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    },
+  };
+})();
+
 /* internal: make a rendered .cal-grid keyboard-operable — day cells become
    focusable button-role controls with a roving tabindex, arrow-key movement
    (←/→ one day, ↑/↓ one week), Home/End, and Enter/Space activation. Re-run
@@ -253,7 +278,12 @@ function QZdayNav(grid, label) {
       var i;for(i=0;i<grid.blanks;i++)g.appendChild(document.createElement('div'));
       grid.days.forEach(function(d){var e=document.createElement('div');e.className='day';e.textContent=d;
         if(Y===selY&&M===selM&&d===selD)e.classList.add('sel');
-        e.addEventListener('click',function(){selY=Y;selM=M;selD=d;inp.value=Y+'-'+QZcal.pad(M+1)+'-'+QZcal.pad(d);close(true);});
+        e.addEventListener('click',function(){
+          selY=Y;selM=M;selD=d;
+          var value=Y+'-'+QZcal.pad(M+1)+'-'+QZcal.pad(d),changed=inp.value!==value;
+          inp.value=value;close(true);
+          if(changed){inp.dispatchEvent(new Event('input',{bubbles:true}));inp.dispatchEvent(new Event('change',{bubbles:true}));}
+        });
         g.appendChild(e);});
       cal.appendChild(g);
       QZdayNav(g,function(d){return d+' '+grid.name+' '+Y;});
@@ -330,36 +360,63 @@ function QZdayNav(grid, label) {
   'use strict';
   var uid = 0;
   QZ.behavior('tabs', '[data-tabs]', function (group) {
-    var tabs = Array.prototype.slice.call(group.querySelectorAll('.tab'));
-    var panels = group.querySelectorAll('.tabpanel');
-    var bar = tabs[0] && tabs[0].parentElement; if (bar) bar.setAttribute('role', 'tablist');
-    function select(i) {
-      tabs.forEach(function (x, j) { x.classList.toggle('active', j === i); x.setAttribute('aria-selected', j === i ? 'true' : 'false'); x.tabIndex = j === i ? 0 : -1; });
-      panels.forEach(function (p, j) { p.hidden = j !== i; });
+    function owned(selector) {
+      return Array.prototype.filter.call(group.querySelectorAll(selector), function (el) { return el.closest('[data-tabs]') === group; });
     }
-    tabs.forEach(function (t, i) {
-      t.setAttribute('role', 'tab'); t.tabIndex = t.classList.contains('active') ? 0 : -1;
-      var p = panels[i];
-      if (p) {   // pair tab ↔ panel so AT can follow the relationship
-        if (!t.id) t.id = 'qz-tab-' + (++uid);
-        if (!p.id) p.id = 'qz-tabpanel-' + (++uid);
-        t.setAttribute('aria-controls', p.id);
-        p.setAttribute('role', 'tabpanel'); p.setAttribute('aria-labelledby', t.id);
-        // a Tab stop only when the panel holds no controls of its own (ARIA tabs
-        // pattern) — otherwise Tab goes straight to its first control
-        if (!p.hasAttribute('tabindex') && !p.querySelector('a[href],button,input,select,textarea,summary,iframe,[contenteditable="true"],[tabindex]:not([tabindex="-1"])')) p.tabIndex = 0;
+    var tabs = owned('.tab'), panels = owned('.tabpanel');
+    var bar = tabs[0] && tabs[0].parentElement;
+    if (!bar) return;
+    bar.setAttribute('role', 'tablist');
+    function enabled(tab) { return !tab.disabled && tab.getAttribute('aria-disabled') !== 'true' && !tab.hidden; }
+    function rove(tab) { tabs.forEach(function (t) { t.tabIndex = t === tab ? 0 : -1; }); }
+    function select(tab) {
+      if (!enabled(tab)) return;
+      tabs.forEach(function (t, i) {
+        var active = t === tab;
+        t.classList.toggle('active', active);
+        t.setAttribute('aria-selected', active ? 'true' : 'false');
+        if (panels[i]) panels[i].hidden = !active;
+      });
+      rove(tab);
+    }
+    tabs.forEach(function (tab, i) {
+      tab.setAttribute('role', 'tab');
+      if (tab.tagName === 'BUTTON' && !tab.hasAttribute('type')) tab.type = 'button';
+      var panel = panels[i];
+      if (panel) {
+        if (!tab.id) tab.id = 'qz-tab-' + (++uid);
+        if (!panel.id) panel.id = 'qz-tabpanel-' + (++uid);
+        tab.setAttribute('aria-controls', panel.id);
+        panel.setAttribute('role', 'tabpanel');
+        panel.setAttribute('aria-labelledby', tab.id);
+        if (!panel.hasAttribute('tabindex') && !panel.querySelector('a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),summary,iframe,[contenteditable="true"],[tabindex]:not([tabindex="-1"])')) panel.tabIndex = 0;
       }
-      t.addEventListener('click', function () { select(i); });
-      t.addEventListener('keydown', function (e) {
-        var n;
-        if (e.key === 'ArrowRight' || e.key === 'ArrowDown') n = (i + 1) % tabs.length;
-        else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') n = (i - 1 + tabs.length) % tabs.length;
-        else if (e.key === 'Home') n = 0;
-        else if (e.key === 'End') n = tabs.length - 1;
+      tab.addEventListener('click', function (event) {
+        if (!enabled(tab)) { event.preventDefault(); return; }
+        select(tab);
+      });
+      tab.addEventListener('keydown', function (event) {
+        if (!enabled(tab)) return;
+        if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); select(tab); return; }
+        var available = tabs.filter(enabled), at = available.indexOf(tab), next;
+        var vertical = bar.getAttribute('aria-orientation') === 'vertical';
+        var rtl = getComputedStyle(bar).direction === 'rtl';
+        if (event.key === 'Home') next = 0;
+        else if (event.key === 'End') next = available.length - 1;
+        else if (event.key === (vertical ? 'ArrowDown' : rtl ? 'ArrowLeft' : 'ArrowRight')) next = (at + 1) % available.length;
+        else if (event.key === (vertical ? 'ArrowUp' : rtl ? 'ArrowRight' : 'ArrowLeft')) next = (at - 1 + available.length) % available.length;
         else return;
-        e.preventDefault(); select(n); tabs[n].focus();
+        event.preventDefault();
+        var target = available[next];
+        if (group.getAttribute('data-tabs-activation') === 'manual') rove(target);
+        else select(target);
+        target.focus();
+        target.scrollIntoView({ block: 'nearest', inline: 'nearest' });
       });
     });
+    var initial = tabs.find(function (tab) { return enabled(tab) && (tab.classList.contains('active') || tab.getAttribute('aria-selected') === 'true'); }) || tabs.find(enabled);
+    if (initial) select(initial);
+    else tabs.forEach(function (tab, i) { tab.tabIndex = -1; tab.setAttribute('aria-selected', 'false'); tab.classList.remove('active'); if (panels[i]) panels[i].hidden = true; });
   });
 })();
 
@@ -390,21 +447,109 @@ function QZdayNav(grid, label) {
   });
 })();
 
-/* ---- context menu (right-click) + data table sort/select ---- */
+/* ---- context menu (right-click or keyboard) + data table sort/select ---- */
 (function () {
   'use strict';
-  var openMenu = null;   // one shared outside-click closer for whichever ctx menu is open
-  document.addEventListener('click', function () { if (openMenu) { openMenu.style.display = 'none'; openMenu = null; } });
+  var openMenu = null, opener = null, origin = null, placement = null;
+  var boundMenus = new WeakSet();
+  var savedSize = null;
+  function disabled(item) { return item.disabled || item.getAttribute('aria-disabled') === 'true'; }
+  function items(menu) {
+    return Array.prototype.slice.call(menu.querySelectorAll('.menu-item')).filter(function (item) {
+      return item.closest('.menu') === menu && !disabled(item) && item.getClientRects().length > 0 && getComputedStyle(item).visibility !== 'hidden';
+    });
+  }
+  function closeMenu(restore) {
+    if (!openMenu) return;
+    var menu = openMenu, trigger = opener;
+    openMenu = null;
+    menu.style.display = 'none';
+    menu.style.maxWidth = savedSize.maxWidth; menu.style.maxHeight = savedSize.maxHeight;
+    menu.style.minWidth = savedSize.minWidth; menu.style.overflowY = savedSize.overflowY;
+    opener = null; origin = null; placement = null; savedSize = null;
+    if (restore && trigger && trigger.isConnected) trigger.focus();
+  }
+  function positionMenu() {
+    if (!openMenu) return;
+    if (!origin.isConnected) { closeMenu(false); return; }
+    var edge = 8, width = Math.max(0, window.innerWidth - edge * 2), height = Math.max(0, window.innerHeight - edge * 2);
+    openMenu.style.maxWidth = width + 'px'; openMenu.style.maxHeight = height + 'px';
+    openMenu.style.minWidth = savedSize.minWidth;
+    openMenu.style.overflowY = 'auto';
+    openMenu.style.left = '0px'; openMenu.style.top = '0px';
+    if (openMenu.getBoundingClientRect().width > width) openMenu.style.minWidth = '0';
+    var rect = openMenu.getBoundingClientRect();
+    var anchor = origin.getBoundingClientRect();
+    var point = placement ? { x: anchor.left + placement.x, y: anchor.top + placement.y } : { x: anchor.left, y: anchor.bottom };
+    openMenu.style.left = Math.max(edge, Math.min(point.x, window.innerWidth - rect.width - edge)) + 'px';
+    openMenu.style.top = Math.max(edge, Math.min(point.y, window.innerHeight - rect.height - edge)) + 'px';
+  }
+  function showMenu(menu, zone, point) {
+    closeMenu(false);
+    origin = zone;
+    opener = zone.contains(document.activeElement) ? document.activeElement : zone;
+    var zoneRect = zone.getBoundingClientRect();
+    placement = point ? { x: point.x - zoneRect.left, y: point.y - zoneRect.top } : null;
+    savedSize = { maxWidth: menu.style.maxWidth, maxHeight: menu.style.maxHeight, minWidth: menu.style.minWidth, overflowY: menu.style.overflowY };
+    openMenu = menu; menu.style.display = 'block';
+    if (!menu.hasAttribute('role')) menu.setAttribute('role', 'menu');
+    if (!menu.hasAttribute('tabindex')) menu.tabIndex = -1;
+    menu.querySelectorAll('.menu-item').forEach(function (item) {
+      if (!item.hasAttribute('role')) item.setAttribute('role', 'menuitem');
+      item.tabIndex = -1;
+    });
+    positionMenu();
+    (items(menu)[0] || menu).focus({ preventScroll: true });
+  }
+  document.addEventListener('click', function () { closeMenu(false); });
+  document.addEventListener('focusin', function (event) {
+    if (openMenu && !openMenu.contains(event.target)) closeMenu(false);
+  });
+  document.addEventListener('keydown', function (event) {
+    if (!openMenu || !openMenu.contains(event.target)) return;
+    if (event.key === 'Escape') {
+      event.preventDefault(); event.stopImmediatePropagation(); closeMenu(true); return;
+    }
+    if (event.key === 'Tab') { closeMenu(true); return; }
+    var available = items(openMenu), index = available.indexOf(document.activeElement), next;
+    if (event.key === 'ArrowDown') next = available[(index + 1) % available.length];
+    else if (event.key === 'ArrowUp') next = available[index < 0 ? available.length - 1 : (index + available.length - 1) % available.length];
+    else if (event.key === 'Home') next = available[0];
+    else if (event.key === 'End') next = available[available.length - 1];
+    else if (event.key === 'Enter' || event.key === ' ') {
+      var item = event.target.closest('.menu-item');
+      if (item) { event.preventDefault(); event.stopPropagation(); if (!disabled(item)) item.click(); }
+      return;
+    } else return;
+    event.preventDefault(); event.stopPropagation();
+    if (next) next.focus();
+  }, true);
+  window.addEventListener('resize', positionMenu);
+  document.addEventListener('scroll', function (event) {
+    if (openMenu && event.target !== openMenu && !openMenu.contains(event.target)) positionMenu();
+  }, true);
   QZ.behavior('ctx', '[data-ctx]', function (zone) {
     var menu = document.querySelector(zone.dataset.ctx); if (!menu) return;
-    zone.addEventListener('contextmenu', function (e) {
-      e.preventDefault();
-      if (openMenu && openMenu !== menu) openMenu.style.display = 'none';
-      menu.style.display = 'block'; openMenu = menu;
-      menu.style.left = Math.min(e.clientX, window.innerWidth - 230) + 'px';
-      menu.style.top = e.clientY + 'px';
+    if (!zone.matches('button,a[href],input,select,textarea,[tabindex]')) zone.tabIndex = 0;
+    zone.setAttribute('aria-haspopup', 'menu');
+    if (menu.id) zone.setAttribute('aria-controls', menu.id);
+    zone.addEventListener('contextmenu', function (event) {
+      event.preventDefault(); showMenu(menu, zone, { x: event.clientX, y: event.clientY });
     });
-    menu.addEventListener('click', function (e) { e.stopPropagation(); menu.style.display = 'none'; if (openMenu === menu) openMenu = null; });
+    zone.addEventListener('keydown', function (event) {
+      if (event.key !== 'ContextMenu' && !(event.shiftKey && event.key === 'F10')) return;
+      event.preventDefault(); event.stopPropagation(); showMenu(menu, zone, null);
+    });
+    if (boundMenus.has(menu)) return;
+    boundMenus.add(menu);
+    menu.addEventListener('click', function (event) {
+      var item = event.target.closest('.menu-item');
+      if (item && disabled(item)) { event.preventDefault(); event.stopImmediatePropagation(); return; }
+      // Restore before the action runs, so a dialog opened by it records the
+      // original trigger rather than an item in a now-hidden menu.
+      if (openMenu === menu) closeMenu(true);
+    }, true);
+    menu.addEventListener('click', function (event) { event.stopPropagation(); });
   });
   // Horizontally-scrollable table wrappers must be keyboard-reachable so the
   // content can be scrolled without a pointer (WCAG 2.1.1). For any .tbl-wrap
@@ -812,44 +957,37 @@ function QZdayNav(grid, label) {
 (function () {
   'use strict';
   var openEl = null, lastFocus = null;
-  function focusables(c) {
-    return Array.prototype.slice.call(c.querySelectorAll(
-      'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'
-    )).filter(function (e) { return e.offsetParent !== null; });
-  }
-  function open(scrim) {
-    lastFocus = document.activeElement;
+  function open(scrim, trigger) {
+    if (openEl === scrim) return;
+    if (openEl) close();
+    lastFocus = document.activeElement !== document.body ? document.activeElement : trigger;
     scrim.removeAttribute('hidden');
     scrim.classList.add('is-open');
     QZscroll.lock();
+    QZoverlays.open(scrim);
     openEl = scrim;
-    var f = focusables(scrim);
+    var f = QZoverlays.focusables(scrim);
     if (!scrim.hasAttribute('tabindex')) scrim.tabIndex = -1;   // make the fallback focus() actually take
     (f[0] || scrim).focus();
   }
   function close() {
     if (!openEl) return;
     openEl.classList.remove('is-open');
+    QZoverlays.close(openEl);
     QZscroll.unlock();
     if (lastFocus && lastFocus.focus) lastFocus.focus();
     openEl = null;
   }
   document.addEventListener('click', function (e) {
     var trig = e.target.closest('[data-modal-open]');
-    if (trig) { var m = document.querySelector(trig.getAttribute('data-modal-open')); if (m) { e.preventDefault(); open(m); } return; }
+    if (trig) { var m = document.querySelector(trig.getAttribute('data-modal-open')); if (m) { e.preventDefault(); open(m, trig); } return; }
     if (e.target.closest('[data-modal-close]')) { close(); return; }
     if (openEl && e.target === openEl) close();   // click on the scrim (outside the dialog)
   });
   document.addEventListener('keydown', function (e) {
-    if (!openEl) return;
-    if (e.key === 'Escape') { close(); return; }
-    if (e.key === 'Tab') {
-      var f = focusables(openEl); if (!f.length) { e.preventDefault(); return; }
-      var first = f[0], last = f[f.length - 1];
-      if (!openEl.contains(document.activeElement)) { e.preventDefault(); first.focus(); return; }   // recapture escaped focus
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-    }
+    if (!openEl || !QZoverlays.owns(openEl, e)) return;
+    if (e.key === 'Escape') { e.preventDefault(); close(); return; }
+    if (e.key === 'Tab') QZoverlays.trap(openEl, e);
   });
 })();
 
@@ -905,30 +1043,26 @@ function QZdayNav(grid, label) {
   }
   function open() {
     var s = panel(); if (!s) return;
+    if (scrim) return;
     lastFocus = document.activeElement; scrim = s; s.removeAttribute('hidden'); s.classList.add('is-open');
     QZscroll.lock();
+    QZoverlays.open(s);
     var inp = s.querySelector('.cmdk-search input'); if (inp) { inp.value = ''; filter(s, ''); inp.focus(); }
   }
   function close() {
     if (!scrim) return;
     scrim.classList.remove('is-open'); QZscroll.unlock();
+    QZoverlays.close(scrim);
     if (lastFocus && lastFocus.focus) lastFocus.focus(); scrim = null;
   }
   document.addEventListener('keydown', function (e) {
-    if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) { e.preventDefault(); scrim ? close() : open(); return; }
-    if (!scrim) return;
-    if (e.key === 'Escape') { close(); return; }
-    if (e.key === 'Tab') {   // contain focus in the palette while it's open
-      var f = Array.prototype.slice.call(scrim.querySelectorAll(
-        'a[href],button:not([disabled]),input:not([disabled]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])'
-      )).filter(function (el) { return el.offsetParent !== null; });
-      if (!f.length) { e.preventDefault(); return; }
-      var first = f[0], last = f[f.length - 1];
-      if (!scrim.contains(document.activeElement)) { e.preventDefault(); first.focus(); return; }
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-      return;
+    if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+      if (scrim && !QZoverlays.owns(scrim, e)) return;
+      e.preventDefault(); scrim ? close() : open(); return;
     }
+    if (!scrim || !QZoverlays.owns(scrim, e)) return;
+    if (e.key === 'Escape') { e.preventDefault(); close(); return; }
+    if (e.key === 'Tab') { QZoverlays.trap(scrim, e); return; }
     if (e.key === 'ArrowDown') { e.preventDefault(); setActive(scrim, activeIndex(scrim) + 1); }
     else if (e.key === 'ArrowUp') { e.preventDefault(); setActive(scrim, activeIndex(scrim) - 1); }
     else if (e.key === 'Enter') { var vis = visible(scrim), i = activeIndex(scrim); if (vis[i]) { e.preventDefault(); vis[i].click(); } }
@@ -996,8 +1130,8 @@ function QZdayNav(grid, label) {
    rules plug into the SAME pipeline via the native setCustomValidity seam: set a
    custom validity on the control and this engine renders inp.validationMessage
    through the field's error node. On a VALID submit the form submits normally; a
-   form with no action (or action="#") instead shows an inline .form-msg.ok and
-   stays put — for demos and forms whose submit is handled in JS. ---- */
+   form with no action (or action="#") stays put. data-validate="confirm" also
+   shows an inline .form-msg.ok for demos and forms handled in JS. ---- */
 (function () {
   'use strict';
   var uid = 0;
@@ -1044,7 +1178,13 @@ function QZdayNav(grid, label) {
     var f = fieldOf(inp), err = errNode(inp, false);
     inp.classList.remove('is-error'); inp.removeAttribute('aria-invalid');
     if (f.classList.contains('form-field')) f.classList.remove('is-error');
-    if (err && err.dataset.auto !== '0') err.style.display = 'none';   // leave author-written sticky errors alone
+    if (err && err.dataset.auto !== '0') {
+      err.style.display = 'none';
+      var descriptions = (inp.getAttribute('aria-describedby') || '').split(/\s+/).filter(Boolean);
+      descriptions = descriptions.filter(function (id) { return id !== err.id; });
+      if (descriptions.length) inp.setAttribute('aria-describedby', descriptions.join(' '));
+      else inp.removeAttribute('aria-describedby');
+    } // leave author-written sticky errors and their association alone
   }
   // valid + non-empty → positive feedback (.is-success) for text-like controls only;
   // never checkbox/radio (value is "on" regardless of checked) or selects, and never
@@ -1059,16 +1199,15 @@ function QZdayNav(grid, label) {
   }
   function realAction(form) { var a = (form.getAttribute('action') || '').trim(); return !!a && a !== '#'; }
   function setup(form) {
-    var fields = Array.prototype.slice.call(form.querySelectorAll('input, textarea, select'))
-      .filter(function (i) { return i.type !== 'submit' && i.type !== 'button' && i.type !== 'hidden' && !i.disabled; });
+    function eligible(inp) { return inp.form === form && /^(INPUT|TEXTAREA|SELECT)$/.test(inp.tagName) && inp.willValidate; }
+    function fields() { return Array.prototype.slice.call(form.elements).filter(eligible); }
     form.setAttribute('novalidate', '');                                   // we own the UX, not the native bubbles
-    fields.forEach(function (inp) {
-      inp.addEventListener('blur', function () { check(inp); });            // punish late: only after the field is touched
-      inp.addEventListener('input', function () { if (inp.classList.contains('is-error')) check(inp); }); // reward early
-    });
+    form.addEventListener('blur', function (e) { if (eligible(e.target)) check(e.target); }, true);
+    form.addEventListener('input', function (e) { if (eligible(e.target) && e.target.classList.contains('is-error')) check(e.target); });
     form.addEventListener('submit', function (e) {
+      if (e.submitter && e.submitter.formNoValidate) return;
       var bad = 0, first = null;
-      fields.forEach(function (inp) { if (check(inp)) { bad++; if (!first) first = inp; } });
+      fields().forEach(function (inp) { if (check(inp)) { bad++; if (!first) first = inp; } });
       var msg = form.querySelector('.form-msg');
       if (bad) {
         e.preventDefault();
@@ -1192,14 +1331,15 @@ function QZdayNav(grid, label) {
     var label = document.querySelector(group.getAttribute('data-variant-label') || '__none__');
     group.setAttribute('role', 'radiogroup');
     function select(opt) {
-      if (opt.getAttribute('aria-disabled') === 'true') return;
-      opts.forEach(function (o) { o.setAttribute('aria-checked', 'false'); o.classList.remove('on'); });
+      if (!opt || opt.disabled || opt.getAttribute('aria-disabled') === 'true') return;
+      opts.forEach(function (o) { o.setAttribute('aria-checked', 'false'); o.classList.remove('on'); o.tabIndex = -1; });
       opt.setAttribute('aria-checked', 'true'); opt.classList.add('on');
+      opt.tabIndex = 0;
       if (label) label.textContent = opt.getAttribute('data-value') || opt.textContent.trim();
     }
-    function focusable() { return opts.filter(function (o) { return o.getAttribute('aria-disabled') !== 'true'; }); }
-    opts.forEach(function (opt, i) {
-      opt.tabIndex = (i === 0) ? 0 : -1;
+    function focusable() { return opts.filter(function (o) { return !o.disabled && o.getAttribute('aria-disabled') !== 'true'; }); }
+    opts.forEach(function (opt) {
+      opt.tabIndex = -1;
       opt.addEventListener('click', function () { select(opt); opt.focus(); });
       opt.addEventListener('keydown', function (e) {
         var fo = focusable(), idx = fo.indexOf(opt), n = null;
@@ -1207,10 +1347,12 @@ function QZdayNav(grid, label) {
         else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') n = fo[(idx - 1 + fo.length) % fo.length];
         else if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); select(opt); return; }
         else return;
-        e.preventDefault(); opts.forEach(function (o) { o.tabIndex = -1; }); n.tabIndex = 0; n.focus(); select(n);
+        e.preventDefault(); if (n) { select(n); n.focus(); }
       });
     });
-    var first = focusable()[0]; if (first && first.getAttribute('aria-checked') !== 'true') select(first);
+    var available = focusable();
+    var initial = available.find(function (opt) { return opt.getAttribute('aria-checked') === 'true'; }) || available[0];
+    if (initial) select(initial);
   }
   QZ.behavior('variant', '[data-variant]', setupVariant);
 })();
@@ -1482,11 +1624,12 @@ function QZdayNav(grid, label) {
       '<button class="lb-btn lb-close" type="button" aria-label="Close">✕</button>' +
       '<div class="lb-bar"><span class="lb-cap"></span><span class="lb-count"></span></div>';
     document.body.appendChild(lb);
+    lb.querySelectorAll('.lb-btn').forEach(function (button) { button.tabIndex = 0; });
     stage = lb.querySelector('.lb-stage'); capEl = lb.querySelector('.lb-cap'); countEl = lb.querySelector('.lb-count');
     prevB = lb.querySelector('.lb-prev'); nextB = lb.querySelector('.lb-next');
     prevB.addEventListener('click', function () { go(-1); });
     nextB.addEventListener('click', function () { go(1); });
-    lb.querySelector('.lb-close').addEventListener('click', close);
+    lb.querySelector('.lb-close').addEventListener('click', function () { close(); });
     lb.addEventListener('click', function (e) { if (e.target === lb) close(); });
   }
 
@@ -1504,11 +1647,14 @@ function QZdayNav(grid, label) {
   function go(d) { idx = (idx + d + items.length) % items.length; render(); writeHash('replace'); }
 
   function open(list, i, trigger, gid, mode) {
-    items = list; idx = i; opener = trigger || null; curGid = gid || null;
+    items = list; idx = i; curGid = gid || null;
     if (!lb) build();
+    var wasOpen = lb.classList.contains('open');
+    if (!wasOpen) opener = trigger || document.activeElement;
     if (mode === 'push') prevHash = location.hash;     // remember the page's pre-open hash to restore on close
     render(); lb.classList.add('open');
-    QZscroll.lock();
+    if (!wasOpen) QZscroll.lock();
+    QZoverlays.open(lb);
     document.addEventListener('keydown', onKey);
     lb.querySelector('.lb-close').focus();
     writeHash(mode);
@@ -1518,9 +1664,10 @@ function QZdayNav(grid, label) {
     open(list, Math.max(0, Math.min(list.length - 1, i || 0)), trigger, group.id || null, mode);
   }
   function close(fromHash) {
-    if (!lb) return;
+    if (!lb || !lb.classList.contains('open')) return;
     lb.classList.remove('open'); stage.textContent = '';
     QZscroll.unlock();
+    QZoverlays.close(lb);
     document.removeEventListener('keydown', onKey);
     if (!fromHash && curGid && history.replaceState && parseHash()) {   // user-closed → restore the pre-open hash, not a bare path
       syncing = true; history.replaceState(null, '', location.pathname + location.search + (prevHash || '')); syncing = false;
@@ -1529,15 +1676,11 @@ function QZdayNav(grid, label) {
     if (opener && opener.focus) opener.focus();
   }
   function onKey(e) {
-    if (e.key === 'Escape') close();
+    if (!QZoverlays.owns(lb, e)) return;
+    if (e.key === 'Escape') { e.preventDefault(); close(); }
     else if (e.key === 'ArrowRight') go(1);
     else if (e.key === 'ArrowLeft') go(-1);
-    else if (e.key === 'Tab') {
-      var f = lb.querySelectorAll('.lb-btn'); if (!f.length) return;
-      var first = f[0], last = f[f.length - 1];
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-    }
+    else if (e.key === 'Tab') QZoverlays.trap(lb, e);
   }
   function collect(group) {
     var els = group.querySelectorAll('[data-lightbox-item],a[href]');
@@ -1571,7 +1714,7 @@ function QZdayNav(grid, label) {
     });
     fromHash(null);                                        // cold load: open directly from a shared link
   }
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+  QZ.behavior('lightbox', 'body', init);
 })();
 
 /* ---- shared storage helper: namespaced ("qz:"), scope-aware (local | session),
@@ -1673,11 +1816,11 @@ function QZready(fn) { if (document.readyState === 'loading') document.addEventL
   var SENSITIVE_SUB = /password|passwd|passphrase|passcode|creditcard|debitcard|cardnumber|cardno|cvv|cvc|ssn|secret|iban|taxid/;
   function keyOf(el) { return el.name || el.id || ''; }
   function isSensitive(el) {
-    var k = keyOf(el).toLowerCase();
-    if (SENSITIVE_SUB.test(k)) return true;
-    var tokens = keyOf(el).replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase().split(/[^a-z0-9]+/);
-    for (var i = 0; i < tokens.length; i++) if (SENSITIVE[tokens[i]]) return true;
-    return false;
+    return [el.name || '', el.id || ''].some(function (identifier) {
+      if (SENSITIVE_SUB.test(identifier.toLowerCase())) return true;
+      var tokens = identifier.replace(/([a-z])([A-Z])/g, '$1 $2').toLowerCase().split(/[^a-z0-9]+/);
+      return tokens.some(function (token) { return !!SENSITIVE[token]; });
+    });
   }
   function persistable(form) {
     return Array.prototype.slice.call(form.querySelectorAll('input, textarea, select')).filter(function (el) {
@@ -1699,7 +1842,15 @@ function QZready(fn) { if (document.readyState === 'loading') document.addEventL
     // version + TTL gate: drop a foreign-schema or expired draft rather than restoring it
     var fresh = blob && blob.v === VERSION && (!blob.exp || blob.exp > Date.now());
     if (blob && !fresh) QZstore.remove(storeKey, scope);
-    var saved = fresh ? blob.d : null;
+    var saved = fresh && blob.d && typeof blob.d === 'object' ? blob.d : null;
+    if (saved && typeof saved === 'object') {
+      // Purge fields that an older version saved under a harmless name even
+      // though their ID (or a newly added opt-out) marks them as sensitive.
+      Array.prototype.forEach.call(form.querySelectorAll('input, textarea, select'), function (el) {
+        if (fields.indexOf(el) < 0) delete saved[keyOf(el)];
+      });
+      QZstore.set(storeKey, JSON.stringify(blob), scope);
+    }
     if (saved) fields.forEach(function (el) {
       var k = keyOf(el); if (!(k in saved)) return;
       if (el.type === 'checkbox') el.checked = !!saved[k];
@@ -1710,7 +1861,7 @@ function QZready(fn) { if (document.readyState === 'loading') document.addEventL
 
     function snapshot() {
       var data = {};
-      fields.forEach(function (el) {
+      persistable(form).forEach(function (el) {
         var k = keyOf(el);
         if (el.type === 'checkbox') data[k] = el.checked;
         else if (el.type === 'radio') { if (el.checked) data[k] = el.value; }
@@ -1775,9 +1926,9 @@ function QZready(fn) { if (document.readyState === 'loading') document.addEventL
   QZ.behavior('char-count', '[data-char-count]', setup);
 })();
 
-/* ---- submit lock: a form [data-submit-lock] disables its submit button and marks it
-   .is-loading + aria-busy once a submit passes validation, so a slow round-trip can't
-   be double-submitted. Gated on the form being valid (no .is-error painted by
+/* ---- submit lock: [data-submit-lock] marks the actual submitter .is-loading +
+   aria-busy and blocks repeat submissions. Submit buttons disable after the
+   submit event so their payload is preserved. Gated on the form being valid (no .is-error painted by
    [data-validate], and native checkValidity). Unlock seams so a JS-handled submit that
    never navigates can't stay locked forever: a numeric value (data-submit-lock="1200")
    auto-unlocks after that many ms; the form also unlocks on a `qz:unlock` event it can
@@ -1785,17 +1936,36 @@ function QZready(fn) { if (document.readyState === 'loading') document.addEventL
 (function () {
   'use strict';
   function setup(form) {
-    var btn = form.querySelector('button[type=submit], input[type=submit], button:not([type])');
-    if (!btn) return;
-    function unlock() { btn.disabled = false; btn.classList.remove('is-loading'); btn.removeAttribute('aria-busy'); }
-    form.addEventListener('submit', function () {
-      if (form.querySelector('.is-error') || !form.checkValidity()) return;     // validation will block this submit
-      btn.disabled = true; btn.classList.add('is-loading'); btn.setAttribute('aria-busy', 'true');
+    var pending = false, btn = null, disabled = [], disableTimer, unlockTimer;
+    function buttons() { return Array.prototype.slice.call(form.elements).filter(function (el) { return el.type === 'submit' || el.type === 'image'; }); }
+    function unlock() {
+      clearTimeout(disableTimer); clearTimeout(unlockTimer);
+      if (!pending) return;
+      pending = false;
+      disabled.forEach(function (el) { el.disabled = false; }); disabled = [];
+      if (btn) { btn.classList.remove('is-loading'); btn.removeAttribute('aria-busy'); }
+      btn = null;
+    }
+    form.addEventListener('submit', function (e) {
+      if (pending) { e.preventDefault(); e.stopImmediatePropagation(); }
+    }, true);
+    form.addEventListener('submit', function (e) {
+      var invalid = Array.prototype.some.call(form.elements, function (el) { return el.willValidate && el.classList.contains('is-error'); });
+      if (!(e.submitter && e.submitter.formNoValidate) && (invalid || !form.checkValidity())) return;
+      pending = true;
+      btn = e.submitter || buttons().find(function (el) { return !el.disabled; });
+      if (btn) { btn.classList.add('is-loading'); btn.setAttribute('aria-busy', 'true'); }
+      // Keep the submitter successful through the submit event and the browser's
+      // native form-data construction. The pending guard already blocks re-entry.
+      disableTimer = setTimeout(function () {
+        disabled = buttons().filter(function (el) { return !el.disabled; });
+        disabled.forEach(function (el) { el.disabled = true; });
+      }, 0);
       var ms = parseInt(form.getAttribute('data-submit-lock'), 10);
-      if (ms > 0) setTimeout(unlock, ms);
+      if (ms > 0) unlockTimer = setTimeout(unlock, ms);
     });
     form.addEventListener('qz:unlock', unlock);                                  // explicit seam for JS handlers
-    form.addEventListener('input', function () { if (btn.disabled) unlock(); }); // editing after a lock frees it
+    form.addEventListener('input', unlock);                                    // editing after a lock frees it
     window.addEventListener('pageshow', unlock);
   }
   QZ.behavior('submit-lock', '[data-submit-lock]', setup);
@@ -1825,23 +1995,27 @@ function QZready(fn) { if (document.readyState === 'loading') document.addEventL
     document.body.appendChild(dlg);
     msgEl = dlg.querySelector('.qz-confirm-msg');
     okB = dlg.querySelector('.qz-confirm-ok'); cancelB = dlg.querySelector('.qz-confirm-cancel');
+    okB.tabIndex = cancelB.tabIndex = 0;                    // explicit button tab stops work across browser engines
     okB.addEventListener('click', accept);
     cancelB.addEventListener('click', dismiss);
     dlg.addEventListener('click', function (e) { if (e.target === dlg) dismiss(); });
   }
   function open(trig) {
     if (!dlg) build();
-    pending = trig; lastFocus = document.activeElement;
+    if (pending) dismiss();
+    pending = trig; lastFocus = trig;
     msgEl.textContent = trig.getAttribute('data-qz-confirm') || QZi18n.confirm.title;
     okB.textContent = trig.getAttribute('data-qz-confirm-ok') || QZi18n.confirm.ok;
     cancelB.textContent = trig.getAttribute('data-qz-confirm-cancel') || QZi18n.confirm.cancel;
     okB.classList.toggle('danger', trig.hasAttribute('data-qz-confirm-danger'));
     dlg.hidden = false; dlg.classList.add('is-open');
     QZscroll.lock();
+    QZoverlays.open(dlg);
     cancelB.focus();                                   // default focus on the safe choice
   }
   function teardown() {
     dlg.classList.remove('is-open'); dlg.hidden = true; QZscroll.unlock();
+    QZoverlays.close(dlg);
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }
   function dismiss() { if (!pending) return; pending = null; teardown(); }
@@ -1861,13 +2035,9 @@ function QZready(fn) { if (document.readyState === 'loading') document.addEventL
     open(trig);
   }, true);                                            // capture: beat the element's own handlers until confirmed
   document.addEventListener('keydown', function (e) {
-    if (!pending) return;
-    if (e.key === 'Escape') { dismiss(); return; }
-    if (e.key === 'Tab') {
-      var first = cancelB, last = okB;
-      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
-      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
-    }
+    if (!pending || !QZoverlays.owns(dlg, e)) return;
+    if (e.key === 'Escape') { e.preventDefault(); dismiss(); return; }
+    if (e.key === 'Tab') QZoverlays.trap(dlg, e);
   });
 })();
 
@@ -1979,4 +2149,6 @@ function QZready(fn) { if (document.readyState === 'loading') document.addEventL
                      available under their historical names too. ---- */
 QZ.cal = QZcal; QZ.store = QZstore; QZ.i18n = QZi18n; QZ.scroll = QZscroll; QZ.q = QZq; QZ.ready = QZready;
 window.QZ = QZ;
+window.QZcal = QZcal; window.QZstore = QZstore; window.QZi18n = QZi18n;
+window.QZscroll = QZscroll; window.QZq = QZq; window.QZready = QZready;
 QZready(function () { QZ.init(); });

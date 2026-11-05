@@ -63,11 +63,15 @@ Breadcrumb, prose article, "was this helpful?" feedback, and related articles:
 
 ## Usage
 
+Copy the package assets as described in [Install](/getting-started/install/),
+then load their public URLs:
+
 ```html
 <!-- docs / help page -->
-<link rel="stylesheet" href="@qazana/strata/content">
-<link rel="stylesheet" href="@qazana/strata/docs">
-<script type="module" src="@qazana/strata"></script>
+<link rel="stylesheet" href="/vendor/strata/tokens/qazana.tokens.css">
+<link rel="stylesheet" href="/vendor/strata/kits/content.css">
+<link rel="stylesheet" href="/vendor/strata/kits/docs.css">
+<script type="module" src="/vendor/strata/js/qazana.js"></script>
 
 <body class="docs">
   <div class="doc-shell">

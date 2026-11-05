@@ -1,41 +1,54 @@
 ---
 title: Contributing
-description: The maintenance contract for adding to or changing the library.
+description: Maintain the shared library, its public API, and its release checks.
 sidebar:
   order: 3
 ---
 
-These are the non-negotiables from the repo's `CLAUDE.md` — the contract for
-keeping the library reusable.
+[AGENTS.md](https://github.com/Qazana/strata/blob/master/AGENTS.md) contains the
+maintenance rules. Read the
+[API contract](https://github.com/Qazana/strata/blob/master/docs/API_CONTRACT.md)
+before changing exported or documented surfaces.
 
-## Non-negotiables
+## Component rules
 
-1. **Tokens are the single source of truth.** Never hardcode a colour, radius,
-   spacing, shadow, font or duration — reference a token.
-2. **Brand colours are themeable and semantic** — `--primary`, `--danger`, … ;
-   never `--green`/`--coral`. Alpha tints use the channel form
-   `rgb(var(--primary-rgb) / .12)`.
-3. **No domain-specific components.** Product vocabulary stays in the product repo.
-4. **Vanilla + `data-*` behaviours.** No framework dependency; no build step to consume.
-5. **Accessibility + motion.** Keyboard-operable with sensible ARIA; every
-   animation respects `prefers-reduced-motion`.
-6. **Type discipline.** `--display` for large headings/brand only; everything else
-   `--body`; data/code `--mono`.
+Use semantic tokens for colors, spacing, type, radii, shadows, and motion.
+Keep color/channel/foreground pairs together. Route control sizing through
+density tokens. Use `--display` for large headings, `--body` for controls and
+copy, and `--mono` for data or code.
 
-## When you change anything
+Keep components generic. Product vocabulary and business logic belong in the
+consuming repo. Behaviors attach through `data-*` hooks, work with a keyboard,
+and respect `prefers-reduced-motion`. Reuse existing focus and tooltip helpers
+where they fit; document and test the interaction each component needs.
 
-- Update the **demo** (`demo/`) so the change is visible.
-- Update the relevant **doc** (and this site).
-- Keep `tokens/tokens.json` in sync with `tokens/qazana.tokens.css`.
-- **Bump the version** (semver: patch = fix, minor = additive component/token,
-  major = rename/removal/breaking token change).
-- Verify **both schemes and both densities** with `npm run harness` before committing.
+## Updating the library
 
-## Adding a component — decision rules
+- Update the relevant demo and reference in `docs/`, plus this site's examples.
+- When tokens change, update `tokens/tokens.json` and run
+  `node scripts/figma-tokens.mjs`.
+- After changing canonical button rules or tokens, run `npm run build:button`.
+- Record the change under **Unreleased** in `CHANGELOG.md`, with its semver
+  classification and public contract impact.
 
-- **Needs behaviour?** Extend a shared primitive; don't inline focus/keyboard logic.
-- **Introduces a fill?** Add/confirm its `--on-*` foreground.
-- **Has sizing?** Route padding/font through density tokens.
-- **Domain-specific?** Then it doesn't belong here.
+Bump the package version only when tagging and publishing a release.
 
-See [Philosophy & lessons](/reference/philosophy/) for the *why*.
+For a new kit, add its CSS and package export, a demo, documentation, and coverage
+in `harness/_pages.mjs`. Scope kit-specific rules to avoid collisions with other
+kits. Check the documented layer behavior when adding a standalone component.
+
+## Verification
+
+Run `npm run test` before committing. For layout changes, also run
+`npm run harness` and `npm run visual`, then inspect the affected UI at desktop
+and phone widths. Review comfortable and compact density separately; the render
+harness does not sweep both densities.
+
+Commit harness scripts, CI configuration, and reviewed visual baselines. Keep
+generated captures, diffs, and logs ignored. Follow the
+[harness guide](https://github.com/Qazana/strata/blob/master/harness/README.md)
+when reviewing or updating baselines.
+
+For docs changes, run `npm --prefix docs-site run build`. It syncs demos and
+assets and generates the token reference. Edit the sources rather than copies
+under `docs-site/public/` or the generated token page.

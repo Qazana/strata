@@ -62,6 +62,7 @@
   --surface-3:#161616;            /* popovers / tooltips / menus */
   --surface-sunken:#0c0c0c;       /* recessed code / terminal / log panels */
   --surface-active:#17171b;       /* focused-field activation lift */
+  --overlay:rgb(0 0 0 / .55);     /* modal backdrop, shared by both schemes */
   --skeleton:#262626;             /* skeleton shimmer band (grey, per scheme) */
   --border-rgb:255 255 255;       /* line/border channel — flips per scheme */
   --line:rgb(var(--border-rgb) / .08);
@@ -74,6 +75,10 @@
   --primary:#2dd4bf;         --primary-rgb:45 212 191;       /* brand / primary action (dark scheme: teal; light overrides to coral) */
   --primary-bright:#5eead4;  --primary-bright-rgb:94 234 212; /* hover / emphasis (on dark) */
   --on-primary:#04241f;                                      /* text on a primary fill (dark teal needs dark ink) */
+  /* Success defaults preserve existing feedback colors; override independently
+     from brand with the solid, channel, emphasis and foreground together. */
+  --success:var(--primary); --success-rgb:var(--primary-rgb);
+  --success-bright:var(--primary-bright); --on-success:var(--on-primary);
   --danger:#f43f5e;          --danger-rgb:244 63 94;         /* destructive — kept distinct from coral */
   --warning:#ffa726;         --warning-rgb:255 167 38;
   --info:#5aa9ff;            --info-rgb:90 169 255;

@@ -1,0 +1,28 @@
+/* Native details handles keyboard and open state. No JavaScript is required. */
+.acc{border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;font-family:var(--body);color:var(--text)}
+.acc>details{border-bottom:1px solid var(--line)}
+.acc>details:last-child{border-bottom:0}
+.acc>details>summary{padding:var(--space-3_5) var(--space-4);cursor:pointer;font-weight:var(--weight-semibold);font-size:var(--text-md);line-height:var(--leading-normal);list-style:none;display:flex;gap:var(--space-3);align-items:center}
+.acc>details>summary::-webkit-details-marker{display:none}
+.acc>details>summary::after{content:"";flex:0 0 auto;width:var(--space-2);height:var(--space-2);margin-inline-start:auto;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform var(--dur-2),border-color var(--dur-2)}
+.acc>details[open]>summary::after{transform:rotate(-135deg);border-color:var(--primary-bright)}
+.acc>details>summary:hover{background:var(--surface-2)}
+.acc>details>summary:focus-visible{outline:2px solid var(--primary);outline-offset:-2px}
+.acc>details>.acc-body{padding:0 var(--space-4) var(--space-3_5);color:var(--text-2);font-size:var(--text-md);line-height:var(--leading-normal)}
+.acc>details>.acc-body>:first-child{margin-block-start:0}
+.acc>details>.acc-body>:last-child{margin-block-end:0}
+.acc-heading{display:block;min-width:0;flex:1}
+.acc-title{display:block;color:var(--text)}
+.acc-hint{display:block;margin-top:var(--space-1);color:var(--muted);font-size:var(--text-sm);font-weight:var(--weight-regular);overflow-wrap:anywhere}
+.acc-meta{flex:0 0 auto;color:var(--muted);font-size:var(--text-sm);font-weight:var(--weight-regular);font-variant-numeric:tabular-nums}
+.acc.flush{border:0;border-radius:0}
+.acc.flush>details>summary{padding-inline:var(--space-1)}
+.acc.flush>details>.acc-body{padding-inline:var(--space-1)}
+@media (max-width:640px){
+  .acc>details>summary:has(>.acc-meta){display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--space-2) var(--space-3)}
+  .acc>details>summary>.acc-heading{grid-column:1;grid-row:1}
+  .acc>details>summary>.acc-meta{grid-column:1;grid-row:2}
+  .acc>details>summary:has(>.acc-meta)::after{grid-column:2;grid-row:1;align-self:start;margin-block-start:var(--space-1_5)}
+}
+@media (prefers-reduced-motion:reduce){.acc>details>summary::after{transition:none}}
+@media (forced-colors:active){.acc>details>summary:focus-visible{outline-color:Highlight}}

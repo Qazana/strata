@@ -5,45 +5,49 @@ sidebar:
   order: 2
 ---
 
-The simplest integration. Load the tokens, a kit,
-and the script — then write semantic HTML with the documented classes and
-`data-*` hooks.
+Copy `kits`, `tokens`, `fonts`, and `js` from the installed package into your
+public `/vendor/strata/` directory. Keep these directories together so CSS imports
+and font URLs resolve. Load them with public URLs; browsers do not resolve npm
+export names in HTML attributes.
 
 ```html
 <!doctype html>
 <html lang="en">
   <head>
-    <link rel="stylesheet" href="@qazana/strata/tokens" />
-    <link rel="stylesheet" href="@qazana/strata/app" />
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Strata example</title>
+    <link rel="stylesheet" href="/vendor/strata/tokens/qazana.tokens.css" />
+    <link rel="stylesheet" href="/vendor/strata/kits/app.css" />
   </head>
   <body>
     <button class="btn btn-primary">Save</button>
 
-    <!-- a dismissable dialog — Esc / outside-click / focus-trap come for free -->
+    <!-- Escape and outside click close the dialog; focus stays inside while open. -->
     <button class="btn btn-outline" data-modal-open="#edit">Edit</button>
-    <div class="modal-scrim" id="edit" role="dialog" aria-modal="true" hidden>
-      <div class="modal-dialog">…</div>
+    <div class="modal-scrim" id="edit" role="dialog" aria-modal="true" aria-label="Edit item" hidden>
+      <div class="modal-dialog"><button data-modal-close>Close</button></div>
     </div>
 
-    <script type="module" src="@qazana/strata"></script>
+    <script type="module" src="/vendor/strata/js/qazana.js"></script>
   </body>
 </html>
 ```
 
 ## Theming per product
 
-Override the brand tokens once, after the foundation, and everything re-tints —
-solid fills, soft tints, rings and borders all flow from the same tokens:
+Load product theme overrides after the foundation and before kit CSS. Change
+solid colors, their RGB channels, and matching foregrounds together. See
+[Brand a product](/guides/brand-a-product/) for a complete example.
 
-```css
-:root {
-  --primary: #ff6b4a;
-  --primary-rgb: 255 107 74; /* channel form powers rgb(var(--primary-rgb) / .12) tints */
-}
-```
+Keep product-specific components in the product repo. See
+[Build domain components](/guides/domain-components/).
 
-Add product-specific (domain) components in your own repo — they do **not** go in
-the shared library. See [Build domain components](/guides/domain-components/).
+## Dynamic markup
+
+After inserting new behavior markup, call `window.QZ.init(root)` with the inserted
+element, or `window.QZ.init()` for the whole document. Existing elements do not
+bind twice.
 
 ## Switching scheme & density
 

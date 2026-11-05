@@ -17,7 +17,7 @@
 .site *{box-sizing:border-box}
 .site ::selection{background:rgb(var(--primary-rgb) / .28);color:var(--text)}
 
-.site > *{position:relative;z-index:1}
+.site > :where(:not(.qz-confirm,.qz-lightbox,.qz-tip,.modal-scrim,.cmdk-scrim,.skip-link)){position:relative;z-index:1}
 
 .site .wrap{max-width:1140px;margin:0 auto;padding:0 var(--space-5)}
 .site .eyebrow{display:inline-block;font-size:var(--text-xs);font-weight:600;letter-spacing:var(--tracking-wide);text-transform:uppercase;color:var(--muted)}
@@ -128,7 +128,7 @@
 .site .logos span{font-family:var(--body);font-weight:700;font-size:var(--text-lg);color:var(--text-2);letter-spacing:var(--tracking-tighter)}
 
 /* ---- section + heading ---- */
-.site .section{padding:var(--space-10) 0}
+.site .section{padding-block:var(--space-10)}
 .site .section-head{max-width:62ch;margin:0 auto var(--space-7);text-align:center}
 .site .section-head h2{font-family:var(--body);font-weight:800;letter-spacing:-.03em;line-height:1.08;
   font-size:clamp(1.9rem,3.4vw,2.8rem);margin:var(--space-3_5) 0 var(--space-3)}
@@ -150,9 +150,10 @@
 .site .spotlight.reverse .spot-media{order:2}
 .site .spot-copy h3{font-family:var(--body);font-weight:800;letter-spacing:var(--tracking-tighter);font-size:clamp(1.5rem,2.6vw,2.1rem);margin:var(--space-3_5) 0 var(--space-3)}
 .site .spot-copy p{color:var(--text-2);margin-bottom:var(--space-3_5)}
-.site .spot-list{list-style:none;display:flex;flex-direction:column;gap:var(--space-2_5);margin-top:var(--space-2)}
-.site .spot-list li{display:flex;gap:var(--space-2_5);align-items:flex-start;color:var(--text-2)}
-.site .spot-list li::before{content:"\2713";color:var(--primary-bright);font-weight:700}
+.site .spot-list{list-style:none;display:flex;flex-direction:column;gap:var(--space-2_5);margin-top:var(--space-2);padding-inline-start:0}
+.site .spot-list li{position:relative;padding-inline-start:var(--space-5);color:var(--text-2);overflow-wrap:anywhere}
+.site .spot-list li::before{content:"\2713";position:absolute;inset-inline-start:0;color:var(--primary-bright);font-weight:700}
+.site .spot-copy{min-width:0}
 .site .spot-media{border-radius:var(--radius-lg);border:1px solid var(--line);background:var(--surface);
   box-shadow:var(--shadow);aspect-ratio:5/4;display:grid;place-items:center;overflow:hidden;position:relative}
 .site .spot-media .glyph{font-size:3rem;color:var(--primary-bright);opacity:.85}
@@ -166,15 +167,16 @@
 @media (max-width:760px){.site .stat-band{grid-template-columns:1fr 1fr;gap:var(--space-5_5) var(--space-4_5)}}
 
 /* ---- pricing ---- */
-.site .pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:var(--space-4_5);align-items:start}
-.site .price-card{padding:var(--space-6);border-radius:var(--radius-lg);border:1px solid var(--line);background:var(--surface);position:relative}
+.site .pricing{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:var(--space-4_5);align-items:stretch}
+.site .price-card{display:flex;flex-direction:column;min-width:0;padding:var(--space-6);border-radius:var(--radius-lg);border:1px solid var(--line);background:var(--surface);position:relative}
+.site .price-card > .btn{margin-block-start:auto}
 .site .price-card.featured{border-color:rgb(var(--primary-rgb) / .5);box-shadow:var(--shadow)}
 .site .price-card .tier{font-weight:700;font-size:var(--text-base);letter-spacing:.02em}
 .site .price-card .tag{position:absolute;top:-11px;inset-inline-end:22px;font-size:var(--text-2xs);text-transform:uppercase;letter-spacing:var(--tracking-caps);
   background:var(--primary);color:var(--on-primary);padding:var(--space-1_5) var(--space-3);border-radius:var(--radius-pill);font-weight:700}
 .site .price-amt{font-family:var(--body);font-weight:800;font-size:2.6rem;letter-spacing:-.03em;margin:var(--space-3_5) 0 var(--space-1)}
 .site .price-amt small{font-family:var(--body);font-size:var(--text-base);font-weight:500;color:var(--muted)}
-.site .price-list{list-style:none;display:flex;flex-direction:column;gap:var(--space-3);margin:var(--space-4_5) 0 var(--space-5)}
+.site .price-list{list-style:none;display:flex;flex-direction:column;gap:var(--space-3);margin:var(--space-4_5) 0 var(--space-5);padding-inline-start:0}
 .site .price-list li{display:flex;gap:var(--space-2_5);color:var(--text-2);font-size:var(--text-base)}
 .site .price-list li::before{content:"\2713";color:var(--primary-bright);font-weight:700}
 @media (max-width:880px){.site .pricing{grid-template-columns:1fr}}
@@ -197,7 +199,7 @@
 .site .faq summary::after{content:"";flex:0 0 auto;width:9px;height:9px;margin-inline-start:var(--space-3_5);
   border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg);transition:transform var(--dur-2),border-color var(--dur-2)}
 .site .faq details[open] summary::after{transform:rotate(-135deg);border-color:var(--primary-bright)}
-.site .faq details p{color:var(--text-2);padding:0 0 var(--space-4)}
+.site .faq details p{color:var(--text-2);margin:0;padding:0 0 var(--space-4)}
 
 /* ---- CTA band ---- */
 .site .cta{text-align:center;padding:var(--space-10) var(--space-6_5);border-radius:var(--radius-lg);position:relative;overflow:hidden;

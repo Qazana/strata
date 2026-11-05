@@ -3,6 +3,7 @@ node_modules/
 dist/
 *.log
 harness/out/
+harness/artifacts/
 /.firecrawl
 CLAUDE.local.md
 # public/ holds tracked static assets (e.g. CNAME); only the build-synced

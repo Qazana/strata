@@ -1,89 +1,76 @@
 ---
 title: Theming
-description: How colour schemes work — Dark Knight, Désert Dunes, and per-product brands.
+description: Color schemes, foreground pairs, and product overrides.
 sidebar:
   order: 2
 ---
 
-Colour is one of the two orthogonal axes (the other is
-[density](/foundations/density/)). A scheme is just
-a block of token overrides — no CSS fork.
+Color scheme and [density](/foundations/density/) are independent. Both use
+token overrides.
 
-## The two named schemes
+## Named schemes
 
-| Scheme | `data-theme` | Surface | Accent |
+| Scheme | `data-theme` | Surface | Primary |
 | --- | --- | --- | --- |
-| **Dark Knight** (canonical) | `dark-knight` (alias `dark`) | deep navy | teal |
-| **Désert Dunes** | `desert-dunes` (alias `light`) | warm cream | coral |
+| Dark Knight | `dark-knight` or `dark` | Near black | Teal |
+| Désert Dunes | `desert-dunes` or `light` | Warm cream | Coral |
 
 ```html
-<html data-theme="dark-knight">   <!-- force dark -->
-<html data-theme="desert-dunes">  <!-- force light -->
-<html>                            <!-- unset → follows OS via prefers-color-scheme -->
+<html data-theme="dark-knight">  <!-- dark -->
+<html data-theme="desert-dunes"> <!-- light -->
+<html>                           <!-- follows the OS -->
 ```
 
-The tokens set `color-scheme` for you, so native form controls and scrollbars
-match. A `[data-theme-toggle]` button cycles the schemes.
+Tokens set `color-scheme` so native controls and scrollbars match. A
+`data-theme-toggle` button cycles schemes and saves the choice. Supply a
+comma-separated value to choose the cycle:
 
-## Foreground pairs
-
-Every solid fill has an `--on-*` text token (`--on-primary`, `--on-danger`, …),
-so contrast is guaranteed rather than lucky. Use them whenever you fill with a
-brand colour:
-
-```css
-.badge-primary { background: var(--primary); color: var(--on-primary); }
+```html
+<button type="button" data-theme-toggle="dark-knight,desert-dunes">Switch theme</button>
 ```
 
-## Alpha tints — always the channel form
+## Foreground and channel pairs
 
-Each colour also ships an `-rgb` channel triple. Build soft fills, rings and
-hover states from it so they re-tint with the brand:
-
-```css
-background: rgb(var(--primary-rgb) / .12);   /* soft fill */
-box-shadow: 0 0 0 3px rgb(var(--primary-rgb) / .22); /* focus ring */
-```
-
-Never write a literal `rgba(45, 212, 191, …)` — it won't follow a brand override.
-
-## Adding a product brand
-
-Override the brand/semantic tokens after the foundation. One block re-skins
-everything:
+Use the matching `--on-*` token for text on a solid fill:
 
 ```css
-:root {
-  --primary: #ff6b4a;
-  --primary-rgb: 255 107 74;
-  --on-primary: #ffffff;
+.badge-primary {
+  background: var(--primary);
+  color: var(--on-primary);
 }
 ```
 
-Neutral lines and borders flow through `--border-rgb`, so they flip with the
-scheme automatically. See [Brand a product](/guides/brand-a-product/)
-for the full recipe.
+Colors with alpha tints have an RGB channel triple:
 
-## Product themes are private
+```css
+background: rgb(var(--primary-rgb) / .12);
+```
 
-Each consuming product owns its `theme.css` — a single `:root{}` override
-shipped in the product's own repo, not published with the kit. The pattern is
-demonstrated with fictional example brands:
+When changing a fill, update its solid color, channels, and foreground together.
+Check emphasis and focus colors too, including `--primary-bright` and
+`--focus-ring`. Arbitrary overrides need contrast checks in each scheme.
 
-| Example theme | Brand | Type |
-| --- | --- | --- |
-| `qazana` (umbrella) | coral | Fraunces · Space Grotesk |
-| `aurora` | polar mint | Space Grotesk |
-| `vermeil` | vermilion | Fraunces |
-| `nocturne` | indigo | Bricolage Grotesque |
+## Product themes
 
-Try them in the [live theme switcher](/demo/themes/index.html) —
-picking a theme swaps a real override file onto the page.
+Each product owns its theme file. Load it after the token foundation and before
+kit CSS. Follow [Brand a product](/guides/brand-a-product/) for a complete example,
+including the automatic light scheme.
 
-## Theme overrides always win
+The [live theme switcher](/demo/themes/index.html) uses fictional brands to show
+how overrides affect components. Product theme files stay in their own repos.
 
-The tokens and kits live in the `qazana` cascade layer; theme files and your
-app's CSS are unlayered. Unlayered CSS beats layered CSS regardless of selector
-specificity, so a plain `:root{}` theme outranks even the tokens'
-higher-specificity scheme blocks (`:root[data-theme=…]`) — in both schemes,
-with no `!important` and no selector games.
+## Cascade order
+
+Shared tokens and main kits use `@layer qazana`. An unlayered product theme
+wins over those rules, even when its selector is simply `:root`.
+
+Broad unlayered app selectors also override kit components. Scope rules such as
+`a {}` and `button {}` to the content they should affect, or put app base styles
+in an earlier layer:
+
+```css
+@layer app-base, qazana;
+```
+
+The standalone button, tab, and accordion entries use unlayered component CSS.
+See each entry's docs before combining it with app styles.

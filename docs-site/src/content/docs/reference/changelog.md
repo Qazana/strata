@@ -1,30 +1,25 @@
 ---
 title: Changelog
-description: Notable changes to Qazana Strata.
+description: Release history and versioning policy.
 sidebar:
   order: 2
 ---
 
-Semantic versioning: **patch** = fix · **minor** = additive component/token/kit ·
-**major** = rename/removal/breaking token change.
+[CHANGELOG.md](https://github.com/Qazana/strata/blob/master/CHANGELOG.md) is the
+canonical release history. It records published versions and pending changes
+under **Unreleased**. These docs follow the repository, so an example may use
+an addition that has not been published yet.
 
-## 0.0.1
+- **Patch:** fixes that preserve the public contract.
+- **Minor:** additive components, tokens, kits, or behaviors.
+- **Major:** breaking changes to a stable export, token, class, markup pattern,
+  or behavior hook.
 
-Initial release.
+Experimental entries may change in a minor release. See the
+[API contract](https://github.com/Qazana/strata/blob/master/docs/API_CONTRACT.md)
+for stability and deprecation rules, and the
+[upgrade guide](https://github.com/Qazana/strata/blob/master/docs/UPGRADING.md)
+when updating a consumer.
 
-- **Tokens** — semantic design tokens (color, type, space, radius, elevation,
-  density) with two schemes: Dark Knight (canonical dark) and Désert Dunes
-  (light), OS-auto by default. Tokens and kits live in the `qazana` cascade
-  layer, so unlayered consumer CSS and theme overrides always win.
-- **Seven kits** — App, Site, Content, Auth, Email, Media, Commerce. Scoped,
-  independently importable, all themed by the same tokens.
-- **Behaviors** — one vanilla `data-*`-driven script, no framework
-  dependencies, no build step.
-- **Theming** — one `:root{}` override re-brands everything. Self-hosted
-  variable fonts (Figtree display, DM Sans body, JetBrains Mono data; Syne
-  available) with metric-matched fallbacks for ~0 CLS.
-- **Demos as the live spec** — every kit and variant, including a live theme
-  switcher.
-
-The full commit-level history lives in the
-[repository](https://github.com/Qazana/strata/commits/).
+Maintainers add entries under Unreleased. The package version changes only when
+a release is tagged and published.

@@ -1,5 +1,9 @@
 # API contract
 
+This document describes the current checkout. Stability and release availability
+are separate: see [CHANGELOG.md](../CHANGELOG.md) for published versions and
+additions under Unreleased.
+
 Strata is the default UI kit for Qazana products. Treat its public surface like
 an API: once a consuming app uses it, changes must be deliberate, versioned, and
 documented.
@@ -65,6 +69,8 @@ These package exports are stable public entrypoints:
 | `@qazana/strata/tokens.json` | `tokens/tokens.json` | stable |
 | `@qazana/strata` | `js/qazana.js` | stable auto-behavior entrypoint |
 | `@qazana/strata/js` | `js/qazana.js` | stable auto-behavior entrypoint |
+| `@qazana/strata/tabs` | `kits/tabs.css` | stable component styles; requires tokens |
+| `@qazana/strata/accordion` | `kits/accordion.css` | stable component styles; requires tokens |
 | `@qazana/strata/app` | `kits/app.css` | stable |
 | `@qazana/strata/site` | `kits/site.css` | stable |
 | `@qazana/strata/content` | `kits/content.css` | stable |
@@ -78,6 +84,12 @@ These package exports are stable public entrypoints:
 
 Adding a new kit is a minor release. Removing, renaming, or moving a stable kit
 entrypoint is a major release unless the old entrypoint continues to work.
+
+## Experimental entrypoints
+
+`@qazana/strata/button` is an experimental standalone, unlayered button entry.
+Its namespaced classes, local tokens and theme attribute may change in a minor
+release. See [Standalone buttons](button.md). Existing kits remain stable.
 
 ## Token contract
 
@@ -110,6 +122,14 @@ Color tokens that support alpha tints must keep their channel pair:
 A product theme must override the solid token, the `-rgb` channel, and the
 matching `--on-*` foreground token together when it changes a solid fill color.
 
+Success feedback additionally supports `--success`, `--success-rgb`,
+`--success-bright` and `--on-success`. These default to the corresponding brand
+tokens for compatibility. Override the family together to separate feedback
+from brand; existing primary token meanings and component classes are unchanged.
+
+`--overlay` is the shared modal backdrop color. It defaults to translucent
+black in both schemes and can be overridden with the other surface tokens.
+
 ## Component contract
 
 A component is stable when it is documented in `docs/components.md`,
@@ -139,6 +159,15 @@ Non-breaking component changes:
 - adding optional child slots
 - adding new components
 - fixing accessibility behavior to match the documented intent
+
+### Calendar day anatomy
+
+Event calendars support a noninteractive `.calendar-day` container with a native
+`button.calendar-select.calendar-top` and sibling `.calendar-event` links. The
+date button owns `aria-pressed`; its parent reflects the selected style. Existing
+`button.calendar-day` markup remains supported for noninteractive contents.
+Selection, navigation and mobile day details remain consumer-owned. See
+[Calendar](components.md#calendar).
 
 ## Behavior contract
 
@@ -230,13 +259,15 @@ Consumers must:
 - scope product-specific CSS to product roots
 - keep domain components in the product repo, not Strata
 
-Recommended load order:
+Recommended load order for files served from `/vendor/strata/`. Copy the
+package’s `kits`, `tokens`, `fonts`, and `js` directories there without changing
+their relative paths. npm export names are for bundlers, not HTML URLs:
 
 ```html
-<link rel="stylesheet" href="@qazana/strata/tokens">
+<link rel="stylesheet" href="/vendor/strata/tokens/qazana.tokens.css">
 <link rel="stylesheet" href="/theme.css">
-<link rel="stylesheet" href="@qazana/strata/app">
-<script type="module" src="@qazana/strata"></script>
+<link rel="stylesheet" href="/vendor/strata/kits/app.css">
+<script type="module" src="/vendor/strata/js/qazana.js"></script>
 ```
 
 Avoid global rules like:

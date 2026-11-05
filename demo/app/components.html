@@ -6,6 +6,12 @@
 <title>Qazana Strata — Components</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="../../kits/app.css" rel="stylesheet">
+<style>
+/* An independent success palette using existing demo colors. */
+.demo-success{--success:#10b981;--success-rgb:16 185 129;--success-bright:#10b981;--on-success:#04241f}
+:root[data-theme="light"] .demo-success,:root[data-theme="desert-dunes"] .demo-success{--success:#047857;--success-rgb:4 120 87;--success-bright:#047857;--on-success:#ffffff}
+@media(prefers-color-scheme:light){:root:not([data-theme="dark"]):not([data-theme="dark-knight"]) .demo-success{--success:#047857;--success-rgb:4 120 87;--success-bright:#047857;--on-success:#ffffff}}
+</style>
 </head>
 <body>
 <div class="bg-layer"><div class="glow one"></div><div class="glow two"></div><div class="grid-overlay"></div></div>
@@ -151,6 +157,14 @@
       <div class="field-row"><label class="fld">Date</label><input type="date" aria-label="Date" value="2026-06-09"></div>
     </div>
 
+    <div class="sub">Success independent of brand</div>
+    <div class="card demo-success" data-success-example>
+      <div class="field-row"><label class="fld" for="success-handle">Available handle</label><input id="success-handle" type="text" class="is-success" value="sample" aria-describedby="success-help"><span id="success-help" class="fok">Available</span></div>
+      <p class="form-msg ok">Your changes are saved.</p>
+      <button type="button" class="btn btn-primary">Brand action</button>
+      <button type="button" class="btn is-success">Saved</button>
+    </div>
+
     <div class="sub">Inputs with add-ons &amp; the URL paste</div>
     <div class="grid2">
       <div class="field-row"><label class="fld">YouTube URL</label>
@@ -214,6 +228,7 @@
         <div class="otp"><input maxlength="1" value="4" aria-label="Verification code digit 1"><input maxlength="1" value="8" aria-label="Verification code digit 2"><input maxlength="1" aria-label="Verification code digit 3"><input maxlength="1" aria-label="Verification code digit 4"></div></div>
       <div class="field-row full"><label class="fld">Cookie file (upload)</label>
         <div class="dropzone"><div class="dzi"><i class="fa-solid fa-cloud-arrow-up"></i></div>Drop a file here or <b>browse</b><div class="fhelp" style="margin-top:4px">Netscape cookie format, up to 1 MB</div></div></div>
+    </div>
         <div class="sub">Rich text editor frame</div>
         <input class="rte-title" value="Why we moved the admin to one style base" aria-label="Title" style="margin-bottom:var(--space-3)">
         <div class="rte">
@@ -232,8 +247,6 @@
           <div class="media-card"><label class="msel"><input type="checkbox" aria-label="Select brief.pdf"></label><span class="mtype badge neutral">PDF</span><div class="mthumb"><i class="fa-regular fa-file-lines" style="font-size:2rem"></i></div><div class="mmeta"><div class="mname">brief.pdf</div><div class="msub"><span>96 KB</span><span>Oct 2</span></div></div></div>
           <button type="button" class="media-card" aria-pressed="true"><div class="mthumb"><i class="fa-regular fa-image" style="font-size:2rem"></i></div><div class="mmeta"><div class="mname">Pick me (button tile)</div><div class="msub"><span>aria-pressed</span></div></div></button>
         </div>
-    </div>
-
     <div class="sub">Date picker · dual-thumb range</div>
     <div class="grid2">
       <div class="field-row"><label class="fld">Released after (picker)</label>
@@ -256,41 +269,41 @@
     <div class="calendar" data-view="month" style="max-width:860px">
       <div class="calendar-dow"><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div></div>
       <div class="calendar-grid">
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Monday, June 1"><span class="calendar-top"><span class="calendar-num">1</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Tuesday, June 2"><span class="calendar-top"><span class="calendar-num">2</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Wednesday, June 3"><span class="calendar-top"><span class="calendar-num">3</span><span class="calendar-count">1</span></span><a class="calendar-event" href="#">Launch notes</a></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Thursday, June 4"><span class="calendar-top"><span class="calendar-num">4</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Friday, June 5"><span class="calendar-top"><span class="calendar-num">5</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Saturday, June 6"><span class="calendar-top"><span class="calendar-num">6</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Sunday, June 7"><span class="calendar-top"><span class="calendar-num">7</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Monday, June 8"><span class="calendar-top"><span class="calendar-num">8</span></span></button>
-        <button type="button" class="calendar-day is-today" aria-pressed="false" aria-label="Tuesday, June 9"><span class="calendar-top"><span class="calendar-num">9</span><span class="calendar-count">2</span></span><a class="calendar-event amber" href="#">Q2 review</a><a class="calendar-event info" href="#">Press call</a></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Wednesday, June 10"><span class="calendar-top"><span class="calendar-num">10</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Thursday, June 11"><span class="calendar-top"><span class="calendar-num">11</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Friday, June 12"><span class="calendar-top"><span class="calendar-num">12</span><span class="calendar-count">1</span></span><a class="calendar-event neutral" href="#">Draft: pricing</a></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Saturday, June 13"><span class="calendar-top"><span class="calendar-num">13</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Sunday, June 14"><span class="calendar-top"><span class="calendar-num">14</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Monday, June 15"><span class="calendar-top"><span class="calendar-num">15</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Tuesday, June 16"><span class="calendar-top"><span class="calendar-num">16</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="true" aria-label="Wednesday, June 17"><span class="calendar-top"><span class="calendar-num">17</span><span class="calendar-count">4</span></span><a class="calendar-event" href="#">Release 1.4</a><a class="calendar-event neutral" href="#">Retro</a><a class="calendar-event amber" href="#">Board deck</a><span class="calendar-more">+1 more</span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Thursday, June 18"><span class="calendar-top"><span class="calendar-num">18</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Friday, June 19"><span class="calendar-top"><span class="calendar-num">19</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Saturday, June 20"><span class="calendar-top"><span class="calendar-num">20</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Sunday, June 21"><span class="calendar-top"><span class="calendar-num">21</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Monday, June 22"><span class="calendar-top"><span class="calendar-num">22</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Tuesday, June 23"><span class="calendar-top"><span class="calendar-num">23</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Wednesday, June 24"><span class="calendar-top"><span class="calendar-num">24</span><span class="calendar-count">1</span></span><a class="calendar-event" href="#">Newsletter</a></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Thursday, June 25"><span class="calendar-top"><span class="calendar-num">25</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Friday, June 26"><span class="calendar-top"><span class="calendar-num">26</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Saturday, June 27"><span class="calendar-top"><span class="calendar-num">27</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Sunday, June 28"><span class="calendar-top"><span class="calendar-num">28</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Monday, June 29"><span class="calendar-top"><span class="calendar-num">29</span></span></button>
-        <button type="button" class="calendar-day" aria-pressed="false" aria-label="Tuesday, June 30"><span class="calendar-top"><span class="calendar-num">30</span></span></button>
-        <button type="button" class="calendar-day is-other" aria-pressed="false" aria-label="Wednesday, July 1"><span class="calendar-top"><span class="calendar-num">1</span></span></button>
-        <button type="button" class="calendar-day is-other" aria-pressed="false" aria-label="Thursday, July 2"><span class="calendar-top"><span class="calendar-num">2</span></span></button>
-        <button type="button" class="calendar-day is-other" aria-pressed="false" aria-label="Friday, July 3"><span class="calendar-top"><span class="calendar-num">3</span></span></button>
-        <button type="button" class="calendar-day is-other" aria-pressed="false" aria-label="Saturday, July 4"><span class="calendar-top"><span class="calendar-num">4</span></span></button>
-        <button type="button" class="calendar-day is-other" aria-pressed="false" aria-label="Sunday, July 5"><span class="calendar-top"><span class="calendar-num">5</span></span></button>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Monday, June 1"><span class="calendar-num">1</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Tuesday, June 2"><span class="calendar-num">2</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Wednesday, June 3, 1 event"><span class="calendar-num">3</span><span class="calendar-count">1</span></button><a class="calendar-event" href="#">Launch notes</a></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Thursday, June 4"><span class="calendar-num">4</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Friday, June 5"><span class="calendar-num">5</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Saturday, June 6"><span class="calendar-num">6</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Sunday, June 7"><span class="calendar-num">7</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Monday, June 8"><span class="calendar-num">8</span></button></div>
+        <div class="calendar-day is-today"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Tuesday, June 9, 2 events"><span class="calendar-num">9</span><span class="calendar-count">2</span></button><a class="calendar-event amber" href="#">Q2 review</a><a class="calendar-event info" href="#">Press call</a></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Wednesday, June 10"><span class="calendar-num">10</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Thursday, June 11"><span class="calendar-num">11</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Friday, June 12, 1 event"><span class="calendar-num">12</span><span class="calendar-count">1</span></button><a class="calendar-event neutral" href="#">Draft: pricing</a></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Saturday, June 13"><span class="calendar-num">13</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Sunday, June 14"><span class="calendar-num">14</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Monday, June 15"><span class="calendar-num">15</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Tuesday, June 16"><span class="calendar-num">16</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="true" aria-label="Wednesday, June 17, 4 events"><span class="calendar-num">17</span><span class="calendar-count">4</span></button><a class="calendar-event" href="#">Release 1.4</a><a class="calendar-event neutral" href="#">Retro</a><a class="calendar-event amber" href="#">Board deck</a><span class="calendar-more">+1 more</span></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Thursday, June 18"><span class="calendar-num">18</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Friday, June 19"><span class="calendar-num">19</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Saturday, June 20"><span class="calendar-num">20</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Sunday, June 21"><span class="calendar-num">21</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Monday, June 22"><span class="calendar-num">22</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Tuesday, June 23"><span class="calendar-num">23</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Wednesday, June 24, 1 event"><span class="calendar-num">24</span><span class="calendar-count">1</span></button><a class="calendar-event" href="#">Newsletter</a></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Thursday, June 25"><span class="calendar-num">25</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Friday, June 26"><span class="calendar-num">26</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Saturday, June 27"><span class="calendar-num">27</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Sunday, June 28"><span class="calendar-num">28</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Monday, June 29"><span class="calendar-num">29</span></button></div>
+        <div class="calendar-day"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Tuesday, June 30"><span class="calendar-num">30</span></button></div>
+        <div class="calendar-day is-other"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Wednesday, July 1"><span class="calendar-num">1</span></button></div>
+        <div class="calendar-day is-other"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Thursday, July 2"><span class="calendar-num">2</span></button></div>
+        <div class="calendar-day is-other"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Friday, July 3"><span class="calendar-num">3</span></button></div>
+        <div class="calendar-day is-other"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Saturday, July 4"><span class="calendar-num">4</span></button></div>
+        <div class="calendar-day is-other"><button type="button" class="calendar-select calendar-top" aria-pressed="false" aria-label="Sunday, July 5"><span class="calendar-num">5</span></button></div>
       </div>
     </div>
 
@@ -607,18 +620,18 @@
   <!-- CONTEXT MENU -->
   <section class="sec" id="ctxmenu">
     <h2>Context menu</h2>
-    <div class="desc">Right-click the zone for a context menu with grouped, collapsible actions and a destructive item.</div>
-    <div class="ctx-zone" data-ctx="#ctx1"><i class="fa-solid fa-arrow-pointer"></i> Right-click anywhere in here</div>
-    <div class="menu ctx" id="ctx1">
-      <div class="menu-label">Track</div>
-      <a class="menu-item"><i class="fa-solid fa-play"></i> Play segment <span class="sc">↵</span></a>
-      <a class="menu-item"><i class="fa-brands fa-spotify"></i> Open in Spotify</a>
-      <a class="menu-item"><i class="fa-solid fa-pen"></i> Edit title <span class="sc">E</span></a>
-      <div class="menu-sep"></div>
+    <div class="desc">Right-click the zone, or focus it and press Shift+F10. Use arrow keys to choose an action and Escape to return.</div>
+    <div class="ctx-zone" data-ctx="#ctx1" tabindex="0"><i class="fa-solid fa-arrow-pointer" aria-hidden="true"></i> Right-click or press Shift+F10</div>
+    <div class="menu ctx" id="ctx1" role="menu" aria-label="Record actions">
+      <div class="menu-label">Record</div>
+      <button type="button" class="menu-item" role="menuitem"><i class="fa-solid fa-play" aria-hidden="true"></i> Open record</button>
+      <button type="button" class="menu-item" role="menuitem" disabled><i class="fa-solid fa-share" aria-hidden="true"></i> Publish</button>
+      <button type="button" class="menu-item" role="menuitem"><i class="fa-solid fa-pen" aria-hidden="true"></i> Edit title</button>
+      <div class="menu-sep" role="separator"></div>
       <div class="menu-label">Share</div>
-      <a class="menu-item"><i class="fa-solid fa-link"></i> Copy link</a>
-      <div class="menu-sep"></div>
-      <a class="menu-item danger"><i class="fa-solid fa-trash"></i> Remove <span class="sc">⌫</span></a>
+      <button type="button" class="menu-item" role="menuitem"><i class="fa-solid fa-link" aria-hidden="true"></i> Copy link</button>
+      <div class="menu-sep" role="separator"></div>
+      <button type="button" class="menu-item danger" role="menuitem"><i class="fa-solid fa-trash" aria-hidden="true"></i> Remove</button>
     </div>
   </section>
 
@@ -737,7 +750,7 @@
       <div class="modal-dialog info">
         <div class="mh"><span class="mi"><i class="fa-solid fa-circle-info"></i></span> <span id="dm-title">Name your playlist</span><button class="mclose" data-modal-close aria-label="Close"><i class="fa-solid fa-xmark"></i></button></div>
         <div class="mb"><input type="text" value="Sunset set" aria-label="Playlist name"></div>
-        <div class="mf"><button class="btn btn-ghost btn-sm" data-modal-close>Cancel</button><button class="btn btn-primary btn-sm" data-modal-close>Create</button></div>
+        <div class="mf"><button class="btn btn-ghost btn-sm" data-qz-confirm="Discard these changes?" data-modal-close>Discard changes</button><button class="btn btn-ghost btn-sm" data-modal-close>Cancel</button><button class="btn btn-primary btn-sm" data-modal-close>Create</button></div>
       </div>
     </div>
 
