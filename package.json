@@ -1,6 +1,6 @@
 {
   "name": "@qazana/strata",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Qazana Strata \u2014 one style base, no build step, no framework. Semantic design tokens (CSS variables) + vanilla data-attribute component CSS/JS, themeable per product with a single :root override.",
   "keywords": [
     "design-system",

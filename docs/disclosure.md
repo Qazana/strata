@@ -1,7 +1,7 @@
 # Tabs and accordions
 
-The separate `tabs` and `accordion` exports are currently **Unreleased**. Check
-[the changelog](../CHANGELOG.md) before using them from a published package.
+The separate `tabs` and `accordion` exports are available from **1.1.0**. See
+[the changelog](../CHANGELOG.md) for release details.
 
 Use tabs to switch between views. Use accordions for optional detail within a view.
 The App kit includes both. Component imports let an existing UI use them

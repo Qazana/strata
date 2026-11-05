@@ -21,10 +21,10 @@ Keep a record of the previous version so rollback is straightforward.
 ## Update the dependency
 
 Install the chosen published version and commit the dependency and lockfile
-changes together. For example, to pin the 1.0.0 release:
+changes together. To pin the 1.1.0 release:
 
 ```bash
-npm install --save-exact @qazana/strata@1.0.0
+npm install --save-exact @qazana/strata@1.1.0
 ```
 
 For local development with a `file:../qazana-strata` dependency, refresh the

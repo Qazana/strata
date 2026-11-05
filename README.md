@@ -74,7 +74,7 @@ directly and do not include the App kit's page reset.
 
 The [experimental `button` export](docs/button.md) uses `.qz-button` classes and
 local tokens. It needs neither shared tokens nor JavaScript. It may change in a
-minor release. These three exports are currently **Unreleased**.
+minor release. These three exports are available from **1.1.0**.
 
 ## Architecture & layout
 

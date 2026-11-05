@@ -59,8 +59,8 @@ Each path below follows `@qazana/strata/`:
 | `support` | Contact forms, tickets, conversations |
 | `email/*` | Email templates |
 | `js` | Behavior script, also available as `@qazana/strata` |
-| `tabs`, `accordion` | Component styles with shared tokens; unreleased |
-| `button` | Experimental standalone buttons; unreleased |
+| `tabs`, `accordion` | Component styles with shared tokens; since 1.1.0 |
+| `button` | Experimental standalone buttons; since 1.1.0 |
 
 The main kits use `@layer qazana`, so unlayered app styles override them.
 Direct component imports are unlayered and document their own requirements:

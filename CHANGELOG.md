@@ -6,31 +6,7 @@ change. Versions here always match what's published on the registry.
 
 ## Unreleased
 
-### Patch
-
-- Add a theme-aware background and curved line texture to the split auth brand
-  panel. Keep demo navigation above the split layout when kit styles load late.
-  Existing component markup and mobile behavior stay supported.
-- Refresh installation, theming, framework, and maintenance docs. Document
-  harness files and baseline review, and link the site to the canonical changelog.
-- Align marketing pricing actions and feature lists. Keep billing expansion local
-  to its plan, restore section gutters, and normalize FAQ and accordion spacing.
-- Preserve submitter payloads, block repeat submissions, validate dynamic fields,
-  and send date selections to autosave. Check both field identifiers before saving.
-- Fix module lightbox startup, compatibility globals, close URLs, and stacked
-  dialog focus. Ship Commerce scrims and keep tall dialogs and reply menus reachable.
-- Fix narrow layouts, demo labels and contrast, and forced-colors range focus.
-  Add Chromium/WebKit regressions, expand axe coverage, and install WebKit in CI.
-- Keep card margins out of legacy grids and give the rich-text editor demo its
-  own row.
-- Correct plain-HTML installation URLs; npm exports remain available for bundlers.
-
-- Tabs isolate nested groups, skip disabled items, normalize initial selection,
-  and follow orientation and text direction. Accordion chevrons and borders
-  stay scoped to their own details element.
-
-- Contract: stable behavior preserved. Match single-line input and select sizing
-  in comfortable and compact density, including auth forms.
+## 1.1.0 - 2026-11-05
 
 ### Minor
 
@@ -84,6 +60,30 @@ change. Versions here always match what's published on the registry.
   indicator.
 
 ### Patch
+
+- Add a theme-aware background and curved line texture to the split auth brand
+  panel. Keep demo navigation above the split layout when kit styles load late.
+  Existing component markup and mobile behavior stay supported.
+- Refresh installation, theming, framework, and maintenance docs. Document
+  harness files and baseline review, and link the site to the canonical changelog.
+- Align marketing pricing actions and feature lists. Keep billing expansion local
+  to its plan, restore section gutters, and normalize FAQ and accordion spacing.
+- Preserve submitter payloads, block repeat submissions, validate dynamic fields,
+  and send date selections to autosave. Check both field identifiers before saving.
+- Fix module lightbox startup, compatibility globals, close URLs, and stacked
+  dialog focus. Ship Commerce scrims and keep tall dialogs and reply menus reachable.
+- Fix narrow layouts, demo labels and contrast, and forced-colors range focus.
+  Add Chromium/WebKit regressions, expand axe coverage, and install WebKit in CI.
+- Keep card margins out of legacy grids and give the rich-text editor demo its
+  own row.
+- Correct plain-HTML installation URLs; npm exports remain available for bundlers.
+
+- Tabs isolate nested groups, skip disabled items, normalize initial selection,
+  and follow orientation and text direction. Accordion chevrons and borders
+  stay scoped to their own details element.
+
+- Contract: stable behavior preserved. Match single-line input and select sizing
+  in comfortable and compact density, including auth forms.
 
 - Context menus: existing `data-ctx` targets support keyboard opening,
   navigation, disabled items, Escape and focus return. Menus fit the viewport

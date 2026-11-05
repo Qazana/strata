@@ -1,6 +1,6 @@
 # Standalone buttons (experimental)
 
-This entry is **Unreleased**. Check [the changelog](../CHANGELOG.md) for availability.
+This entry is available from **1.1.0**. See [the changelog](../CHANGELOG.md).
 
 Import `@qazana/strata/button` for incremental adoption in an existing app.
 This entry is experimental and may change in a minor release. It loads only
