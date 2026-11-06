@@ -61,6 +61,7 @@ change. Versions here always match what's published on the registry.
 
 ### Patch
 
+- Update docs build dependencies to resolve security advisories.
 - Add a theme-aware background and curved line texture to the split auth brand
   panel. Keep demo navigation above the split layout when kit styles load late.
   Existing component markup and mobile behavior stay supported.
