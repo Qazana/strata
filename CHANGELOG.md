@@ -6,7 +6,7 @@ change. Versions here always match what's published on the registry.
 
 ## Unreleased
 
-## 1.1.0 - 2026-11-07
+## 1.1.0 - 2026-11-09
 
 ### Minor
 
