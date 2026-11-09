@@ -26,14 +26,29 @@
   </div>
 
   <section class="sec">
+    <h2>Matching control sizes</h2>
+    <p>Inputs and selects share sizing in comfortable and compact density. Use the density toggle to compare.</p>
+    <div class="l-grid" style="--col:14rem" data-control-sizing>
+      <div class="form-field">
+        <label for="size-name">Name</label>
+        <input id="size-name" type="text" value="Ada Lovelace">
+      </div>
+      <div class="form-field">
+        <label for="size-role">Role</label>
+        <select id="size-role"><option>Engineer</option><option>Designer</option></select>
+      </div>
+    </div>
+  </section>
+
+  <section class="sec">
     <h2>Field group <span class="spec-lbl" style="display:inline">.form-field</span></h2>
     <div class="l-grid" style="--col:18rem">
       <form class="l-stack">
         <div class="spec-lbl">label + help + required</div>
         <div class="form-field">
-          <label for="e1">Email <span class="field-req">*</span></label>
-          <input id="e1" type="email" placeholder="you@example.com">
-          <span class="field-help">We'll never share it.</span>
+          <label for="e1">Email <span class="field-req" aria-hidden="true">*</span></label>
+          <input id="e1" type="email" placeholder="you@example.com" required aria-describedby="e1-help">
+          <span id="e1-help" class="field-help">We'll never share it.</span>
         </div>
         <div class="form-field">
           <label for="r1">Role <span class="field-optional">optional</span></label>
@@ -48,8 +63,8 @@
         <div class="spec-lbl">validation states</div>
         <div class="form-field is-error">
           <label for="p1">Password</label>
-          <input id="p1" type="password" value="abc">
-          <span class="field-error"><i class="fa-solid fa-circle-exclamation"></i> Must be at least 8 characters.</span>
+          <input id="p1" type="password" value="abc" aria-invalid="true" aria-describedby="p1-error">
+          <span id="p1-error" class="field-error"><i class="fa-solid fa-circle-exclamation" aria-hidden="true"></i> Must be at least 8 characters.</span>
         </div>
         <div class="form-field">
           <label for="p2">Confirmed</label>
@@ -96,8 +111,8 @@
       </div>
       <div class="form-field">
         <label for="vEmail">Email <span class="field-req">*</span></label>
-        <input id="vEmail" name="email" type="email" required autocomplete="email">
-        <span class="field-help">Rules are declared with native HTML attributes — required, type, minlength — not a bespoke DSL.</span>
+        <input id="vEmail" name="email" type="email" required autocomplete="email" aria-describedby="vEmail-help">
+        <span id="vEmail-help" class="field-help">Rules are declared with native HTML attributes — required, type, minlength — not a bespoke DSL.</span>
       </div>
       <div class="form-field">
         <label for="vPw">Password <span class="field-req">*</span></label>
@@ -114,6 +129,15 @@
       <button type="submit" class="btn">Create account</button>
     </form>
     <p class="field-help" style="max-width:var(--measure);margin-top:var(--space-3)">Type into the non-sensitive fields, then reload — they're restored from storage. Password fields are never persisted.</p>
+  </section>
+
+  <section class="sec">
+    <h2>Multiple submit actions</h2>
+    <form class="l-stack" data-validate="confirm" data-submit-lock="1400" style="max-width:var(--measure)">
+      <div class="form-field"><label for="draft-title">Title</label><input id="draft-title" name="title" type="text" value="Release notes" required></div>
+      <div class="l-row"><button type="submit" name="intent" value="save" class="btn btn-secondary">Save draft</button><button type="submit" name="intent" value="publish" class="btn btn-primary">Publish</button></div>
+      <p class="field-help">The clicked action shows progress. Both actions stay locked until this demo resets after 1.4 seconds.</p>
+    </form>
   </section>
 
   <div class="foot">Qazana Strata · forms</div>

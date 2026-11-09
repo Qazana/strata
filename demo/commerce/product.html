@@ -21,12 +21,8 @@
   .add-row{display:flex;align-items:center;gap:var(--space-4);flex-wrap:wrap}
   .breadcrumb{display:flex;align-items:center;gap:var(--space-2);font-size:var(--text-xs);color:var(--muted);margin-bottom:var(--space-4)}
   .breadcrumb a{color:var(--muted);text-decoration:none}.breadcrumb a:hover{color:var(--text)}
-  .breadcrumb span{color:var(--line-strong)}
-  /* modal scrim for quick-view demo */
-  .modal-scrim{position:fixed;inset:0;z-index:200;background:rgb(0 0 0 / .6);
-    display:flex;align-items:center;justify-content:center}
-  .modal-scrim[hidden]{display:none}
-  .modal-scrim.is-open{display:flex}
+  .breadcrumb span:not([aria-current]){color:var(--line-strong)}
+  .breadcrumb [aria-current]{color:var(--text)}
 </style>
 </head>
 <body class="shop" style="background:var(--bg);min-height:100vh">
@@ -89,22 +85,22 @@
       <div class="gallery">
         <!-- Thumb tabs -->
         <div class="gallery-thumbs" role="tablist" aria-label="Product images">
-          <button class="tab active" role="tab" aria-selected="true" aria-controls="gp-1" id="gt-1">
+          <button class="tab active" role="tab" aria-selected="true" aria-controls="gp-1" id="gt-1" aria-label="Front view">
             <div style="width:100%;height:100%;background:linear-gradient(135deg,var(--surface-2),var(--surface-3));display:grid;place-items:center">
               <i class="fa-solid fa-headphones" style="color:var(--muted);opacity:.5"></i>
             </div>
           </button>
-          <button class="tab" role="tab" aria-selected="false" aria-controls="gp-2" id="gt-2" tabindex="-1">
+          <button class="tab" role="tab" aria-selected="false" aria-controls="gp-2" id="gt-2" aria-label="Side view" tabindex="-1">
             <div style="width:100%;height:100%;background:linear-gradient(135deg,var(--surface-3),var(--surface-sunken));display:grid;place-items:center">
               <i class="fa-solid fa-headphones-simple" style="color:var(--muted);opacity:.5"></i>
             </div>
           </button>
-          <button class="tab" role="tab" aria-selected="false" aria-controls="gp-3" id="gt-3" tabindex="-1">
+          <button class="tab" role="tab" aria-selected="false" aria-controls="gp-3" id="gt-3" aria-label="Detail view" tabindex="-1">
             <div style="width:100%;height:100%;background:linear-gradient(135deg,var(--surface-sunken),var(--surface-2));display:grid;place-items:center">
               <i class="fa-solid fa-ear-listen" style="color:var(--muted);opacity:.5"></i>
             </div>
           </button>
-          <button class="tab" role="tab" aria-selected="false" aria-controls="gp-4" id="gt-4" tabindex="-1">
+          <button class="tab" role="tab" aria-selected="false" aria-controls="gp-4" id="gt-4" aria-label="In the box" tabindex="-1">
             <div style="width:100%;height:100%;background:var(--surface-2);display:grid;place-items:center">
               <i class="fa-solid fa-cable-car" style="color:var(--muted);opacity:.5"></i>
             </div>

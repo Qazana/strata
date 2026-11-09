@@ -84,6 +84,22 @@
       "value": "#1e1340",
       "type": "color"
     },
+    "success": {
+      "value": "#2dd4bf",
+      "type": "color"
+    },
+    "success-bright": {
+      "value": "#5eead4",
+      "type": "color"
+    },
+    "on-success": {
+      "value": "#04241f",
+      "type": "color"
+    },
+    "overlay": {
+      "value": "rgba(0,0,0,0.55)",
+      "type": "color"
+    },
     "border": {
       "value": "#ffffff",
       "type": "color"
@@ -172,6 +188,22 @@
     },
     "on-accent": {
       "value": "#ffffff",
+      "type": "color"
+    },
+    "success": {
+      "value": "#bf5038",
+      "type": "color"
+    },
+    "success-bright": {
+      "value": "#a84731",
+      "type": "color"
+    },
+    "on-success": {
+      "value": "#ffffff",
+      "type": "color"
+    },
+    "overlay": {
+      "value": "rgba(0,0,0,0.55)",
       "type": "color"
     },
     "border": {

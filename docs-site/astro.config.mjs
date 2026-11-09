@@ -116,6 +116,8 @@ gtag('config', '${GA_MEASUREMENT_ID}');
         {
           label: 'Reference',
           items: [
+            { label: 'API contract', link: 'https://github.com/Qazana/strata/blob/master/docs/API_CONTRACT.md' },
+            { label: 'Upgrading', link: 'https://github.com/Qazana/strata/blob/master/docs/UPGRADING.md' },
             { label: 'Philosophy & lessons', link: '/reference/philosophy/' },
             { label: 'Changelog', link: '/reference/changelog/' },
           ],

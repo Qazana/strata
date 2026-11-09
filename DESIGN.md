@@ -70,9 +70,9 @@ Semantic roster (override per brand, never rename): `--primary`, `--danger`
 (#f43f5e dark, #c12838 light), `--warning`, `--info`, `--accent`. Neutrals flow
 through `--border-rgb`, so lines flip with the scheme.
 
-Foreground pairs: every solid fill has an `--on-*` text token (`--on-primary`,
-`--on-danger`, and so on), so contrast is guaranteed rather than left to chance.
-White on coral and dark on teal both clear AA by construction.
+Foreground pairs: solid fills have matching `--on-*` text tokens (`--on-primary`,
+`--on-danger`, and so on). The default white-on-coral and dark-on-teal pairs meet
+AA text contrast. Recheck contrast when overriding either side of a pair.
 
 Derived tints auto-flow from the channels: `--primary-soft` at .12,
 `--primary-ring` at .15 (kept subtle), `--primary-line` at .30.

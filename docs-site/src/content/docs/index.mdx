@@ -1,9 +1,9 @@
 ---
 title: Qazana Strata
-description: One style base, no build step, no framework — design tokens (CSS variables) + vanilla data-attribute behaviours, themeable per product.
+description: Semantic CSS tokens, composable kits, and vanilla JavaScript behaviors.
 template: splash
 hero:
-  tagline: One style base, every product. No build step, no framework.
+  tagline: Shared UI for every product. Plain CSS and JavaScript.
   actions:
     - text: Get started
       link: /getting-started/install/
@@ -17,48 +17,49 @@ hero:
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-## Why Qazana Strata
+## Build on shared tokens
 
-A design system isn't a component library — it's the **contract** underneath one:
-the colours, spacing, type and motion every component references instead of
-hardcoding. Strata stores that contract as **design tokens** — named design
-decisions kept as CSS variables (`--primary`, `--space-3`, `--radius`) — and
-every component reads from them. Owned in-house, consumed by every Qazana
-product.
+Strata provides UI kits built on semantic CSS variables such as `--primary`,
+`--space-3`, and `--radius`. Products share component styles and behaviors while
+keeping their own themes and domain components.
 
 <CardGrid stagger>
-  <Card title="Tokens are the contract" icon="setting">
-    Nothing hardcodes a colour or size — everything references a token. One
-    override re-skins everything. That's what makes themes, density and
-    per-product brands possible at all.
+  <Card title="Theme with tokens" icon="setting">
+    Override semantic colors and their foreground pairs in the product theme.
+    Components read those tokens for fills, text, and interaction states.
   </Card>
-  <Card title="Two orthogonal axes" icon="puzzle">
-    Colour scheme (`data-theme`: Dark Knight / Désert Dunes) and density
-    (`data-density`: comfortable / compact) are independent and compose freely.
-    Neither is a fork of the CSS.
+  <Card title="Scheme and density" icon="puzzle">
+    Dark Knight and Désert Dunes each work with comfortable or compact density.
+    Both settings use token overrides.
   </Card>
-  <Card title="Vanilla + data-attributes" icon="document">
-    Behaviours attach via `data-*` hooks and work in any framework through the
-    rendered DOM. No framework dependency. No build step to consume.
+  <Card title="Use any framework" icon="document">
+    Classes style the markup. JavaScript attaches through `data-*` hooks on the
+    rendered DOM. Call `QZ.init(root)` after inserting new behavior markup.
   </Card>
-  <Card title="Accessibility in the primitive" icon="approve-check">
-    One dismissable-layer + roving-focus core powers modal, drawer, menu,
-    combobox, command palette and popover — so every component inherits keyboard
-    and ARIA support.
+  <Card title="Keyboard support" icon="approve-check">
+    Dialogs manage focus, tabs support arrow keys, and accordions use native
+    details elements. The accessibility guide documents each interaction.
   </Card>
 </CardGrid>
 
-## The 30-second version
+## Install
 
-```html
-<link rel="stylesheet" href="@qazana/strata/tokens" />
-<link rel="stylesheet" href="@qazana/strata/app" />
-<script type="module" src="@qazana/strata"></script>
-
-<button class="btn btn-primary">Primary</button>
-<button data-cmdk-open class="btn btn-secondary">Search… <span class="kbd-hint">⌘K</span></button>
+```bash
+npm install @qazana/strata
 ```
 
-That's the whole integration: tokens + a kit + the behaviour script. Theme it
-per product by overriding a handful of brand tokens. See
-[Install](/getting-started/install/) to go deeper.
+For plain HTML, copy the package's `tokens`, `kits`, `fonts`, and `js`
+directories to your public `/vendor/strata/` directory. Preserve their relative
+paths, then load them with public URLs:
+
+```html
+<link rel="stylesheet" href="/vendor/strata/tokens/qazana.tokens.css" />
+<link rel="stylesheet" href="/vendor/strata/kits/app.css" />
+<script type="module" src="/vendor/strata/js/qazana.js"></script>
+
+<button type="button" class="btn btn-primary">Save</button>
+```
+
+See [Install](/getting-started/install/) for bundler imports and kit choices.
+These docs follow the repository; check the [changelog](/reference/changelog/)
+for published versions and unreleased additions.

@@ -32,10 +32,12 @@
 input[type=text],input[type=url],input[type=email],input[type=password],
 input[type=search],input[type=number],input[type=tel],input[type=date],input[type=time],
 textarea,select{
-  font-family:var(--body);font-size:var(--ctl-font);color:var(--text);width:100%;
+  font-family:var(--body);font-size:var(--ctl-font);line-height:var(--leading-normal);color:var(--text);width:100%;
   background:var(--surface);border:1px solid rgb(var(--border-rgb) / .14);border-radius:var(--radius);
   padding:var(--ctl-pad-y) var(--ctl-pad-x);outline:none;-webkit-appearance:none;appearance:none;
   transition:border-color .15s ease,box-shadow .15s ease,background-color .15s ease}
+/* Native date/time segments add intrinsic height beyond the text line box. */
+input[type=date],input[type=time]{box-sizing:border-box;block-size:calc(var(--ctl-font) * var(--leading-normal) + var(--ctl-pad-y) * 2 + 2px)}
 select:not([multiple]){
   background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none' stroke='%238c8c8c' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M1 1.5 6 6.5 11 1.5'/%3E%3C/svg%3E");
   background-repeat:no-repeat;background-position:right 13px center;padding-inline-end:var(--space-6)}
@@ -44,8 +46,12 @@ input:hover:not(:focus),textarea:hover:not(:focus),select:hover:not(:focus){bord
 input:focus-visible,textarea:focus-visible,select:focus-visible{
   border-color:var(--primary-bright);background:var(--surface-active);box-shadow:0 0 0 2px var(--primary-ring);caret-color:var(--primary-bright)}
 input.invalid,input.is-error,textarea.is-error,select.is-error{border-color:var(--danger);box-shadow:0 0 0 3px rgb(var(--danger-rgb) / .18)}
-input.is-success,textarea.is-success,select.is-success{border-color:var(--primary);box-shadow:0 0 0 3px rgb(var(--primary-rgb) / .14)}
-input.is-error:focus,input.is-success:focus{box-shadow:0 0 0 3px rgb(var(--danger-rgb) / .22)}
+input.is-success,textarea.is-success,select.is-success{border-color:var(--success);box-shadow:0 0 0 3px rgb(var(--success-rgb) / .14)}
+/* a field already wearing a state ring still needs a visible focus change:
+   thicken the state border to 2px (inner solid ring) and keep the state halo */
+:is(input,textarea,select):is(.invalid,.is-error):focus-visible,
+.form-field.is-error :is(input,textarea,select):focus-visible{box-shadow:0 0 0 1px var(--danger),0 0 0 4px rgb(var(--danger-rgb) / .22)}
+:is(input,textarea,select).is-success:focus-visible{box-shadow:0 0 0 1px var(--success),0 0 0 4px rgb(var(--success-rgb) / .2)}
 input[readonly]{color:var(--text-2);background:var(--surface-2);cursor:default;border-style:dashed}
 input:disabled,textarea:disabled,select:disabled{opacity:.5;cursor:not-allowed}
 
@@ -90,7 +96,7 @@ textarea[data-autosize]{resize:none;overflow:hidden}
 /* ---- confirm dialog ([data-qz-confirm]) — the accessible replacement for native
    confirm(); one node built at <body> level. Sits above modals/lightboxes. ---- */
 .qz-confirm{position:fixed;inset:0;z-index:500;display:none;place-items:center;padding:var(--space-5);
-  background:rgb(0 0 0 / .55);backdrop-filter:blur(4px)}
+  background:var(--overlay);backdrop-filter:blur(4px)}
 .qz-confirm.is-open{display:grid;animation:qz-cfade var(--dur-2,.18s) var(--ease,ease)}
 @keyframes qz-cfade{from{opacity:0}to{opacity:1}}
 .qz-confirm-box{width:min(28rem,100%);background:var(--surface);border:1px solid var(--line);border-radius:var(--radius);
@@ -102,7 +108,6 @@ textarea[data-autosize]{resize:none;overflow:hidden}
 .qz-confirm-cancel{background:var(--surface-2);border-color:var(--line);color:var(--text)}
 .qz-confirm-ok{background:var(--primary);color:var(--on-primary)}
 .qz-confirm-ok.danger{background:var(--danger)}
-.qz-confirm-actions button:focus-visible{outline:none;box-shadow:0 0 0 2px var(--primary-ring)}
 @media (prefers-reduced-motion:reduce){.qz-confirm.is-open{animation:none}}
 
 /* ---- layout primitives — composable building blocks. Gap is var-driven
@@ -115,6 +120,8 @@ textarea[data-autosize]{resize:none;overflow:hidden}
 /* auto-fit grid; min(--col,100%) keeps it from overflowing narrow viewports */
 .l-grid{display:grid;gap:var(--gap,var(--space-4));grid-template-columns:repeat(auto-fit,minmax(min(var(--col,16rem),100%),1fr))}
 .l-spacer{flex:1 1 auto}
+/* visually hidden, still read by assistive tech */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
 /* row alignment modifiers */
 .l-row.between{justify-content:space-between}
 .l-row.center{justify-content:center}
@@ -124,6 +131,32 @@ textarea[data-autosize]{resize:none;overflow:hidden}
 /* gap helpers → space scale */
 .gap-1{--gap:var(--space-1)}.gap-2{--gap:var(--space-2)}.gap-3{--gap:var(--space-3)}
 .gap-4{--gap:var(--space-4)}.gap-5{--gap:var(--space-5)}.gap-6{--gap:var(--space-6)}.gap-7{--gap:var(--space-7)}
+
+/* ---- keyboard focus indicator — one solid outline for every focusable control
+   that isn't a text field (text fields signal focus with a border change in the
+   form-controls block above). :where() keeps it at zero specificity, so a kit
+   rule or consumer CSS can retune it without a fight. tabindex="-1" is left out
+   so programmatically focused containers (modal panels, scrims) don't get a box. */
+:where(a[href],button,summary,[tabindex]:not([tabindex="-1"]),
+  [role=button],[role=tab],[role=option],[role=radio],[role=checkbox],[role=switch],
+  [role=menuitem],[role=menuitemradio],[role=menuitemcheckbox],[role=treeitem],[role=gridcell],
+  input:is([type=checkbox],[type=radio],[type=range],[type=file],[type=color],[type=button],[type=submit],[type=reset])
+):focus-visible{outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:var(--focus-ring-offset)}
+/* content that is a Tab stop only so the keyboard can reach or scroll it
+   (scroll containers, tab panels without controls, scroll regions) — a quiet
+   1px inset line, so it never reads as a control. Covers browsers that make
+   overflowing scrollers focusable on their own, too. */
+:where(.tbl-wrap,pre,[role=region],[role=tabpanel],[role=log],[role=document]):focus-visible{
+  outline:1px solid var(--focus-ring);outline-offset:-1px}
+/* panels with no box of their own: sit the line just outside the text */
+:where([role=tabpanel],[role=log],[role=document]):focus-visible{outline-offset:var(--space-1);border-radius:var(--radius-sm)}
+/* programmatic focus targets — a heading or landmark focused after a skip link
+   or route change, a modal/drawer panel focused because it holds no control.
+   Focus moves there for screen readers; nothing to act on, so no ring (this
+   also beats the browser's own default ring). */
+:where(h1,h2,h3,h4,h5,h6,p,main,section,article,header,footer,aside,nav,form,figure,
+  dialog,[role=dialog],[role=alertdialog],[role=main],[role=region],[role=document],[role=group],
+  .modal-scrim,.modal-dialog,.drawer)[tabindex="-1"]:focus-visible{outline:none}
 
 /* ---- forced-colors / Windows High-Contrast Mode. Focus rings here are drawn
    with box-shadow, which the OS DROPS in forced-colors mode — so keyboard focus

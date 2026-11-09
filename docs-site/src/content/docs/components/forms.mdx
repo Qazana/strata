@@ -1,36 +1,56 @@
 ---
 title: Forms
-description: Inputs, composite controls, field anatomy and live validation.
+description: Field anatomy, native validation, persistence, and submit locks.
 sidebar:
   order: 2
 ---
 
 import Demo from '../../../components/Demo.astro';
 
-<Demo src="app/components.html#forms" title="Forms" height={620} />
-
-## Inputs & controls
-
-| Pattern | Markup |
-| --- | --- |
-| Input / textarea / select | `.field` or bare `input` / `textarea` / `select` |
-| Input group (icon + button) | `.input-group`; paste button `data-paste="#id"` |
-| Add-ons | `.addon-group` + `.addon` |
-| Password | `.pw` + `.pw-toggle` + `.pwbar` |
-| Searchable select | `.combo` + `data-combo` |
-| Choice | `.choice` · `.switch` · `.check` |
-| Range | `input.slider` · dual `.dual` + `data-dual` |
-| Numeric | `.stepper` · `.amount-field` + `data-amount` |
-| Tags / OTP / upload | `.tagsinput` · `.otp` · `.dropzone` |
+<Demo src="foundations/forms.html" title="Forms" height={620} />
 
 ## Field anatomy
 
-`.field-row` + `.label`/`.fld` (+`.req`/`.opt`) + `.fhelp` / `.ferr` / `.fok`;
-state classes `.is-error` / `.is-success`.
+Use `.form-field` for new forms. Labels, help, and errors need explicit
+relationships with the control:
 
-## Live validation
+```html
+<div class="form-field">
+  <label for="email">Email <span class="field-req" aria-hidden="true">*</span></label>
+  <input id="email" name="email" type="email" required aria-describedby="email-help">
+  <span id="email-help" class="field-help">Used for account updates.</span>
+</div>
+```
 
-Add `[data-validate]` to a `<form>`. Per-field rules: `required`, `type=email`,
-`minlength`, and `data-match="#otherField"`. On submit, invalid fields get
-`.is-error` + a `.ferr` message, and a summary `.form-msg` (`.error` / `.ok`)
-announces the result. Errors clear as the user types.
+Use `.field-error` for an error and `.is-error` or `.is-success` on the group.
+CSS classes style the state; framework-owned forms must also update
+`aria-invalid` and `aria-describedby`. Legacy `.field-row`, `.fld`, and `.ferr`
+patterns remain supported. Scoped auth `.field` is a wrapper, not an input class.
+
+## Controls
+
+| Pattern | Markup |
+| --- | --- |
+| Text, select, textarea | Native elements inside `.form-field` |
+| Input with icon or button | `.input-group`; paste button uses `data-paste="#id"` |
+| Add-ons | `.addon-group` with `.addon` |
+| Searchable select | `.combo` with `data-combo` |
+| Choices | `.choice`, `.switch`, `.check` |
+| Range | `input.slider`; dual range uses `.dual` with `data-dual` |
+| Numeric | `.stepper`; `.amount-field` with `data-amount` |
+| Tags, OTP, upload | `.tagsinput`, `.otp`, `.dropzone` |
+
+## Validation and form behaviors
+
+Add `data-validate` to a form to use native constraints such as `required`,
+`type="email"`, `minlength`, or `pattern`. `data-match="#otherField"` checks a
+matching value. The engine associates errors with controls and focuses the first
+invalid field. It reads current controls, including those added after init.
+
+Valid forms with an `action` submit normally. Action-less forms stay on the page;
+`data-validate="confirm"` opts into an inline success summary.
+
+`data-persist="draft-key"` saves eligible fields. `data-submit-lock` prevents
+repeat submissions while a request is pending. Read the
+[forms reference](https://github.com/Qazana/strata/blob/master/docs/forms.md)
+for storage exclusions, submitter payloads, and unlocking after an async request.

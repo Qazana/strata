@@ -60,13 +60,13 @@
 @media (prefers-reduced-motion: reduce){.media .socials a:hover{transform:none}}
 
 /* ---- social: profile card ---- */
-.media .profile{max-width:380px;padding:var(--space-5_5);border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--surface);text-align:center}
+.media .profile{min-width:0;max-width:380px;padding:var(--space-5_5);border:1px solid var(--line);border-radius:var(--radius-lg);background:var(--surface);text-align:center}
 .media .profile .pav{width:74px;height:74px;border-radius:50%;background:var(--primary);color:var(--on-primary);
   display:grid;place-items:center;font-weight:800;font-size:1.7rem;margin:0 auto var(--space-3)}
 .media .profile h3{font-size:var(--text-lg);font-weight:700;letter-spacing:var(--tracking-tight)}
 .media .profile .handle{color:var(--muted);font-size:var(--text-md);margin-bottom:var(--space-3)}
 .media .profile p{color:var(--text-2);font-size:var(--text-md);margin-bottom:var(--space-4_5)}
-.media .pstats{display:flex;justify-content:center;gap:var(--space-5_5);margin-bottom:var(--space-4_5)}
+.media .pstats{display:flex;flex-wrap:wrap;justify-content:center;gap:var(--space-5_5);margin-bottom:var(--space-4_5)}
 .media .pstats b{display:block;font-weight:800;font-size:var(--text-lg)}
 .media .pstats span{color:var(--muted);font-size:var(--text-xs);text-transform:uppercase;letter-spacing:var(--tracking-wide)}
 
@@ -84,8 +84,8 @@
 .media .atime{font-family:var(--mono);font-size:var(--text-xs);color:var(--muted)}
 
 /* ---- waveform progress (drop-in alternative to .atrack) ---- */
-.media .wave{flex:1;display:flex;align-items:center;gap:2px;height:28px}
-.media .wave i{flex:1;min-width:2px;border-radius:var(--radius-pill);background:var(--surface-2);height:30%;transition:background var(--dur-1)}
+.media .wave{flex:1;min-width:0;display:flex;align-items:center;gap:calc(var(--space-1) / 2);height:28px}
+.media .wave i{flex:1;min-width:0;border-radius:var(--radius-pill);background:var(--surface-2);height:30%;transition:background var(--dur-1)}
 .media .wave i.on{background:var(--primary)}
 
 /* ---- large player (episode page / featured) ---- */
@@ -142,7 +142,7 @@
   border:1px solid var(--line);background:var(--surface-2);cursor:pointer;text-decoration:none}
 .media .gallery .tile img{width:100%;height:100%;object-fit:cover;display:block;transition:transform var(--dur-3) var(--ease)}
 .media .gallery .tile:hover img,.media .gallery .tile:focus-visible img{transform:scale(1.05)}
-.media .gallery .tile:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+.media .gallery .tile:focus-visible{outline:var(--focus-ring-width) solid var(--focus-ring);outline-offset:var(--focus-ring-offset)}
 .media .gallery .tile .tile-badge{position:absolute;inset-block-start:var(--space-2);inset-inline-end:var(--space-2);
   min-width:24px;height:24px;padding:0 var(--space-1_5);border-radius:var(--radius-pill);background:rgb(0 0 0 / .55);
   color:#fff;display:grid;place-items:center;font-size:var(--text-2xs);font-weight:700}

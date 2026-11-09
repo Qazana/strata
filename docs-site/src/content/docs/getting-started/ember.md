@@ -1,46 +1,48 @@
 ---
 title: Ember
-description: Use Qazana Strata in an Ember app.
+description: Use Strata tokens and DOM behaviors in an Ember app.
 sidebar:
   order: 4
 ---
 
-For an Ember app, import the tokens and a kit in your app styles, then
-reference `var(--…)` in component styles like any other CSS custom property.
-
-## 1. Import in `app/styles/app.css`
+Import tokens and the required kit through the app's CSS pipeline:
 
 ```css
 @import '@qazana/strata/tokens';
 @import '@qazana/strata/app';
 ```
 
-## 2. Load the behaviour script
+Load product theme overrides after tokens and before kits. Load the behavior
+script in the browser entry point so the build resolves the package:
 
-Add the module to your `index.html` (or via your build's vendor pipeline):
-
-```html
-<script type="module" src="@qazana/strata"></script>
+```js
+import '@qazana/strata';
 ```
 
-## 3. Reference tokens in component styles
+## Initialize rendered markup
+
+Call `window.QZ.init(element)` from the app's modifier or render lifecycle after
+inserting behavior markup. Repeat after route changes or updates that add
+controls. Existing elements do not bind twice.
+
+Strata works through the rendered DOM. If an Ember component already manages a
+control's state, use the documented styles and ARIA relationships without enabling
+a second controller through the corresponding `data-*` hook.
+
+## Style product components
+
+Use shared tokens in component styles:
 
 ```css
-.rate-lock {
+.product-card {
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius);
   color: var(--text);
+  padding: var(--space-4);
 }
 ```
 
-## Glimmer gotchas worth knowing
-
-- Bind boolean attributes directly — `draggable={{@cond}}` — not
-  `draggable="{{if @cond 'true' 'false'}}"`. The string `'false'` is truthy on
-  the IDL property, so the element stays draggable.
-- `<select>` value isn't two-way bound by default; use a modifier or set it
-  explicitly in the component.
-
-These are Ember/Glimmer behaviours, not Qazana ones, but they bite when wiring
-the `data-*` hooks to dynamic state.
+Keep business-specific components in the app. See
+[Build domain components](/guides/domain-components/) and the
+[API contract](https://github.com/Qazana/strata/blob/master/docs/API_CONTRACT.md).

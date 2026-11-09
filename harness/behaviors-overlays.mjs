@@ -103,7 +103,7 @@ const CHECKS = [
   {
     // Context menu: right-click ([contextmenu]) inside [data-ctx] reveals the
     // referenced .menu (display:block, positioned at the cursor); clicking
-    // outside closes it (the JS has no Esc handler — close is click/outside).
+    // outside or activating an item closes it. Keyboard coverage follows below.
     name: 'ctx',
     url: '/demo/app/components.html',
     viewport: { width: 1200, height: 900 },
@@ -140,6 +140,161 @@ const CHECKS = [
       await menu.locator('.menu-item, button, a, li').first().click();
       t(await menu.evaluate((el) => el.style.display === 'none'),
         'clicking a menu item closes the context menu');
+      return fails;
+    },
+  },
+  {
+    name: 'ctx-keyboard',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const zone = page.locator('[data-ctx]').first();
+      const menu = page.locator(await zone.getAttribute('data-ctx'));
+      const enabled = menu.locator('.menu-item:not([disabled])');
+      await zone.focus();
+      await page.keyboard.press('Shift+F10');
+      t(await zone.getAttribute('aria-haspopup') === 'menu', 'target exposes its context menu');
+      t(await enabled.first().evaluate((el) => el === document.activeElement), 'keyboard opening focuses first enabled item');
+      await page.keyboard.press('ArrowDown');
+      t(await enabled.nth(1).evaluate((el) => el === document.activeElement), 'ArrowDown skips disabled items');
+      await page.keyboard.press('End');
+      t(await enabled.last().evaluate((el) => el === document.activeElement), 'End focuses last item');
+      await page.keyboard.press('ArrowDown');
+      t(await enabled.first().evaluate((el) => el === document.activeElement), 'ArrowDown wraps to first item');
+      await page.keyboard.press('ArrowUp');
+      t(await enabled.last().evaluate((el) => el === document.activeElement), 'ArrowUp wraps to last item');
+      await page.keyboard.press('Home');
+      t(await enabled.first().evaluate((el) => el === document.activeElement), 'Home focuses first item');
+      await page.keyboard.press('Escape');
+      t(!(await menu.isVisible()), 'Escape closes context menu');
+      t(await zone.evaluate((el) => el === document.activeElement), 'Escape restores the opener');
+      t(await zone.getAttribute('aria-expanded') === null, 'generic target does not acquire expanded state');
+
+      await zone.press('ContextMenu');
+      t(await menu.isVisible(), 'Context Menu key opens the same menu');
+      await enabled.first().evaluate((el) => {
+        el.dataset.clicks = '0';
+        el.addEventListener('click', () => { el.dataset.clicks = String(Number(el.dataset.clicks) + 1); });
+      });
+      await page.keyboard.press('Enter');
+      t(await enabled.first().getAttribute('data-clicks') === '1', 'Enter activates once');
+      t(!(await menu.isVisible()) && await zone.evaluate((el) => el === document.activeElement), 'activation closes and restores focus');
+
+      await zone.press('Shift+F10');
+      await page.keyboard.press('Space');
+      t(await enabled.first().getAttribute('data-clicks') === '2', 'Space activates once');
+      await zone.press('Shift+F10');
+      await enabled.first().evaluate((el) => { el.setAttribute('aria-disabled', 'true'); el.click(); });
+      t(await enabled.first().getAttribute('data-clicks') === '2', 'aria-disabled action cannot activate');
+      t(await menu.isVisible(), 'disabled action does not dismiss menu');
+      await enabled.first().evaluate((el) => el.removeAttribute('aria-disabled'));
+      await page.keyboard.press('Escape');
+
+      // Legacy anchor markup without href remains keyboard-operable.
+      await menu.evaluate((el) => {
+        const legacy = document.createElement('a');
+        legacy.className = 'menu-item'; legacy.textContent = 'Legacy action';
+        legacy.addEventListener('click', () => { el.dataset.legacyActivated = 'true'; });
+        el.appendChild(legacy);
+      });
+      await zone.press('Shift+F10');
+      await page.keyboard.press('End');
+      await page.keyboard.press('Space');
+      t(await menu.getAttribute('data-legacy-activated') === 'true', 'legacy items support keyboard activation');
+
+      await zone.press('Shift+F10');
+      await page.keyboard.press('Tab');
+      t(!(await menu.isVisible()), 'Tab dismisses without trapping focus');
+      t(!(await menu.evaluate((el) => el.contains(document.activeElement))), 'Tab leaves no focus in a hidden menu');
+      await menu.locator('.menu-item').evaluateAll((elements) => {
+        elements.forEach((el) => el.setAttribute('aria-disabled', 'true'));
+      });
+      await zone.focus();
+      await zone.press('Shift+F10');
+      t(await menu.evaluate((el) => el === document.activeElement), 'all-disabled menu receives fallback focus');
+      await page.keyboard.press('ArrowDown');
+      await page.keyboard.press('Escape');
+      t(!(await menu.isVisible()), 'all-disabled menu still dismisses with Escape');
+
+      // Generic content can own a context menu without becoming a button.
+      await zone.evaluate((el) => {
+        const generic = document.createElement('div');
+        generic.id = 'generic-ctx-zone'; generic.textContent = 'Record region';
+        generic.setAttribute('data-ctx', el.getAttribute('data-ctx'));
+        el.after(generic); window.QZ.init(generic);
+      });
+      const generic = page.locator('#generic-ctx-zone');
+      t(await generic.getAttribute('role') === null, 'generic target keeps its implicit role');
+      t(await generic.getAttribute('aria-expanded') === null, 'generic target does not receive invalid expanded state');
+      await generic.focus();
+      await generic.press('Shift+F10');
+      t(await menu.isVisible(), 'generic content target remains keyboard-operable');
+      t(await generic.getAttribute('aria-expanded') === null, 'open generic target still omits expanded state');
+      await page.keyboard.press('Escape');
+      t(await generic.getAttribute('aria-expanded') === null, 'closed generic target still omits expanded state');
+      t(await generic.evaluate((el) => el === document.activeElement), 'generic target receives returned focus');
+      return fails;
+    },
+  },
+  {
+    name: 'ctx-viewport-and-dialog',
+    url: '/demo/app/components.html',
+    viewport: { width: 390, height: 700 },
+    async run(page) {
+      const { t, fails } = checker();
+      const zone = page.locator('[data-ctx]').first();
+      const menu = page.locator(await zone.getAttribute('data-ctx'));
+      await zone.scrollIntoViewIfNeeded();
+      await zone.evaluate((el) => el.dispatchEvent(new MouseEvent('contextmenu', {
+        bubbles: true, cancelable: true, clientX: window.innerWidth - 1, clientY: window.innerHeight - 1,
+      })));
+      const fits = () => menu.evaluate((el) => {
+        const rect = el.getBoundingClientRect();
+        return rect.left >= 0 && rect.top >= 0 && rect.right <= innerWidth && rect.bottom <= innerHeight;
+      });
+      t(await menu.isVisible() && await fits(), 'context menu fits both edges at bottom-right');
+      await page.setViewportSize({ width: 320, height: 700 });
+      await page.waitForFunction(() => {
+        const rect = document.querySelector('#ctx1').getBoundingClientRect();
+        return rect.left >= 0 && rect.top >= 0 && rect.right <= innerWidth && rect.bottom <= innerHeight;
+      });
+      t(await menu.isVisible() && await fits(), 'open menu repositions after viewport resize');
+      await page.keyboard.press('Escape');
+
+      // The menu lives outside the dialog, as in a framework portal.
+      const dialogTrigger = page.locator('[data-modal-open="#demo-modal"]').first();
+      await dialogTrigger.click();
+      const dialog = page.locator('#demo-modal');
+      await dialog.evaluate((el) => {
+        const trigger = document.createElement('button');
+        trigger.type = 'button'; trigger.id = 'nested-ctx-trigger'; trigger.textContent = 'Record actions';
+        trigger.setAttribute('data-ctx', '#ctx1');
+        el.querySelector('.modal-dialog').appendChild(trigger);
+        window.QZ.init(trigger);
+      });
+      const nestedTrigger = page.locator('#nested-ctx-trigger');
+      await nestedTrigger.focus();
+      await nestedTrigger.press('Shift+F10');
+      t(await menu.isVisible(), 'dynamic target opens shared menu from a dialog');
+      await page.keyboard.press('Escape');
+      t(!(await menu.isVisible()), 'first Escape closes the context menu');
+      t(await dialog.evaluate((el) => el.classList.contains('is-open')), 'first Escape leaves the containing dialog open');
+      t(await nestedTrigger.evaluate((el) => el === document.activeElement), 'nested menu restores its actual opener');
+      await page.keyboard.press('Escape');
+      t(!(await dialog.evaluate((el) => el.classList.contains('is-open'))), 'second Escape closes the dialog');
+
+      await menu.locator('.menu-item').first().evaluate((el) => {
+        el.addEventListener('click', () => document.querySelector('[data-modal-open="#demo-modal"]').click(), { once: true });
+      });
+      await zone.focus();
+      await zone.press('Shift+F10');
+      await page.keyboard.press('Enter');
+      t(!(await menu.isVisible()), 'opening a dialog from an action dismisses the menu');
+      t(await dialog.evaluate((el) => el.classList.contains('is-open') && el.contains(document.activeElement)),
+        'menu action does not steal focus from the dialog it opened');
+      await page.keyboard.press('Escape');
+      t(await zone.evaluate((el) => el === document.activeElement), 'closing the action dialog returns to the original menu opener');
       return fails;
     },
   },
@@ -243,6 +398,110 @@ const CHECKS = [
       t(await cal.locator('.day.sel').count() === 1, 'still exactly one selected day after picking');
       t((await cal.locator('.day.sel').first().textContent()).trim() === target,
         `selecting a day moves .sel to it (now ${target})`);
+      return fails;
+    },
+  },
+  {
+    // Event calendars are CSS-only. This consumer handler exercises native
+    // button activation without assigning selection behavior to the kit.
+    name: 'event-calendar',
+    url: '/demo/app/components.html',
+    viewport: { width: 1200, height: 900 },
+    async run(page) {
+      const { t, fails } = checker();
+      const cal = page.locator('.calendar').first();
+      if (!(await cal.count())) return ['no event calendar in fixture'];
+      const buttons = cal.locator('button.calendar-select');
+      if (!(await buttons.count())) return ['event calendar requires separate day selection buttons'];
+      t(await cal.locator('button a, a button, [role="button"] a').count() === 0,
+        'event links are not nested inside interactive day controls');
+      t(await cal.locator('.calendar-day[aria-pressed]').count() === 0,
+        'pressed state belongs to the selection button, not its wrapper');
+      await cal.evaluate((el) => {
+        el.querySelectorAll('button.calendar-select').forEach((button) => {
+          button.addEventListener('click', () => {
+            button.dataset.activations = String(Number(button.dataset.activations || 0) + 1);
+            el.querySelectorAll('button.calendar-select').forEach((candidate) => {
+              candidate.setAttribute('aria-pressed', String(candidate === button));
+            });
+          });
+        });
+      });
+      const pressed = cal.locator('.calendar-select[aria-pressed="true"]');
+      t(await pressed.count() === 1, 'exactly one day starts pressed');
+      const first = buttons.nth(0);
+      const second = buttons.nth(1);
+      await first.focus();
+      await page.keyboard.press('Enter');
+      t(await pressed.count() === 1 && await first.getAttribute('aria-pressed') === 'true',
+        'Enter activates the consumer day selection');
+      t(await first.getAttribute('data-activations') === '1', 'Enter invokes the consumer handler exactly once');
+      await second.focus();
+      await page.keyboard.press('Space');
+      t(await pressed.count() === 1 && await second.getAttribute('aria-pressed') === 'true',
+        'Space moves the single pressed state');
+      t(await second.getAttribute('data-activations') === '1', 'Space invokes the consumer handler exactly once');
+      const eventDay = cal.locator('.calendar-day').filter({ has: page.locator('a.calendar-event') }).first();
+      const header = eventDay.locator('button.calendar-select');
+      const link = eventDay.locator('a.calendar-event').first();
+      await header.focus();
+      await page.keyboard.press('Tab');
+      t(await link.evaluate((el) => document.activeElement === el),
+        'Tab from the day header reaches its first event link');
+      await link.evaluate((el) => { el.setAttribute('href', '#calendar-event-click'); });
+      await link.click();
+      t(new URL(page.url()).hash === '#calendar-event-click', 'event click retains default link navigation');
+      t(await pressed.count() === 1 && await second.getAttribute('aria-pressed') === 'true',
+        'event click does not select its day');
+      await link.evaluate((el) => { el.setAttribute('href', '#calendar-event-enter'); });
+      await link.focus();
+      await page.keyboard.press('Enter');
+      t(new URL(page.url()).hash === '#calendar-event-enter', 'event Enter retains default link navigation');
+      t(await pressed.count() === 1 && await second.getAttribute('aria-pressed') === 'true',
+        'event Enter does not select its day');
+      const activations = await buttons.evaluateAll((items) => items.reduce((sum, button) => sum + Number(button.dataset.activations || 0), 0));
+      t(activations === 2, 'link click and Enter do not invoke any day selection handler');
+      t(await header.getAttribute('data-activations') === null, 'the linked day receives no selection activation');
+      const rings = await cal.evaluate((el) => {
+        const selected = el.querySelector('.calendar-select[aria-pressed="true"]').parentElement;
+        const explicit = el.querySelector('.calendar-day');
+        explicit.classList.add('is-selected');
+        const result = [getComputedStyle(selected).boxShadow, getComputedStyle(explicit).boxShadow];
+        explicit.classList.remove('is-selected');
+        return result;
+      });
+      t(rings.every((shadow) => shadow !== 'none' && shadow.includes('inset')),
+        'pressed child and explicit selected wrapper both paint a day selection ring');
+      const legacy = await cal.evaluate((el) => {
+        const button = document.createElement('button');
+        button.type = 'button';
+        button.className = 'calendar-day';
+        button.setAttribute('aria-pressed', 'true');
+        button.textContent = 'Legacy day';
+        el.querySelector('.calendar-grid').append(button);
+        const style = getComputedStyle(button);
+        const result = { display: style.display, height: parseFloat(style.minHeight), shadow: style.boxShadow };
+        button.remove();
+        return result;
+      });
+      t(legacy.display === 'flex' && legacy.height > 0 && legacy.shadow.includes('inset'),
+        'legacy button.calendar-day retains layout and selected styling');
+      await cal.evaluate((el) => { el.dataset.view = 'week'; });
+      const week = await eventDay.evaluate((el) => ({
+        height: parseFloat(getComputedStyle(el).minHeight),
+        rem: parseFloat(getComputedStyle(document.documentElement).fontSize),
+      }));
+      t(Math.abs(week.height - 14 * week.rem) < 0.1, 'week view retains its 14rem day height');
+      await cal.evaluate((el) => { el.dataset.view = 'month'; });
+      await page.setViewportSize({ width: 390, height: 844 });
+      t(await link.isHidden(), 'narrow month view keeps the documented hidden event links');
+      const counted = buttons.filter({ has: page.locator('.calendar-count', { hasText: /^4$/ }) }).first();
+      t(await counted.count() === 1 && /4 events/i.test(await counted.getAttribute('aria-label') || ''),
+        'narrow view exposes the four-event count in the day button accessible name');
+      const fits = await cal.evaluate((el) => el.scrollWidth <= el.clientWidth + 1);
+      t(fits, 'narrow calendar content fits its container');
+      await page.setViewportSize({ width: 641, height: 900 });
+      t(await link.isVisible(), 'event links return above the 640px compact breakpoint');
       return fails;
     },
   },

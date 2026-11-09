@@ -1,14 +1,15 @@
 ---
 title: Overlays
-description: Modal, drawer, popover, popconfirm, tooltip and menus — one dismissable-layer core.
+description: Dialogs, popovers, tooltips, and menus with their keyboard behavior.
 sidebar:
   order: 3
 ---
 
 import Demo from '../../../components/Demo.astro';
 
-All dismissable layers share one behaviour primitive: Escape, outside-click,
-scroll-lock and focus-trap are inherited, not re-implemented per component.
+Modal dialogs, drawers, the command palette, lightbox, and confirm dialogs share
+focus and scroll-lock helpers. Popovers and menus have separate interaction
+rules. A popover closes on Escape or outside click and does not trap focus.
 
 <Demo src="app/components.html#overlays" title="Overlays" height={560} />
 
@@ -25,4 +26,6 @@ scroll-lock and focus-trap are inherited, not re-implemented per component.
 | Context menu | `.menu.ctx` + `data-ctx="#id"` (right-click) |
 | Hover card | `.hc-trigger` > `.hovercard` |
 
-Footer helpers: `.mf`, both-ends `.mf.split`. Focus returns to the trigger on close.
+Footer helpers: `.mf`, both-ends `.mf.split`. Dialogs return focus on close.
+Popovers return focus after Escape or an explicit close; an outside click leaves
+focus with the clicked control.

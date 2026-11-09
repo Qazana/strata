@@ -1,0 +1,29 @@
+---
+title: Calendar
+description: A month or week grid with events, for scheduling and editorial views.
+sidebar:
+  order: 9
+---
+
+import Demo from '../../../components/Demo.astro';
+
+A scheduling calendar, not a date picker (that is `.cal`). Strata draws the
+grid, the day cells and the event rows; the app decides which days to render
+and what an event links to. Nothing here needs JavaScript.
+
+<Demo src="app/components.html#calendar" title="Calendar" height={620} />
+
+## API
+
+| Part | Markup |
+| --- | --- |
+| Frame | `.calendar` with `data-view="month"` or `"week"` (week cells are taller) |
+| Weekday row | `.calendar-dow` > seven cells |
+| Grid | `.calendar-grid` > `button.calendar-day` per day |
+| Day states | `.is-other` (outside the month), `.is-today`, `.is-selected` or `aria-pressed="true"` |
+| Day header | `.calendar-top` > `.calendar-num` + optional `.calendar-count` |
+| Events | `.calendar-event` (+`.amber`, `.coral`, `.info`, `.neutral`), then `.calendar-more` |
+
+Give every day an `aria-label` with the full date; the number alone is not a
+name. The navigation row (previous, today, next, the month title and a view
+switch) is the app's, built from `.btn-group` and `.segmented`.

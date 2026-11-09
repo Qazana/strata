@@ -1,298 +1,149 @@
 # Upgrading existing consumers
 
-This guide is for apps that already consume `@qazana/strata` and need to move to
-the `1.0.0` stable release.
+Check [CHANGELOG.md](../CHANGELOG.md) for the target release and required migration
+steps. These docs describe the current checkout; **Unreleased** entries are not
+available from a published package yet.
 
-Strata is now governed as a stable public API. Exported kits, documented tokens,
-documented classes, documented DOM anatomy, and documented `data-*` hooks are
-semver-protected unless explicitly marked otherwise. Read
-[`API_CONTRACT.md`](API_CONTRACT.md) before changing public surfaces.
-
-## Upgrade target
-
-```bash
-npm install @qazana/strata@^1.0.0
-```
-
-If the app uses a lockfile, commit the lockfile update with the app change.
+Exported kits and documented tokens, classes, markup, and behavior hooks are
+semver-protected unless marked experimental. See the
+[API contract](API_CONTRACT.md) for stability and deprecation rules.
 
 ## Before upgrading
 
-Inventory how the app consumes Strata:
+Note the installed version, imported kits, product theme, and any vendored
+assets. Check custom CSS that targets Strata classes. Broad unlayered selectors
+such as `a {}` and `button {}` override layered kit styles. Scope them to
+classless content or place them in a layer ordered before `qazana`.
 
-- package version currently installed
-- kits imported (`app`, `site`, `content`, `auth`, `media`, `commerce`,
-  `billing`, `docs`, `support`, `email/*`)
-- product theme file and token overrides
-- custom CSS that targets Strata classes
-- legacy form vocabulary in use (`.field-row`, `.fld`, `.ferr`, `.fhelp`,
-  `.fok`)
-- any vendored copy of `kits`, `tokens`, `fonts`, or `js`
+Read the release notes for changes to behavior hooks and experimental entries.
+Keep a record of the previous version so rollback is straightforward.
 
-Check for broad unlayered selectors that can override Strata components:
+## Update the dependency
 
-```css
-a { ... }
-button { ... }
-input { ... }
-select { ... }
-textarea { ... }
-```
-
-Prefer scoped or classless-content selectors:
-
-```css
-.product-shell a:not([class]) { color: var(--primary); }
-.product-shell :where(button:not([class])) { font: inherit; }
-```
-
-## NPM consumers
-
-For apps that install Strata from npm:
+Install the chosen published version and commit the dependency and lockfile
+changes together. To pin the 1.1.0 release:
 
 ```bash
-npm install @qazana/strata@^1.0.0
+npm install --save-exact @qazana/strata@1.1.0
 ```
 
-Then run the app's normal checks:
+For local development with a `file:../qazana-strata` dependency, refresh the
+installation after updating the library checkout. A local dependency may contain
+unreleased changes; it does not establish release availability.
 
-```bash
-npm test
-npm run build
-```
+Keep tokens, kits, fonts, and JavaScript on the same version.
 
-Use the same CSS entrypoints as before. Public exports are stable:
+### Bundled applications
 
-```html
-<link rel="stylesheet" href="@qazana/strata/tokens">
-<link rel="stylesheet" href="/theme.css">
-<link rel="stylesheet" href="@qazana/strata/app">
-<script type="module" src="@qazana/strata"></script>
-```
-
-## File dependency consumers
-
-For local apps that consume Strata through a `file:` dependency:
-
-```json
-{
-  "dependencies": {
-    "@qazana/strata": "file:../qazana-strata"
-  }
-}
-```
-
-Run:
-
-```bash
-npm install
-npm test
-npm run build
-```
-
-Commit any lockfile change in the consuming app.
-
-## Vendored static-site consumers
-
-Some static sites copy Strata files into a checked-in `vendor/strata/` directory
-so deployment does not depend on a symlink or install step. For those apps:
-
-```bash
-npm install
-npm run sync-strata
-npm test
-```
-
-`sync-strata` is a site-specific script. It deletes the existing
-`vendor/strata/` directory and recreates it from the installed
-`node_modules/@qazana/strata` package, copying only the assets that static site
-needs. It is a replace operation, not a merge.
-
-Commit both:
-
-- dependency/lockfile changes
-- refreshed `vendor/strata/*` files
-
-`qazana-strata-site` is the reference example for this pattern.
-
-## Stack notes
-
-### Vanilla / static HTML
-
-Keep load order:
-
-```html
-<link rel="stylesheet" href="@qazana/strata/tokens">
-<link rel="stylesheet" href="/theme.css">
-<link rel="stylesheet" href="@qazana/strata/site">
-<script type="module" src="@qazana/strata"></script>
-```
-
-If you copy files manually, copy the matching `tokens`, `kits`, `fonts`, and `js`
-from the same package version.
-
-### React / Tailwind
-
-Keep Strata CSS loaded globally. Token mappings in Tailwind should continue to
-point at CSS variables:
+Use package exports in the browser entry point:
 
 ```js
-colors: {
-  primary: 'var(--primary)',
-  surface: 'var(--surface)',
-  text: 'var(--text)',
-}
+import '@qazana/strata/tokens';
+import './theme.css';
+import '@qazana/strata/app';
+import '@qazana/strata';
 ```
 
-Do not duplicate Strata component classes in React components unless the class
-and DOM anatomy are documented.
+Keep Tailwind token mappings pointed at CSS variables. In Ember, import tokens
+and kits through the app's CSS pipeline and load the script in the browser entry.
+After a route transition or framework mount inserts new behavior markup, call
+`window.QZ.init(root)`. Repeated calls do not double-bind existing elements.
 
-### Ember
+### Static HTML and vendored assets
 
-Import the tokens and kit CSS in the app stylesheet, then keep component styles
-token-based:
+Copy the matching `tokens`, `kits`, `fonts`, and `js` directories from the
+installed package into the site's public `vendor/strata/` directory. Preserve
+the relative paths. Use public file URLs in HTML:
 
-```scss
-@import '@qazana/strata/tokens';
-@import '@qazana/strata/app';
+```html
+<link rel="stylesheet" href="/vendor/strata/tokens/qazana.tokens.css">
+<link rel="stylesheet" href="/theme.css">
+<link rel="stylesheet" href="/vendor/strata/kits/site.css">
+<script type="module" src="/vendor/strata/js/qazana.js"></script>
 ```
 
-If route transitions insert Strata behavior markup after initial page load,
-verify the relevant `data-*` behavior initializes in that route.
+If the site has a `sync-strata` script, run it after updating the dependency.
+That script belongs to the consuming site; Strata does not provide it. Keep
+product overrides outside the generated vendor directory. Commit refreshed
+vendored files with the dependency update when the site tracks them.
 
-### WordPress / PHP
-
-Enqueue the same versioned assets together. Do not mix a new `qazana.js` with old
-kit CSS or old tokens.
-
-Recommended order:
-
-1. tokens
-2. product theme
-3. kit CSS
-4. `qazana.js`
+WordPress and PHP consumers should enqueue the same versioned assets in this
+order: tokens, product theme, kits, then JavaScript.
 
 ## Compatibility notes
 
 ### Forms
 
-Canonical vocabulary for new forms:
-
-- `.form-field`
-- `.field-label`
-- `.field-req`
-- `.field-optional`
-- `.field-help`
-- `.field-error`
-- `.is-error`
-- `.is-success`
-- `.form-msg`
-- `.fieldset`
-
-Legacy vocabulary remains supported:
-
-- `.field-row`
-- `.fld`
-- `.ferr`
-- `.fhelp`
-- `.fok`
-- scoped auth `.field`
-- scoped auth `.err`
-
-Do not rewrite existing working forms just to upgrade. Use the canonical
-vocabulary for new work and touch legacy forms only when you are already editing
-that screen.
+Use `.form-field`, `.field-label`, `.field-req`, `.field-optional`, `.field-help`,
+and `.field-error` for new forms. Existing `.field-row`, `.fld`, `.ferr`,
+`.fhelp`, `.fok`, and scoped auth `.field` / `.err` patterns remain supported.
+An upgrade alone does not require rewriting working forms. See [Forms](forms.md)
+for markup and accessible label/error relationships.
 
 ### Validation
 
-`[data-validate]` now uses the native Constraint Validation API. Prefer standard
-HTML validation attributes:
+`data-validate` uses the native Constraint Validation API. Use standard attributes
+such as `required`, `type="email"`, and `minlength`, or `data-match="#password"`
+for a matching field. Dynamically inserted and newly enabled controls participate
+in validation; disabled controls do not.
 
-```html
-<input type="email" required>
-<input minlength="8">
-<input data-match="#password">
-```
-
-If a form has no `action`, successful validation does not reload the page and
-only shows the success summary when opted in with:
-
-```html
-<form data-validate="confirm">
-```
+A valid form with an `action` submits normally. Without an `action`, it stays on
+the page. Use `data-validate="confirm"` to opt into the inline success summary.
 
 ### Form persistence
 
-`data-persist` stores non-sensitive fields in `localStorage` by default.
-Sensitive fields are skipped by type/name heuristics, but non-sensitive PII such
-as names and emails can still be stored.
-
-For shared machines or privacy-sensitive forms, prefer:
+`data-persist` needs an explicit storage key or a form ID. It defaults to
+`localStorage`; session scope and a TTL are optional:
 
 ```html
-<form data-persist data-persist-scope="session">
+<form data-persist="contact-draft" data-persist-scope="session" data-persist-ttl="3600000">
+  <label for="subject">Subject</label>
+  <input id="subject" name="subject" type="text">
+</form>
 ```
 
-or set a TTL:
+The engine excludes password/file inputs, `data-no-persist` fields, and sensitive
+name or ID patterns. Names, email addresses, and free text can still be stored.
+Use `data-no-persist` on any field the application must exclude.
 
-```html
-<form data-persist data-persist-ttl="3600000">
-```
+### Submit locks
 
-### Overlays and scroll lock
+`data-submit-lock` blocks repeat submissions and marks the submitting button
+as loading. It defers disabling submit buttons until the current submit event
+finishes, preserving native submitter values and action overrides.
 
-Modal, drawer, command palette, lightbox, and confirm now share the same
-ref-counted scroll lock. If a product previously worked around overlay scroll
-bugs with custom body `overflow` code, remove that workaround during upgrade and
-verify stacked overlays manually.
+In a JavaScript handler, build `new FormData(form, event.submitter)` synchronously,
+before awaiting a request. Dispatch `qz:unlock` on the form when the request
+finishes. See [Submit locks](forms.md#submit-locks) for the complete contract.
 
-### Tooltips
+### Overlays and tooltips
 
-`[data-tip]` and rich `.tip > .tip-pop` use one body-level floating tooltip
-engine. If a product had custom overflow/transform workarounds for clipped
-tooltips, verify those screens again; the workaround may no longer be needed.
+Modal, drawer, command palette, lightbox, and confirm share scroll locking.
+Verify stacked overlays before removing product workarounds for body overflow
+or focus restoration.
+
+Text `data-tip` and rich `.tip > .tip-pop` tooltips use one floating node under
+`body`. Review screens with clipping or transform workarounds; those workarounds
+may no longer be needed.
 
 ### Relative time
 
-`[data-relative-time]` renders from `<time datetime="...">` and updates every
-minute. Keep the `datetime` value machine-readable.
+`data-relative-time` reads a `<time>` element's `datetime` and updates every
+minute. Keep `datetime` machine-readable.
 
-## Verification checklist
+## Verify the consumer
 
-Run the app's normal gates, then smoke-test these surfaces if used:
+Run the app's tests and build. At desktop and phone widths, exercise the surfaces
+it uses: theme and density switching, RTL layout, forms, overlays, keyboard
+navigation, and any kit-specific interactions such as billing or checkout.
+Check framework route transitions as well as the initial page load.
 
-- theme switching
-- density switching
-- RTL toggle or `dir="rtl"` pages
-- forms with validation
-- forms with autosave/persistence
-- submit-lock forms
-- modal/drawer/popover/tooltip flows
-- command palette
-- date picker/calendar/date range
-- tables with sorting/filtering/row expansion
-- billing cycle toggle
-- cart/checkout flow
-- docs/help navigation
-- support ticket flow
-
-Check at desktop and mobile widths.
+The library's [harness](../harness/README.md) covers its demos. It does not replace
+checks against the consumer's theme, markup, and CSS.
 
 ## Rollback
 
-If the RC exposes a blocker, roll the consuming app back to the previous pinned
-version:
-
-```bash
-npm install @qazana/strata@<previous-version>
-```
-
-For vendored consumers, restore the previous `vendor/strata/*` files from git.
-
-Report the blocker against the RC branch with:
-
-- consuming app
-- Strata version before and after
-- kit(s) involved
-- minimal markup or screenshot
-- whether the issue is visual, behavior, accessibility, or packaging
+Restore the previous pinned dependency and lockfile, plus the matching vendored
+assets if used. Report a regression with the versions before and after, affected
+kit, minimal markup, and reproduction steps. Include a screenshot for visual
+issues. Keep private product details out of public issue reports.

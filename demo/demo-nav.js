@@ -70,6 +70,9 @@
     '.demo-bar{position:relative;z-index:60;display:flex;align-items:center;gap:var(--space-3);'
     + 'padding:var(--space-2) var(--space-4);background:var(--surface-2);border-bottom:1px solid var(--line);'
     + 'font-family:var(--body);font-size:var(--text-sm);color:var(--text-2);flex-wrap:wrap;line-height:1}'
+    // Auth styles can load after this script; keep their grid placement in CSS.
+    + 'body.auth{grid-template-rows:auto 1fr}'
+    + 'body.auth > .demo-bar{grid-column:1 / -1;justify-self:stretch;align-self:start}'
     + '.demo-bar a{color:var(--text-2);text-decoration:none;padding:var(--space-1_5) var(--space-2);border-radius:var(--radius-sm)}'
     + '.demo-bar a:hover{color:var(--text);background:var(--surface)}'
     + '.demo-bar .db-home{font-weight:700;color:var(--text)}'
@@ -83,6 +86,7 @@
     + '.demo-bar .db-brand{font:inherit;font-size:var(--text-sm);color:var(--text);background:var(--surface);border:1px solid var(--line);'
     + 'border-radius:var(--radius-sm);padding:var(--space-1_5) var(--space-2);cursor:pointer;max-width:150px}'
     + '.demo-bar .db-brand:hover{border-color:var(--line-strong)}'
+    + '.demo-bar .db-brand:focus-visible{border-color:var(--primary-bright)}'
     + '.demo-bar .db-kitmenu{position:absolute;top:calc(100% + 6px);inset-inline-start:0;z-index:600;display:flex;flex-direction:column;'
     + 'min-width:160px;background:var(--surface-3,var(--surface));border:1px solid var(--line);border-radius:var(--radius);'
     + 'box-shadow:var(--shadow-lg);padding:var(--space-1_5)}'

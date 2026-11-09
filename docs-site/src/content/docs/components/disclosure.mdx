@@ -1,0 +1,75 @@
+---
+title: Tabs and accordions
+description: Switch between views or reveal optional detail with component imports.
+sidebar:
+  order: 4
+---
+
+import Demo from '../../../components/Demo.astro';
+
+The App kit includes tabs and accordions. Separate component exports are
+available from **1.1.0** and let an existing UI load their styles without the App kit's
+page reset:
+
+```css
+@import '@qazana/strata/tokens';
+@import '@qazana/strata/tabs';
+@import '@qazana/strata/accordion';
+```
+
+Direct imports are unlayered. The App kit imports the same rules into `qazana`.
+
+<Demo src="app/disclosure.html" title="Tabs and accordions" height={680} />
+
+## Tabs
+
+```html
+<div data-tabs>
+  <div class="tabs line" aria-label="Workspace views">
+    <button class="tab active">Overview <span class="tab-count">12</span></button>
+    <button class="tab">Activity</button>
+  </div>
+  <div class="tabpanel">Overview content</div>
+  <div class="tabpanel" hidden>Activity content</div>
+</div>
+```
+
+Load the behavior script and call `QZ.init(root)` after inserting a group. The
+controller pairs tabs and panels in document order, sets their ARIA relationships,
+and keeps nested groups independent. Disabled tabs cannot activate.
+
+The default bar is segmented; `.tabs.line` adds an underline style. Set
+`aria-orientation="vertical"` on `.tabs` for vertical layout and arrow keys.
+`data-tabs-activation="manual"` on the group lets arrows move focus without
+opening a view; Enter or Space activates it. Home and End reach the endpoints.
+
+A framework can own selection and visibility instead. Omit `data-tabs`, maintain
+the ARIA relationships, and style selection with `aria-selected="true"`.
+
+## Accordions
+
+```html
+<div class="acc">
+  <details>
+    <summary>
+      <span class="acc-heading">
+        <span class="acc-title">Advanced options</span>
+        <span class="acc-hint">Optional connection settings.</span>
+      </span>
+      <span class="acc-meta">2 options</span>
+    </summary>
+    <div class="acc-body">Settings controls</div>
+  </details>
+</div>
+```
+
+Native `details` and `summary` provide interaction without JavaScript. Plain
+summary text is also supported. Use the same unique `name` on sibling details
+to allow only one open section. Keep links and controls in `.acc-body`.
+
+Metadata moves below the heading at 640px and below. The body clears its first
+and last child margins so nested content does not add to its padding.
+`.acc.flush` removes the outer border when placed inside a card.
+
+The [full reference](https://github.com/Qazana/strata/blob/master/docs/disclosure.md)
+covers initial selection, nested groups, and keyboard behavior.

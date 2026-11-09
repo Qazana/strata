@@ -29,6 +29,7 @@ import { pagesFor } from './_pages.mjs';
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const ROOT = path.resolve(__dirname, '..');
 const BASELINE = path.join(__dirname, 'baseline');
+const REVIEW = path.join(__dirname, 'out/visual');
 const PORT = Number(process.env.PORT || 4189);
 const BASE = `http://localhost:${PORT}`;
 const SAVE_BASELINE = process.env.HARNESS_BASELINE === '1';
@@ -63,6 +64,7 @@ function diffShot(name, buf) {
     fs.writeFileSync(path.join(BASELINE, file), buf);
     return;
   }
+  fs.writeFileSync(path.join(REVIEW, file), buf);
   const basePath = path.join(BASELINE, file);
   if (!fs.existsSync(basePath)) { results.push({ name: file, status: 'no-baseline' }); return; }
   try {
@@ -76,6 +78,7 @@ function diffShot(name, buf) {
     const mismatch = pixelmatch(base.data, cur.data, diff.data, cur.width, cur.height, { threshold: 0.1 });
     const frac = mismatch / (cur.width * cur.height);
     const pct = (frac * 100).toFixed(3) + '%';
+    if (frac > NOISE) fs.writeFileSync(path.join(REVIEW, `${name}-diff.png`), PNG.sync.write(diff));
     results.push(frac > NOISE ? { name: file, status: 'diff', pct } : { name: file, status: 'ok', pct });
   } catch (e) {
     results.push({ name: file, status: 'diff-error', detail: e.message.slice(0, 60) });
@@ -83,6 +86,7 @@ function diffShot(name, buf) {
 }
 
 fs.mkdirSync(BASELINE, { recursive: true });
+fs.mkdirSync(REVIEW, { recursive: true });
 const browser = await chromium.launch({ headless: true });
 const ctx = await browser.newContext({
   viewport: { width: 1280, height: 900 },
@@ -121,6 +125,7 @@ if (SAVE_BASELINE) {
 }
 
 const regressions = results.filter((r) => r.status !== 'ok');
+fs.writeFileSync(path.join(REVIEW, 'report.json'), JSON.stringify(results, null, 2) + '\n');
 console.log('\n=== visual-regression report ===');
 console.log(`screens: ${results.length}  ok: ${results.length - regressions.length}  regressions: ${regressions.length}`);
 if (regressions.length) {
